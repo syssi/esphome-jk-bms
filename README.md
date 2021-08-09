@@ -167,7 +167,7 @@ C0 01
 |  5  | charging overcurrent alarm          | 1 (alarm), 0 (normal) | alarm    |
 |  6  | Discharge overcurrent alarm         | 1 (alarm), 0 (normal) | alarm    |
 |  7  | Cell pressure difference alarm      | 1 (alarm), 0 (normal) | alarm    |
-| --- | ----------------------------------- | --------------------- | -------- |
+|     |                                     |                       |          |
 |  8  | Over-temperature alarm in the battery box | 1 (alarm), 0 (normal) | alarm    |
 |  9  | Battery low temperature alarm       | 1 (alarm), 0 (normal) | alarm    |
 | 10  | Monomer overvoltage alarm           | 1 (alarm), 0 (normal) | alarm    |
