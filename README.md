@@ -2,7 +2,7 @@
 
 ESPHome component to monitor a Jikong Battery Management System (JK-BMS) via RS485
 
-# Request / Response example
+## Request / Response example
 
 ```
 -> 4E 57 00 13 00 00 00 00 06 03 00 00 00 00 00 00 68 00 00 01 29
