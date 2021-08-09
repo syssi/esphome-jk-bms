@@ -179,10 +179,8 @@ C0 01
 
 **Example**
 
-0x0001 = 00000000 00000001 -> Low capacity alarm
-
-0x0002 = 00000000 00000010 -> MOS tube over-temperature alarm
-
+0x0001 = 00000000 00000001 -> Low capacity alarm \
+0x0002 = 00000000 00000010 -> MOS tube over-temperature alarm \
 0x0003 = 00000000 00000011 -> Low capacity alarm AND MOS tube over-temperature alarm
 
 
