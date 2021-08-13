@@ -30,5 +30,14 @@ uart:
   rx_pin: GPIO4
 
 jk_modbus:
- id: modbus0
- uart_id: uart0
+  id: modbus0
+  uart_id: uart0
+
+jk_bms:
+  id: bms0
+  jk_modbus_id: modbus0
+
+sensor:
+  - platform: jk_bms
+    firmware_version:
+      name: "${name} firmware version"

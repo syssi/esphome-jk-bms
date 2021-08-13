@@ -42,7 +42,7 @@ class JkModbusDevice {
  public:
   void set_parent(JkModbus *parent) { parent_ = parent; }
   void set_address(uint8_t address) { address_ = address; }
-  virtual void on_jk_modbus_data(const std::vector<uint8_t> &data) = 0;
+  virtual void on_jk_modbus_data(const uint8_t &function, const std::vector<uint8_t> &data) = 0;
 
   void send(uint8_t function, uint16_t start_address, uint16_t register_count) {
     this->parent_->send(this->address_, function, start_address, register_count);

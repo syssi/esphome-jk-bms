@@ -58,6 +58,7 @@ bool JkModbus::parse_jk_modbus_byte_(uint8_t byte) {
   // Byte 1: Function (msb indicates error)
   if (at == 1)
     return (byte & 0x80) != 0x80;
+  uint8_t function = raw[1];
 
   // Byte 2: Size (with jk_modbus rtu function code 4/3)
   // See also https://en.wikipedia.org/wiki/Modbus
@@ -85,7 +86,7 @@ bool JkModbus::parse_jk_modbus_byte_(uint8_t byte) {
   bool found = false;
   for (auto *device : this->devices_) {
     if (device->address_ == address) {
-      device->on_jk_modbus_data(data);
+      device->on_jk_modbus_data(function, data);
       found = true;
     }
   }
