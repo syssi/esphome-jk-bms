@@ -1,0 +1,12 @@
+.idea/
+secret.yaml
+.esphome/
+**/.pioenvs/
+**/.piolibdeps/
+**/lib/
+**/src/
+**/partitions.csv
+
+__pycache__/
+*.py[cod]
+*$py.class

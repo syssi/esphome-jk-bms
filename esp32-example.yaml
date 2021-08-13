@@ -1,0 +1,34 @@
+substitutions:
+  name: jk_bms
+
+esphome:
+  name: ${name}
+  platform: ESP32
+  board: esp-wrover-kit
+
+external_components:
+  - source: github://syssi/esphome-jk-bms@main
+    refresh: 0s
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+ota:
+logger:
+
+mqtt:
+  broker: !secret mqtt_host
+  username: !secret mqtt_username
+  password: !secret mqtt_password
+  id: mqtt_client
+
+uart:
+  id: uart0
+  baud_rate: 9600
+  tx_pin: GPIO14
+  rx_pin: GPIO4
+
+jk_modbus:
+ id: modbus0
+ uart_id: uart0

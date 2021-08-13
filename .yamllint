@@ -1,0 +1,77 @@
+extends: default
+
+yaml-files:
+  - '*.yaml'
+  - '*.yml'
+  - '.yamllint'
+
+ignore: |
+  /.cache/
+  esphome/**/*.pio*
+  config/automations.yaml
+  config/known_devices.yaml
+  config/scenes.yaml
+  config/google_calendars.yaml
+  config/custom_components/scheduler
+  config/custom_components/xiaomi_cloud_map_extractor
+  config/custom_components/zha_map
+  config/custom_components/hacs
+
+rules:
+  braces:
+    level: error
+    min-spaces-inside: 0
+    max-spaces-inside: 1
+    min-spaces-inside-empty: -1
+    max-spaces-inside-empty: -1
+  brackets:
+    level: error
+    min-spaces-inside: 0
+    max-spaces-inside: 0
+    min-spaces-inside-empty: -1
+    max-spaces-inside-empty: -1
+  colons:
+    level: error
+    max-spaces-before: 0
+    max-spaces-after: 1
+  commas:
+    level: error
+    max-spaces-before: 0
+    min-spaces-after: 1
+    max-spaces-after: 1
+  comments:
+    level: error
+    require-starting-space: true
+    min-spaces-from-content: 2
+  comments-indentation: disable
+  document-end:
+    level: error
+    present: false
+  document-start:
+    level: error
+    present: false
+  empty-lines:
+    level: error
+    max: 2
+    max-start: 0
+    max-end: 1
+  hyphens:
+    level: error
+    max-spaces-after: 1
+  indentation:
+    level: error
+    spaces: 2
+    indent-sequences: true
+    check-multi-line-strings: false
+  key-duplicates:
+    level: error
+  line-length: disable
+  new-line-at-end-of-file:
+    level: error
+  new-lines:
+    level: error
+    type: unix
+  trailing-spaces:
+    level: error
+  truthy:
+    level: error
