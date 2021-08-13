@@ -7,12 +7,11 @@ namespace jk_bms {
 
 static const char *const TAG = "jk_bms";
 
-static const uint8_t READ_HOLDING_REGISTERS = 0x03;
-static const uint8_t READ_INPUT_REGISTERS = 0x04;
-static const uint8_t WRITE_SINGLE_REGISTER = 0x06;
+static const uint8_t FUNCTION_READ_ALL = 0x06;
+static const uint8_t ADDRESS_READ_ALL = 0x00;
 
 void JkBms::on_jk_modbus_data(const uint8_t &function, const std::vector<uint8_t> &data) {
-  if (function == READ_INPUT_REGISTERS && data.size() == 58) {
+  if (function == FUNCTION_READ_ALL) {
     this->on_status_data_(data);
     return;
   }
@@ -27,7 +26,7 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
   };
 }
 
-void JkBms::update() { this->send(READ_INPUT_REGISTERS, 0x1000, 29); }
+void JkBms::update() { this->read_registers(FUNCTION_READ_ALL, ADDRESS_READ_ALL); }
 
 void JkBms::publish_state_(sensor::Sensor *sensor, float value) {
   if (sensor == nullptr)

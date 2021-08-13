@@ -253,3 +253,4 @@ Example value: BT3072020120000200521001 -> BT 3 072 020 12 0000 20 05 21 001
 * https://github.com/jblance/mpp-solar/blob/master/mppsolar/protocols/jk232.py
 * https://github.com/jblance/mpp-solar/blob/master/mppsolar/protocols/jk485.py
 * https://github.com/sshoecraft/jktool
+* https://blog.ja-ke.tech/2020/02/07/ltt-power-bms-chinese-protocol.html

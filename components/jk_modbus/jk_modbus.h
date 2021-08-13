@@ -23,6 +23,7 @@ class JkModbus : public uart::UARTDevice, public Component {
   float get_setup_priority() const override;
 
   void send(uint8_t address, uint8_t function, uint16_t start_address, uint16_t register_count);
+  void read_registers(uint8_t function, uint8_t address);
 
   void set_flow_control_pin(GPIOPin *flow_control_pin) { this->flow_control_pin_ = flow_control_pin; }
 
@@ -36,8 +37,6 @@ class JkModbus : public uart::UARTDevice, public Component {
   std::vector<JkModbusDevice *> devices_;
 };
 
-uint16_t crc16(const uint8_t *data, uint8_t len);
-
 class JkModbusDevice {
  public:
   void set_parent(JkModbus *parent) { parent_ = parent; }
@@ -47,6 +46,7 @@ class JkModbusDevice {
   void send(uint8_t function, uint16_t start_address, uint16_t register_count) {
     this->parent_->send(this->address_, function, start_address, register_count);
   }
+  void read_registers(uint8_t function, uint8_t address) { this->parent_->read_registers(function, address); }
 
  protected:
   friend JkModbus;

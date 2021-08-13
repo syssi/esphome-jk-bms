@@ -29,20 +29,13 @@ void JkModbus::loop() {
   }
 }
 
-uint16_t crc16(const uint8_t *data, uint8_t len) {
-  uint16_t crc = 0xFFFF;
-  while (len--) {
-    crc ^= *data++;
-    for (uint8_t i = 0; i < 8; i++) {
-      if ((crc & 0x01) != 0) {
-        crc >>= 1;
-        crc ^= 0xA001;
-      } else {
-        crc >>= 1;
-      }
-    }
+uint16_t chksum(const uint8_t data[], const uint8_t len) {
+  uint8_t i;
+  uint16_t checksum = 0;
+  for (i = 0; i < len; i++) {
+    checksum = checksum + data[i];
   }
-  return crc;
+  return checksum;
 }
 
 bool JkModbus::parse_jk_modbus_byte_(uint8_t byte) {
@@ -74,8 +67,8 @@ bool JkModbus::parse_jk_modbus_byte_(uint8_t byte) {
   if (at == 3 + data_len)
     return true;
   // Byte 3+len+1: CRC_HI (over all bytes)
-  uint16_t computed_crc = crc16(raw, 3 + data_len);
-  uint16_t remote_crc = uint16_t(raw[3 + data_len]) | (uint16_t(raw[3 + data_len + 1]) << 8);
+  uint16_t computed_crc = chksum(raw, 3 + data_len);
+  uint16_t remote_crc = uint16_t(raw[3 + data_len]) << 8 | (uint16_t(raw[3 + data_len + 1]) << 0);
   if (computed_crc != remote_crc) {
     ESP_LOGW(TAG, "JkModbus CRC Check failed! %02X!=%02X", computed_crc, remote_crc);
     return false;
@@ -114,14 +107,49 @@ void JkModbus::send(uint8_t address, uint8_t function, uint16_t start_address, u
   frame[3] = start_address >> 0;
   frame[4] = register_count >> 8;
   frame[5] = register_count >> 0;
-  auto crc = crc16(frame, 6);
-  frame[6] = crc >> 0;
-  frame[7] = crc >> 8;
+  auto crc = chksum(frame, 6);
+  frame[6] = crc >> 8;
+  frame[7] = crc >> 0;
 
   if (this->flow_control_pin_ != nullptr)
     this->flow_control_pin_->digital_write(true);
 
   this->write_array(frame, 8);
+  this->flush();
+
+  if (this->flow_control_pin_ != nullptr)
+    this->flow_control_pin_->digital_write(false);
+}
+
+void JkModbus::read_registers(uint8_t function, uint8_t address) {
+  uint8_t frame[21];
+  frame[0] = 0x4E;   // start sequence
+  frame[1] = 0x57;   // start sequence
+  frame[2] = 0x00;   // data length lb
+  frame[3] = 0x13;   // data length hb
+  frame[4] = 0x00;   // bms terminal number
+  frame[5] = 0x00;   // bms terminal number
+  frame[6] = 0x00;   // bms terminal number
+  frame[7] = 0x00;   // bms terminal number
+  frame[8] = function;   // command word: 0x01 (activation), 0x02 (write), 0x03 (read), 0x05 (password), 0x06 (read all)
+  frame[9] = 0x03;   // frame source: 0x00 (bms), 0x01 (bluetooth), 0x02 (gps), 0x03 (computer)
+  frame[10] = 0x00;  // frame type: 0x00 (read data), 0x01 (reply frame), 0x02 (BMS active upload)
+  frame[11] = address;  // register: 0x00 (read all registers), 0x8E...0xBF (holding registers)
+  frame[12] = 0x00;  // record number
+  frame[13] = 0x00;  // record number
+  frame[14] = 0x00;  // record number
+  frame[15] = 0x00;  // record number
+  frame[16] = 0x68;  // end sequence
+  auto crc = chksum(frame, 17);
+  frame[17] = 0x00;  // crc unused
+  frame[18] = 0x00;  // crc unused
+  frame[19] = crc >> 8;
+  frame[20] = crc >> 0;
+
+  if (this->flow_control_pin_ != nullptr)
+    this->flow_control_pin_->digital_write(true);
+
+  this->write_array(frame, 21);
   this->flush();
 
   if (this->flow_control_pin_ != nullptr)
