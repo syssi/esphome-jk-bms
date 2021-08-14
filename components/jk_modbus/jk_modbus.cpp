@@ -123,26 +123,26 @@ void JkModbus::send(uint8_t address, uint8_t function, uint16_t start_address, u
 
 void JkModbus::read_registers(uint8_t function, uint8_t address) {
   uint8_t frame[21];
-  frame[0] = 0x4E;   // start sequence
-  frame[1] = 0x57;   // start sequence
-  frame[2] = 0x00;   // data length lb
-  frame[3] = 0x13;   // data length hb
-  frame[4] = 0x00;   // bms terminal number
-  frame[5] = 0x00;   // bms terminal number
-  frame[6] = 0x00;   // bms terminal number
-  frame[7] = 0x00;   // bms terminal number
-  frame[8] = function;   // command word: 0x01 (activation), 0x02 (write), 0x03 (read), 0x05 (password), 0x06 (read all)
-  frame[9] = 0x03;   // frame source: 0x00 (bms), 0x01 (bluetooth), 0x02 (gps), 0x03 (computer)
-  frame[10] = 0x00;  // frame type: 0x00 (read data), 0x01 (reply frame), 0x02 (BMS active upload)
+  frame[0] = 0x4E;      // start sequence
+  frame[1] = 0x57;      // start sequence
+  frame[2] = 0x00;      // data length lb
+  frame[3] = 0x13;      // data length hb
+  frame[4] = 0x00;      // bms terminal number
+  frame[5] = 0x00;      // bms terminal number
+  frame[6] = 0x00;      // bms terminal number
+  frame[7] = 0x00;      // bms terminal number
+  frame[8] = function;  // command word: 0x01 (activation), 0x02 (write), 0x03 (read), 0x05 (password), 0x06 (read all)
+  frame[9] = 0x03;      // frame source: 0x00 (bms), 0x01 (bluetooth), 0x02 (gps), 0x03 (computer)
+  frame[10] = 0x00;     // frame type: 0x00 (read data), 0x01 (reply frame), 0x02 (BMS active upload)
   frame[11] = address;  // register: 0x00 (read all registers), 0x8E...0xBF (holding registers)
-  frame[12] = 0x00;  // record number
-  frame[13] = 0x00;  // record number
-  frame[14] = 0x00;  // record number
-  frame[15] = 0x00;  // record number
-  frame[16] = 0x68;  // end sequence
+  frame[12] = 0x00;     // record number
+  frame[13] = 0x00;     // record number
+  frame[14] = 0x00;     // record number
+  frame[15] = 0x00;     // record number
+  frame[16] = 0x68;     // end sequence
   auto crc = chksum(frame, 17);
-  frame[17] = 0x00;  // crc unused
-  frame[18] = 0x00;  // crc unused
+  frame[17] = 0x00;     // crc unused
+  frame[18] = 0x00;     // crc unused
   frame[19] = crc >> 8;
   frame[20] = crc >> 0;
 
