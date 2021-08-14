@@ -24,10 +24,99 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
   auto jk_get_32bit = [&](size_t i) -> uint32_t {
     return (uint32_t(jk_get_16bit(i + 0)) << 16) | (uint32_t(jk_get_16bit(i + 2)) << 0);
   };
+
+  // Status request
+  // -> 0x4E 0x57 0x00 0x13 0x00 0x00 0x00 0x00 0x06 0x03 0x00 0x00 0x00 0x00 0x00 0x00 0x68 0x00 0x00 0x01 0x29
+  //
+  // Status response
+  // <- 0x4E 0x57 0x01 0x1B 0x00 0x00 0x00 0x00 0x06 0x00 0x01: Header
+  //
+  // *Data*
+  //
+  // Address Content: Description      Decoded content                         Coeff./Unit
+  // 0x79: Individual Cell voltage
+  // 0x2A: Cell count               42 / 3 bytes = 14 cells
+  // 0x01 0x0E 0xED: Cell 1         3821 * 0.001 = 3.821V                        0.001 V
+  // 0x02 0x0E 0xFA: Cell 2         3834 * 0.001 = 3.834V                        0.001 V
+  // 0x03 0x0E 0xF7: Cell 3         3831 * 0.001 = 3.831V                        0.001 V
+  // 0x04 0x0E 0xEC: Cell 4         ...                                          0.001 V
+  // 0x05 0x0E 0xF8: Cell 5         ...                                          0.001 V
+  // 0x06 0x0E 0xFA: Cell 6         ...                                          0.001 V
+  // 0x07 0x0E 0xF1: Cell 7         ...                                          0.001 V
+  // 0x08 0x0E 0xF8: Cell 8         ...                                          0.001 V
+  // 0x09 0x0E 0xE3: Cell 9         ...                                          0.001 V
+  // 0x0A 0x0E 0xFA: Cell 10        ...                                          0.001 V
+  // 0x0B 0x0E 0xF1: Cell 11        ...                                          0.001 V
+  // 0x0C 0x0E 0xFB: Cell 12        ...                                          0.001 V
+  // 0x0D 0x0E 0xFB: Cell 13        ...                                          0.001 V
+  // 0x0E 0x0E 0xF2: Cell 14        3826 * 0.001 = 3.826V                        0.001 V
+
+  // 0x80 0x00 0x1D: Read power tube temperature                 29°C                      1.0 °C     99 = 99°C, 100 = 100°C, 101 = -1°C, 140 = -140°C
+  // 0x81 0x00 0x1E: Read the temperature in the battery box     30°C                      1.0 °C     99 = 99°C, 100 = 100°C, 101 = -1°C, 140 = -140°C
+  // 0x82 0x00 0x1C: Read battery temperature                    28°C                      1.0 °C     99 = 99°C, 100 = 100°C, 101 = -1°C, 140 = -140°C
+  // 0x83 0x14 0xEF: Total battery voltage                       5359 * 0.01 = 53.59V      0.01 V
+  // 0x84 0x80 0xD0: Current data                                32976                          A // @FIXME
+  // 0x85 0x0F: Battery remaining capacity                       15 %
+  // 0x86 0x02: Number of battery temperature sensors             2                        1.0  count
+  // 0x87 0x00 0x04: Number of battery cycles                     4                        1.0  count
+  // 0x89 0x00 0x00 0x00 0x00: Total battery cycle capacity
+  // 0x8A 0x00 0x0E: Total number of battery strings             14                        1.0  count
+  // 0x8B 0x00 0x00: Battery warning message                     0000 0000 0000 0000
+  // 0x8C 0x00 0x07: Battery status information                  0000 0000 0000 0111
+  // 0x8E 0x16 0x26: Total voltage overvoltage protection        5670 * 0.001 = 5.670V     0.001 V
+  // 0x8F 0x10 0xAE: Total voltage undervoltage protection       4270 * 0.001 = 4.270V     0.001 V
+  // 0x90 0x0F 0xD2: Single overvoltage protection voltage       4050 * 0.001 = 4.050V     0.001 V
+  // 0x91 0x0F 0xA0: Cell overvoltage recovery voltage           4000 * 0.001 = 4.000V     0.001 V
+  // 0x92 0x00 0x05: Single overvoltage protection delay          5s                         1.0 s
+  // 0x93 0x0B 0xEA: Single undervoltage protection voltage      3050 * 0.001 = 3.050V     0.001 V
+  // 0x94 0x0C 0x1C: Monomer undervoltage recovery voltage       3100 * 0.001 = 3.100V     0.001 V
+  // 0x95 0x00 0x05: Single undervoltage protection delay         5s                         1.0 s
+  // 0x96 0x01 0x2C: Cell pressure difference protection value    300 * 0.001 = 0.300V     0.001 V     0.000-1.000V
+  // 0x97 0x00 0x07: Discharge overcurrent protection value       7A                         1.0 A
+  // 0x98 0x00 0x03: Discharge overcurrent delay                  3s                         1.0 s
+  // 0x99 0x00 0x05: Charging overcurrent protection value        5A                         1.0 A
+  // 0x9A 0x00 0x05: Charge overcurrent delay                     5s                         1.0 s
+  // 0x9B 0x0C 0xE4: Balanced starting voltage                   3300 * 0.001 = 3.300V     0.001 V
+  // 0x9C 0x00 0x08: Balanced opening pressure difference           8 * 0.001 = 0.008V     0.001 V     0.01-1V (0.008 = out of spec?)
+  // 0x9D 0x01: Active balance switch                              1 (on)                     Bool     0 (off), 1 (on)
+  // 0x9E 0x00 0x5A: Power tube temperature protection value                90°C            1.0 °C     0-100°C
+  // 0x9F 0x00 0x46: Power tube temperature recovery value                  70°C            1.0 °C     0-100°C
+  // 0xA0 0x00 0x64: Temperature protection value in the battery box        70°C            1.0 °C     40-100°C
+  // 0xA1 0x00 0x64: Temperature recovery value in the battery box          70°C            1.0 °C     40-100°C
+  // 0xA2 0x00 0x14: Battery temperature difference protection value        20°C            1.0 °C     5-10°C
+  // 0xA3 0x00 0x46: Battery charging high temperature protection value     70°C            1.0 °C     0-100°C
+  // 0xA4 0x00 0x46: Battery discharge high temperature protection value    70°C            1.0 °C     0-100°C
+  // 0xA5 0xFF 0xEC: Charging low temperature protection value
+  // 0xA6 0xFF 0xF6: Charging low temperature protection recovery value
+  // 0xA7 0xFF 0xEC: Discharge low temperature protection value
+  // 0xA8 0xFF 0xF6: Discharge low temperature protection recovery value
+  // 0xA9 0x0E: Battery string setting                                      14              1.0 count
+  // 0xAA 0x00 0x00 0x00 0x0E: Battery capacity setting                     14h             1.0 Ah
+  // 0xAB 0x01: Charging MOS tube switch                                     1 (on)         Bool       0 (off), 1 (on)
+  // 0xAC 0x01: Discharge MOS tube switch                                    1 (on)         Bool       0 (off), 1 (on)
+  // 0xAD 0x04 0x11: Current calibration                                   1041mA           1.0 mA     100-2000mA
+  // 0xAE 0x01: Protection board address                                     1              1.0
+  // 0xAF 0x01: Battery Type                                                 1              1.0        0 (lithium iron phosphate), 1 (ternary), 2 (lithium titanate)
+  // 0xB0 0x00 0x0A: Sleep waiting time                                      10s            1.0 s
+  // 0xB1 0x14: Low volume alarm value                                       20             1.0 %      0-80%
+  // 0xB2 0x31 0x32 0x33 0x34 0x35 0x36 0x00 0x00 0x00 0x00: Modify parameter password
+  // 0xB3 0x00: Dedicated charger switch                                     1 (on)         Bool       0 (off), 1 (on)
+  // 0xB4 0x49 0x6E 0x70 0x75 0x74 0x20 0x55 0x73: Device ID code
+  // 0xB5 0x32 0x31 0x30 0x31: Date of manufacture
+  // 0xB6 0x00 0x00 0xE2 0x00: System working hours
+  // 0xB7 0x48 0x36 0x2E 0x58 0x5F 0x5F 0x53
+  //      0x36 0x2E 0x31 0x2E 0x33 0x53 0x5F 0x5F: Software version number
+  // 0xB8 0x00: Whether to start current calibration
+  // 0xB9 0x00 0x00 0x00 0x00: Actual battery capacity
+  // 0xBA 0x42 0x54 0x33 0x30 0x37 0x32 0x30 0x32 0x30 0x31 0x32 0x30
+  //      0x30 0x30 0x30 0x32 0x30 0x30 0x35 0x32 0x31 0x30 0x30 0x31: Manufacturer ID naming
+  // 0xC0 0x01: Protocol version number
+  //
+  // 00 00 00 00 68 00 00 54 D1: End of frame
 }
 
 void JkBms::update() {
-  this->read_registers(FUNCTION_READ_ALL, ADDRESS_READ_ALL); 
+  // this->read_registers(FUNCTION_READ_ALL, ADDRESS_READ_ALL);
 
   // Start: 0x4E, 0x57, 0x01, 0x1B, 0x00, 0x00, 0x00, 0x00, 0x06, 0x00, 0x01
   this->on_jk_modbus_data(

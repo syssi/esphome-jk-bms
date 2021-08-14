@@ -141,8 +141,8 @@ void JkModbus::read_registers(uint8_t function, uint8_t address) {
   frame[15] = 0x00;     // record number
   frame[16] = 0x68;     // end sequence
   auto crc = chksum(frame, 17);
-  frame[17] = 0x00;     // crc unused
-  frame[18] = 0x00;     // crc unused
+  frame[17] = 0x00;  // crc unused
+  frame[18] = 0x00;  // crc unused
   frame[19] = crc >> 8;
   frame[20] = crc >> 0;
 
