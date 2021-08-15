@@ -29,10 +29,9 @@ void JkModbus::loop() {
   }
 }
 
-uint16_t chksum(const uint8_t data[], const uint8_t len) {
-  uint8_t i;
+uint16_t chksum(const uint8_t data[], const uint16_t len) {
   uint16_t checksum = 0;
-  for (i = 0; i < len; i++) {
+  for (uint16_t i = 0; i < len; i++) {
     checksum = checksum + data[i];
   }
   return checksum;
@@ -43,38 +42,39 @@ bool JkModbus::parse_jk_modbus_byte_(uint8_t byte) {
   this->rx_buffer_.push_back(byte);
   const uint8_t *raw = &this->rx_buffer_[0];
 
-  // Byte 0: jk_modbus address (match all)
+  // Byte 0: Start sequence (0x4E)
   if (at == 0)
     return true;
   uint8_t address = raw[0];
 
-  // Byte 1: Function (msb indicates error)
+  // Byte 1: Start sequence (0x57)
   if (at == 1)
-    return (byte & 0x80) != 0x80;
-  uint8_t function = raw[1];
+    return true;
 
-  // Byte 2: Size (with jk_modbus rtu function code 4/3)
-  // See also https://en.wikipedia.org/wiki/Modbus
+  // Byte 2: Size (low byte)
   if (at == 2)
     return true;
 
-  uint8_t data_len = raw[2];
-  // Byte 3..3+data_len-1: Data
-  if (at < 3 + data_len)
+  // Byte 3: Size (high byte)
+  if (at == 3)
+    return true;
+  uint16_t data_len = (uint16_t(raw[2]) << 8 | (uint16_t(raw[2 + 1]) << 0));
+
+  // data_len: CRC_LO (over all bytes)
+  if (at <= data_len)
     return true;
 
-  // Byte 3+data_len: CRC_LO (over all bytes)
-  if (at == 3 + data_len)
-    return true;
-  // Byte 3+len+1: CRC_HI (over all bytes)
-  uint16_t computed_crc = chksum(raw, 3 + data_len);
-  uint16_t remote_crc = uint16_t(raw[3 + data_len]) << 8 | (uint16_t(raw[3 + data_len + 1]) << 0);
+  uint8_t function = raw[8];
+
+  // data_len+1: CRC_HI (over all bytes)
+  uint16_t computed_crc = chksum(raw, data_len);
+  uint16_t remote_crc = uint16_t(raw[data_len]) << 8 | (uint16_t(raw[data_len + 1]) << 0);
   if (computed_crc != remote_crc) {
     ESP_LOGW(TAG, "JkModbus CRC Check failed! %02X!=%02X", computed_crc, remote_crc);
     return false;
   }
 
-  std::vector<uint8_t> data(this->rx_buffer_.begin() + 3, this->rx_buffer_.begin() + 3 + data_len);
+  std::vector<uint8_t> data(this->rx_buffer_.begin() + 11, this->rx_buffer_.begin() + data_len - 3);
 
   bool found = false;
   for (auto *device : this->devices_) {

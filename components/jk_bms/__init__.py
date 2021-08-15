@@ -15,7 +15,7 @@ JkBms = jk_bms_ns.class_("JkBms", cg.PollingComponent, jk_modbus.JkModbusDevice)
 CONFIG_SCHEMA = (
     cv.Schema({cv.GenerateID(): cv.declare_id(JkBms)})
     .extend(cv.polling_component_schema("5s"))
-    .extend(jk_modbus.jk_modbus_device_schema(0x06))
+    .extend(jk_modbus.jk_modbus_device_schema(0x4E))
 )
 
 
