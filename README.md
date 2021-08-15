@@ -45,6 +45,34 @@ ESPHome component to monitor a Jikong Battery Management System (JK-BMS) via RS4
 | Communication                                     | CAN (Optional), RS485 (Optional) |
 
 
+## Requirements
+
+* [ESPHome 1.18.0 or higher](https://github.com/esphome/esphome/releases).
+* Generic ESP32 or ESP8266 board
+
+## Schematics
+
+```
+                RS485-TTL
+┌──────────┐                ┌─────────┐
+│          │<----- RX ----->│         │
+│  JK-BMS  │<----- TX ----->│ ESP32/  │
+│          │<----- GND ---->│ ESP8266 │
+│          │                │         │<-- 3.3V
+└──────────┘                └─────────┘
+
+# RS485 TTL jack
+┌─── ─────── ────┐
+│                │
+│ O   O   O   O  │
+│GND  RX  TX VBAT│
+└────────────────┘
+```
+
+
+The RS485-TTL jack of the BMS can be attached to any UART pins of the ESP. A hardware UART should be preferred because of the baudrate (115200 baud).
+
+
 ## Request / Response example
 
 ```

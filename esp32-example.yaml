@@ -25,7 +25,8 @@ mqtt:
 
 uart:
   id: uart0
-  baud_rate: 9600
+  baud_rate: 115200
+  rx_buffer_size: 384
   tx_pin: GPIO14
   rx_pin: GPIO4
 
