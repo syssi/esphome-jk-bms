@@ -61,7 +61,7 @@ ESPHome component to monitor a Jikong Battery Management System (JK-BMS) via RS4
 │          │                │         │<-- 3.3V
 └──────────┘                └─────────┘
 
-# RS485 TTL jack
+# RS485-TTL jack (JST-SH 1.0mm pinch)
 ┌─── ─────── ────┐
 │                │
 │ O   O   O   O  │
