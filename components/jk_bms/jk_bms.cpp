@@ -164,13 +164,13 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->operation_mode_bitmask_sensor_, (float) raw_modes_bitmask);
   this->publish_state_(this->operation_mode_text_sensor_, this->mode_bits_to_string_(raw_modes_bitmask));
 
-  // 0x8E 0x16 0x26: Total voltage overvoltage protection        5670 * 0.001 = 5.670V     0.001 V
+  // 0x8E 0x16 0x26: Total voltage overvoltage protection        5670 * 0.01 = 56.70V     0.01 V
   this->publish_state_(this->total_voltage_overvoltage_protection_sensor_,
-                       (float) jk_get_16bit(offset + 6 + 3 * 10) * 0.001f);
+                       (float) jk_get_16bit(offset + 6 + 3 * 10) * 0.01f);
 
-  // 0x8F 0x10 0xAE: Total voltage undervoltage protection       4270 * 0.001 = 4.270V     0.001 V
+  // 0x8F 0x10 0xAE: Total voltage undervoltage protection       4270 * 0.01 = 42.70V     0.01 V
   this->publish_state_(this->total_voltage_undervoltage_protection_sensor_,
-                       (float) jk_get_16bit(offset + 6 + 3 * 11) * 0.001f);
+                       (float) jk_get_16bit(offset + 6 + 3 * 11) * 0.01f);
 
   // 0x90 0x0F 0xD2: Cell overvoltage protection voltage         4050 * 0.001 = 4.050V     0.001 V
   this->publish_state_(this->cell_voltage_overvoltage_protection_sensor_,
@@ -315,7 +315,7 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
 
   // 0xB8 0x00: Whether to start current calibration
   // 0xB9 0x00 0x00 0x00 0x00: Actual battery capacity
-  this->publish_state_(this->actual_battery_capacity_sensor_, (float) jk_get_32bit(offset + 55 + 3 * 45));
+  this->publish_state_(this->actual_battery_capacity_sensor_, (float) jk_get_32bit(offset + 54 + 3 * 45));
 
   // 0xBA 0x42 0x54 0x33 0x30 0x37 0x32 0x30 0x32 0x30 0x31 0x32 0x30
   //      0x30 0x30 0x30 0x32 0x30 0x30 0x35 0x32 0x31 0x30 0x30 0x31: Manufacturer ID naming
