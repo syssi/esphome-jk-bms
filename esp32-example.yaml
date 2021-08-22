@@ -176,12 +176,12 @@ sensor:
       name: "${name} manufacturing date"
     total_runtime:
       name: "${name} total runtime"
-    start_current_calibration:
-      name: "${name} start current calibration"
+#    start_current_calibration:
+#      name: "${name} start current calibration"
     actual_battery_capacity:
       name: "${name} actual battery capacity"
-    protocol_version:
-      name: "${name} protocol version"
+#    protocol_version:
+#      name: "${name} protocol version"
 
 switch:
   - platform: jk_bms

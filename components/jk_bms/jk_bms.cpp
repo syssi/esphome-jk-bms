@@ -85,14 +85,12 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
   // 0x0C 0x0E 0xFB: Cell 12        ...                                          0.001 V
   // 0x0D 0x0E 0xFB: Cell 13        ...                                          0.001 V
   // 0x0E 0x0E 0xF2: Cell 14        3826 * 0.001 = 3.826V                        0.001 V
-  uint8_t cells = data[1];
-  for (uint8_t i = 0; i < cells; i = i + 3) {
-    uint8_t cell_id = data[i + 2];
-    Cell &cell = this->cells_[cell_id - 1];
-    this->publish_state_(cell.cell_voltage_sensor_, (float) jk_get_16bit(i + 3) * 0.001f);
+  uint8_t cells = data[1] / 3;
+  for (uint8_t i = 0; i < cells; i++) {
+    this->publish_state_(this->cells_[i].cell_voltage_sensor_, (float) jk_get_16bit(i * 3 + 3) * 0.001f);
   }
 
-  uint16_t offset = cells + 3;
+  uint16_t offset = data[1] + 3;
 
   // 0x80 0x00 0x1D: Read power tube temperature                 29°C                      1.0 °C
   // --->  99 = 99°C, 100 = 100°C, 101 = -1°C, 140 = -40°C
