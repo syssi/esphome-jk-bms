@@ -2,6 +2,8 @@
 
 ESPHome component to monitor a Jikong Battery Management System (JK-BMS) via RS485
 
+![Lovelace entities card](lovelace-entities-card.png "Lovelace entities card")
+
 ## Supported devices
 
 * JK-BD6A17S6P, hardware version 7.2, software version 7.1.0H

@@ -1,0 +1,140 @@
+type: entities
+entities:
+  - entity: sensor.jk_bms_cell_voltage_1
+    name: Cell Voltage 1
+  - entity: sensor.jk_bms_cell_voltage_2
+    name: Cell Voltage 2
+  - entity: sensor.jk_bms_cell_voltage_3
+    name: Cell Voltage 3
+  - entity: sensor.jk_bms_cell_voltage_4
+    name: Cell Voltage 4
+  - entity: sensor.jk_bms_cell_voltage_5
+    name: Cell Voltage 5
+  - entity: sensor.jk_bms_cell_voltage_6
+    name: Cell Voltage 6
+  - entity: sensor.jk_bms_cell_voltage_7
+    name: Cell Voltage 7
+  - entity: sensor.jk_bms_cell_voltage_8
+    name: Cell Voltage 8
+  - entity: sensor.jk_bms_cell_voltage_9
+    name: Cell Voltage 9
+  - entity: sensor.jk_bms_cell_voltage_10
+    name: Cell Voltage 10
+  - entity: sensor.jk_bms_cell_voltage_11
+    name: Cell Voltage 11
+  - entity: sensor.jk_bms_cell_voltage_12
+    name: Cell Voltage 12
+  - entity: sensor.jk_bms_cell_voltage_13
+    name: Cell Voltage 13
+  - entity: sensor.jk_bms_battery_strings
+    name: Battery Strings
+  - entity: switch.jk_bms_charging
+    name: Charging
+  - entity: switch.jk_bms_discharging
+    name: Discharging
+  - entity: switch.jk_bms_balancing
+    name: Balancing
+  - entity: switch.jk_bms_dedicated_charger
+    name: Dedicated Charger
+  - entity: sensor.jk_bms_capacity_remaining
+    name: Capacity Remaining
+  - entity: sensor.jk_bms_actual_battery_capacity
+    name: Battery Capacity
+  - entity: sensor.jk_bms_alarm_low_volume
+    name: Alarm Low Volume
+  - entity: sensor.jk_bms_balance_opening_pressure_difference
+    name: Balance Opening Pressure Difference
+  - entity: sensor.jk_bms_balance_starting_voltage
+    name: Balance Starting Voltage
+  - entity: sensor.jk_bms_battery_type
+    name: Battery Type
+  - entity: sensor.jk_bms_cell_pressure_difference_protection
+    name: Cell Pressure Difference Protection
+  - entity: sensor.jk_bms_cell_voltage_overvoltage_delay
+    name: Cell Voltage Overvoltage Delay
+  - entity: sensor.jk_bms_cell_voltage_overvoltage_protection
+    name: Cell Voltage Overvoltage Protection
+  - entity: sensor.jk_bms_cell_voltage_overvoltage_recovery
+    name: Cell Voltage Overvoltage Recovery
+  - entity: sensor.jk_bms_cell_voltage_undervoltage_delay
+    name: Cell Voltage Undervoltage Delay
+  - entity: sensor.jk_bms_cell_voltage_undervoltage_protection
+    name: Cell Voltage Undervoltage Protection
+  - entity: sensor.jk_bms_cell_voltage_undervoltage_recovery
+    name: Cell Voltage Undervoltage Recovery
+  - entity: sensor.jk_bms_charging_cycles
+    name: Charging Cycles
+  - entity: sensor.jk_bms_charging_high_temperature_protection
+    name: Charging High Temperature Protection
+  - entity: sensor.jk_bms_charging_low_temperature_protection
+    name: Charging Low Temperature Protection
+  - entity: sensor.jk_bms_charging_low_temperature_recovery
+    name: Charging Low Temperature Recovery
+  - entity: sensor.jk_bms_charging_overcurrent_delay
+    name: Charging Overcurrent Delay
+  - entity: sensor.jk_bms_charging_overcurrent_protection
+    name: Charging Overcurrent Protection
+  - entity: sensor.jk_bms_current
+    name: Current
+  - entity: sensor.jk_bms_current_calibration
+    name: Current Calibration
+  - entity: sensor.jk_bms_device_address
+    name: Device Address
+  - entity: sensor.jk_bms_device_type
+    name: Device Type
+  - entity: sensor.jk_bms_discharging_high_temperature_protection
+    name: Discharging High Temperature Protection
+  - entity: sensor.jk_bms_discharging_low_temperature_protection
+    name: Discharging Low Temperature Protection
+  - entity: sensor.jk_bms_discharging_low_temperature_recovery
+    name: Discharging Low Temperature Recovery
+  - entity: sensor.jk_bms_discharging_overcurrent_delay
+    name: Discharging Overcurrent Delay
+  - entity: sensor.jk_bms_discharging_overcurrent_protection
+    name: Discharging Overcurrent Protection
+  - entity: sensor.jk_bms_errors
+    name: Errors
+  - entity: sensor.jk_bms_errors_bitmask
+    name: Errors Bitmask
+  - entity: sensor.jk_bms_manufacturer
+    name: Manufacturer
+  - entity: sensor.jk_bms_manufacturing_date
+    name: Manufacturing Date
+  - entity: sensor.jk_bms_operation_mode
+    name: Operation Mode
+  - entity: sensor.jk_bms_operation_mode_bitmask
+    name: Operation Mode Bitmask
+  - entity: sensor.jk_bms_password
+    name: Password
+  - entity: sensor.jk_bms_power_tube_temperature
+    name: Power Tube Temperature
+  - entity: sensor.jk_bms_power_tube_temperature_protection
+    name: Power Tube Temperature Protection
+  - entity: sensor.jk_bms_power_tube_temperature_recovery
+    name: Power Tube Temperature Recovery
+  - entity: sensor.jk_bms_sleep_wait_time
+    name: Sleep Wait Time
+  - entity: sensor.jk_bms_software_version
+    name: Software Version
+  - entity: sensor.jk_bms_temperature_sensor_1
+    name: Temperature Sensor 1
+  - entity: sensor.jk_bms_temperature_sensor_2
+    name: Temperature Sensor 2
+  - entity: sensor.jk_bms_temperature_sensor_temperature_difference_protection
+    name: Temperature Sensor Temperature Difference Protection
+  - entity: sensor.jk_bms_temperature_sensor_temperature_protection
+    name: Temperature Sensor Temperature Protection
+  - entity: sensor.jk_bms_temperature_sensor_temperature_recovery
+    name: Temperature Sensor Temperature Recovery
+  - entity: sensor.jk_bms_temperature_sensors
+    name: Temperature Sensors
+  - entity: sensor.jk_bms_total_charging_cycle_capacity
+    name: Total Charging Cycle Capacity
+  - entity: sensor.jk_bms_total_runtime
+    name: Total Runtime
+  - entity: sensor.jk_bms_total_voltage
+    name: Total Voltage
+  - entity: sensor.jk_bms_total_voltage_overvoltage_protection
+    name: Total Voltage Overvoltage Protection
+  - entity: sensor.jk_bms_total_voltage_undervoltage_protection
+    name: Total Voltage Undervoltage Protection

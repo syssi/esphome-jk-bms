@@ -526,7 +526,7 @@ CONFIG_SCHEMA = cv.Schema(
             STATE_CLASS_MEASUREMENT,
         ),
         cv.Optional(CONF_ALARM_LOW_VOLUME): sensor.sensor_schema(
-            UNIT_EMPTY,
+            UNIT_PERCENT,
             ICON_EMPTY,
             0,
             DEVICE_CLASS_EMPTY,
