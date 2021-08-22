@@ -117,6 +117,8 @@ CONF_PROTOCOL_VERSION = "protocol_version"
 
 ICON_BATTERY_STRINGS = "mdi:car-battery"
 ICON_DEVICE_ADDRESS = "mdi:identifier"
+ICON_ERRORS_BITMASK = "mdi:alert-circle-outline"
+ICON_OPERATION_MODE_BITMASK = "mdi:heart-pulse"
 
 UNIT_SECONDS = "s"
 UNIT_HOURS = "h"
@@ -342,14 +344,14 @@ CONFIG_SCHEMA = cv.Schema(
         ),
         cv.Optional(CONF_ERRORS_BITMASK): sensor.sensor_schema(
             UNIT_EMPTY,
-            ICON_EMPTY,
+            ICON_ERRORS_BITMASK,
             0,
             DEVICE_CLASS_EMPTY,
             STATE_CLASS_MEASUREMENT,
         ),
         cv.Optional(CONF_OPERATION_MODE_BITMASK): sensor.sensor_schema(
             UNIT_EMPTY,
-            ICON_EMPTY,
+            ICON_OPERATION_MODE_BITMASK,
             0,
             DEVICE_CLASS_EMPTY,
             STATE_CLASS_MEASUREMENT,

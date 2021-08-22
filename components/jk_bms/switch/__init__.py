@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import switch
-from esphome.const import CONF_ID, CONF_ICON, ICON_EMPTY
+from esphome.const import CONF_ID, CONF_ICON
 from .. import JkBms, CONF_JK_BMS_ID, jk_bms_ns
 
 DEPENDENCIES = ["jk_bms"]
@@ -13,7 +13,10 @@ CONF_DISCHARGING = "discharging"
 CONF_BALANCING = "balancing"
 CONF_DEDICATED_CHARGER = "dedicated_charger"
 
-ICON_CHARGING = "mdi:battery-charging-50"
+ICON_CHARGING = "mdi:battery-positive"
+ICON_DISCHARGING = "mdi:battery-negative"
+ICON_BALANCING = "mdi:battery-heart-variant"
+ICON_DEDICATED_CHARGER = "mdi:battery-charging"
 
 SWITCHES = {
     CONF_CHARGING: 0xAB,
@@ -30,25 +33,25 @@ CONFIG_SCHEMA = cv.Schema(
         cv.Optional(CONF_CHARGING): switch.SWITCH_SCHEMA.extend(
             {
                 cv.GenerateID(): cv.declare_id(JkSwitch),
-                cv.Optional(CONF_ICON, default=ICON_EMPTY): switch.icon,
+                cv.Optional(CONF_ICON, default=ICON_CHARGING): switch.icon,
             }
         ).extend(cv.COMPONENT_SCHEMA),
         cv.Optional(CONF_DISCHARGING): switch.SWITCH_SCHEMA.extend(
             {
                 cv.GenerateID(): cv.declare_id(JkSwitch),
-                cv.Optional(CONF_ICON, default=ICON_EMPTY): switch.icon,
+                cv.Optional(CONF_ICON, default=ICON_DISCHARGING): switch.icon,
             }
         ).extend(cv.COMPONENT_SCHEMA),
         cv.Optional(CONF_BALANCING): switch.SWITCH_SCHEMA.extend(
             {
                 cv.GenerateID(): cv.declare_id(JkSwitch),
-                cv.Optional(CONF_ICON, default=ICON_CHARGING): switch.icon,
+                cv.Optional(CONF_ICON, default=ICON_BALANCING): switch.icon,
             }
         ).extend(cv.COMPONENT_SCHEMA),
         cv.Optional(CONF_DEDICATED_CHARGER): switch.SWITCH_SCHEMA.extend(
             {
                 cv.GenerateID(): cv.declare_id(JkSwitch),
-                cv.Optional(CONF_ICON, default=ICON_EMPTY): switch.icon,
+                cv.Optional(CONF_ICON, default=ICON_DEDICATED_CHARGER): switch.icon,
             }
         ).extend(cv.COMPONENT_SCHEMA),
     }

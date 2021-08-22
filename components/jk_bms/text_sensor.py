@@ -18,6 +18,7 @@ CONF_MANUFACTURER = "manufacturer"
 ICON_BATTERY_TYPE = "mdi:car-battery"
 ICON_ERRORS = "mdi:alert-circle-outline"
 ICON_OPERATION_MODE = "mdi:heart-pulse"
+ICON_PASSWORD = "mdi:lock-outline"
 
 TEXT_SENSORS = [
     CONF_OPERATION_MODE,
@@ -53,7 +54,7 @@ CONFIG_SCHEMA = cv.Schema(
         cv.Optional(CONF_PASSWORD): text_sensor.TEXT_SENSOR_SCHEMA.extend(
             {
                 cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
-                cv.Optional(CONF_ICON, default=ICON_EMPTY): cv.icon,
+                cv.Optional(CONF_ICON, default=ICON_PASSWORD): cv.icon,
             }
         ),
         cv.Optional(CONF_DEVICE_TYPE): text_sensor.TEXT_SENSOR_SCHEMA.extend(
