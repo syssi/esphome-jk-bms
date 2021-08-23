@@ -116,6 +116,7 @@ CONF_ACTUAL_BATTERY_CAPACITY = "actual_battery_capacity"
 CONF_PROTOCOL_VERSION = "protocol_version"
 
 ICON_BATTERY_STRINGS = "mdi:car-battery"
+ICON_CAPACITY_REMAINING = "mdi:battery-50"
 ICON_DEVICE_ADDRESS = "mdi:identifier"
 ICON_ERRORS_BITMASK = "mdi:alert-circle-outline"
 ICON_OPERATION_MODE_BITMASK = "mdi:heart-pulse"
@@ -309,7 +310,7 @@ CONFIG_SCHEMA = cv.Schema(
         ),
         cv.Optional(CONF_CAPACITY_REMAINING): sensor.sensor_schema(
             UNIT_PERCENT,
-            ICON_EMPTY,
+            ICON_CAPACITY_REMAINING,
             0,
             DEVICE_CLASS_EMPTY,
             STATE_CLASS_MEASUREMENT,

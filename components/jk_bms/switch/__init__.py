@@ -13,8 +13,8 @@ CONF_DISCHARGING = "discharging"
 CONF_BALANCING = "balancing"
 CONF_DEDICATED_CHARGER = "dedicated_charger"
 
-ICON_CHARGING = "mdi:battery-positive"
-ICON_DISCHARGING = "mdi:battery-negative"
+ICON_CHARGING = "mdi:battery-charging"
+ICON_DISCHARGING = "mdi:power-plug"
 ICON_BALANCING = "mdi:battery-heart-variant"
 ICON_DEDICATED_CHARGER = "mdi:battery-charging"
 
