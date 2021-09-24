@@ -13,13 +13,13 @@ ESPHome component to monitor a Jikong Battery Management System (JK-BMS) via RS4
 ## Supported devices
 
 * JK-BD6A17S6P, hardware version 7.2, software version 7.1.0H
+* JK-B1A24S15P, hardware version 8.x, software version 8.1.0H (reported by [@killee](https://github.com/syssi/esphome-jk-bms/discussions/4))
 
 ## Untested devices
 
 * JK-BD6A20S6P
 * JK-BD6A24S6P
 * JK-BD6A20S10P
-* JK-B1A24S15P
 * JK-B2A24S20P
 
 ## Specifications
