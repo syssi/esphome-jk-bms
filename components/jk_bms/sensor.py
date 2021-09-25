@@ -16,7 +16,8 @@ from esphome.const import (
     UNIT_PERCENT,
     UNIT_VOLT,
 )
-from . import JkBms, CONF_JK_BMS_ID
+
+from . import CONF_JK_BMS_ID, JkBms
 
 DEPENDENCIES = ["jk_bms"]
 

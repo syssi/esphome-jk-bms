@@ -1,8 +1,9 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import text_sensor
-from esphome.const import CONF_ID, CONF_ICON, CONF_PASSWORD, ICON_EMPTY
-from . import JkBms, CONF_JK_BMS_ID
+from esphome.const import CONF_ICON, CONF_ID, CONF_PASSWORD, ICON_EMPTY
+
+from . import CONF_JK_BMS_ID, JkBms
 
 DEPENDENCIES = ["jk_bms"]
 
