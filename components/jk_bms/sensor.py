@@ -23,6 +23,9 @@ DEPENDENCIES = ["jk_bms"]
 
 CODEOWNERS = ["@syssi"]
 
+CONF_MIN_CELL_VOLTAGE = "min_cell_voltage"
+CONF_MAX_CELL_VOLTAGE = "max_cell_voltage"
+CONF_DELTA_CELL_VOLTAGE = "delta_cell_voltage"
 CONF_CELL_VOLTAGE_1 = "cell_voltage_1"
 CONF_CELL_VOLTAGE_2 = "cell_voltage_2"
 CONF_CELL_VOLTAGE_3 = "cell_voltage_3"
@@ -154,6 +157,9 @@ CELLS = [
 ]
 
 SENSORS = [
+    CONF_MIN_CELL_VOLTAGE,
+    CONF_MAX_CELL_VOLTAGE,
+    CONF_DELTA_CELL_VOLTAGE,
     CONF_POWER_TUBE_TEMPERATURE,
     CONF_TEMPERATURE_SENSOR_1,
     CONF_TEMPERATURE_SENSOR_2,
@@ -206,6 +212,15 @@ SENSORS = [
 CONFIG_SCHEMA = cv.Schema(
     {
         cv.GenerateID(CONF_JK_BMS_ID): cv.use_id(JkBms),
+        cv.Optional(CONF_MIN_CELL_VOLTAGE): sensor.sensor_schema(
+            UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
+        cv.Optional(CONF_MAX_CELL_VOLTAGE): sensor.sensor_schema(
+            UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
+        cv.Optional(CONF_DELTA_CELL_VOLTAGE): sensor.sensor_schema(
+            UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
         cv.Optional(CONF_CELL_VOLTAGE_1): sensor.sensor_schema(
             UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
         ),

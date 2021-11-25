@@ -86,9 +86,24 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
   // 0x0D 0x0E 0xFB: Cell 13        ...                                          0.001 V
   // 0x0E 0x0E 0xF2: Cell 14        3826 * 0.001 = 3.826V                        0.001 V
   uint8_t cells = data[1] / 3;
+
+  float min_cell_voltage = 100.0f;
+  float max_cell_voltage = -100.0f;
+  float delta_cell_voltage = 0.0f;
   for (uint8_t i = 0; i < cells; i++) {
-    this->publish_state_(this->cells_[i].cell_voltage_sensor_, (float) jk_get_16bit(i * 3 + 3) * 0.001f);
+    float cell_voltage = (float) jk_get_16bit(i * 3 + 3) * 0.001f;
+    if (cell_voltage < min_cell_voltage) {
+      min_cell_voltage = cell_voltage;
+    }
+    if (cell_voltage > max_cell_voltage) {
+      max_cell_voltage = cell_voltage;
+    }
+    this->publish_state_(this->cells_[i].cell_voltage_sensor_, cell_voltage);
   }
+
+  this->publish_state_(this->min_cell_voltage_sensor_, min_cell_voltage);
+  this->publish_state_(this->max_cell_voltage_sensor_, max_cell_voltage);
+  this->publish_state_(this->delta_cell_voltage_sensor_, max_cell_voltage - min_cell_voltage);
 
   uint16_t offset = data[1] + 3;
 
