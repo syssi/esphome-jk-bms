@@ -89,7 +89,6 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
 
   float min_cell_voltage = 100.0f;
   float max_cell_voltage = -100.0f;
-  float delta_cell_voltage = 0.0f;
   for (uint8_t i = 0; i < cells; i++) {
     float cell_voltage = (float) jk_get_16bit(i * 3 + 3) * 0.001f;
     if (cell_voltage < min_cell_voltage) {
