@@ -281,7 +281,7 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
   std::string mode_bits_to_string_(uint16_t bitmask);
   float get_temperature_(const uint16_t value) {
     if (value > 100)
-      return (float) (-1 * value - 100);
+      return (float) (100 - (int16_t) value);
 
     return (float) value;
   };
@@ -289,9 +289,9 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
     float current = 0.0f;
     if (protocol_version == 0x01) {
       if ((value & 0x8000) == 0x8000) {
-        current = (float) (value & 0x7FFF);
-      } else {
         current = (float) (value & 0x7FFF) * -1;
+      } else {
+        current = (float) (value & 0x7FFF);
       }
     }
 
