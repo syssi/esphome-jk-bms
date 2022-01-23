@@ -107,7 +107,7 @@ CONF_DISCHARGING_LOW_TEMPERATURE_RECOVERY = "discharging_low_temperature_recover
 
 # r/w
 # CONF_BATTERY_STRINGS = "battery_strings"
-# CONF_BATTERY_CAPACITY = "battery_capacity"
+CONF_TOTAL_BATTERY_CAPACITY_SETTING = "total_battery_capacity_setting"
 
 CONF_CURRENT_CALIBRATION = "current_calibration"
 CONF_DEVICE_ADDRESS = "device_address"
@@ -198,6 +198,7 @@ SENSORS = [
     CONF_CHARGING_LOW_TEMPERATURE_RECOVERY,
     CONF_DISCHARGING_LOW_TEMPERATURE_PROTECTION,
     CONF_DISCHARGING_LOW_TEMPERATURE_RECOVERY,
+    CONF_TOTAL_BATTERY_CAPACITY_SETTING,
     CONF_CURRENT_CALIBRATION,
     CONF_DEVICE_ADDRESS,
     CONF_SLEEP_WAIT_TIME,
@@ -521,6 +522,13 @@ CONFIG_SCHEMA = cv.Schema(
             ICON_EMPTY,
             0,
             DEVICE_CLASS_TEMPERATURE,
+            STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_TOTAL_BATTERY_CAPACITY_SETTING): sensor.sensor_schema(
+            UNIT_AMPERE_HOURS,
+            ICON_EMPTY,
+            0,
+            DEVICE_CLASS_EMPTY,
             STATE_CLASS_MEASUREMENT,
         ),
         cv.Optional(CONF_CURRENT_CALIBRATION): sensor.sensor_schema(

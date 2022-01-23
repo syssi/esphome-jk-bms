@@ -170,6 +170,8 @@ sensor:
       name: "${name} discharging low temperature protection"
     discharging_low_temperature_recovery:
       name: "${name} discharging low temperature recovery"
+    total_battery_capacity_setting:
+      name: "${name} total battery capacity setting"
     current_calibration:
       name: "${name} current calibration"
     device_address:
