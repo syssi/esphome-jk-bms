@@ -125,7 +125,8 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
                        get_current_(jk_get_16bit(offset + 3 * 4), data[offset + 84 + 3 * 45]) * 0.01f);
 
   // 0x85 0x0F: Battery remaining capacity                       15 %
-  this->publish_state_(this->capacity_remaining_sensor_, (float) data[offset + 3 * 5]);
+  uint8_t raw_battery_remaining_capacity = data[offset + 3 * 5];
+  this->publish_state_(this->capacity_remaining_sensor_, (float) raw_battery_remaining_capacity);
 
   // 0x86 0x02: Number of battery temperature sensors             2                        1.0  count
   this->publish_state_(this->temperature_sensors_sensor_, (float) data[offset + 2 + 3 * 5]);
@@ -278,7 +279,10 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
   // 0xA9 0x0E: Battery string setting                                      14              1.0 count
   // this->publish_state_(this->battery_string_setting_sensor_, (float) data[offset + 8 + 3 * 36]);
   // 0xAA 0x00 0x00 0x02 0x30: Total battery capacity setting              560 Ah           1.0 Ah
-  this->publish_state_(this->total_battery_capacity_setting_sensor_, (float) jk_get_32bit(offset + 10 + 3 * 36));
+  uint32_t raw_total_battery_capacity_setting = jk_get_32bit(offset + 10 + 3 * 36);
+  this->publish_state_(this->total_battery_capacity_setting_sensor_, (float) raw_total_battery_capacity_setting);
+  this->publish_state_(this->capacity_remaining_derived_sensor_,
+                       (float) (raw_total_battery_capacity_setting * (raw_battery_remaining_capacity * 0.01f)));
 
   // 0xAB 0x01: Charging MOS tube switch                                     1 (on)         Bool       0 (off), 1 (on)
   this->publish_state_(this->charging_switch_, (bool) data[offset + 15 + 3 * 36]);
@@ -488,6 +492,7 @@ void JkBms::dump_config() {  // NOLINT(google-readability-function-size,readabil
   LOG_SENSOR("", "Total Voltage", this->total_voltage_sensor_);
   LOG_SENSOR("", "Current", this->current_sensor_);
   LOG_SENSOR("", "Capacity Remaining", this->capacity_remaining_sensor_);
+  LOG_SENSOR("", "Capacity Remaining Derived", this->capacity_remaining_derived_sensor_);
   LOG_SENSOR("", "Temperature Sensors", this->temperature_sensors_sensor_);
   LOG_SENSOR("", "Charging Cycles", this->charging_cycles_sensor_);
   LOG_SENSOR("", "Total Charging Cycle Capacity", this->total_charging_cycle_capacity_sensor_);

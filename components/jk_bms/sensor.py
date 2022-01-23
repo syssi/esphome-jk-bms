@@ -56,6 +56,7 @@ CONF_TEMPERATURE_SENSOR_1 = "temperature_sensor_1"
 CONF_TEMPERATURE_SENSOR_2 = "temperature_sensor_2"
 CONF_TOTAL_VOLTAGE = "total_voltage"
 CONF_CAPACITY_REMAINING = "capacity_remaining"
+CONF_CAPACITY_REMAINING_DERIVED = "capacity_remaining_derived"
 CONF_TEMPERATURE_SENSORS = "temperature_sensors"
 CONF_CHARGING_CYCLES = "charging_cycles"
 CONF_TOTAL_CHARGING_CYCLE_CAPACITY = "total_charging_cycle_capacity"
@@ -121,6 +122,9 @@ CONF_PROTOCOL_VERSION = "protocol_version"
 
 ICON_BATTERY_STRINGS = "mdi:car-battery"
 ICON_CAPACITY_REMAINING = "mdi:battery-50"
+ICON_CAPACITY_REMAINING_DERIVED = "mdi:battery-50"
+ICON_ACTUAL_BATTERY_CAPACITY = "mdi:battery-50"
+
 ICON_DEVICE_ADDRESS = "mdi:identifier"
 ICON_ERRORS_BITMASK = "mdi:alert-circle-outline"
 ICON_OPERATION_MODE_BITMASK = "mdi:heart-pulse"
@@ -166,6 +170,7 @@ SENSORS = [
     CONF_TOTAL_VOLTAGE,
     CONF_CURRENT,
     CONF_CAPACITY_REMAINING,
+    CONF_CAPACITY_REMAINING_DERIVED,
     CONF_TEMPERATURE_SENSORS,
     CONF_CHARGING_CYCLES,
     CONF_TOTAL_CHARGING_CYCLE_CAPACITY,
@@ -328,6 +333,13 @@ CONFIG_SCHEMA = cv.Schema(
         cv.Optional(CONF_CAPACITY_REMAINING): sensor.sensor_schema(
             UNIT_PERCENT,
             ICON_CAPACITY_REMAINING,
+            0,
+            DEVICE_CLASS_EMPTY,
+            STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_CAPACITY_REMAINING_DERIVED): sensor.sensor_schema(
+            UNIT_AMPERE_HOURS,
+            ICON_CAPACITY_REMAINING_DERIVED,
             0,
             DEVICE_CLASS_EMPTY,
             STATE_CLASS_MEASUREMENT,
@@ -582,7 +594,7 @@ CONFIG_SCHEMA = cv.Schema(
         ),
         cv.Optional(CONF_ACTUAL_BATTERY_CAPACITY): sensor.sensor_schema(
             UNIT_AMPERE_HOURS,
-            ICON_EMPTY,
+            ICON_ACTUAL_BATTERY_CAPACITY,
             0,
             DEVICE_CLASS_EMPTY,
             STATE_CLASS_MEASUREMENT,

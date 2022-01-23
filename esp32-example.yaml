@@ -106,6 +106,8 @@ sensor:
       name: "${name} current"
     capacity_remaining:
       name: "${name} capacity remaining"
+    capacity_remaining_derived:
+      name: "${name} capacity remaining derived"
     temperature_sensors:
       name: "${name} temperature sensors"
     charging_cycles:
