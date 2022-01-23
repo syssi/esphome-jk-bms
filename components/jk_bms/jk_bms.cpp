@@ -277,8 +277,8 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
 
   // 0xA9 0x0E: Battery string setting                                      14              1.0 count
   // this->publish_state_(this->battery_string_setting_sensor_, (float) data[offset + 8 + 3 * 36]);
-  // 0xAA 0x00 0x00 0x00 0x0E: Total battery capacity setting               14 Ah           1.0 Ah
-  // this->publish_state_(this->total_battery_capacity_setting_sensor_, (float) jk_get_32bit(offset + 10 + 3 * 36));
+  // 0xAA 0x00 0x00 0x02 0x30: Total battery capacity setting              560 Ah           1.0 Ah
+  this->publish_state_(this->total_battery_capacity_setting_sensor_, (float) jk_get_32bit(offset + 10 + 3 * 36));
 
   // 0xAB 0x01: Charging MOS tube switch                                     1 (on)         Bool       0 (off), 1 (on)
   this->publish_state_(this->charging_switch_, (bool) data[offset + 15 + 3 * 36]);
@@ -521,6 +521,7 @@ void JkBms::dump_config() {  // NOLINT(google-readability-function-size,readabil
   LOG_SENSOR("", "Charging Low Temperature Recovery", this->charging_low_temperature_recovery_sensor_);
   LOG_SENSOR("", "Discharging Low Temperature Protection", this->discharging_low_temperature_protection_sensor_);
   LOG_SENSOR("", "Discharging Low Temperature Recovery", this->discharging_low_temperature_recovery_sensor_);
+  LOG_SENSOR("", "Total Battery Capacity Setting", this->total_battery_capacity_setting_sensor_);
   LOG_SENSOR("", "Current Calibration", this->current_calibration_sensor_);
   LOG_SENSOR("", "Device Address", this->device_address_sensor_);
   LOG_TEXT_SENSOR("", "Battery Type", this->battery_type_text_sensor_);
