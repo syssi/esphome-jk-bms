@@ -281,7 +281,8 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
   // 0xAA 0x00 0x00 0x02 0x30: Total battery capacity setting              560 Ah           1.0 Ah
   uint32_t raw_total_battery_capacity_setting = jk_get_32bit(offset + 10 + 3 * 36);
   this->publish_state_(this->total_battery_capacity_setting_sensor_, (float) raw_total_battery_capacity_setting);
-  this->publish_state_(this->capacity_remaining_derived_sensor_, (float) (raw_total_battery_capacity_setting * (raw_battery_remaining_capacity * 0.01f)));
+  this->publish_state_(this->capacity_remaining_derived_sensor_,
+                       (float) (raw_total_battery_capacity_setting * (raw_battery_remaining_capacity * 0.01f)));
 
   // 0xAB 0x01: Charging MOS tube switch                                     1 (on)         Bool       0 (off), 1 (on)
   this->publish_state_(this->charging_switch_, (bool) data[offset + 15 + 3 * 36]);
