@@ -37,6 +37,9 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
   void set_capacity_remaining_sensor(sensor::Sensor *capacity_remaining_sensor) {
     capacity_remaining_sensor_ = capacity_remaining_sensor;
   }
+  void set_capacity_remaining_derived_sensor(sensor::Sensor *capacity_remaining_derived_sensor) {
+    capacity_remaining_derived_sensor_ = capacity_remaining_derived_sensor;
+  }
   void set_temperature_sensors_sensor(sensor::Sensor *temperature_sensors_sensor) {
     temperature_sensors_sensor_ = temperature_sensors_sensor;
   }
@@ -211,6 +214,7 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
   sensor::Sensor *total_voltage_sensor_;
   sensor::Sensor *current_sensor_;
   sensor::Sensor *capacity_remaining_sensor_;
+  sensor::Sensor *capacity_remaining_derived_sensor_;
   sensor::Sensor *temperature_sensors_sensor_;
   sensor::Sensor *charging_cycles_sensor_;
   sensor::Sensor *total_charging_cycle_capacity_sensor_;
