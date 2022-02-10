@@ -15,6 +15,7 @@ ESPHome component to monitor a Jikong Battery Management System (JK-BMS) via RS4
 All JK-BMS models with software version `>=6.0` are using the implemented protocol and should be supported.
 
 * JK-BD6A17S6P, hardware version 7.2, software version 7.1.0H
+* JK-BD6A17S8P, hardware version 9.x, software version 9.01G (reported by [@jonadis](https://github.com/syssi/esphome-jk-bms/issues/35#issuecomment-1035312712))
 * JK-B1A24S15P, hardware version 8.x, software version 8.1.0H (reported by [@killee](https://github.com/syssi/esphome-jk-bms/discussions/4))
 * JK-B1A20S15P, hardware version 8.x, software version 8.14U (reported by  [@trippfam07](https://github.com/syssi/esphome-jk-bms/issues/31))
 * JK-B2A24S20P, hardware version 8.x, software version 8.1.2H (reported by [@KlausLi](https://github.com/syssi/esphome-jk-bms/issues/15#issuecomment-961447064))
