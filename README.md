@@ -393,6 +393,28 @@ Example value: BT3072020120000200521001 -> BT 3 072 020 12 0000 20 05 21 001
 | 0001  | Production serial number | According to the Nth group of the model produced on the day of the manufacturer’s production date, The number is N (for example: the first group of a certain model, then 001) |
 
 
+## Debugging
+
+If this component doesn't work out of the box for your device please update your configuration to enable the debug output of the UART component and increase the log level to the see outgoing and incoming serial traffic:
+
+```
+logger:
+  level: VERY_VERBOSE
+  logs:
+    api.service: WARN
+    ota: WARN
+    sensor: WARN
+
+uart:
+  id: uart0
+  baud_rate: 115200
+  rx_buffer_size: 384
+  tx_pin: GPIO14
+  rx_pin: GPIO4
+  debug:
+    direction: BOTH
+```
+
 ## References
 
 * https://secondlifestorage.com/index.php?threads/jk-b1a24s-jk-b2a24s-active-balancer.9591/
