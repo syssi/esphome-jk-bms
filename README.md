@@ -19,6 +19,7 @@ All JK-BMS models with software version `>=6.0` are using the implemented protoc
 * JK-B1A24S15P, hardware version 8.x, software version 8.1.0H (reported by [@killee](https://github.com/syssi/esphome-jk-bms/discussions/4))
 * JK-B1A20S15P, hardware version 8.x, software version 8.14U (reported by  [@trippfam07](https://github.com/syssi/esphome-jk-bms/issues/31))
 * JK-B2A24S20P, hardware version 8.x, software version 8.1.2H (reported by [@KlausLi](https://github.com/syssi/esphome-jk-bms/issues/15#issuecomment-961447064))
+* JK-B2A24S20P, hardware version 10.X-W, software version 10.02 (reported by [@SeByDocKy](https://github.com/syssi/esphome-jk-bms/issues/37#issuecomment-1040569576))
 
 ## Untested devices
 
