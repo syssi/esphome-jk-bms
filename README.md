@@ -70,8 +70,8 @@ All JK-BMS models with software version `>=6.0` are using the implemented protoc
 ┌──────────┐                ┌─────────┐
 │          │<----- RX ----->│         │
 │  JK-BMS  │<----- TX ----->│ ESP32/  │
-│          │<----- GND ---->│ ESP8266 │
-│          │                │         │<-- 3.3V
+│          │<----- GND ---->│ ESP8266 │<-- 3.3V
+│          │                │         │<-- GND
 └──────────┘                └─────────┘
 
 # RS485-TTL jack (4 Pin, JST 1.25mm pinch)
@@ -83,7 +83,7 @@ All JK-BMS models with software version `>=6.0` are using the implemented protoc
 ```
 
 
-The RS485-TTL jack of the BMS can be attached to any UART pins of the ESP. A hardware UART should be preferred because of the baudrate (115200 baud).
+The RS485-TTL jack of the BMS can be attached to any UART pins of the ESP. A hardware UART should be preferred because of the high baudrate (115200 baud).
 
 ## Installation
 
