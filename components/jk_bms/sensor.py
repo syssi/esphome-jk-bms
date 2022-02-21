@@ -215,6 +215,7 @@ SENSORS = [
     CONF_PROTOCOL_VERSION,
 ]
 
+# pylint: disable=too-many-function-args
 CONFIG_SCHEMA = cv.Schema(
     {
         cv.GenerateID(CONF_JK_BMS_ID): cv.use_id(JkBms),
