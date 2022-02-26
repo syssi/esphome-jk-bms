@@ -8,10 +8,7 @@ namespace jk_bms {
 static const char *const TAG = "jk_bms.switch";
 
 void JkSwitch::dump_config() { LOG_SWITCH("", "JkBms Switch", this); }
-void JkSwitch::write_state(bool state) {
-  // @FIXME
-  // this->parent_->write_register(this->holding_register_, (uint16_t) state);
-}
+void JkSwitch::write_state(bool state) { this->parent_->write_register(this->holding_register_, (uint8_t) state); }
 
 }  // namespace jk_bms
 }  // namespace esphome

@@ -206,6 +206,8 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
 
   void update() override;
 
+  void write_register(uint8_t address, uint8_t value);
+
  protected:
   sensor::Sensor *min_cell_voltage_sensor_;
   sensor::Sensor *max_cell_voltage_sensor_;
