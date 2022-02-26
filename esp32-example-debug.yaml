@@ -1,0 +1,18 @@
+<<: !include esp32-example.yaml
+
+logger:
+  level: DEBUG
+  logs:
+    api.service: WARN
+    ota: WARN
+    wifi: WARN
+    sensor: DEBUG
+
+uart:
+  id: uart0
+  baud_rate: 115200
+  rx_buffer_size: 384
+  tx_pin: ${tx_pin}
+  rx_pin: ${rx_pin}
+  debug:
+    direction: BOTH
