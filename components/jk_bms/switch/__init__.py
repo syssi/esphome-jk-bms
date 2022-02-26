@@ -1,8 +1,9 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import switch
-from esphome.const import CONF_ID, CONF_ICON
-from .. import JkBms, CONF_JK_BMS_ID, jk_bms_ns
+from esphome.const import CONF_ICON, CONF_ID
+
+from .. import CONF_JK_BMS_ID, JkBms, jk_bms_ns
 
 DEPENDENCIES = ["jk_bms"]
 
