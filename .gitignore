@@ -1,5 +1,5 @@
 .idea/
-secret.yaml
+secrets.yaml
 .esphome/
 **/.pioenvs/
 **/.piolibdeps/

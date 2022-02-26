@@ -9,6 +9,7 @@ static const char *const TAG = "jk_bms";
 
 static const uint8_t FUNCTION_READ_ALL = 0x06;
 static const uint8_t ADDRESS_READ_ALL = 0x00;
+static const uint8_t WRITE_REGISTER = 0x02;
 
 static const uint8_t ERRORS_SIZE = 14;
 static const char *const ERRORS[ERRORS_SIZE] = {
@@ -345,6 +346,8 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
 
   // 00 00 00 00 68 00 00 54 D1: End of frame
 }
+
+void JkBms::write_register(uint8_t address, uint8_t value) { this->send(WRITE_REGISTER, address, value); }
 
 void JkBms::update() {
   this->read_registers(FUNCTION_READ_ALL, ADDRESS_READ_ALL);

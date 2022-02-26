@@ -20,7 +20,7 @@ class JkModbus : public uart::UARTDevice, public Component {
 
   float get_setup_priority() const override;
 
-  void send(uint8_t address, uint8_t function, uint16_t start_address, uint16_t register_count);
+  void send(uint8_t function, uint8_t address, uint8_t value);
   void read_registers(uint8_t function, uint8_t address);
 
  protected:
@@ -37,9 +37,7 @@ class JkModbusDevice {
   void set_address(uint8_t address) { address_ = address; }
   virtual void on_jk_modbus_data(const uint8_t &function, const std::vector<uint8_t> &data) = 0;
 
-  void send(uint8_t function, uint16_t start_address, uint16_t register_count) {
-    this->parent_->send(this->address_, function, start_address, register_count);
-  }
+  void send(int8_t function, uint8_t address, uint8_t value) { this->parent_->send(function, address, value); }
   void read_registers(uint8_t function, uint8_t address) { this->parent_->read_registers(function, address); }
 
  protected:
