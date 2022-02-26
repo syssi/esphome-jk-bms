@@ -6,11 +6,6 @@ namespace jk_modbus {
 
 static const char *const TAG = "jk_modbus";
 
-void JkModbus::setup() {
-  if (this->flow_control_pin_ != nullptr) {
-    this->flow_control_pin_->setup();
-  }
-}
 void JkModbus::loop() {
   const uint32_t now = millis();
   if (now - this->last_jk_modbus_byte_ > 50) {
@@ -91,10 +86,7 @@ bool JkModbus::parse_jk_modbus_byte_(uint8_t byte) {
   return false;
 }
 
-void JkModbus::dump_config() {
-  ESP_LOGCONFIG(TAG, "JkModbus:");
-  LOG_PIN("  Flow Control Pin: ", this->flow_control_pin_);
-}
+void JkModbus::dump_config() { ESP_LOGCONFIG(TAG, "JkModbus:"); }
 float JkModbus::get_setup_priority() const {
   // After UART bus
   return setup_priority::BUS - 1.0f;
@@ -111,14 +103,8 @@ void JkModbus::send(uint8_t address, uint8_t function, uint16_t start_address, u
   frame[6] = crc >> 8;
   frame[7] = crc >> 0;
 
-  if (this->flow_control_pin_ != nullptr)
-    this->flow_control_pin_->digital_write(true);
-
   this->write_array(frame, 8);
   this->flush();
-
-  if (this->flow_control_pin_ != nullptr)
-    this->flow_control_pin_->digital_write(false);
 }
 
 void JkModbus::read_registers(uint8_t function, uint8_t address) {
@@ -146,14 +132,8 @@ void JkModbus::read_registers(uint8_t function, uint8_t address) {
   frame[19] = crc >> 8;
   frame[20] = crc >> 0;
 
-  if (this->flow_control_pin_ != nullptr)
-    this->flow_control_pin_->digital_write(true);
-
   this->write_array(frame, 21);
   this->flush();
-
-  if (this->flow_control_pin_ != nullptr)
-    this->flow_control_pin_->digital_write(false);
 }
 
 }  // namespace jk_modbus
