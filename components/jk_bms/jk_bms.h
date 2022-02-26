@@ -198,6 +198,8 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
     manufacturer_text_sensor_ = manufacturer_text_sensor;
   }
 
+  void set_enable_fake_traffic(bool enable_fake_traffic) { enable_fake_traffic_ = enable_fake_traffic; }
+
   void dump_config() override;
 
   void on_jk_modbus_data(const uint8_t &function, const std::vector<uint8_t> &data) override;
