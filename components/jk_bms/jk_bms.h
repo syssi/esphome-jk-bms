@@ -280,6 +280,8 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
     // sensor::Sensor *resistance_sensor_{nullptr};
   } cells_[24];
 
+  bool enable_fake_traffic_;
+
   void on_status_data_(const std::vector<uint8_t> &data);
   void publish_state_(sensor::Sensor *sensor, float value);
   void publish_state_(switch_::Switch *obj, const bool &state);
