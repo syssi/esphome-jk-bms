@@ -82,6 +82,10 @@ All JK-BMS models with software version `>=6.0` are using the implemented protoc
 │ O   O   O   O  │
 │GND  RX  TX VBAT│
 └────────────────┘
+  │   │   │
+  │   │   └─── GPIO17 (`rx_pin`)
+  │   └─────── GPIO16 (`tx_pin`)
+  └─────────── GND
 ```
 
 
