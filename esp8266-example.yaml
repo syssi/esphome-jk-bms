@@ -1,6 +1,6 @@
 substitutions:
   name: jk-bms
-  external_components_source: github://syssi/esphome-ant-bms@main
+  external_components_source: github://syssi/esphome-jk-bms@main
   tx_pin: GPIO1
   rx_pin: GPIO3
 
