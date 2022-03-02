@@ -11,12 +11,18 @@ namespace jk_bms {
 
 class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
  public:
-    void set_balancing_binary_sensor(binary_sensor::BinarySensor *balancing_binary_sensor) { balancing_binary_sensor_ = balancing_binary_sensor; }
-    void set_charging_binary_sensor(binary_sensor::BinarySensor *charging_binary_sensor) { charging_binary_sensor_ = charging_binary_sensor; }
-    void set_discharging_binary_sensor(binary_sensor::BinarySensor *discharging_binary_sensor) { discharging_binary_sensor_ = discharging_binary_sensor; }
-    void set_dedicated_charger_binary_sensor(binary_sensor::BinarySensor *dedicated_charger_binary_sensor) {
-        dedicated_charger_binary_sensor_ = dedicated_charger_binary_sensor;
-    }
+  void set_balancing_binary_sensor(binary_sensor::BinarySensor *balancing_binary_sensor) {
+    balancing_binary_sensor_ = balancing_binary_sensor;
+  }
+  void set_charging_binary_sensor(binary_sensor::BinarySensor *charging_binary_sensor) {
+    charging_binary_sensor_ = charging_binary_sensor;
+  }
+  void set_discharging_binary_sensor(binary_sensor::BinarySensor *discharging_binary_sensor) {
+    discharging_binary_sensor_ = discharging_binary_sensor;
+  }
+  void set_dedicated_charger_binary_sensor(binary_sensor::BinarySensor *dedicated_charger_binary_sensor) {
+    dedicated_charger_binary_sensor_ = dedicated_charger_binary_sensor;
+  }
 
   void set_min_cell_voltage_sensor(sensor::Sensor *min_cell_voltage_sensor) {
     min_cell_voltage_sensor_ = min_cell_voltage_sensor;
