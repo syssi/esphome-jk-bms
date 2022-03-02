@@ -35,21 +35,18 @@ CONFIG_SCHEMA = cv.Schema(
                 cv.Optional(CONF_ICON, default=ICON_CHARGING): cv.icon,
             }
         ),
-        cv.GenerateID(CONF_JK_BMS_ID): cv.use_id(JkBms),
         cv.Optional(CONF_DISCHARGING): binary_sensor.BINARY_SENSOR_SCHEMA.extend(
             {
                 cv.GenerateID(): cv.declare_id(binary_sensor.BinarySensor),
                 cv.Optional(CONF_ICON, default=ICON_DISCHARGING): cv.icon,
             }
         ),
-        cv.GenerateID(CONF_BALANCING): cv.use_id(JkBms),
         cv.Optional(CONF_CHARGING): binary_sensor.BINARY_SENSOR_SCHEMA.extend(
             {
                 cv.GenerateID(): cv.declare_id(binary_sensor.BinarySensor),
                 cv.Optional(CONF_ICON, default=ICON_BALANCING): cv.icon,
             }
         ),
-        cv.GenerateID(CONF_DEDICATED_CHARGER): cv.use_id(JkBms),
         cv.Optional(CONF_CHARGING): binary_sensor.BINARY_SENSOR_SCHEMA.extend(
             {
                 cv.GenerateID(): cv.declare_id(binary_sensor.BinarySensor),
