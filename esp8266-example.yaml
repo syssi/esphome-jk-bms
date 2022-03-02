@@ -43,6 +43,17 @@ jk_bms:
   id: bms0
   jk_modbus_id: modbus0
 
+binary_sensor:
+  - platform: jk_bms
+    charging:
+      name: "${name} charging"
+    discharging:
+      name: "${name} discharging"
+    balancing:
+      name: "${name} balancing"
+    dedicated_charger:
+      name: "${name} dedicated charger"
+
 sensor:
   - platform: jk_bms
     min_cell_voltage:
@@ -200,17 +211,6 @@ sensor:
       name: "${name} actual battery capacity"
 #    protocol_version:
 #      name: "${name} protocol version"
-
-switch:
-  - platform: jk_bms
-    charging:
-      name: "${name} charging"
-    discharging:
-      name: "${name} discharging"
-    balancing:
-      name: "${name} balancing"
-    dedicated_charger:
-      name: "${name} dedicated charger"
 
 text_sensor:
   - platform: jk_bms
