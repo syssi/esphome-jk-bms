@@ -234,7 +234,7 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
                        (float) jk_get_16bit(offset + 6 + 3 * 24) * 0.001f);
 
   // 0x9D 0x01: Active balance switch                              1 (on)                     Bool     0 (off), 1 (on)
-  this->publish_state_(this->balancing_switch_, (bool) data[offset + 6 + 3 * 25]);
+  this->publish_state_(this->balancing_binary_sensor_, (bool) data[offset + 6 + 3 * 25]);
 
   // 0x9E 0x00 0x5A: Power tube temperature protection value                90°C            1.0 °C     0-100°C
   this->publish_state_(this->power_tube_temperature_protection_sensor_, (float) jk_get_16bit(offset + 8 + 3 * 25));
@@ -286,10 +286,10 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
                        (float) (raw_total_battery_capacity_setting * (raw_battery_remaining_capacity * 0.01f)));
 
   // 0xAB 0x01: Charging MOS tube switch                                     1 (on)         Bool       0 (off), 1 (on)
-  this->publish_state_(this->charging_switch_, (bool) data[offset + 15 + 3 * 36]);
+  this->publish_state_(this->charging_binary_sensor_, (bool) data[offset + 15 + 3 * 36]);
 
   // 0xAC 0x01: Discharge MOS tube switch                                    1 (on)         Bool       0 (off), 1 (on)
-  this->publish_state_(this->discharging_switch_, (bool) data[offset + 17 + 3 * 36]);
+  this->publish_state_(this->discharging_binary_sensor_, (bool) data[offset + 17 + 3 * 36]);
 
   // 0xAD 0x04 0x11: Current calibration                       1041mA * 0.001 = 1.041A     0.001 A     0.1-2.0A
   this->publish_state_(this->current_calibration_sensor_, (float) jk_get_16bit(offset + 19 + 3 * 36) * 0.001f);
@@ -317,7 +317,7 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
                        std::string(data.begin() + offset + 25 + 3 * 38, data.begin() + offset + 35 + 3 * 38));
 
   // 0xB3 0x00: Dedicated charger switch                                     1 (on)         Bool       0 (off), 1 (on)
-  this->publish_state_(this->dedicated_charger_switch_, (bool) data[offset + 36 + 3 * 38]);
+  this->publish_state_(this->dedicated_charger_binary_sensor_, (bool) data[offset + 36 + 3 * 38]);
 
   // 0xB4 0x49 0x6E 0x70 0x75 0x74 0x20 0x55 0x73: Device ID code
   this->publish_state_(this->device_type_text_sensor_,
@@ -346,8 +346,6 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
 
   // 00 00 00 00 68 00 00 54 D1: End of frame
 }
-
-void JkBms::write_register(uint8_t address, uint8_t value) { this->send(WRITE_REGISTER, address, value); }
 
 void JkBms::update() {
   this->read_registers(FUNCTION_READ_ALL, ADDRESS_READ_ALL);
@@ -401,18 +399,18 @@ void JkBms::update() {
   }
 }
 
+void JkBms::publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state) {
+  if (binary_sensor == nullptr)
+    return;
+
+  binary_sensor->publish_state(state);
+}
+
 void JkBms::publish_state_(sensor::Sensor *sensor, float value) {
   if (sensor == nullptr)
     return;
 
   sensor->publish_state(value);
-}
-
-void JkBms::publish_state_(switch_::Switch *obj, const bool &state) {
-  if (obj == nullptr)
-    return;
-
-  obj->publish_state(state);
 }
 
 void JkBms::publish_state_(text_sensor::TextSensor *text_sensor, const std::string &state) {
@@ -544,6 +542,10 @@ void JkBms::dump_config() {  // NOLINT(google-readability-function-size,readabil
   LOG_SENSOR("", "Start Current Calibration", this->start_current_calibration_sensor_);
   LOG_TEXT_SENSOR("", "Manufacturer", this->manufacturer_text_sensor_);
   LOG_SENSOR("", "Protocol Version", this->protocol_version_sensor_);
+  LOG_BINARY_SENSOR("", "Balancing", this->balancing_binary_sensor_);
+  LOG_BINARY_SENSOR("", "Charging", this->charging_binary_sensor_);
+  LOG_BINARY_SENSOR("", "Discharging", this->discharging_binary_sensor_);
+  LOG_BINARY_SENSOR("", "Dedicated Charger", this->dedicated_charger_binary_sensor_);
 }
 
 }  // namespace jk_bms

@@ -91,6 +91,8 @@ float JkModbus::get_setup_priority() const {
   // After UART bus
   return setup_priority::BUS - 1.0f;
 }
+
+// The manufacturer states that no write operations are possible via the serial interface.
 void JkModbus::send(uint8_t function, uint8_t address, uint8_t value) {
   uint8_t frame[22];
   frame[0] = 0x4E;      // start sequence

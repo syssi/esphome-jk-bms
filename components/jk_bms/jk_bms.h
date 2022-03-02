@@ -1,8 +1,8 @@
 #pragma once
 
 #include "esphome/core/component.h"
+#include "esphome/components/binary_sensor/binary_sensor.h"
 #include "esphome/components/sensor/sensor.h"
-#include "esphome/components/switch/switch.h"
 #include "esphome/components/text_sensor/text_sensor.h"
 #include "esphome/components/jk_modbus/jk_modbus.h"
 
@@ -11,6 +11,19 @@ namespace jk_bms {
 
 class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
  public:
+  void set_balancing_binary_sensor(binary_sensor::BinarySensor *balancing_binary_sensor) {
+    balancing_binary_sensor_ = balancing_binary_sensor;
+  }
+  void set_charging_binary_sensor(binary_sensor::BinarySensor *charging_binary_sensor) {
+    charging_binary_sensor_ = charging_binary_sensor;
+  }
+  void set_discharging_binary_sensor(binary_sensor::BinarySensor *discharging_binary_sensor) {
+    discharging_binary_sensor_ = discharging_binary_sensor;
+  }
+  void set_dedicated_charger_binary_sensor(binary_sensor::BinarySensor *dedicated_charger_binary_sensor) {
+    dedicated_charger_binary_sensor_ = dedicated_charger_binary_sensor;
+  }
+
   void set_min_cell_voltage_sensor(sensor::Sensor *min_cell_voltage_sensor) {
     min_cell_voltage_sensor_ = min_cell_voltage_sensor;
   }
@@ -171,13 +184,6 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
     protocol_version_sensor_ = protocol_version_sensor;
   }
 
-  void set_balancing_switch(switch_::Switch *balancing_switch) { balancing_switch_ = balancing_switch; }
-  void set_charging_switch(switch_::Switch *charging_switch) { charging_switch_ = charging_switch; }
-  void set_discharging_switch(switch_::Switch *discharging_switch) { discharging_switch_ = discharging_switch; }
-  void set_dedicated_charger_switch(switch_::Switch *dedicated_charger_switch) {
-    dedicated_charger_switch_ = dedicated_charger_switch;
-  }
-
   void set_errors_text_sensor(text_sensor::TextSensor *errors_text_sensor) { errors_text_sensor_ = errors_text_sensor; }
   void set_operation_mode_text_sensor(text_sensor::TextSensor *operation_mode_text_sensor) {
     operation_mode_text_sensor_ = operation_mode_text_sensor;
@@ -205,8 +211,6 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
   void on_jk_modbus_data(const uint8_t &function, const std::vector<uint8_t> &data) override;
 
   void update() override;
-
-  void write_register(uint8_t address, uint8_t value);
 
  protected:
   sensor::Sensor *min_cell_voltage_sensor_;
@@ -266,10 +270,10 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
   sensor::Sensor *actual_battery_capacity_sensor_;
   sensor::Sensor *protocol_version_sensor_;
 
-  switch_::Switch *balancing_switch_;
-  switch_::Switch *charging_switch_;
-  switch_::Switch *discharging_switch_;
-  switch_::Switch *dedicated_charger_switch_;
+  binary_sensor::BinarySensor *balancing_binary_sensor_;
+  binary_sensor::BinarySensor *charging_binary_sensor_;
+  binary_sensor::BinarySensor *discharging_binary_sensor_;
+  binary_sensor::BinarySensor *dedicated_charger_binary_sensor_;
 
   text_sensor::TextSensor *errors_text_sensor_;
   text_sensor::TextSensor *operation_mode_text_sensor_;
@@ -287,10 +291,10 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
   bool enable_fake_traffic_;
 
   void on_status_data_(const std::vector<uint8_t> &data);
+  void publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state);
   void publish_state_(sensor::Sensor *sensor, float value);
-  void publish_state_(switch_::Switch *obj, const bool &state);
   void publish_state_(text_sensor::TextSensor *text_sensor, const std::string &state);
-  // void publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state);
+
   std::string error_bits_to_string_(uint16_t bitmask);
   std::string mode_bits_to_string_(uint16_t bitmask);
   float get_temperature_(const uint16_t value) {
