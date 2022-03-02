@@ -37,9 +37,6 @@ bool JkModbus::parse_jk_modbus_byte_(uint8_t byte) {  // NOLINT
   this->rx_buffer_.push_back(byte);
   const uint8_t *raw = &this->rx_buffer_[0];
 
-  // @FIXME
-  return false;
-
   // Byte 0: Start sequence (0x4E)
   if (at == 0)
     return true;
