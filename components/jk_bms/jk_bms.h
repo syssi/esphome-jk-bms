@@ -303,9 +303,9 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
     float current = 0.0f;
     if (protocol_version == 0x01) {
       if ((value & 0x8000) == 0x8000) {
-        current = (float) (value & 0x7FFF) * -1;
-      } else {
         current = (float) (value & 0x7FFF);
+      } else {
+        current = (float) (value & 0x7FFF) * -1;
       }
     }
 
