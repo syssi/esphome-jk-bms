@@ -10,6 +10,7 @@ from esphome.const import (
     ICON_EMPTY,
     ICON_TIMELAPSE,
     STATE_CLASS_MEASUREMENT,
+    STATE_CLASS_TOTAL_INCREASING,
     UNIT_AMPERE,
     UNIT_CELSIUS,
     UNIT_EMPTY,
@@ -584,7 +585,7 @@ CONFIG_SCHEMA = cv.Schema(
             ICON_TIMELAPSE,
             0,
             DEVICE_CLASS_EMPTY,
-            STATE_CLASS_MEASUREMENT,
+            STATE_CLASS_TOTAL_INCREASING,
         ),
         cv.Optional(CONF_START_CURRENT_CALIBRATION): sensor.sensor_schema(
             UNIT_EMPTY,
