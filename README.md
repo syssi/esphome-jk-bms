@@ -26,7 +26,6 @@ All JK-BMS models with software version `>=6.0` are using the implemented protoc
 ## Untested devices
 
 * JK-BD6A20S6P
-* JK-BD6A24S6P
 * JK-BD6A20S10P
 
 ## Specifications
