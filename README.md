@@ -28,37 +28,6 @@ All JK-BMS models with software version `>=6.0` are using the implemented protoc
 * JK-BD6A20S6P
 * JK-BD6A20S10P
 
-## Specifications
-
-|                                                   | JK-BD6A17S6P |
-| ------------------------------------------------- | ------------ |
-| Lifepo4 range                                     | 14-17S       |
-| Li-ion range                                      | 13-17S       |
-| LTO range                                         | --           |
-| Single cell voltage                               | 1-5V         |
-| Acquisition accuracy                              | ∓5mV         |
-| Continous discharge                               | 60A          |
-| Max discharge                                     | 120A         |
-| Balance mode                                      | active       |
-| Balance current                                   | 0.6A         |
-| Main circuit condition                            | 0.8mOhm      |
-| Overcharge protection voltage                     | 2.5-4.25V    |
-| Overcharge release                                | 2.5-4.25V    |
-| Charging overcurrent protection (adjustable)      | 1-60A        |
-| Charging overcurrent release time  (adjustable)   | 9-120s       |
-| Over discharge protection                         | 2.5-4.25V    |
-| Over discharge recovery voltage                   | 2.5-4.25V    |
-| Discharging overcurrent protection (adjustable)   | 1-60A        |
-| Discharging overcurrent release time (adjustable) | 9-120s       |
-| Number of temperature tests                       | 3            |
-| Temperature protection                            | Yes          |
-| Short circuit protection                          | Yes          |
-| Coulomb counter                                   | Yes          |
-| Bluetooth                                         | Yes          |
-| GPS                                               | Optional     |
-| Communication                                     | CAN (Optional), RS485 (Optional) |
-
-
 ## Requirements
 
 * [ESPHome 1.18.0 or higher](https://github.com/esphome/esphome/releases).
