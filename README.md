@@ -167,6 +167,12 @@ esphome run esp32-example.yaml
 [sensor:127]: 'jk-bms protocol version': Sending state 1.00000  with 0 decimals of accuracy
 ```
 
+## Known issues
+
+* The battery type sensor is pretty useless because the BMS reports always the same value (`Ternary Lithium`). Regardless of which battery type was set / parameter set was loaded via the android app. ([#9][i9])
+
+[i9]: https://github.com/syssi/esphome-jk-bms/issues/9
+
 ## Debugging
 
 If this component doesn't work out of the box for your device please update your configuration to enable the debug output of the UART component and increase the log level to the see outgoing and incoming serial traffic:
