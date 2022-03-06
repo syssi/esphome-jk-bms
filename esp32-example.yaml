@@ -226,3 +226,5 @@ text_sensor:
       name: "${name} software version"
     manufacturer:
       name: "${name} manufacturer"
+    total_runtime_formatted:
+      name: "${name} total runtime formatted"
