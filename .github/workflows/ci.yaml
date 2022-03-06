@@ -162,15 +162,11 @@ jobs:
         run: 'echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password" > secrets.yaml'
       - run: |
           esphome -s external_components_source components config esp32-example.yaml
-      - run: |
           esphome -s external_components_source components config esp32-example-debug.yaml
-      - run: |
           esphome -s external_components_source components config esp32-example-faker.yaml
       - run: |
           esphome -s external_components_source components config esp8266-example.yaml
-      - run: |
           esphome -s external_components_source components config esp8266-example-debug.yaml
-      - run: |
           esphome -s external_components_source components config esp8266-example-faker.yaml
 
   esphome-compile:
