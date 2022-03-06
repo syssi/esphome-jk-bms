@@ -203,6 +203,9 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
   void set_manufacturer_text_sensor(text_sensor::TextSensor *manufacturer_text_sensor) {
     manufacturer_text_sensor_ = manufacturer_text_sensor;
   }
+  void set_total_runtime_formatted_text_sensor(text_sensor::TextSensor *total_runtime_formatted_text_sensor) {
+    total_runtime_formatted_text_sensor_ = total_runtime_formatted_text_sensor;
+  }
 
   void set_enable_fake_traffic(bool enable_fake_traffic) { enable_fake_traffic_ = enable_fake_traffic; }
 
@@ -282,6 +285,7 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
   text_sensor::TextSensor *device_type_text_sensor_;
   text_sensor::TextSensor *software_version_text_sensor_;
   text_sensor::TextSensor *manufacturer_text_sensor_;
+  text_sensor::TextSensor *total_runtime_formatted_text_sensor_;
 
   struct Cell {
     sensor::Sensor *cell_voltage_sensor_{nullptr};
@@ -297,12 +301,14 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
 
   std::string error_bits_to_string_(uint16_t bitmask);
   std::string mode_bits_to_string_(uint16_t bitmask);
+
   float get_temperature_(const uint16_t value) {
     if (value > 100)
       return (float) (100 - (int16_t) value);
 
     return (float) value;
   };
+
   float get_current_(const uint16_t value, const uint8_t protocol_version) {
     float current = 0.0f;
     if (protocol_version == 0x01) {
@@ -315,6 +321,17 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
 
     return current;
   };
+
+  std::string format_total_runtime_(const uint32_t value) {
+    int seconds = (int) value;
+    int years = seconds / (24 * 3600 * 365);
+    seconds = seconds % (24 * 3600 * 365);
+    int days = seconds / (24 * 3600);
+    seconds = seconds % (24 * 3600);
+    int hours = seconds / 3600;
+    return (years ? to_string(years) + "y " : "") + (days ? to_string(days) + "d " : "") +
+           (hours ? to_string(hours) + "h" : "");
+  }
 };
 
 }  // namespace jk_bms

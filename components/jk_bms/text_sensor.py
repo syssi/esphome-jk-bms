@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import text_sensor
-from esphome.const import CONF_ICON, CONF_ID, CONF_PASSWORD, ICON_EMPTY
+from esphome.const import CONF_ICON, CONF_ID, CONF_PASSWORD, ICON_EMPTY, ICON_TIMELAPSE
 
 from . import CONF_JK_BMS_ID, JkBms
 
@@ -15,6 +15,7 @@ CONF_OPERATION_MODE = "operation_mode"
 CONF_DEVICE_TYPE = "device_type"
 CONF_SOFTWARE_VERSION = "software_version"
 CONF_MANUFACTURER = "manufacturer"
+CONF_TOTAL_RUNTIME_FORMATTED = "total_runtime_formatted"
 
 ICON_BATTERY_TYPE = "mdi:car-battery"
 ICON_ERRORS = "mdi:alert-circle-outline"
@@ -29,6 +30,7 @@ TEXT_SENSORS = [
     CONF_DEVICE_TYPE,
     CONF_SOFTWARE_VERSION,
     CONF_MANUFACTURER,
+    CONF_TOTAL_RUNTIME_FORMATTED,
 ]
 
 CONFIG_SCHEMA = cv.Schema(
@@ -74,6 +76,14 @@ CONFIG_SCHEMA = cv.Schema(
             {
                 cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
                 cv.Optional(CONF_ICON, default=ICON_EMPTY): cv.icon,
+            }
+        ),
+        cv.Optional(
+            CONF_TOTAL_RUNTIME_FORMATTED
+        ): text_sensor.TEXT_SENSOR_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
+                cv.Optional(CONF_ICON, default=ICON_TIMELAPSE): cv.icon,
             }
         ),
     }
