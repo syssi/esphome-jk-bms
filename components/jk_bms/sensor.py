@@ -129,6 +129,8 @@ ICON_ACTUAL_BATTERY_CAPACITY = "mdi:battery-50"
 ICON_DEVICE_ADDRESS = "mdi:identifier"
 ICON_ERRORS_BITMASK = "mdi:alert-circle-outline"
 ICON_OPERATION_MODE_BITMASK = "mdi:heart-pulse"
+ICON_CHARGING_CYCLES = "mdi:battery-sync"
+ICON_ALARM_LOW_VOLUME = "mdi:volume-high"
 
 UNIT_SECONDS = "s"
 UNIT_HOURS = "h"
@@ -355,7 +357,7 @@ CONFIG_SCHEMA = cv.Schema(
         ),
         cv.Optional(CONF_CHARGING_CYCLES): sensor.sensor_schema(
             UNIT_EMPTY,
-            ICON_EMPTY,
+            ICON_CHARGING_CYCLES,
             0,
             DEVICE_CLASS_EMPTY,
             STATE_CLASS_MEASUREMENT,
@@ -568,7 +570,7 @@ CONFIG_SCHEMA = cv.Schema(
         ),
         cv.Optional(CONF_ALARM_LOW_VOLUME): sensor.sensor_schema(
             UNIT_PERCENT,
-            ICON_EMPTY,
+            ICON_ALARM_LOW_VOLUME,
             0,
             DEVICE_CLASS_EMPTY,
             STATE_CLASS_MEASUREMENT,
