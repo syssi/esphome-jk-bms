@@ -10,7 +10,7 @@ repos:
         - --quiet
       files: ^((components|esphome|script|tests)/.+)?[^/]+\.py$
   - repo: https://gitlab.com/pycqa/flake8
-    rev: 4.0.1
+    rev: 3.9.2
     hooks:
       - id: flake8
         additional_dependencies:
@@ -23,7 +23,7 @@ repos:
       - id: pyupgrade
         args: [--py38-plus]
   - repo: https://github.com/pocc/pre-commit-hooks
-    rev: master
+    rev: v1.3.5
     hooks:
       - id: clang-format
       - id: clang-tidy
