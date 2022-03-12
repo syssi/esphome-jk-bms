@@ -4,11 +4,11 @@ repos:
   - repo: https://github.com/ambv/black
     rev: 22.1.0
     hooks:
-    - id: black
-      args:
-        - --safe
-        - --quiet
-      files: ^((components|esphome|script|tests)/.+)?[^/]+\.py$
+      - id: black
+        args:
+          - --safe
+          - --quiet
+        files: ^((components|esphome|script|tests)/.+)?[^/]+\.py$
   - repo: https://gitlab.com/pycqa/flake8
     rev: 3.9.2
     hooks:
