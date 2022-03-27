@@ -14,6 +14,9 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
   void set_balancing_binary_sensor(binary_sensor::BinarySensor *balancing_binary_sensor) {
     balancing_binary_sensor_ = balancing_binary_sensor;
   }
+  void set_balancing_enabled_binary_sensor(binary_sensor::BinarySensor *balancing_enabled_binary_sensor) {
+    balancing_enabled_binary_sensor_ = balancing_enabled_binary_sensor;
+  }
   void set_charging_binary_sensor(binary_sensor::BinarySensor *charging_binary_sensor) {
     charging_binary_sensor_ = charging_binary_sensor;
   }
@@ -247,7 +250,6 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
   sensor::Sensor *charging_overcurrent_delay_sensor_;
   sensor::Sensor *balance_starting_voltage_sensor_;
   sensor::Sensor *balance_opening_pressure_difference_sensor_;
-  sensor::Sensor *balancing_sensor_;
   sensor::Sensor *power_tube_temperature_protection_sensor_;
   sensor::Sensor *power_tube_temperature_recovery_sensor_;
   sensor::Sensor *temperature_sensor_temperature_protection_sensor_;
@@ -274,6 +276,7 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
   sensor::Sensor *protocol_version_sensor_;
 
   binary_sensor::BinarySensor *balancing_binary_sensor_;
+  binary_sensor::BinarySensor *balancing_enabled_binary_sensor_;
   binary_sensor::BinarySensor *charging_binary_sensor_;
   binary_sensor::BinarySensor *discharging_binary_sensor_;
   binary_sensor::BinarySensor *dedicated_charger_binary_sensor_;

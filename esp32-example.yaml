@@ -49,6 +49,8 @@ binary_sensor:
       name: "${name} discharging"
     balancing:
       name: "${name} balancing"
+    balancing_enabled:
+      name: "${name} balancing enabled"
     dedicated_charger:
       name: "${name} dedicated charger"
 
