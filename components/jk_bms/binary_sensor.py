@@ -12,17 +12,20 @@ CODEOWNERS = ["@syssi"]
 CONF_CHARGING = "charging"
 CONF_DISCHARGING = "discharging"
 CONF_BALANCING = "balancing"
+CONF_BALANCING_ENABLED = "balancing_enabled"
 CONF_DEDICATED_CHARGER = "dedicated_charger"
 
 ICON_CHARGING = "mdi:battery-charging"
 ICON_DISCHARGING = "mdi:power-plug"
 ICON_BALANCING = "mdi:battery-heart-variant"
+ICON_BALANCING_ENABLED = "mdi:battery-heart-variant"
 ICON_DEDICATED_CHARGER = "mdi:battery-charging"
 
 BINARY_SENSORS = [
     CONF_CHARGING,
     CONF_DISCHARGING,
     CONF_BALANCING,
+    CONF_BALANCING_ENABLED,
     CONF_DEDICATED_CHARGER,
 ]
 
@@ -45,6 +48,12 @@ CONFIG_SCHEMA = cv.Schema(
             {
                 cv.GenerateID(): cv.declare_id(binary_sensor.BinarySensor),
                 cv.Optional(CONF_ICON, default=ICON_BALANCING): cv.icon,
+            }
+        ),
+        cv.Optional(CONF_BALANCING_ENABLED): binary_sensor.BINARY_SENSOR_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(binary_sensor.BinarySensor),
+                cv.Optional(CONF_ICON, default=ICON_BALANCING_ENABLED): cv.icon,
             }
         ),
         cv.Optional(CONF_DEDICATED_CHARGER): binary_sensor.BINARY_SENSOR_SCHEMA.extend(

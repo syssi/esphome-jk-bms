@@ -179,6 +179,7 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
   uint16_t raw_modes_bitmask = jk_get_16bit(offset + 6 + 3 * 9);
   this->publish_state_(this->operation_mode_bitmask_sensor_, (float) raw_modes_bitmask);
   this->publish_state_(this->operation_mode_text_sensor_, this->mode_bits_to_string_(raw_modes_bitmask));
+  this->publish_state_(this->balancing_binary_sensor_, (4 & raw_modes_bitmask) == 4);
 
   // 0x8E 0x16 0x26: Total voltage overvoltage protection        5670 * 0.01 = 56.70V     0.01 V
   this->publish_state_(this->total_voltage_overvoltage_protection_sensor_,
@@ -234,7 +235,7 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
                        (float) jk_get_16bit(offset + 6 + 3 * 24) * 0.001f);
 
   // 0x9D 0x01: Active balance switch                              1 (on)                     Bool     0 (off), 1 (on)
-  this->publish_state_(this->balancing_binary_sensor_, (bool) data[offset + 6 + 3 * 25]);
+  this->publish_state_(this->balancing_enabled_binary_sensor_, (bool) data[offset + 6 + 3 * 25]);
 
   // 0x9E 0x00 0x5A: Power tube temperature protection value                90°C            1.0 °C     0-100°C
   this->publish_state_(this->power_tube_temperature_protection_sensor_, (float) jk_get_16bit(offset + 8 + 3 * 25));
@@ -547,6 +548,7 @@ void JkBms::dump_config() {  // NOLINT(google-readability-function-size,readabil
   LOG_TEXT_SENSOR("", "Manufacturer", this->manufacturer_text_sensor_);
   LOG_SENSOR("", "Protocol Version", this->protocol_version_sensor_);
   LOG_BINARY_SENSOR("", "Balancing", this->balancing_binary_sensor_);
+  LOG_BINARY_SENSOR("", "Balancing Enabled", this->balancing_enabled_binary_sensor_);
   LOG_BINARY_SENSOR("", "Charging", this->charging_binary_sensor_);
   LOG_BINARY_SENSOR("", "Discharging", this->discharging_binary_sensor_);
   LOG_BINARY_SENSOR("", "Dedicated Charger", this->dedicated_charger_binary_sensor_);
