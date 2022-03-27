@@ -62,6 +62,10 @@ sensor:
       name: "${name} min cell voltage"
     max_cell_voltage:
       name: "${name} max cell voltage"
+    min_voltage_cell:
+      name: "${name} min voltage cell"
+    max_voltage_cell:
+      name: "${name} max voltage cell"
     delta_cell_voltage:
       name: "${name} delta cell voltage"
     cell_voltage_1:

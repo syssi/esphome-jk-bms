@@ -26,6 +26,8 @@ CODEOWNERS = ["@syssi"]
 
 CONF_MIN_CELL_VOLTAGE = "min_cell_voltage"
 CONF_MAX_CELL_VOLTAGE = "max_cell_voltage"
+CONF_MIN_VOLTAGE_CELL = "min_voltage_cell"
+CONF_MAX_VOLTAGE_CELL = "max_voltage_cell"
 CONF_DELTA_CELL_VOLTAGE = "delta_cell_voltage"
 CONF_CELL_VOLTAGE_1 = "cell_voltage_1"
 CONF_CELL_VOLTAGE_2 = "cell_voltage_2"
@@ -121,6 +123,9 @@ CONF_START_CURRENT_CALIBRATION = "start_current_calibration"
 CONF_ACTUAL_BATTERY_CAPACITY = "actual_battery_capacity"
 CONF_PROTOCOL_VERSION = "protocol_version"
 
+ICON_MIN_VOLTAGE_CELL = "mdi:battery-minus-outline"
+ICON_MAX_VOLTAGE_CELL = "mdi:battery-plus-outline"
+
 ICON_BATTERY_STRINGS = "mdi:car-battery"
 ICON_CAPACITY_REMAINING = "mdi:battery-50"
 ICON_CAPACITY_REMAINING_DERIVED = "mdi:battery-50"
@@ -166,6 +171,8 @@ CELLS = [
 SENSORS = [
     CONF_MIN_CELL_VOLTAGE,
     CONF_MAX_CELL_VOLTAGE,
+    CONF_MIN_VOLTAGE_CELL,
+    CONF_MAX_VOLTAGE_CELL,
     CONF_DELTA_CELL_VOLTAGE,
     CONF_POWER_TUBE_TEMPERATURE,
     CONF_TEMPERATURE_SENSOR_1,
@@ -234,6 +241,20 @@ CONFIG_SCHEMA = cv.Schema(
             icon=ICON_EMPTY,
             accuracy_decimals=3,
             device_class=DEVICE_CLASS_VOLTAGE,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_MIN_VOLTAGE_CELL): sensor.sensor_schema(
+            unit_of_measurement=UNIT_EMPTY,
+            icon=ICON_MIN_VOLTAGE_CELL,
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_MAX_VOLTAGE_CELL): sensor.sensor_schema(
+            unit_of_measurement=UNIT_EMPTY,
+            icon=ICON_MAX_VOLTAGE_CELL,
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
         cv.Optional(CONF_DELTA_CELL_VOLTAGE): sensor.sensor_schema(

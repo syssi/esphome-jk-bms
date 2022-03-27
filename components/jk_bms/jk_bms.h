@@ -33,6 +33,12 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
   void set_max_cell_voltage_sensor(sensor::Sensor *max_cell_voltage_sensor) {
     max_cell_voltage_sensor_ = max_cell_voltage_sensor;
   }
+  void set_min_voltage_cell_sensor(sensor::Sensor *min_voltage_cell_sensor) {
+    min_voltage_cell_sensor_ = min_voltage_cell_sensor;
+  }
+  void set_max_voltage_cell_sensor(sensor::Sensor *max_voltage_cell_sensor) {
+    max_voltage_cell_sensor_ = max_voltage_cell_sensor;
+  }
   void set_delta_cell_voltage_sensor(sensor::Sensor *delta_cell_voltage_sensor) {
     delta_cell_voltage_sensor_ = delta_cell_voltage_sensor;
   }
@@ -221,6 +227,8 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
  protected:
   sensor::Sensor *min_cell_voltage_sensor_;
   sensor::Sensor *max_cell_voltage_sensor_;
+  sensor::Sensor *min_voltage_cell_sensor_;
+  sensor::Sensor *max_voltage_cell_sensor_;
   sensor::Sensor *delta_cell_voltage_sensor_;
   sensor::Sensor *power_tube_temperature_sensor_;
   sensor::Sensor *temperature_sensor_1_sensor_;

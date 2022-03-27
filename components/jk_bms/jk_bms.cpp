@@ -90,19 +90,25 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
 
   float min_cell_voltage = 100.0f;
   float max_cell_voltage = -100.0f;
+  uint8_t min_voltage_cell = 0;
+  uint8_t max_voltage_cell = 0;
   for (uint8_t i = 0; i < cells; i++) {
     float cell_voltage = (float) jk_get_16bit(i * 3 + 3) * 0.001f;
     if (cell_voltage < min_cell_voltage) {
       min_cell_voltage = cell_voltage;
+      min_voltage_cell = i + 1;
     }
     if (cell_voltage > max_cell_voltage) {
       max_cell_voltage = cell_voltage;
+      max_voltage_cell = i + 1;
     }
     this->publish_state_(this->cells_[i].cell_voltage_sensor_, cell_voltage);
   }
 
   this->publish_state_(this->min_cell_voltage_sensor_, min_cell_voltage);
   this->publish_state_(this->max_cell_voltage_sensor_, max_cell_voltage);
+  this->publish_state_(this->max_voltage_cell_sensor_, (float) max_voltage_cell);
+  this->publish_state_(this->min_voltage_cell_sensor_, (float) min_voltage_cell);
   this->publish_state_(this->delta_cell_voltage_sensor_, max_cell_voltage - min_cell_voltage);
 
   uint16_t offset = data[1] + 3;
@@ -468,7 +474,11 @@ std::string JkBms::mode_bits_to_string_(const uint16_t mask) {
 void JkBms::dump_config() {  // NOLINT(google-readability-function-size,readability-function-size)
   ESP_LOGCONFIG(TAG, "JkBms:");
   ESP_LOGCONFIG(TAG, "  Address: 0x%02X", this->address_);
-
+  LOG_SENSOR("", "Minimum Cell Voltage", this->min_cell_voltage_sensor_);
+  LOG_SENSOR("", "Maximum Cell Voltage", this->max_cell_voltage_sensor_);
+  LOG_SENSOR("", "Minimum Voltage Cell", this->min_voltage_cell_sensor_);
+  LOG_SENSOR("", "Maximum Voltage Cell", this->max_voltage_cell_sensor_);
+  LOG_SENSOR("", "Delta Cell Voltage", this->delta_cell_voltage_sensor_);
   LOG_SENSOR("", "Cell Voltage 1", this->cells_[0].cell_voltage_sensor_);
   LOG_SENSOR("", "Cell Voltage 2", this->cells_[1].cell_voltage_sensor_);
   LOG_SENSOR("", "Cell Voltage 3", this->cells_[2].cell_voltage_sensor_);
