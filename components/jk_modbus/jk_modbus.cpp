@@ -152,5 +152,33 @@ void JkModbus::read_registers(uint8_t function, uint8_t address) {
   this->flush();
 }
 
+void JkModbus::query_status_v4() {
+  uint8_t frame[7];
+  frame[0] = 0xDD;
+  frame[1] = 0xA5;
+  frame[2] = 0x03;
+  frame[3] = 0x00;
+  frame[4] = 0xFF;
+  frame[5] = 0xFD;
+  frame[6] = 0x77;
+
+  this->write_array(frame, 7);
+  this->flush();
+}
+
+void JkModbus::query_cells_v4() {
+  uint8_t frame[7];
+  frame[0] = 0xDD;
+  frame[1] = 0xA5;
+  frame[2] = 0x04;
+  frame[3] = 0x00;
+  frame[4] = 0xFF;
+  frame[5] = 0xFC;
+  frame[6] = 0x77;
+
+  this->write_array(frame, 7);
+  this->flush();
+}
+
 }  // namespace jk_modbus
 }  // namespace esphome

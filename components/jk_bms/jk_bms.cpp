@@ -359,7 +359,7 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
 }
 
 void JkBms::update() {
-  this->read_registers(FUNCTION_READ_ALL, ADDRESS_READ_ALL);
+  this->query_status_v4();
 
   if (this->enable_fake_traffic_) {
     // Start: 0x4E, 0x57, 0x01, 0x1B, 0x00, 0x00, 0x00, 0x00, 0x06, 0x00, 0x01
