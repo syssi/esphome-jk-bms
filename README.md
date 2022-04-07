@@ -37,6 +37,11 @@ All JK-BMS models with software version `>=6.0` are using the implemented protoc
 
 ## Schematics
 
+<a href="https://raw.githubusercontent.com/syssi/esphome-jk-bms/main/images/circuit.jpg" target="_blank">
+<img src="https://raw.githubusercontent.com/syssi/esphome-jk-bms/main/images/circuit_thumbnail.jpg" width="50%">
+</a>
+
+
 ```
                 RS485-TTL
 ┌──────────┐                ┌─────────┐
