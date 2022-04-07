@@ -37,9 +37,6 @@ All JK-BMS models with software version `>=6.0` are using the implemented protoc
 
 ## Schematics
 
-<a href="https://raw.githubusercontent.com/syssi/esphome-jk-bms/add-images/images/circuit.jpg" target="_blank">
-<img src="https://raw.githubusercontent.com/syssi/esphome-jk-bms/add-images/images/circuit_thumbnail.jpg" width="50%">
-</a>
 <a href="https://raw.githubusercontent.com/syssi/esphome-jk-bms/add-images/images/circuit2.jpg" target="_blank">
 <img src="https://raw.githubusercontent.com/syssi/esphome-jk-bms/add-images/images/circuit2_thumbnail.jpg" width="50%">
 </a>
