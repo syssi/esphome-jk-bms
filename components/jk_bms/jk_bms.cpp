@@ -186,6 +186,8 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->operation_mode_bitmask_sensor_, (float) raw_modes_bitmask);
   this->publish_state_(this->operation_mode_text_sensor_, this->mode_bits_to_string_(raw_modes_bitmask));
   this->publish_state_(this->balancing_binary_sensor_, (4 & raw_modes_bitmask) == 4);
+  this->publish_state_(this->charging_binary_sensor_, (0 & raw_modes_bitmask) == 0);
+  this->publish_state_(this->discharging_binary_sensor_, (1 & raw_modes_bitmask) == 1);
 
   // 0x8E 0x16 0x26: Total voltage overvoltage protection        5670 * 0.01 = 56.70V     0.01 V
   this->publish_state_(this->total_voltage_overvoltage_protection_sensor_,
@@ -241,7 +243,7 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
                        (float) jk_get_16bit(offset + 6 + 3 * 24) * 0.001f);
 
   // 0x9D 0x01: Active balance switch                              1 (on)                     Bool     0 (off), 1 (on)
-  this->publish_state_(this->balancing_enabled_binary_sensor_, (bool) data[offset + 6 + 3 * 25]);
+  this->publish_state_(this->balancing_switch_binary_sensor_, (bool) data[offset + 6 + 3 * 25]);
 
   // 0x9E 0x00 0x5A: Power tube temperature protection value                90°C            1.0 °C     0-100°C
   this->publish_state_(this->power_tube_temperature_protection_sensor_, (float) jk_get_16bit(offset + 8 + 3 * 25));
@@ -293,10 +295,10 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
                        (float) (raw_total_battery_capacity_setting * (raw_battery_remaining_capacity * 0.01f)));
 
   // 0xAB 0x01: Charging MOS tube switch                                     1 (on)         Bool       0 (off), 1 (on)
-  this->publish_state_(this->charging_binary_sensor_, (bool) data[offset + 15 + 3 * 36]);
+  this->publish_state_(this->charging_switch_binary_sensor_, (bool) data[offset + 15 + 3 * 36]);
 
   // 0xAC 0x01: Discharge MOS tube switch                                    1 (on)         Bool       0 (off), 1 (on)
-  this->publish_state_(this->discharging_binary_sensor_, (bool) data[offset + 17 + 3 * 36]);
+  this->publish_state_(this->discharging_switch_binary_sensor_, (bool) data[offset + 17 + 3 * 36]);
 
   // 0xAD 0x04 0x11: Current calibration                       1041mA * 0.001 = 1.041A     0.001 A     0.1-2.0A
   this->publish_state_(this->current_calibration_sensor_, (float) jk_get_16bit(offset + 19 + 3 * 36) * 0.001f);
@@ -324,7 +326,7 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
                        std::string(data.begin() + offset + 25 + 3 * 38, data.begin() + offset + 35 + 3 * 38));
 
   // 0xB3 0x00: Dedicated charger switch                                     1 (on)         Bool       0 (off), 1 (on)
-  this->publish_state_(this->dedicated_charger_binary_sensor_, (bool) data[offset + 36 + 3 * 38]);
+  this->publish_state_(this->dedicated_charger_switch_binary_sensor_, (bool) data[offset + 36 + 3 * 38]);
 
   // 0xB4 0x49 0x6E 0x70 0x75 0x74 0x20 0x55 0x73: Device ID code
   this->publish_state_(this->device_type_text_sensor_,
@@ -558,10 +560,12 @@ void JkBms::dump_config() {  // NOLINT(google-readability-function-size,readabil
   LOG_TEXT_SENSOR("", "Manufacturer", this->manufacturer_text_sensor_);
   LOG_SENSOR("", "Protocol Version", this->protocol_version_sensor_);
   LOG_BINARY_SENSOR("", "Balancing", this->balancing_binary_sensor_);
-  LOG_BINARY_SENSOR("", "Balancing Enabled", this->balancing_enabled_binary_sensor_);
+  LOG_BINARY_SENSOR("", "Balancing Switch", this->balancing_switch_binary_sensor_);
   LOG_BINARY_SENSOR("", "Charging", this->charging_binary_sensor_);
+  LOG_BINARY_SENSOR("", "Charging Switch", this->charging_switch_binary_sensor_);
   LOG_BINARY_SENSOR("", "Discharging", this->discharging_binary_sensor_);
-  LOG_BINARY_SENSOR("", "Dedicated Charger", this->dedicated_charger_binary_sensor_);
+  LOG_BINARY_SENSOR("", "Discharging Switch", this->discharging_switch_binary_sensor_);
+  LOG_BINARY_SENSOR("", "Dedicated Charger Switch", this->dedicated_charger_switch_binary_sensor_);
   LOG_TEXT_SENSOR("", "Total Runtime Formatted", this->total_runtime_formatted_text_sensor_);
 }
 

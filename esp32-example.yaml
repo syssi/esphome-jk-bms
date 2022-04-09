@@ -43,16 +43,20 @@ jk_bms:
 
 binary_sensor:
   - platform: jk_bms
-    charging:
-      name: "${name} charging"
-    discharging:
-      name: "${name} discharging"
     balancing:
       name: "${name} balancing"
-    balancing_enabled:
-      name: "${name} balancing enabled"
-    dedicated_charger:
-      name: "${name} dedicated charger"
+    balancing_switch:
+      name: "${name} balancing switch"
+    charging:
+      name: "${name} charging"
+    charging_switch:
+      name: "${name} charging switch"
+    discharging:
+      name: "${name} discharging"
+    discharging_switch:
+      name: "${name} discharging switch"
+    dedicated_charger_switch:
+      name: "${name} dedicated charger switch"
 
 sensor:
   - platform: jk_bms
