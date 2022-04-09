@@ -14,8 +14,8 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
   void set_balancing_binary_sensor(binary_sensor::BinarySensor *balancing_binary_sensor) {
     balancing_binary_sensor_ = balancing_binary_sensor;
   }
-  void set_balancing_enabled_binary_sensor(binary_sensor::BinarySensor *balancing_enabled_binary_sensor) {
-    balancing_enabled_binary_sensor_ = balancing_enabled_binary_sensor;
+  void set_balancing_switch_binary_sensor(binary_sensor::BinarySensor *balancing_switch_binary_sensor) {
+    balancing_switch_binary_sensor_ = balancing_switch_binary_sensor;
   }
   void set_charging_binary_sensor(binary_sensor::BinarySensor *charging_binary_sensor) {
     charging_binary_sensor_ = charging_binary_sensor;
