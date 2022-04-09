@@ -20,7 +20,6 @@ wifi:
 ota:
 logger:
   baud_rate: 0
-  level: INFO
 
 mqtt:
   broker: !secret mqtt_host

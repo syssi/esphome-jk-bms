@@ -2,11 +2,6 @@
 
 logger:
   level: DEBUG
-  logs:
-    api.service: WARN
-    ota: WARN
-    wifi: WARN
-    sensor: DEBUG
 
 uart:
   id: uart0
