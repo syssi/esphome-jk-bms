@@ -178,8 +178,10 @@ esphome run esp32-example.yaml
 ## Known issues
 
 * The battery type sensor is pretty useless because the BMS reports always the same value (`Ternary Lithium`). Regardless of which battery type was set / parameter set was loaded via the android app. ([#9][i9])
+* ESP32: Adding all supported sensors can lead to a stack overflow / boot loop. This can be solved by increasing the stack size. ([#63][i63])
 
 [i9]: https://github.com/syssi/esphome-jk-bms/issues/9
+[i63]: https://github.com/syssi/esphome-jk-bms/issues/63
 
 ## Debugging
 
