@@ -1,10 +1,12 @@
 import esphome.codegen as cg
-import esphome.config_validation as cv
 from esphome.components import sensor
+import esphome.config_validation as cv
 from esphome.const import (
     CONF_CURRENT,
+    CONF_POWER,
     DEVICE_CLASS_CURRENT,
     DEVICE_CLASS_EMPTY,
+    DEVICE_CLASS_POWER,
     DEVICE_CLASS_TEMPERATURE,
     DEVICE_CLASS_VOLTAGE,
     ICON_EMPTY,
@@ -16,6 +18,7 @@ from esphome.const import (
     UNIT_EMPTY,
     UNIT_PERCENT,
     UNIT_VOLT,
+    UNIT_WATT,
 )
 
 from . import CONF_JK_BMS_ID, JkBms
@@ -179,6 +182,7 @@ SENSORS = [
     CONF_TEMPERATURE_SENSOR_2,
     CONF_TOTAL_VOLTAGE,
     CONF_CURRENT,
+    CONF_POWER,
     CONF_CAPACITY_REMAINING,
     CONF_CAPACITY_REMAINING_DERIVED,
     CONF_TEMPERATURE_SENSORS,
@@ -465,6 +469,13 @@ CONFIG_SCHEMA = cv.Schema(
             icon=ICON_EMPTY,
             accuracy_decimals=2,
             device_class=DEVICE_CLASS_CURRENT,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_POWER): sensor.sensor_schema(
+            unit_of_measurement=UNIT_WATT,
+            icon=ICON_EMPTY,
+            accuracy_decimals=2,
+            device_class=DEVICE_CLASS_POWER,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
         cv.Optional(CONF_CAPACITY_REMAINING): sensor.sensor_schema(

@@ -132,6 +132,10 @@ sensor:
       # https://github.com/syssi/esphome-jk-bms/issues/40
       # filters:
       #   - multiply: -1
+    power:
+      name: "${name} power"
+      # filters:
+      #   - multiply: -1
     capacity_remaining:
       name: "${name} capacity remaining"
     capacity_remaining_derived:
