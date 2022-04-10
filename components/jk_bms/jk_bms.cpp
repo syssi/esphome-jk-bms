@@ -124,8 +124,8 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->temperature_sensor_2_sensor_, get_temperature_(jk_get_16bit(offset + 3 * 2)));
 
   // 0x83 0x14 0xEF: Total battery voltage                       5359 * 0.01 = 53.59V      0.01 V
-  float total_voltage =
-      (float) jk_get_16bit(offset + 3 * 3) * 0.01f this->publish_state_(this->total_voltage_sensor_, total_voltage);
+  float total_voltage = (float) jk_get_16bit(offset + 3 * 3) * 0.01f;
+  this->publish_state_(this->total_voltage_sensor_, total_voltage);
 
   // 0x84 0x80 0xD0: Current data                                32976                     0.01 A
   // this->publish_state_(this->current_sensor_, get_current_(jk_get_16bit(offset + 3 * 4), 0x01) * 0.01f);
