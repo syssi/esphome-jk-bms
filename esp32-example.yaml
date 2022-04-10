@@ -128,13 +128,12 @@ sensor:
       name: "${name} total voltage"
     current:
       name: "${name} current"
-      # https://github.com/syssi/esphome-jk-bms/issues/40
-      # filters:
-      #   - multiply: -1
     power:
       name: "${name} power"
-      # filters:
-      #   - multiply: -1
+    charging_power:
+      name: "${name} charging power"
+    discharging_power:
+      name: "${name} discharging power"
     capacity_remaining:
       name: "${name} capacity remaining"
     capacity_remaining_derived:

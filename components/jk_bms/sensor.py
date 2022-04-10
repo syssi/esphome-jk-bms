@@ -61,6 +61,8 @@ CONF_POWER_TUBE_TEMPERATURE = "power_tube_temperature"
 CONF_TEMPERATURE_SENSOR_1 = "temperature_sensor_1"
 CONF_TEMPERATURE_SENSOR_2 = "temperature_sensor_2"
 CONF_TOTAL_VOLTAGE = "total_voltage"
+CONF_CHARGING_POWER = "charging_power"
+CONF_DISCHARGING_POWER = "discharging_power"
 CONF_CAPACITY_REMAINING = "capacity_remaining"
 CONF_CAPACITY_REMAINING_DERIVED = "capacity_remaining_derived"
 CONF_TEMPERATURE_SENSORS = "temperature_sensors"
@@ -183,6 +185,8 @@ SENSORS = [
     CONF_TOTAL_VOLTAGE,
     CONF_CURRENT,
     CONF_POWER,
+    CONF_CHARGING_POWER,
+    CONF_DISCHARGING_POWER,
     CONF_CAPACITY_REMAINING,
     CONF_CAPACITY_REMAINING_DERIVED,
     CONF_TEMPERATURE_SENSORS,
@@ -472,6 +476,20 @@ CONFIG_SCHEMA = cv.Schema(
             state_class=STATE_CLASS_MEASUREMENT,
         ),
         cv.Optional(CONF_POWER): sensor.sensor_schema(
+            unit_of_measurement=UNIT_WATT,
+            icon=ICON_EMPTY,
+            accuracy_decimals=2,
+            device_class=DEVICE_CLASS_POWER,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_CHARGING_POWER): sensor.sensor_schema(
+            unit_of_measurement=UNIT_WATT,
+            icon=ICON_EMPTY,
+            accuracy_decimals=2,
+            device_class=DEVICE_CLASS_POWER,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_DISCHARGING_POWER): sensor.sensor_schema(
             unit_of_measurement=UNIT_WATT,
             icon=ICON_EMPTY,
             accuracy_decimals=2,
