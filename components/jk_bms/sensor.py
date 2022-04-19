@@ -143,6 +143,7 @@ ICON_CHARGING_CYCLES = "mdi:battery-sync"
 ICON_ALARM_LOW_VOLUME = "mdi:volume-high"
 
 UNIT_SECONDS = "s"
+UNIT_HOURS = "h"
 UNIT_AMPERE_HOURS = "Ah"
 
 CELLS = [
@@ -780,7 +781,7 @@ CONFIG_SCHEMA = cv.Schema(
             state_class=STATE_CLASS_MEASUREMENT,
         ),
         cv.Optional(CONF_TOTAL_RUNTIME): sensor.sensor_schema(
-            unit_of_measurement=UNIT_SECONDS,
+            unit_of_measurement=UNIT_HOURS,
             icon=ICON_TIMELAPSE,
             accuracy_decimals=0,
             device_class=DEVICE_CLASS_EMPTY,

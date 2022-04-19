@@ -339,8 +339,8 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
                        std::string(data.begin() + offset + 38 + 3 * 38, data.begin() + offset + 46 + 3 * 38));
 
   // 0xB5 0x32 0x31 0x30 0x31: Date of manufacture
-  // 0xB6 0x00 0x00 0xE2 0x00: Total runtime                                 57856           1.0 s
-  this->publish_state_(this->total_runtime_sensor_, (float) jk_get_32bit(offset + 46 + 3 * 40));
+  // 0xB6 0x00 0x00 0xE2 0x00: System working hours
+  this->publish_state_(this->total_runtime_sensor_, (float) jk_get_32bit(offset + 46 + 3 * 40) * 0.0166666666667);
   if (this->total_runtime_formatted_text_sensor_ != nullptr) {
     this->publish_state_(this->total_runtime_formatted_text_sensor_,
                          format_total_runtime_(jk_get_32bit(offset + 46 + 3 * 40) * 60));
