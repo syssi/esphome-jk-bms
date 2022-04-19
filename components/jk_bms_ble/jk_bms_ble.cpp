@@ -299,28 +299,23 @@ void JkBmsBle::decode_cell_info_(const std::vector<uint8_t> &data) {
   uint8_t cells = 24;
   float min_cell_voltage = 100.0f;
   float max_cell_voltage = -100.0f;
-  uint8_t min_voltage_cell = 0;
-  uint8_t max_voltage_cell = 0;
   for (uint8_t i = 0; i < cells; i++) {
     float cell_voltage = (float) jk_get_16bit(i * 2 + 6) * 0.001f;
     float cell_resistance = (float) jk_get_16bit(i * 2 + 64) * 0.001f;
     if (cell_voltage > 0 && cell_voltage < min_cell_voltage) {
       min_cell_voltage = cell_voltage;
-      min_voltage_cell = i + 1;
     }
     if (cell_voltage > max_cell_voltage) {
       max_cell_voltage = cell_voltage;
-      max_voltage_cell = i + 1;
     }
     this->publish_state_(this->cells_[i].cell_voltage_sensor_, cell_voltage);
     this->publish_state_(this->cells_[i].cell_resistance_sensor_, cell_resistance);
   }
   this->publish_state_(this->min_cell_voltage_sensor_, min_cell_voltage);
   this->publish_state_(this->max_cell_voltage_sensor_, max_cell_voltage);
-  this->publish_state_(this->max_voltage_cell_sensor_, (float) max_voltage_cell);
-  this->publish_state_(this->min_voltage_cell_sensor_, (float) min_voltage_cell);
 
   // 0xFF 0xFF 0x00 0x00: Static separator?
+  ESP_LOGI(TAG, "Enabled cells: %02X %02X %02X %02X", data[54], data[55], data[56], data[57]);
 
   // 0x00 0x0D: Average_Cell_Voltage?                                          0.001
   this->publish_state_(this->average_cell_voltage_sensor_, (float) jk_get_16bit(58) * 0.001f);
@@ -328,14 +323,19 @@ void JkBmsBle::decode_cell_info_(const std::vector<uint8_t> &data) {
   // 0x00 0x00: Delta_Cell_Voltage?                                            0.001
   this->publish_state_(this->delta_cell_voltage_sensor_, (float) jk_get_16bit(60) * 0.001f);
 
-  // 0x00 0x00: Current_Balancer?                                              0.001
+  // 0x00: Max voltage cell
+  this->publish_state_(this->max_voltage_cell_sensor_, (float) data[62] + 1);
+  // 0x00: Min voltage cell
+  this->publish_state_(this->min_voltage_cell_sensor_, (float) data[63] + 1);
   // 0x9D 0x01: Resistance Cell 01
   // 0x96 0x01: Resistance Cell 02
   // 0x8C 0x01: Resistance Cell 03
   // ...
   // 0x00 0x00: Resistance Cell 24
 
-  // 0x00 0x00 0x00 0x00 0x00 0x00: Unknown2
+  // 0x00 0x00: Unknown2
+  // 0x00 0x00 0x00 0x00: Warning wire resistance too high?
+  ESP_LOGI(TAG, "Wire resistance warning: %02X %02X %02X %02X", data[114], data[115], data[116], data[117]);
 
   // 0x03 0xD0 0x00 0x00: Battery voltage                                      0.001
   float total_voltage = (float) jk_get_16bit(118) * 0.001f;
@@ -362,13 +362,16 @@ void JkBmsBle::decode_cell_info_(const std::vector<uint8_t> &data) {
   // 0xD2 0x00: MOS Temperature                                                0.1
   this->publish_state_(this->power_tube_temperature_sensor_, (float) jk_get_16bit(134) * 0.1f);
 
-  // 0x00 0x00:
+  // 0x00 0x00: System alarms
+  ESP_LOGI(TAG, "System alarms: %02X %02X", data[136], data[137]);
+
   // 0x00 0x00: Balance current                                               0.001
   this->publish_state_(this->balancing_current_sensor_, (float) ((int16_t) jk_get_16bit(138)) * 0.001f);
 
   // 0x00: Blink cells?
+  ESP_LOGI(TAG, "Blink cells: %02X", data[140]);
 
-  // 0x54: Percent_Remain
+  // 0x54: State of charge in %
   this->publish_state_(this->state_of_charge_sensor_, (float) data[141]);
 
   // 0x8E 0x0B 0x01 0x00: Capacity_Remain                                      0.001
