@@ -321,7 +321,8 @@ void JkBmsBle::decode_cell_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->max_cell_voltage_sensor_, max_cell_voltage);
 
   // 0xFF 0xFF 0x00 0x00: Static separator?
-  ESP_LOGI(TAG, "Enabled cells: %02X %02X %02X %02X", data[54], data[55], data[56], data[57]);
+  ESP_LOGI(TAG, "Enabled cells: %02X %02X %02X %02X (0xFF 0x1F: 13 cells, 0xFF 0xFF: 16 cells)", data[54], data[55],
+           data[56], data[57]);
 
   // 0x00 0x0D: Average_Cell_Voltage?                                          0.001
   this->publish_state_(this->average_cell_voltage_sensor_, (float) jk_get_16bit(58) * 0.001f);
@@ -377,7 +378,7 @@ void JkBmsBle::decode_cell_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->balancing_current_sensor_, (float) ((int16_t) jk_get_16bit(138)) * 0.001f);
 
   // 0x00: Blink cells?
-  ESP_LOGI(TAG, "Blink cells: %02X (0x00, 0x01, 0x02)", data[140]);
+  ESP_LOGI(TAG, "Blink cells: %02X (0x00: Balancing off, 0x01/0x02: Balancing)", data[140]);
 
   // 0x54: State of charge in %
   this->publish_state_(this->state_of_charge_sensor_, (float) data[141]);
@@ -397,7 +398,7 @@ void JkBmsBle::decode_cell_info_(const std::vector<uint8_t> &data) {
   // 0x64 0x00: Unknown12
   ESP_LOGI(TAG, "Unknown12: %02X %02X (always 0x64 0x00?)", data[158], data[159]);
   // 0x79 0x04: Unknown13 (Cycle capacity?)
-  ESP_LOGI(TAG, "Unknown13: %02X %02X", data[160], data[161]);
+  ESP_LOGI(TAG, "Unknown13: %02X %02X (always 0xC5 0x09?)", data[160], data[161]);
   // 0xCA 0x03 0x10: Total runtime in seconds
   this->publish_state_(this->total_runtime_sensor_, (float) jk_get_24bit(162));
   if (this->total_runtime_formatted_text_sensor_ != nullptr) {
@@ -405,13 +406,13 @@ void JkBmsBle::decode_cell_info_(const std::vector<uint8_t> &data) {
   }
 
   // 0x00: Unknown14
-  ESP_LOGI(TAG, "Unknown14: %02X", data[165]);
+  ESP_LOGI(TAG, "Unknown14: %02X (always 0x00)", data[165]);
   // 0x01: Charging switch enabled                                             0x00: false, 0x01: true
   this->publish_state_(this->charging_switch_binary_sensor_, (bool) data[166]);
   // 0x01: Discharging switch enabled                                          0x00: false, 0x01: true
   this->publish_state_(this->discharging_switch_binary_sensor_, (bool) data[167]);
 
-  ESP_LOGI(TAG, "Unknown15: %s", format_hex_pretty(&data.front() + 168, data.size() - 168 - 1).c_str());
+  ESP_LOGI(TAG, "Unknown15: %s", format_hex_pretty(&data.front() + 168, data.size() - 168 - 80 - 1).c_str());
   // 0xAA: Unknown
   // 0x06 0x00: Unknown17
   // 0x00 0x00: discard6
