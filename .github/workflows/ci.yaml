@@ -171,6 +171,8 @@ jobs:
           esphome -s external_components_source components config esp32-example-faker.yaml
       - run: |
           esphome -s external_components_source components config esp32-ble-example.yaml
+          esphome -s external_components_source components config esp32-ble-example-debug.yaml
+          esphome -s external_components_source components config esp32-ble-example-faker.yaml
 
   esphome-compile:
     runs-on: ubuntu-latest
@@ -212,4 +214,4 @@ jobs:
       - run: |
           esphome -s external_components_source components compile esp32-example-faker.yaml
       - run: |
-          esphome -s external_components_source components compile esp32-ble-example.yaml
+          esphome -s external_components_source components compile esp32-ble-example-faker.yaml

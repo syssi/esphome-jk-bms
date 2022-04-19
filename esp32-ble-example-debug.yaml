@@ -1,0 +1,4 @@
+<<: !include esp32-ble-example.yaml
+
+logger:
+  level: VERY_VERBOSE
