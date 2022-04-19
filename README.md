@@ -6,7 +6,7 @@
 ![GitHub watchers](https://img.shields.io/github/watchers/syssi/esphome-jk-bms)
 [!["Buy Me A Coffee"](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg)](https://www.buymeacoffee.com/syssi)
 
-ESPHome component to monitor a Jikong Battery Management System (JK-BMS) via RS485
+ESPHome component to monitor a Jikong Battery Management System (JK-BMS) via RS485 or BLE
 
 ![Lovelace entities card](lovelace-entities-card.png "Lovelace entities card")
 
