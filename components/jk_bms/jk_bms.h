@@ -318,7 +318,6 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
 
   struct Cell {
     sensor::Sensor *cell_voltage_sensor_{nullptr};
-    // sensor::Sensor *resistance_sensor_{nullptr};
   } cells_[24];
 
   bool enable_fake_traffic_;

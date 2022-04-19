@@ -1,0 +1,203 @@
+substitutions:
+  name: jk-bms
+  external_components_source: github://syssi/esphome-jk-bms@main
+  mac_address: C8:47:FF:FF:FF:FF
+
+esphome:
+  name: ${name}
+
+esp32:
+  board: wemos_d1_mini32
+  framework:
+#  The arduino platform crashs
+#    type: arduino
+#    version: latest
+    type: esp-idf
+    version: latest
+
+external_components:
+  - source: ${external_components_source}
+    refresh: 0s
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+ota:
+logger:
+
+api:
+
+# This feature is only available with frameworks ['arduino'].
+# mqtt:
+#   broker: !secret mqtt_host
+#   username: !secret mqtt_username
+#   password: !secret mqtt_password
+#   id: mqtt_client
+
+esp32_ble_tracker:
+
+ble_client:
+  - mac_address: ${mac_address}
+    id: client0
+
+jk_bms_ble:
+  - ble_client_id: client0
+    throttle: 5s
+    id: bms0
+
+binary_sensor:
+  - platform: jk_bms_ble
+    balancing_switch:
+      name: "${name} balancing switch"
+    charging_switch:
+      name: "${name} charging switch"
+    discharging_switch:
+      name: "${name} discharging switch"
+
+sensor:
+  - platform: jk_bms_ble
+    jk_bms_ble_id: bms0
+    min_cell_voltage:
+      name: "${name} min cell voltage"
+    max_cell_voltage:
+      name: "${name} max cell voltage"
+    min_voltage_cell:
+      name: "${name} min voltage cell"
+    max_voltage_cell:
+      name: "${name} max voltage cell"
+    delta_cell_voltage:
+      name: "${name} delta cell voltage"
+    average_cell_voltage:
+      name: "${name} average cell voltage"
+    cell_voltage_1:
+      name: "${name} cell voltage 1"
+    cell_voltage_2:
+      name: "${name} cell voltage 2"
+    cell_voltage_3:
+      name: "${name} cell voltage 3"
+    cell_voltage_4:
+      name: "${name} cell voltage 4"
+    cell_voltage_5:
+      name: "${name} cell voltage 5"
+    cell_voltage_6:
+      name: "${name} cell voltage 6"
+    cell_voltage_7:
+      name: "${name} cell voltage 7"
+    cell_voltage_8:
+      name: "${name} cell voltage 8"
+    cell_voltage_9:
+      name: "${name} cell voltage 9"
+    cell_voltage_10:
+      name: "${name} cell voltage 10"
+    cell_voltage_11:
+      name: "${name} cell voltage 11"
+    cell_voltage_12:
+      name: "${name} cell voltage 12"
+    cell_voltage_13:
+      name: "${name} cell voltage 13"
+    cell_voltage_14:
+      name: "${name} cell voltage 14"
+    cell_voltage_15:
+      name: "${name} cell voltage 15"
+    cell_voltage_16:
+      name: "${name} cell voltage 16"
+    cell_voltage_17:
+      name: "${name} cell voltage 17"
+    cell_voltage_18:
+      name: "${name} cell voltage 18"
+    cell_voltage_19:
+      name: "${name} cell voltage 19"
+    cell_voltage_20:
+      name: "${name} cell voltage 20"
+    cell_voltage_21:
+      name: "${name} cell voltage 21"
+    cell_voltage_22:
+      name: "${name} cell voltage 22"
+    cell_voltage_23:
+      name: "${name} cell voltage 23"
+    cell_voltage_24:
+      name: "${name} cell voltage 24"
+    cell_resistance_1:
+      name: "${name} cell resistance 1"
+    cell_resistance_2:
+      name: "${name} cell resistance 2"
+    cell_resistance_3:
+      name: "${name} cell resistance 3"
+    cell_resistance_4:
+      name: "${name} cell resistance 4"
+    cell_resistance_5:
+      name: "${name} cell resistance 5"
+    cell_resistance_6:
+      name: "${name} cell resistance 6"
+    cell_resistance_7:
+      name: "${name} cell resistance 7"
+    cell_resistance_8:
+      name: "${name} cell resistance 8"
+    cell_resistance_9:
+      name: "${name} cell resistance 9"
+    cell_resistance_10:
+      name: "${name} cell resistance 10"
+    cell_resistance_11:
+      name: "${name} cell resistance 11"
+    cell_resistance_12:
+      name: "${name} cell resistance 12"
+    cell_resistance_13:
+      name: "${name} cell resistance 13"
+    cell_resistance_14:
+      name: "${name} cell resistance 14"
+    cell_resistance_15:
+      name: "${name} cell resistance 15"
+    cell_resistance_16:
+      name: "${name} cell resistance 16"
+    cell_resistance_17:
+      name: "${name} cell resistance 17"
+    cell_resistance_18:
+      name: "${name} cell resistance 18"
+    cell_resistance_19:
+      name: "${name} cell resistance 19"
+    cell_resistance_20:
+      name: "${name} cell resistance 20"
+    cell_resistance_21:
+      name: "${name} cell resistance 21"
+    cell_resistance_22:
+      name: "${name} cell resistance 22"
+    cell_resistance_23:
+      name: "${name} cell resistance 23"
+    cell_resistance_24:
+      name: "${name} cell resistance 24"
+    total_voltage:
+      name: "${name} total voltage"
+    current:
+      name: "${name} current"
+    power:
+      name: "${name} power"
+    charging_power:
+      name: "${name} charging power"
+    discharging_power:
+      name: "${name} discharging power"
+    temperature_sensor_1:
+      name: "${name} temperature sensor 1"
+    temperature_sensor_2:
+      name: "${name} temperature sensor 2"
+    power_tube_temperature:
+      name: "${name} power tube temperature"
+    state_of_charge:
+      name: "${name} state of charge"
+    capacity_remaining:
+      name: "${name} capacity remaining"
+    total_battery_capacity_setting:
+      name: "${name} total battery capacity setting"
+    charging_cycles:
+      name: "${name} charging cycles"
+    total_charging_cycle_capacity:
+      name: "${name} total charging cycle capacity"
+    total_runtime:
+      name: "${name} total runtime"
+    balancing_current:
+      name: "${name} balancing current"
+
+text_sensor:
+  - platform: jk_bms_ble
+    total_runtime_formatted:
+      name: "${name} total runtime formatted"
