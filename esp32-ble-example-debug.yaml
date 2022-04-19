@@ -2,3 +2,8 @@
 
 logger:
   level: VERY_VERBOSE
+  logs:
+    scheduler: DEBUG
+    component: DEBUG
+    esp32_ble_tracker: DEBUG
+    sensor: DEBUG
