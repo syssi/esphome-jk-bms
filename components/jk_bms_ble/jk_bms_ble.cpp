@@ -186,7 +186,7 @@ void JkBmsBle::update() {
   }
 
   if (!this->status_notification_received_) {
-    ESP_LOGW(TAG, "Request status notification");
+    ESP_LOGI(TAG, "Request status notification");
     // Request extracted from btsnoop_hci_jk-bd6a17s6p_hw72_sw710h.log
     static uint8_t req_status[20] = {0xaa, 0x55, 0x90, 0xeb, 0x96, 0x00, 0x79, 0x62, 0x96, 0xed,
                                      0xe3, 0xd0, 0x82, 0xa1, 0x9b, 0x5b, 0x3c, 0x9c, 0x4b, 0x5d};
