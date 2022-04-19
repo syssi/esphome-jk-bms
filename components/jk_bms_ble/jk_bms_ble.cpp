@@ -214,7 +214,8 @@ void JkBmsBle::assemble_(const uint8_t *data, uint16_t length) {
 
   if (this->frame_buffer_.size() >= MIN_RESPONSE_SIZE) {
     const uint8_t *raw = &this->frame_buffer_[0];
-    const uint16_t frame_size = this->frame_buffer_.size();
+    // Even if the frame is 320 bytes long the CRC is at position 300 in front of 0xAA 0x55 0x90 0xEB
+    const uint16_t frame_size = 300;  // this->frame_buffer_.size();
 
     uint16_t computed_crc = crc(raw, frame_size - 1);
     uint16_t remote_crc = raw[frame_size - 1];
@@ -263,7 +264,7 @@ void JkBmsBle::decode_cell_info_(const std::vector<uint8_t> &data) {
   }
   this->last_cell_info_ = now;
 
-  ESP_LOGVV(TAG, "Cell info frame:");
+  ESP_LOGVV(TAG, "Cell info frame (%d bytes):", data.size());
   ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front(), 150).c_str());
   ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front() + 150, data.size() - 150).c_str());
 
@@ -451,9 +452,9 @@ void JkBmsBle::decode_settings_(const std::vector<uint8_t> &data) {
     return (uint32_t(jk_get_16bit(i + 2)) << 16) | (uint32_t(jk_get_16bit(i + 0)) << 0);
   };
 
-  ESP_LOGI(TAG, "Device settings frame:");
-  ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front(), 150).c_str());
-  ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front() + 150, data.size() - 150).c_str());
+  ESP_LOGI(TAG, "Settings frame (%d bytes):", data.size());
+  ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front(), 160).c_str());
+  ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front() + 160, data.size() - 160).c_str());
 
   // 0x55 0xAA 0xEB 0x90 0x01 0x4F 0x58 0x02 0x00 0x00 0x54 0x0B 0x00 0x00 0x80 0x0C 0x00 0x00 0xCC 0x10 0x00 0x00 0x68
   // 0x10 0x00 0x00 0x0A 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
@@ -483,9 +484,9 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
     return (uint32_t(jk_get_16bit(i + 2)) << 16) | (uint32_t(jk_get_16bit(i + 0)) << 0);
   };
 
-  ESP_LOGI(TAG, "Device info frame:");
-  ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front(), 150).c_str());
-  ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front() + 150, data.size() - 150).c_str());
+  ESP_LOGI(TAG, "Device info frame (%d bytes):", data.size());
+  ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front(), 160).c_str());
+  ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front() + 160, data.size() - 160).c_str());
 
   // 0x55 0xAA 0xEB 0x90 0x03 0x9F 0x4A 0x4B 0x2D 0x42 0x32 0x41 0x32 0x34 0x53 0x31 0x35 0x50 0x00 0x00 0x00 0x00 0x31
   // 0x30 0x2E 0x58 0x57 0x00 0x00 0x00 0x31 0x30 0x2E 0x30 0x37 0x00 0x00 0x00 0x40 0xAF 0x01 0x00 0x06 0x00 0x00 0x00

@@ -1,8 +1,8 @@
 substitutions:
   name: jk-bms
   external_components_source: github://syssi/esphome-jk-bms@main
-  mac_address: C8:47:8C:E1:E2:E1
-#  mac_address: C8:47:8C:F2:7E:03
+#  mac_address: C8:47:8C:E1:E2:E1
+  mac_address: C8:47:8C:F2:7E:03
 
 esphome:
   name: ${name}
