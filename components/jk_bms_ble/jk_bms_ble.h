@@ -17,6 +17,11 @@ namespace jk_bms_ble {
 
 namespace espbt = esphome::esp32_ble_tracker;
 
+enum ProtocolVersion {
+  PROTOCOL_VERSION_JK02,
+  PROTOCOL_VERSION_JK04,
+};
+
 class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingComponent {
  public:
   void gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if,
@@ -103,6 +108,7 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   }
 
   void set_enable_fake_traffic(bool enable_fake_traffic) { enable_fake_traffic_ = enable_fake_traffic; }
+  void set_protocol_version(ProtocolVersion protocol_version) { this->protocol_version_ = protocol_version; }
 
   struct Cell {
     sensor::Sensor *cell_voltage_sensor_{nullptr};
@@ -110,6 +116,8 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   } cells_[24];
 
  protected:
+  ProtocolVersion protocol_version_{PROTOCOL_VERSION_JK02};
+
   binary_sensor::BinarySensor *balancing_switch_binary_sensor_;
   binary_sensor::BinarySensor *charging_switch_binary_sensor_;
   binary_sensor::BinarySensor *discharging_switch_binary_sensor_;
@@ -147,7 +155,8 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
 
   void assemble_(const uint8_t *data, uint16_t length);
   void decode_(const std::vector<uint8_t> &data);
-  void decode_cell_info_(const std::vector<uint8_t> &data);
+  void decode_jk02_cell_info_(const std::vector<uint8_t> &data);
+  void decode_jk04_cell_info_(const std::vector<uint8_t> &data);
   void decode_device_info_(const std::vector<uint8_t> &data);
   void decode_settings_(const std::vector<uint8_t> &data);
   void publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state);
@@ -163,6 +172,13 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
     int hours = seconds / 3600;
     return (years ? to_string(years) + "y " : "") + (days ? to_string(days) + "d " : "") +
            (hours ? to_string(hours) + "h" : "");
+  }
+
+  float ieee_float_(uint32_t f) {
+    static_assert(sizeof(float) == sizeof f, "`float` has a weird size.");
+    float ret;
+    std::memcpy(&ret, &f, sizeof(float));
+    return ret;
   }
 };
 

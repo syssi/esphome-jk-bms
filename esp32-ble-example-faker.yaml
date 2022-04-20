@@ -6,3 +6,4 @@ jk_bms_ble:
     throttle: 2s
     id: bms0
     enable_fake_traffic: true
+    protocol_version: ${protocol_version}
