@@ -11,10 +11,12 @@ CODEOWNERS = ["@syssi"]
 
 CONF_CHARGING_SWITCH = "charging_switch"
 CONF_DISCHARGING_SWITCH = "discharging_switch"
+CONF_BALANCING = "balancing"
 CONF_BALANCING_SWITCH = "balancing_switch"
 
 ICON_CHARGING_SWITCH = "mdi:battery-charging"
 ICON_DISCHARGING_SWITCH = "mdi:power-plug"
+ICON_BALANCING = "mdi:battery-heart-variant"
 ICON_BALANCING_SWITCH = "mdi:battery-heart-variant"
 
 BINARY_SENSORS = [
@@ -36,6 +38,12 @@ CONFIG_SCHEMA = cv.Schema(
             {
                 cv.GenerateID(): cv.declare_id(binary_sensor.BinarySensor),
                 cv.Optional(CONF_ICON, default=ICON_DISCHARGING_SWITCH): cv.icon,
+            }
+        ),
+        cv.Optional(CONF_BALANCING): binary_sensor.BINARY_SENSOR_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(binary_sensor.BinarySensor),
+                cv.Optional(CONF_ICON, default=ICON_BALANCING): cv.icon,
             }
         ),
         cv.Optional(CONF_BALANCING_SWITCH): binary_sensor.BINARY_SENSOR_SCHEMA.extend(

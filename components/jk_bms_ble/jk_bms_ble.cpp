@@ -93,6 +93,7 @@ void JkBmsBle::dump_config() {  // NOLINT(google-readability-function-size,reada
   LOG_SENSOR("", "Total Charging Cycle Capacity", this->total_charging_cycle_capacity_sensor_);
   LOG_SENSOR("", "Total Runtime", this->total_runtime_sensor_);
   LOG_TEXT_SENSOR("", "Total Runtime Formatted", this->total_runtime_formatted_text_sensor_);
+  LOG_BINARY_SENSOR("", "Balancing", this->balancing_binary_sensor_);
   LOG_BINARY_SENSOR("", "Balancing Switch", this->balancing_switch_binary_sensor_);
   LOG_BINARY_SENSOR("", "Charging Switch", this->charging_switch_binary_sensor_);
   LOG_BINARY_SENSOR("", "Discharging Switch", this->discharging_switch_binary_sensor_);
@@ -405,8 +406,8 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // 0x00 0x00: Balance current                                               0.001
   this->publish_state_(this->balancing_current_sensor_, (float) ((int16_t) jk_get_16bit(138)) * 0.001f);
 
-  // 0x00: Blink cells?
-  ESP_LOGI(TAG, "Blink cells: %02X (0x00: Balancing off, 0x01/0x02: Balancing)", data[140]);
+  // 0x00: Blink cells (0x00: Off, 0x01: Charging balancer, 0x02: Discharging balancer)
+  this->publish_state_(this->balancing_binary_sensor_, (bool) (data[140] != 0x00));
 
   // 0x54: State of charge in %
   this->publish_state_(this->state_of_charge_sensor_, (float) data[141]);
@@ -600,8 +601,11 @@ void JkBmsBle::decode_jk04_cell_info_(const std::vector<uint8_t> &data) {
   // 219   1   0x00                   Unknown4
   ESP_LOGI(TAG, "Unknown4: %02X", data[219]);
 
-  // 220   2   0x00 0x01              Unknown5
-  ESP_LOGI(TAG, "Unknown5: %02X %02X", data[220], data[221]);
+  // 220   1   0x00                  Blink cells (0x00: Off, 0x01: Charging balancer, 0x02: Discharging balancer)
+  this->publish_state_(this->balancing_binary_sensor_, (bool) (data[220] != 0x00));
+
+  // 221   1   0x01                  Unknown5
+  ESP_LOGI(TAG, "Unknown5: %02X", data[221]);
 
   // 222   4   0x00 0x00 0x00 0x00    Balancing current
   this->publish_state_(this->balancing_current_sensor_, (float) ieee_float_(jk_get_32bit(222)));

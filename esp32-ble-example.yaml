@@ -53,6 +53,8 @@ jk_bms_ble:
 
 binary_sensor:
   - platform: jk_bms_ble
+    balancing:
+      name: "${name} balancing"
     balancing_switch:
       name: "${name} balancing switch"
     charging_switch:

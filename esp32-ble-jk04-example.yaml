@@ -51,12 +51,15 @@ jk_bms_ble:
     throttle: 5s
     id: bms0
 
+binary_sensor:
+  - platform: jk_bms_ble
+    balancing:
+      name: "${name} balancing"
+
 # Not implemented
 #
-# binary_sensor:
-#   - platform: jk_bms_ble
-#     balancing_switch:
-#       name: "${name} balancing switch"
+#   balancing_switch:
+#     name: "${name} balancing switch"
 
 sensor:
   - platform: jk_bms_ble
