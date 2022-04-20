@@ -600,8 +600,8 @@ void JkBmsBle::decode_jk04_cell_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->balancing_current_sensor_, (float) ieee_float_(jk_get_32bit(222)));
 
   // 226   7   0x00 0x00 0x00 0x00 0x00 0x00 0x00    Unknown7
-  ESP_LOGI(TAG, "Unknown7: %02X %02X %02X %02X %02X %02X %02X", data[226], data[227], data[228], data[229], data[230],
-           data[231], data[232]);
+  ESP_LOGI(TAG, "Unknown7: %02X %02X %02X %02X %02X %02X %02X (always 0x00...0x00?)", data[226], data[227], data[228],
+           data[229], data[230], data[231], data[232]);
 
   // 233   4   0x66 0xA0 0xD2 0x4A    Unknown8
   ESP_LOGI(TAG, "Unknown8: %02X %02X %02X %02X", data[233], data[234], data[235], data[236]);
@@ -624,12 +624,12 @@ void JkBmsBle::decode_jk04_cell_info_(const std::vector<uint8_t> &data) {
   }
 
   // 290   4   0x00 0x00 0x00 0x00    Unknown10
-  ESP_LOGI(TAG, "Unknown10: %02X %02X %02X %02X (always 0x00 0x00 0x00 0x00)", data[290], data[291], data[292],
+  ESP_LOGI(TAG, "Unknown10: %02X %02X %02X %02X (always 0x00 0x00 0x00 0x00?)", data[290], data[291], data[292],
            data[293]);
 
   // 294   4   0x00 0x48 0x22 0x40    Unknown11
-  ESP_LOGI(TAG, "Unknown11: %02X %02X %02X %02X", data[294], data[295], data[296], data[297]);
-  ESP_LOGI(TAG, "Unknown11: %f", (float) ieee_float_(jk_get_32bit(294)));
+  ESP_LOGI(TAG, "Unknown11: %02X %02X %02X %02X (%f °C?)", data[294], data[295], data[296], data[297],
+           ieee_float_(jk_get_32bit(294)) * 10.0f);
 
   // 298   1   0x00                   Unknown12
   ESP_LOGI(TAG, "Unknown12: %02X", data[298]);
