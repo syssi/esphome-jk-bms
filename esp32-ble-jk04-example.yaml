@@ -173,11 +173,8 @@ sensor:
       name: "${name} total voltage"
     total_runtime:
       name: "${name} total runtime"
-
-# Not implemented
-#
-#    balancing_current:
-#      name: "${name} balancing current"
+    balancing_current:
+      name: "${name} balancing current"
 
 text_sensor:
   - platform: jk_bms_ble
