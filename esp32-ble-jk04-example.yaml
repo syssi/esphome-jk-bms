@@ -3,7 +3,7 @@ substitutions:
   external_components_source: github://syssi/esphome-jk-bms@main
   mac_address: C8:47:FF:FF:FF:FF
   # Defaults to "JK02". Please use "JK04" if you have some old JK-BMS version (f.e. JK-B2A16S hw 3.0, sw. 3.3.0)
-  protocol_version: JK02
+  protocol_version: JK04
 
 esphome:
   name: ${name}
@@ -51,14 +51,12 @@ jk_bms_ble:
     throttle: 5s
     id: bms0
 
-binary_sensor:
-  - platform: jk_bms_ble
-    balancing_switch:
-      name: "${name} balancing switch"
-    charging_switch:
-      name: "${name} charging switch"
-    discharging_switch:
-      name: "${name} discharging switch"
+# Not implemented
+#
+# binary_sensor:
+#   - platform: jk_bms_ble
+#     balancing_switch:
+#       name: "${name} balancing switch"
 
 sensor:
   - platform: jk_bms_ble
@@ -173,30 +171,6 @@ sensor:
       name: "${name} cell resistance 24"
     total_voltage:
       name: "${name} total voltage"
-    current:
-      name: "${name} current"
-    power:
-      name: "${name} power"
-    charging_power:
-      name: "${name} charging power"
-    discharging_power:
-      name: "${name} discharging power"
-    temperature_sensor_1:
-      name: "${name} temperature sensor 1"
-    temperature_sensor_2:
-      name: "${name} temperature sensor 2"
-    power_tube_temperature:
-      name: "${name} power tube temperature"
-    state_of_charge:
-      name: "${name} state of charge"
-    capacity_remaining:
-      name: "${name} capacity remaining"
-    total_battery_capacity_setting:
-      name: "${name} total battery capacity setting"
-    charging_cycles:
-      name: "${name} charging cycles"
-    total_charging_cycle_capacity:
-      name: "${name} total charging cycle capacity"
     total_runtime:
       name: "${name} total runtime"
     balancing_current:
