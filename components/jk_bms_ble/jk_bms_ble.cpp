@@ -444,7 +444,7 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // 167   1   0x01                   Discharging switch enabled                   0x00: off, 0x01: on
   this->publish_state_(this->discharging_switch_binary_sensor_, (bool) data[167]);
 
-  ESP_LOGI(TAG, "Unknown15: %s", format_hex_pretty(&data.front() + 168, data.size() - 168 - 80 - 1).c_str());
+  ESP_LOGI(TAG, "Unknown15: %s", format_hex_pretty(&data.front() + 168, data.size() - 168 - 4 - 81 - 1).c_str());
 
   // 168   1   0xAA                   Unknown
   // 169   2   0x06 0x00              Unknown17
@@ -452,20 +452,19 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // 173   2   0x00 0x00              Unknown18
   // 175   2   0x00 0x00              Unknown19
   // 177   2   0x00 0x00              Unknown20
-
-  // 179   2   0x00 0x00              Current Charge
-  ESP_LOGI(TAG, "Current Charge: %f", (float) jk_get_16bit(179));
-
-  // 181   2   0x00 0x07              Current Discharge
-  ESP_LOGI(TAG, "Current Discharge: %f", (float) jk_get_16bit(181));
-
+  // 179   2   0x00 0x00              Unknown21
+  // 181   2   0x00 0x07              Unknown22
   // 183   2   0x00 0x01              Unknown23
   // 185   2   0x00 0x00              Unknown24
   // 187   2   0x00 0xD5              Unknown25
   // 189   2   0x02 0x00              Unknown26
+  ESP_LOGI(TAG, "Current Charge: %f", (float) ((int) jk_get_16bit(189)) * 0.001f);
   // 191   2   0x00 0x00              Unknown27
+  ESP_LOGI(TAG, "Current Discharge: %f", (float) ((int) jk_get_16bit(191)) * 0.001f);
   // 193   2   0x00 0xAE              Unknown28
+  ESP_LOGI(TAG, "Unknown28: %f", (float) jk_get_16bit(193) * 0.001f);
   // 195   2   0xD6 0x3B              Unknown29
+  ESP_LOGI(TAG, "Unknown29: %f", (float) jk_get_16bit(195) * 0.001f);
   // 197   10  0x40 0x00 0x00 0x00 0x00 0x58 0xAA 0xFD 0xFF 0x00
   // 207   7   0x00 0x00 0x01 0x00 0x02 0x00 0x00
   // 214   4   0xEC 0xE6 0x4F 0x00    Uptime 100ms
