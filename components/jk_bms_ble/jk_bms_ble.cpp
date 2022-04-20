@@ -634,9 +634,8 @@ void JkBmsBle::decode_jk04_cell_info_(const std::vector<uint8_t> &data) {
   ESP_LOGI(TAG, "Unknown10: %02X %02X %02X %02X (always 0x00 0x00 0x00 0x00?)", data[290], data[291], data[292],
            data[293]);
 
-  // 294   4   0x00 0x48 0x22 0x40    Unknown11
-  ESP_LOGI(TAG, "Unknown11: %02X %02X %02X %02X (%f °C?)", data[294], data[295], data[296], data[297],
-           ieee_float_(jk_get_32bit(294)) * 10.0f);
+  // 294   4   0x00 0x48 0x22 0x40    Temperature?
+  this->publish_state_(this->power_tube_temperature_sensor_, (float) ieee_float_(jk_get_32bit(294)) * 10.0f);
 
   // 298   1   0x00                   Unknown12
   ESP_LOGI(TAG, "Unknown12: %02X", data[298]);
