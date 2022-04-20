@@ -557,21 +557,28 @@ void JkBmsBle::decode_jk04_cell_info_(const std::vector<uint8_t> &data) {
   float min_cell_voltage = 100.0f;
   float max_cell_voltage = -100.0f;
   float total_voltage = 0.0f;
+  uint8_t min_voltage_cell = 0;
+  uint8_t max_voltage_cell = 0;
   for (uint8_t i = 0; i < cells; i++) {
     float cell_voltage = (float) ieee_float_(jk_get_32bit(i * 4 + 6));
     float cell_resistance = (float) ieee_float_(jk_get_32bit(i * 4 + 102));
     total_voltage = total_voltage + cell_voltage;
     if (cell_voltage > 0 && cell_voltage < min_cell_voltage) {
       min_cell_voltage = cell_voltage;
+      min_voltage_cell = i + 1;
     }
     if (cell_voltage > max_cell_voltage) {
       max_cell_voltage = cell_voltage;
+      max_voltage_cell = i + 1;
     }
     this->publish_state_(this->cells_[i].cell_voltage_sensor_, cell_voltage);
     this->publish_state_(this->cells_[i].cell_resistance_sensor_, cell_resistance);
   }
+
   this->publish_state_(this->min_cell_voltage_sensor_, min_cell_voltage);
   this->publish_state_(this->max_cell_voltage_sensor_, max_cell_voltage);
+  this->publish_state_(this->max_voltage_cell_sensor_, (float) max_voltage_cell);
+  this->publish_state_(this->min_voltage_cell_sensor_, (float) min_voltage_cell);
   this->publish_state_(this->total_voltage_sensor_, total_voltage);
 
   // 202   4   0x03 0x95 0x56 0x40    Average Cell Voltage               V
