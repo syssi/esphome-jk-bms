@@ -458,13 +458,14 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // 185   2   0x00 0x00              Unknown24
   // 187   2   0x00 0xD5              Unknown25
   // 189   2   0x02 0x00              Unknown26
-  ESP_LOGI(TAG, "Current Charge: %f", (float) ((int) jk_get_16bit(189)) * 0.001f);
-  // 191   2   0x00 0x00              Unknown27
-  ESP_LOGI(TAG, "Current Discharge: %f", (float) ((int) jk_get_16bit(191)) * 0.001f);
+  ESP_LOGI(TAG, "Unknown26: %02X %02X", data[189], data[190]);
+  // 191   1   0x00                   Balancer active (working: 0x01, idle: 0x00)
+  // 192   1   0x00                   Unknown27
+  ESP_LOGI(TAG, "Unknown27: %02X", data[192]);
   // 193   2   0x00 0xAE              Unknown28
-  ESP_LOGI(TAG, "Unknown28: %f", (float) jk_get_16bit(193) * 0.001f);
+  ESP_LOGI(TAG, "Unknown28: %02X %02X (%f)", data[193], data[194], (float) jk_get_16bit(193) * 0.001f);
   // 195   2   0xD6 0x3B              Unknown29
-  ESP_LOGI(TAG, "Unknown29: %f", (float) jk_get_16bit(195) * 0.001f);
+  ESP_LOGI(TAG, "Unknown29: %02X %02X (%f)", data[195], data[196], (float) jk_get_16bit(195) * 0.001f);
   // 197   10  0x40 0x00 0x00 0x00 0x00 0x58 0xAA 0xFD 0xFF 0x00
   // 207   7   0x00 0x00 0x01 0x00 0x02 0x00 0x00
   // 214   4   0xEC 0xE6 0x4F 0x00    Uptime 100ms
