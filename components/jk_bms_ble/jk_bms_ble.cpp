@@ -94,9 +94,8 @@ void JkBmsBle::dump_config() {  // NOLINT(google-readability-function-size,reada
   LOG_SENSOR("", "Total Runtime", this->total_runtime_sensor_);
   LOG_TEXT_SENSOR("", "Total Runtime Formatted", this->total_runtime_formatted_text_sensor_);
   LOG_BINARY_SENSOR("", "Balancing", this->balancing_binary_sensor_);
-  LOG_BINARY_SENSOR("", "Balancing Switch", this->balancing_switch_binary_sensor_);
-  LOG_BINARY_SENSOR("", "Charging Switch", this->charging_switch_binary_sensor_);
-  LOG_BINARY_SENSOR("", "Discharging Switch", this->discharging_switch_binary_sensor_);
+  LOG_BINARY_SENSOR("", "Charging", this->charging_binary_sensor_);
+  LOG_BINARY_SENSOR("", "Discharging", this->discharging_binary_sensor_);
 }
 
 void JkBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if,
@@ -370,6 +369,7 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // 110   2   0x00 0x00              Resistance Cell 24    0.001        Ohm
 
   // 112   2   0x00 0x00              Unknown2
+  ESP_LOGI(TAG, "Unknown2: %02X %02X", data[112], data[113]);
   // 114   4   0x00 0x00 0x00 0x00    Warning wire resistance too high?
   ESP_LOGI(TAG, "Wire resistance warning: %02X %02X %02X %02X", data[114], data[115], data[116], data[117]);
 
@@ -399,8 +399,27 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->power_tube_temperature_sensor_, (float) jk_get_16bit(134) * 0.1f);
 
   // 136   2   0x00 0x00              System alarms
-  //           0x10 0x00                Cell Over Voltage
-  //           0x14 0x00                Cell Over Voltage + Cell count is not equal to settings
+  //           0x00 0x01                Charge overtemperature               0000 0000 0000 0001
+  //           0x00 0x02                Charge undertemperature              0000 0000 0000 0010
+  //           0x00 0x04                                                     0000 0000 0000 0100
+  //           0x00 0x08                Cell Undervoltage                    0000 0000 0000 1000
+  //           0x00 0x10                                                     0000 0000 0001 0000
+  //           0x00 0x20                                                     0000 0000 0010 0000
+  //           0x00 0x40                                                     0000 0000 0100 0000
+  //           0x00 0x80                                                     0000 0000 1000 0000
+  //           0x01 0x00                                                     0000 0001 0000 0000
+  //           0x02 0x00                                                     0000 0010 0000 0000
+  //           0x04 0x00                Cell count is not equal to settings  0000 0100 0000 0000
+  //           0x08 0x00                                                     0000 1000 0000 0000
+  //           0x10 0x00                Cell Over Voltage                    0001 0000 0000 0000
+  //           0x20 0x00                                                     0010 0000 0000 0000
+  //           0x40 0x00                                                     0100 0000 0000 0000
+  //           0x80 0x00                                                     1000 0000 0000 0000
+  //
+  //           0x14 0x00                Cell Over Voltage +                  0001 0100 0000 0000
+  //                                    Cell count is not equal to settings
+  //           0x04 0x08                Cell Undervoltage +                  0000 0100 0000 1000
+  //                                    Cell count is not equal to settings
   ESP_LOGI(TAG, "System alarms: %02X %02X", data[136], data[137]);
 
   // 138   2   0x00 0x00              Balance current      0.001         A
@@ -439,10 +458,10 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   }
 
   // 166   1   0x01                   Charging switch enabled                      0x00: off, 0x01: on
-  this->publish_state_(this->charging_switch_binary_sensor_, (bool) data[166]);
+  this->publish_state_(this->charging_binary_sensor_, (bool) data[166]);
 
   // 167   1   0x01                   Discharging switch enabled                   0x00: off, 0x01: on
-  this->publish_state_(this->discharging_switch_binary_sensor_, (bool) data[167]);
+  this->publish_state_(this->discharging_binary_sensor_, (bool) data[167]);
 
   ESP_LOGI(TAG, "Unknown15: %s", format_hex_pretty(&data.front() + 168, data.size() - 168 - 4 - 81 - 1).c_str());
 
@@ -459,13 +478,13 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // 187   2   0x00 0xD5              Unknown25
   // 189   2   0x02 0x00              Unknown26
   ESP_LOGI(TAG, "Unknown26: %02X %02X", data[189], data[190]);
-  // 191   1   0x00                   Balancer active (working: 0x01, idle: 0x00)
+  // 191   1   0x00                   Balancer status (working: 0x01, idle: 0x00)
   // 192   1   0x00                   Unknown27
   ESP_LOGI(TAG, "Unknown27: %02X", data[192]);
   // 193   2   0x00 0xAE              Unknown28
-  ESP_LOGI(TAG, "Unknown28: %02X %02X (%f)", data[193], data[194], (float) jk_get_16bit(193) * 0.001f);
+  ESP_LOGI(TAG, "Unknown28: %02X %02X (0x00 0x8D)", data[193], data[194]);
   // 195   2   0xD6 0x3B              Unknown29
-  ESP_LOGI(TAG, "Unknown29: %02X %02X (%f)", data[195], data[196], (float) jk_get_16bit(195) * 0.001f);
+  ESP_LOGI(TAG, "Unknown29: %02X %02X (0x21 0x40)", data[195], data[196]);
   // 197   10  0x40 0x00 0x00 0x00 0x00 0x58 0xAA 0xFD 0xFF 0x00
   // 207   7   0x00 0x00 0x01 0x00 0x02 0x00 0x00
   // 214   4   0xEC 0xE6 0x4F 0x00    Uptime 100ms

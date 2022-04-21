@@ -55,12 +55,10 @@ binary_sensor:
   - platform: jk_bms_ble
     balancing:
       name: "${name} balancing"
-    balancing_switch:
-      name: "${name} balancing switch"
-    charging_switch:
-      name: "${name} charging switch"
-    discharging_switch:
-      name: "${name} discharging switch"
+    charging:
+      name: "${name} charging"
+    discharging:
+      name: "${name} discharging"
 
 sensor:
   - platform: jk_bms_ble

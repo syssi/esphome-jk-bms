@@ -33,14 +33,11 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   void set_balancing_binary_sensor(binary_sensor::BinarySensor *balancing_binary_sensor) {
     balancing_binary_sensor_ = balancing_binary_sensor;
   }
-  void set_balancing_switch_binary_sensor(binary_sensor::BinarySensor *balancing_switch_binary_sensor) {
-    balancing_switch_binary_sensor_ = balancing_switch_binary_sensor;
+  void set_charging_binary_sensor(binary_sensor::BinarySensor *charging_binary_sensor) {
+    charging_binary_sensor_ = charging_binary_sensor;
   }
-  void set_charging_switch_binary_sensor(binary_sensor::BinarySensor *charging_switch_binary_sensor) {
-    charging_switch_binary_sensor_ = charging_switch_binary_sensor;
-  }
-  void set_discharging_switch_binary_sensor(binary_sensor::BinarySensor *discharging_switch_binary_sensor) {
-    discharging_switch_binary_sensor_ = discharging_switch_binary_sensor;
+  void set_discharging_binary_sensor(binary_sensor::BinarySensor *discharging_binary_sensor) {
+    discharging_binary_sensor_ = discharging_binary_sensor;
   }
 
   void set_throttle(uint16_t throttle) { this->throttle_ = throttle; }
@@ -122,9 +119,8 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   ProtocolVersion protocol_version_{PROTOCOL_VERSION_JK02};
 
   binary_sensor::BinarySensor *balancing_binary_sensor_;
-  binary_sensor::BinarySensor *balancing_switch_binary_sensor_;
-  binary_sensor::BinarySensor *charging_switch_binary_sensor_;
-  binary_sensor::BinarySensor *discharging_switch_binary_sensor_;
+  binary_sensor::BinarySensor *charging_binary_sensor_;
+  binary_sensor::BinarySensor *discharging_binary_sensor_;
 
   sensor::Sensor *min_cell_voltage_sensor_;
   sensor::Sensor *max_cell_voltage_sensor_;
