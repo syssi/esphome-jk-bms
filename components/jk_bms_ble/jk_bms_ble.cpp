@@ -693,6 +693,7 @@ void JkBmsBle::decode_settings_(const std::vector<uint8_t> &data) {
   // 4     1   0x01                   Frame type
   // 5     1   0x4F                   Frame counter
   // 6     4   0x58 0x02 0x00 0x00    Unknown1
+  ESP_LOGI(TAG, "  Unknown1: %f", (float) jk_get_32bit(6) * 0.001f);
   // 10    4   0x54 0x0B 0x00 0x00    Cell UVP
   ESP_LOGI(TAG, "  Cell UVP: %f V", (float) jk_get_32bit(10) * 0.001f);
   // 14    4   0x80 0x0C 0x00 0x00    Cell OVP Recovery
@@ -752,7 +753,9 @@ void JkBmsBle::decode_settings_(const std::vector<uint8_t> &data) {
   // 130   4   0x88 0x13 0x00 0x00    Nominal battery capacity
   ESP_LOGI(TAG, "  Nominal battery capacity: %f Ah", (float) jk_get_32bit(130) * 0.001f);
   // 134   4   0xDC 0x05 0x00 0x00    Unknown6
+  ESP_LOGI(TAG, "  Unknown6: %f", (float) jk_get_32bit(134) * 0.001f);
   // 138   4   0xE4 0x0C 0x00 0x00    Unknown7
+  ESP_LOGI(TAG, "  Unknown7: %f", (float) jk_get_32bit(138) * 0.001f);
   // 142   4   0x00 0x00 0x00 0x00
   // 146   4   0x00 0x00 0x00 0x00
   // 150   4   0x00 0x00 0x00 0x00
