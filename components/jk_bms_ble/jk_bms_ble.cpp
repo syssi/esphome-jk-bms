@@ -702,32 +702,55 @@ void JkBmsBle::decode_settings_(const std::vector<uint8_t> &data) {
   // 22    4   0x68 0x10 0x00 0x00    Cell OVP Recovery
   ESP_LOGI(TAG, "  Cell OVPR: %f V", (float) jk_get_32bit(22) * 0.001f);
   // 26    4   0x0A 0x00 0x00 0x00    Balance trigger voltage
+  ESP_LOGI(TAG, "  Balance trigger voltage: %f V", (float) jk_get_32bit(26) * 0.001f);
   // 30    4   0x00 0x00 0x00 0x00    Unknown2
   // 34    4   0x00 0x00 0x00 0x00    Unknown3
   // 38    4   0x00 0x00 0x00 0x00    Unknown4
   // 42    4   0x00 0x00 0x00 0x00    Unknown5
   // 46    4   0xF0 0x0A 0x00 0x00    Power off value
+  ESP_LOGI(TAG, "  Power off voltage: %f V", (float) jk_get_32bit(46) * 0.001f);
   // 50    4   0xA8 0x61 0x00 0x00    Max. charge current
+  ESP_LOGI(TAG, "  Max. charge current: %f A", (float) jk_get_32bit(50) * 0.001f);
   // 54    4   0x1E 0x00 0x00 0x00    Charge OCP delay
+  ESP_LOGI(TAG, "  Charge OCP delay: %f s", (float) jk_get_32bit(54));
   // 58    4   0x3C 0x00 0x00 0x00    Charge OCP recovery delay
+  ESP_LOGI(TAG, "  Charge OCP recovery delay: %f s", (float) jk_get_32bit(58));
   // 62    4   0xF0 0x49 0x02 0x00    Max. discharge current
+  ESP_LOGI(TAG, "  Max. discharge current: %f A", (float) jk_get_32bit(62) * 0.001f);
   // 66    4   0x2C 0x01 0x00 0x00    Discharge OCP delay
+  ESP_LOGI(TAG, "  Discharge OCP recovery delay: %f s", (float) jk_get_32bit(66));
   // 70    4   0x3C 0x00 0x00 0x00    Discharge OCP recovery delay
+  ESP_LOGI(TAG, "  Discharge OCP recovery delay: %f s", (float) jk_get_32bit(70));
   // 74    4   0x3C 0x00 0x00 0x00    SCPR time
+  ESP_LOGI(TAG, "  SCP recovery time: %f s", (float) jk_get_32bit(74));
   // 78    4   0xD0 0x07 0x00 0x00    Max balance current
+  ESP_LOGI(TAG, "  Max. balance current: %f A", (float) jk_get_32bit(78) * 0.001f);
   // 82    4   0xBC 0x02 0x00 0x00    Charge OTP
+  ESP_LOGI(TAG, "  Charge OTP: %f °C", (float) jk_get_32bit(82) * 0.1f);
   // 86    4   0x58 0x02 0x00 0x00    Charge OTP Recovery
+  ESP_LOGI(TAG, "  Charge OTP recovery: %f °C", (float) jk_get_32bit(86) * 0.1f);
   // 90    4   0xBC 0x02 0x00 0x00    Discharge OTP
+  ESP_LOGI(TAG, "  Discharge OTP: %f °C", (float) jk_get_32bit(90) * 0.1f);
   // 94    4   0x58 0x02 0x00 0x00    Discharge OTP Recovery
+  ESP_LOGI(TAG, "  Discharge OTP recovery: %f °C", (float) jk_get_32bit(94) * 0.1f);
   // 98    4   0x38 0xFF 0xFF 0xFF    Charge UTP
+  ESP_LOGI(TAG, "  Charge UTP: %f °C", (float) jk_get_32bit(98) * 0.1f);
   // 102   4   0x9C 0xFF 0xFF 0xFF    Charge UTP Recovery
+  ESP_LOGI(TAG, "  Charge UTP recovery: %f °C", (float) jk_get_32bit(102) * 0.1f);
   // 106   4   0x84 0x03 0x00 0x00    MOS OTP
+  ESP_LOGI(TAG, "  MOS OTP: %f °C", (float) jk_get_32bit(106) * 0.1f);
   // 110   4   0xBC 0x02 0x00 0x00    MOS OTP Recovery
+  ESP_LOGI(TAG, "  MOS OTP recovery: %f °C", (float) jk_get_32bit(110) * 0.1f);
   // 114   4   0x0D 0x00 0x00 0x00    Cell count
+  ESP_LOGI(TAG, "  Cell count: %f", (float) jk_get_32bit(114));
   // 118   4   0x01 0x00 0x00 0x00    Charge switch
+  ESP_LOGI(TAG, "  Charge switch: %s", ((bool) data[118]) ? "on" : "off");
   // 122   4   0x01 0x00 0x00 0x00    Discharge switch
+  ESP_LOGI(TAG, "  Discharge switch: %s", ((bool) data[122]) ? "on" : "off");
   // 126   4   0x01 0x00 0x00 0x00    Balancer switch
+  ESP_LOGI(TAG, "  Balancer switch: %s", ((bool) data[126]) ? "on" : "off");
   // 130   4   0x88 0x13 0x00 0x00    Nominal battery capacity
+  ESP_LOGI(TAG, "  Nominal battery capacity: %f Ah", (float) jk_get_32bit(130) * 0.001f);
   // 134   4   0xDC 0x05 0x00 0x00    Unknown6
   // 138   4   0xE4 0x0C 0x00 0x00    Unknown7
   // 142   4   0x00 0x00 0x00 0x00
@@ -758,6 +781,10 @@ void JkBmsBle::decode_settings_(const std::vector<uint8_t> &data) {
   // 242   4   0x00 0x00 0x00 0x00    Con. wire resistance 22
   // 246   4   0x00 0x00 0x00 0x00    Con. wire resistance 23
   // 250   4   0x00 0x00 0x00 0x00    Con. wire resistance 24
+  for (uint8_t i = 0; i < 24; i++) {
+    ESP_LOGI(TAG, "  Con. wire resistance %d: %f Ohm", i + 1, (float) jk_get_32bit(i * 4 + 158) * 0.001f);
+  }
+
   // 254   4   0x00 0x00 0x00 0x00
   // 258   4   0x00 0x00 0x00 0x00
   // 262   4   0x00 0x00 0x00 0x00
@@ -771,8 +798,6 @@ void JkBmsBle::decode_settings_(const std::vector<uint8_t> &data) {
   // 294   4   0x00 0x00 0x00 0x00
   // 298   1   0x00
   // 299   1   0x40                   CRC
-
-  // ... TODO: Decode more bytes
 }
 
 void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
