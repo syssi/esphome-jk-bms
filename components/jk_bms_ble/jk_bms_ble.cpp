@@ -399,11 +399,27 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->power_tube_temperature_sensor_, (float) jk_get_16bit(134) * 0.1f);
 
   // 136   2   0x00 0x00              System alarms
-  //           0x00 0x08                Cell Undervoltage
-  //           0x00 0x02                Charge undertemperature
-  //           0x04 0x00                Charge overtemperature
-  //           0x10 0x00                Cell Over Voltage
-  //           0x14 0x00                Cell Over Voltage + Cell count is not equal to settings
+  //           0x00 0x01                Charge overtemperature               0000 0000 0000 0001
+  //           0x00 0x02                Charge undertemperature              0000 0000 0000 0010
+  //           0x00 0x04                                                     0000 0000 0000 0100
+  //           0x00 0x08                Cell Undervoltage                    0000 0000 0000 1000
+  //           0x00 0x10                                                     0000 0000 0001 0000
+  //           0x00 0x20                                                     0000 0000 0010 0000
+  //           0x00 0x40                                                     0000 0000 0100 0000
+  //           0x00 0x80                                                     0000 0000 1000 0000
+  //           0x01 0x00                                                     0000 0001 0000 0000
+  //           0x02 0x00                                                     0000 0010 0000 0000
+  //           0x04 0x00                Cell count is not equal to settings  0000 0100 0000 0000
+  //           0x08 0x00                                                     0000 1000 0000 0000
+  //           0x10 0x00                Cell Over Voltage                    0001 0000 0000 0000
+  //           0x20 0x00                                                     0010 0000 0000 0000
+  //           0x40 0x00                                                     0100 0000 0000 0000
+  //           0x80 0x00                                                     1000 0000 0000 0000
+  //
+  //           0x14 0x00                Cell Over Voltage +                  0001 0100 0000 0000
+  //                                    Cell count is not equal to settings
+  //           0x04 0x08                Cell Undervoltage +                  0000 0100 0000 1000
+  //                                    Cell count is not equal to settings
   ESP_LOGI(TAG, "System alarms: %02X %02X", data[136], data[137]);
 
   // 138   2   0x00 0x00              Balance current      0.001         A
