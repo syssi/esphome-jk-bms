@@ -323,13 +323,13 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // 00.00.BE.00.C0.00.D2.00.00.00.00.00.00.54.8E.0B.01.00.68.3C.01.00.00.00.00.00.3D.04.00.00.64.00.79.04.CD.03.10.00.01.01.AA.06.00.00.00.00.00.00.00.00.00.00.00.00.07.00.01.00.00.00.D5.02.00.00.00.00.AE.D6.3B.40.00.00.00.00.58.AA.FD.FF.00.00.00.01.00.02.00.00.0A.E7.4F.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00
   // 00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.F8
   //
-  // Address Content: Description      Decoded content                         Coeff./Unit
-  // 0x55 0xAA 0xEB 0x90: Header
-  // 0x02: Record type
-  // 0x8C: Frame counter
-  // 0xFF 0x0C: Voltage cell 01                                                0.001
-  // 0x01 0x0D: Voltage cell 02                                                0.001
-  // 0x01 0x0D: Voltage cell 03                                                0.001
+  // Byte Len  Payload                Content              Coeff.      Unit        Example value
+  // 0     2   0x55 0xAA 0xEB 0x90    Header
+  // 4     1   0x02                   Record type
+  // 5     1   0x8C                   Frame counter
+  // 6     2   0xFF 0x0C              Voltage cell 01       0.001        V
+  // 8     2   0x01 0x0D              Voltage cell 02       0.001        V
+  // 10    2   0x01 0x0D              Voltage cell 03       0.001        V
   // ...
   uint8_t cells = 24;
   float min_cell_voltage = 100.0f;
@@ -349,36 +349,36 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->min_cell_voltage_sensor_, min_cell_voltage);
   this->publish_state_(this->max_cell_voltage_sensor_, max_cell_voltage);
 
-  // 0xFF 0xFF 0x00 0x00: Static separator?
+  // 54    4   0xFF 0xFF 0x00 0x00    Enabled cells
   ESP_LOGI(TAG, "Enabled cells: %02X %02X %02X %02X (0xFF 0x1F: 13 cells, 0xFF 0xFF: 16 cells)", data[54], data[55],
            data[56], data[57]);
 
-  // 0x00 0x0D: Average_Cell_Voltage?                                          0.001
+  // 58    2   0x00 0x0D              Average Cell Voltage  0.001        V
   this->publish_state_(this->average_cell_voltage_sensor_, (float) jk_get_16bit(58) * 0.001f);
 
-  // 0x00 0x00: Delta_Cell_Voltage?                                            0.001
+  // 60    2   0x00 0x00              Delta Cell Voltage    0.001        V
   this->publish_state_(this->delta_cell_voltage_sensor_, (float) jk_get_16bit(60) * 0.001f);
 
-  // 0x00: Max voltage cell
+  // 62    1   0x00                   Max voltage cell      1
   this->publish_state_(this->max_voltage_cell_sensor_, (float) data[62] + 1);
-  // 0x00: Min voltage cell
+  // 63    1   0x00                   Min voltage cell      1
   this->publish_state_(this->min_voltage_cell_sensor_, (float) data[63] + 1);
-  // 0x9D 0x01: Resistance Cell 01
-  // 0x96 0x01: Resistance Cell 02
-  // 0x8C 0x01: Resistance Cell 03
+  // 64    2   0x9D 0x01              Resistance Cell 01    0.001        Ohm
+  // 66    2   0x96 0x01              Resistance Cell 02    0.001        Ohm
+  // 68    2   0x8C 0x01              Resistance Cell 03    0.001        Ohm
   // ...
-  // 0x00 0x00: Resistance Cell 24
+  // 110   2   0x00 0x00              Resistance Cell 24    0.001        Ohm
 
-  // 0x00 0x00: Unknown2
-  // 0x00 0x00 0x00 0x00: Warning wire resistance too high?
+  // 112   2   0x00 0x00              Unknown2
+  // 114   4   0x00 0x00 0x00 0x00    Warning wire resistance too high?
   ESP_LOGI(TAG, "Wire resistance warning: %02X %02X %02X %02X", data[114], data[115], data[116], data[117]);
 
-  // 0x03 0xD0 0x00 0x00: Battery voltage                                      0.001
+  // 118   4   0x03 0xD0 0x00 0x00    Battery voltage       0.001        V
   float total_voltage = (float) jk_get_16bit(118) * 0.001f;
   this->publish_state_(this->total_voltage_sensor_, total_voltage);
 
-  // 0x00 0x00 0x00 0x00: Battery power                                        0.001
-  // 0x00 0x00 0x00 0x00: Charge current                                       0.001
+  // 122   4   0x00 0x00 0x00 0x00    Battery power         0.001        W
+  // 126   4   0x00 0x00 0x00 0x00    Charge current        0.001        A
   float current = (float) ((int) jk_get_32bit(126)) * 0.001f;
   this->publish_state_(this->current_sensor_, (float) ((int) jk_get_32bit(126)) * 0.001f);
 
@@ -389,82 +389,96 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->charging_power_sensor_, std::max(0.0f, power));               // 500W vs 0W -> 500W
   this->publish_state_(this->discharging_power_sensor_, std::abs(std::min(0.0f, power)));  // -500W vs 0W -> 500W
 
-  // 0xBE 0x00: Temperature Sensor 1                                           0.1
+  // 130   2   0xBE 0x00              Temperature Sensor 1  0.1          °C
   this->publish_state_(this->temperature_sensor_1_sensor_, (float) jk_get_16bit(130) * 0.1f);
 
-  // 0xBF 0x00: Temperature Sensor 2                                           0.1
+  // 132   2   0xBF 0x00              Temperature Sensor 2  0.1          °C
   this->publish_state_(this->temperature_sensor_2_sensor_, (float) jk_get_16bit(132) * 0.1f);
 
-  // 0xD2 0x00: MOS Temperature                                                0.1
+  // 134   2   0xD2 0x00              MOS Temperature       0.1          °C
   this->publish_state_(this->power_tube_temperature_sensor_, (float) jk_get_16bit(134) * 0.1f);
 
-  // 0x00 0x00: System alarms
-  //   0x10 00: Cell Over Voltage
-  //   0x14 00: Cell Over Voltage + Cell count is not equal to settings
+  // 136   2   0x00 0x00              System alarms
+  //           0x10 0x00                Cell Over Voltage
+  //           0x14 0x00                Cell Over Voltage + Cell count is not equal to settings
   ESP_LOGI(TAG, "System alarms: %02X %02X", data[136], data[137]);
 
-  // 0x00 0x00: Balance current                                               0.001
+  // 138   2   0x00 0x00              Balance current      0.001         A
   this->publish_state_(this->balancing_current_sensor_, (float) ((int16_t) jk_get_16bit(138)) * 0.001f);
 
-  // 0x00: Blink cells (0x00: Off, 0x01: Charging balancer, 0x02: Discharging balancer)
+  // 140   1   0x00                   Balancing action                   0x00: Off
+  //                                                                     0x01: Charging balancer
+  //                                                                     0x02: Discharging balancer
   this->publish_state_(this->balancing_binary_sensor_, (bool) (data[140] != 0x00));
 
-  // 0x54: State of charge in %
+  // 141   1   0x54                   State of charge in   1.0           %
   this->publish_state_(this->state_of_charge_sensor_, (float) data[141]);
 
-  // 0x8E 0x0B 0x01 0x00: Capacity_Remain                                      0.001
+  // 142   4   0x8E 0x0B 0x01 0x00    Capacity_Remain      0.001         Ah
   this->publish_state_(this->capacity_remaining_sensor_, (float) jk_get_32bit(142) * 0.001f);
 
-  // 0x68 0x3C 0x01 0x00: Nominal_Capacity                                     0.001
+  // 146   4   0x68 0x3C 0x01 0x00    Nominal_Capacity     0.001         Ah
   this->publish_state_(this->total_battery_capacity_setting_sensor_, (float) jk_get_32bit(146) * 0.001f);
 
-  // 0x00 0x00 0x00 0x00: Cycle_Count
+  // 150   4   0x00 0x00 0x00 0x00    Cycle_Count          1.0
   this->publish_state_(this->charging_cycles_sensor_, (float) jk_get_32bit(150));
 
-  // 0x3D 0x04 0x00 0x00: Cycle_Capacity                                       0.001
+  // 154   4   0x3D 0x04 0x00 0x00    Cycle_Capacity       1.0
   this->publish_state_(this->total_charging_cycle_capacity_sensor_, (float) jk_get_32bit(154));
 
-  // 0x64 0x00: Unknown12
+  // 158   2   0x64 0x00              Unknown12
   ESP_LOGI(TAG, "Unknown12: %02X %02X (always 0x64 0x00?)", data[158], data[159]);
-  // 0x79 0x04: Unknown13 (Cycle capacity?)
+
+  // 160   2   0x79 0x04              Unknown13 (Cycle capacity?)
   ESP_LOGI(TAG, "Unknown13: %02X %02X (always 0xC5 0x09?)", data[160], data[161]);
-  // 0xCA 0x03 0x10 0x00: Total runtime in seconds
+
+  // 162   4   0xCA 0x03 0x10 0x00    Total runtime in seconds           s
   this->publish_state_(this->total_runtime_sensor_, (float) jk_get_32bit(162));
   if (this->total_runtime_formatted_text_sensor_ != nullptr) {
     this->publish_state_(this->total_runtime_formatted_text_sensor_, format_total_runtime_(jk_get_32bit(162)));
   }
 
-  // 0x01: Charging switch enabled                                             0x00: false, 0x01: true
+  // 166   1   0x01                   Charging switch enabled                      0x00: off, 0x01: on
   this->publish_state_(this->charging_switch_binary_sensor_, (bool) data[166]);
-  // 0x01: Discharging switch enabled                                          0x00: false, 0x01: true
+
+  // 167   1   0x01                   Discharging switch enabled                   0x00: off, 0x01: on
   this->publish_state_(this->discharging_switch_binary_sensor_, (bool) data[167]);
 
-  ESP_LOGI(TAG, "Unknown15: %s", format_hex_pretty(&data.front() + 168, data.size() - 168 - 80 - 1).c_str());
-  // 0xAA: Unknown
-  // 0x06 0x00: Unknown17
-  // 0x00 0x00: discard6
-  // 0x00 0x00: Unknown18
-  // 0x00 0x00: Unknown19
-  // 0x00 0x00: Unknown20
-  // 0x00 0x00: Current_Charge
-  // 0x00 0x07: Current_Discharge
-  // 0x00 0x01: Unknown23
-  // 0x00 0x00: Unknown24
-  // 0x00 0xD5: Unknown25
-  // 0x02 0x00: Unknown26
-  // 0x00 0x00: Unknown27
-  // 0x00 0xAE: Unknown28
-  // 0xD6 0x3B: Unknown29
-  // 0x40 0x00 0x00 0x00 0x00 0x58 0xAA 0xFD 0xFF 0x00
-  // 0x00 0x00 0x01 0x00 0x02 0x00 0x00
-  // 0xEC 0xE6 0x4F 0x00: Uptime 100ms
+  ESP_LOGI(TAG, "Unknown15: %s", format_hex_pretty(&data.front() + 168, data.size() - 168 - 4 - 81 - 1).c_str());
+
+  // 168   1   0xAA                   Unknown
+  // 169   2   0x06 0x00              Unknown17
+  // 171   2   0x00 0x00              discard6
+  // 173   2   0x00 0x00              Unknown18
+  // 175   2   0x00 0x00              Unknown19
+  // 177   2   0x00 0x00              Unknown20
+  // 179   2   0x00 0x00              Unknown21
+  // 181   2   0x00 0x07              Unknown22
+  // 183   2   0x00 0x01              Unknown23
+  // 185   2   0x00 0x00              Unknown24
+  // 187   2   0x00 0xD5              Unknown25
+  // 189   2   0x02 0x00              Unknown26
+  ESP_LOGI(TAG, "Current Charge: %f", (float) ((int) jk_get_16bit(189)) * 0.001f);
+  // 191   2   0x00 0x00              Unknown27
+  ESP_LOGI(TAG, "Current Discharge: %f", (float) ((int) jk_get_16bit(191)) * 0.001f);
+  // 193   2   0x00 0xAE              Unknown28
+  ESP_LOGI(TAG, "Unknown28: %f", (float) jk_get_16bit(193) * 0.001f);
+  // 195   2   0xD6 0x3B              Unknown29
+  ESP_LOGI(TAG, "Unknown29: %f", (float) jk_get_16bit(195) * 0.001f);
+  // 197   10  0x40 0x00 0x00 0x00 0x00 0x58 0xAA 0xFD 0xFF 0x00
+  // 207   7   0x00 0x00 0x01 0x00 0x02 0x00 0x00
+  // 214   4   0xEC 0xE6 0x4F 0x00    Uptime 100ms
   //
-  // 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
-  // 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
-  // 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
-  // 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
-  // 0x00 0x00: Unknown30 (92 bytes)
-  // 0xCD: CRC
+  // 218   81  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+  //           0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+  //           0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+  //           0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+  //           0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+  //           0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+  //           0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+  //           0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+  //           0x00
+  // 299   1   0xCD                   CRC
 
   status_notification_received_ = true;
 }
@@ -502,8 +516,8 @@ void JkBmsBle::decode_jk04_cell_info_(const std::vector<uint8_t> &data) {
   //
   // Byte Len  Payload                Content              Coeff.      Unit        Example value
   // 0     4   0x55 0xAA 0xEB 0x90    Header
-  // 4     1   0x02                   Type
-  // 5     1   0x4B                   Counter
+  // 4     1   0x02                   Frame type
+  // 5     1   0x4B                   Frame counter
   // 6     4   0xC0 0x61 0x56 0x40    Cell voltage 1                     V
   // 10    4   0x1F 0xAA 0x56 0x40    Cell voltage 2                     V
   // 14    4   0xFF 0x91 0x56 0x40    Cell voltage 3                     V
@@ -638,8 +652,8 @@ void JkBmsBle::decode_jk04_cell_info_(const std::vector<uint8_t> &data) {
   ESP_LOGI(TAG, "Unknown10: %02X %02X %02X %02X (always 0x00 0x00 0x00 0x00?)", data[290], data[291], data[292],
            data[293]);
 
-  // 294   4   0x00 0x48 0x22 0x40    Temperature?
-  this->publish_state_(this->power_tube_temperature_sensor_, (float) ieee_float_(jk_get_32bit(294)) * 10.0f);
+  // 294   4   0x00 0x48 0x22 0x40    Unknown11
+  ESP_LOGI(TAG, "Unknown11: %02X %02X %02X %02X", data[294], data[295], data[296], data[297]);
 
   // 298   1   0x00                   Unknown12
   ESP_LOGI(TAG, "Unknown12: %02X", data[298]);
@@ -674,11 +688,119 @@ void JkBmsBle::decode_settings_(const std::vector<uint8_t> &data) {
   // 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
   // 0x40
 
+  // Byte Len  Payload                Content              Coeff.      Unit        Example value
+  // 0     4   0x55 0xAA 0xEB 0x90    Header
+  // 4     1   0x01                   Frame type
+  // 5     1   0x4F                   Frame counter
+  // 6     4   0x58 0x02 0x00 0x00    Unknown1
+  ESP_LOGI(TAG, "  Unknown1: %f", (float) jk_get_32bit(6) * 0.001f);
+  // 10    4   0x54 0x0B 0x00 0x00    Cell UVP
   ESP_LOGI(TAG, "  Cell UVP: %f V", (float) jk_get_32bit(10) * 0.001f);
+  // 14    4   0x80 0x0C 0x00 0x00    Cell OVP Recovery
   ESP_LOGI(TAG, "  Cell UVPR: %f V", (float) jk_get_32bit(14) * 0.001f);
+  // 18    4   0xCC 0x10 0x00 0x00    Cell OVP
   ESP_LOGI(TAG, "  Cell OVP: %f V", (float) jk_get_32bit(18) * 0.001f);
+  // 22    4   0x68 0x10 0x00 0x00    Cell OVP Recovery
   ESP_LOGI(TAG, "  Cell OVPR: %f V", (float) jk_get_32bit(22) * 0.001f);
-  // ... TODO: Decode more bytes
+  // 26    4   0x0A 0x00 0x00 0x00    Balance trigger voltage
+  ESP_LOGI(TAG, "  Balance trigger voltage: %f V", (float) jk_get_32bit(26) * 0.001f);
+  // 30    4   0x00 0x00 0x00 0x00    Unknown2
+  // 34    4   0x00 0x00 0x00 0x00    Unknown3
+  // 38    4   0x00 0x00 0x00 0x00    Unknown4
+  // 42    4   0x00 0x00 0x00 0x00    Unknown5
+  // 46    4   0xF0 0x0A 0x00 0x00    Power off value
+  ESP_LOGI(TAG, "  Power off voltage: %f V", (float) jk_get_32bit(46) * 0.001f);
+  // 50    4   0xA8 0x61 0x00 0x00    Max. charge current
+  ESP_LOGI(TAG, "  Max. charge current: %f A", (float) jk_get_32bit(50) * 0.001f);
+  // 54    4   0x1E 0x00 0x00 0x00    Charge OCP delay
+  ESP_LOGI(TAG, "  Charge OCP delay: %f s", (float) jk_get_32bit(54));
+  // 58    4   0x3C 0x00 0x00 0x00    Charge OCP recovery delay
+  ESP_LOGI(TAG, "  Charge OCP recovery delay: %f s", (float) jk_get_32bit(58));
+  // 62    4   0xF0 0x49 0x02 0x00    Max. discharge current
+  ESP_LOGI(TAG, "  Max. discharge current: %f A", (float) jk_get_32bit(62) * 0.001f);
+  // 66    4   0x2C 0x01 0x00 0x00    Discharge OCP delay
+  ESP_LOGI(TAG, "  Discharge OCP recovery delay: %f s", (float) jk_get_32bit(66));
+  // 70    4   0x3C 0x00 0x00 0x00    Discharge OCP recovery delay
+  ESP_LOGI(TAG, "  Discharge OCP recovery delay: %f s", (float) jk_get_32bit(70));
+  // 74    4   0x3C 0x00 0x00 0x00    SCPR time
+  ESP_LOGI(TAG, "  SCP recovery time: %f s", (float) jk_get_32bit(74));
+  // 78    4   0xD0 0x07 0x00 0x00    Max balance current
+  ESP_LOGI(TAG, "  Max. balance current: %f A", (float) jk_get_32bit(78) * 0.001f);
+  // 82    4   0xBC 0x02 0x00 0x00    Charge OTP
+  ESP_LOGI(TAG, "  Charge OTP: %f °C", (float) jk_get_32bit(82) * 0.1f);
+  // 86    4   0x58 0x02 0x00 0x00    Charge OTP Recovery
+  ESP_LOGI(TAG, "  Charge OTP recovery: %f °C", (float) jk_get_32bit(86) * 0.1f);
+  // 90    4   0xBC 0x02 0x00 0x00    Discharge OTP
+  ESP_LOGI(TAG, "  Discharge OTP: %f °C", (float) jk_get_32bit(90) * 0.1f);
+  // 94    4   0x58 0x02 0x00 0x00    Discharge OTP Recovery
+  ESP_LOGI(TAG, "  Discharge OTP recovery: %f °C", (float) jk_get_32bit(94) * 0.1f);
+  // 98    4   0x38 0xFF 0xFF 0xFF    Charge UTP
+  ESP_LOGI(TAG, "  Charge UTP: %f °C", (float) jk_get_32bit(98) * 0.1f);
+  // 102   4   0x9C 0xFF 0xFF 0xFF    Charge UTP Recovery
+  ESP_LOGI(TAG, "  Charge UTP recovery: %f °C", (float) jk_get_32bit(102) * 0.1f);
+  // 106   4   0x84 0x03 0x00 0x00    MOS OTP
+  ESP_LOGI(TAG, "  MOS OTP: %f °C", (float) jk_get_32bit(106) * 0.1f);
+  // 110   4   0xBC 0x02 0x00 0x00    MOS OTP Recovery
+  ESP_LOGI(TAG, "  MOS OTP recovery: %f °C", (float) jk_get_32bit(110) * 0.1f);
+  // 114   4   0x0D 0x00 0x00 0x00    Cell count
+  ESP_LOGI(TAG, "  Cell count: %f", (float) jk_get_32bit(114));
+  // 118   4   0x01 0x00 0x00 0x00    Charge switch
+  ESP_LOGI(TAG, "  Charge switch: %s", ((bool) data[118]) ? "on" : "off");
+  // 122   4   0x01 0x00 0x00 0x00    Discharge switch
+  ESP_LOGI(TAG, "  Discharge switch: %s", ((bool) data[122]) ? "on" : "off");
+  // 126   4   0x01 0x00 0x00 0x00    Balancer switch
+  ESP_LOGI(TAG, "  Balancer switch: %s", ((bool) data[126]) ? "on" : "off");
+  // 130   4   0x88 0x13 0x00 0x00    Nominal battery capacity
+  ESP_LOGI(TAG, "  Nominal battery capacity: %f Ah", (float) jk_get_32bit(130) * 0.001f);
+  // 134   4   0xDC 0x05 0x00 0x00    Unknown6
+  ESP_LOGI(TAG, "  Unknown6: %f", (float) jk_get_32bit(134) * 0.001f);
+  // 138   4   0xE4 0x0C 0x00 0x00    Unknown7
+  ESP_LOGI(TAG, "  Unknown7: %f", (float) jk_get_32bit(138) * 0.001f);
+  // 142   4   0x00 0x00 0x00 0x00
+  // 146   4   0x00 0x00 0x00 0x00
+  // 150   4   0x00 0x00 0x00 0x00
+  // 154   4   0x00 0x00 0x00 0x00
+  // 158   4   0x00 0x00 0x00 0x00    Con. wire resistance 1
+  // 162   4   0x00 0x00 0x00 0x00    Con. wire resistance 2
+  // 166   4   0x00 0x00 0x00 0x00    Con. wire resistance 3
+  // 170   4   0x00 0x00 0x00 0x00    Con. wire resistance 4
+  // 174   4   0x00 0x00 0x00 0x00    Con. wire resistance 5
+  // 178   4   0x00 0x00 0x00 0x00    Con. wire resistance 6
+  // 182   4   0x00 0x00 0x00 0x00    Con. wire resistance 7
+  // 186   4   0x00 0x00 0x00 0x00    Con. wire resistance 8
+  // 190   4   0x00 0x00 0x00 0x00    Con. wire resistance 9
+  // 194   4   0x00 0x00 0x00 0x00    Con. wire resistance 10
+  // 198   4   0x00 0x00 0x00 0x00    Con. wire resistance 11
+  // 202   4   0x00 0x00 0x00 0x00    Con. wire resistance 12
+  // 206   4   0x00 0x00 0x00 0x00    Con. wire resistance 13
+  // 210   4   0x00 0x00 0x00 0x00    Con. wire resistance 14
+  // 214   4   0x00 0x00 0x00 0x00    Con. wire resistance 15
+  // 218   4   0x00 0x00 0x00 0x00    Con. wire resistance 16
+  // 222   4   0x00 0x00 0x00 0x00    Con. wire resistance 17
+  // 226   4   0x00 0x00 0x00 0x00    Con. wire resistance 18
+  // 230   4   0x00 0x00 0x00 0x00    Con. wire resistance 19
+  // 234   4   0x00 0x00 0x00 0x00    Con. wire resistance 20
+  // 238   4   0x00 0x00 0x00 0x00    Con. wire resistance 21
+  // 242   4   0x00 0x00 0x00 0x00    Con. wire resistance 22
+  // 246   4   0x00 0x00 0x00 0x00    Con. wire resistance 23
+  // 250   4   0x00 0x00 0x00 0x00    Con. wire resistance 24
+  for (uint8_t i = 0; i < 24; i++) {
+    ESP_LOGI(TAG, "  Con. wire resistance %d: %f Ohm", i + 1, (float) jk_get_32bit(i * 4 + 158) * 0.001f);
+  }
+
+  // 254   4   0x00 0x00 0x00 0x00
+  // 258   4   0x00 0x00 0x00 0x00
+  // 262   4   0x00 0x00 0x00 0x00
+  // 266   4   0x00 0x00 0x00 0x00
+  // 270   4   0x00 0x00 0x00 0x00
+  // 274   4   0x00 0x00 0x00 0x00
+  // 278   4   0x00 0x00 0x00 0x00
+  // 282   4   0x00 0x00 0x00 0x00
+  // 286   4   0x00 0x00 0x00 0x00
+  // 290   4   0x00 0x00 0x00 0x00
+  // 294   4   0x00 0x00 0x00 0x00
+  // 298   1   0x00
+  // 299   1   0x40                   CRC
 }
 
 void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
