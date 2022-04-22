@@ -6,6 +6,7 @@
 #include "esphome/components/esp32_ble_tracker/esp32_ble_tracker.h"
 #include "esphome/components/binary_sensor/binary_sensor.h"
 #include "esphome/components/sensor/sensor.h"
+#include "esphome/components/switch/switch.h"
 #include "esphome/components/text_sensor/text_sensor.h"
 
 #ifdef USE_ESP32
@@ -107,8 +108,13 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
     total_runtime_formatted_text_sensor_ = total_runtime_formatted_text_sensor;
   }
 
+  void set_charging_switch(switch_::Switch *charging_switch) { charging_switch_ = charging_switch; }
+  void set_discharging_switch(switch_::Switch *discharging_switch) { discharging_switch_ = discharging_switch; }
+  void set_balancer_switch(switch_::Switch *balancer_switch) { balancer_switch_ = balancer_switch; }
+
   void set_enable_fake_traffic(bool enable_fake_traffic) { enable_fake_traffic_ = enable_fake_traffic; }
   void set_protocol_version(ProtocolVersion protocol_version) { this->protocol_version_ = protocol_version; }
+  bool write_register(uint8_t address, uint32_t value);
 
   struct Cell {
     sensor::Sensor *cell_voltage_sensor_{nullptr};
@@ -144,6 +150,10 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   sensor::Sensor *total_runtime_sensor_;
   sensor::Sensor *balancing_current_sensor_;
 
+  switch_::Switch *charging_switch_;
+  switch_::Switch *discharging_switch_;
+  switch_::Switch *balancer_switch_;
+
   text_sensor::TextSensor *total_runtime_formatted_text_sensor_;
 
   std::vector<uint8_t> frame_buffer_;
@@ -161,6 +171,7 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   void decode_settings_(const std::vector<uint8_t> &data);
   void publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state);
   void publish_state_(sensor::Sensor *sensor, float value);
+  void publish_state_(switch_::Switch *obj, const bool &state);
   void publish_state_(text_sensor::TextSensor *text_sensor, const std::string &state);
 
   std::string format_total_runtime_(const uint32_t value) {

@@ -764,12 +764,19 @@ void JkBmsBle::decode_settings_(const std::vector<uint8_t> &data) {
   ESP_LOGI(TAG, "  MOS OTP recovery: %f °C", (float) jk_get_32bit(110) * 0.1f);
   // 114   4   0x0D 0x00 0x00 0x00    Cell count
   ESP_LOGI(TAG, "  Cell count: %f", (float) jk_get_32bit(114));
+
   // 118   4   0x01 0x00 0x00 0x00    Charge switch
   ESP_LOGI(TAG, "  Charge switch: %s", ((bool) data[118]) ? "on" : "off");
+  this->publish_state_(this->charging_switch_, (bool) data[118]);
+
   // 122   4   0x01 0x00 0x00 0x00    Discharge switch
   ESP_LOGI(TAG, "  Discharge switch: %s", ((bool) data[122]) ? "on" : "off");
+  this->publish_state_(this->discharging_switch_, (bool) data[122]);
+
   // 126   4   0x01 0x00 0x00 0x00    Balancer switch
   ESP_LOGI(TAG, "  Balancer switch: %s", ((bool) data[126]) ? "on" : "off");
+  this->publish_state_(this->balancer_switch_, (bool) (data[126]));
+
   // 130   4   0x88 0x13 0x00 0x00    Nominal battery capacity
   ESP_LOGI(TAG, "  Nominal battery capacity: %f Ah", (float) jk_get_32bit(130) * 0.001f);
   // 134   4   0xDC 0x05 0x00 0x00    Unknown6
@@ -862,6 +869,39 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
   ESP_LOGI(TAG, "  Setup passcode: %s", std::string(data.begin() + 118, data.begin() + 118 + 16).c_str());
 }
 
+bool JkBmsBle::write_register(uint8_t address, uint32_t value) {
+  uint8_t frame[20];
+  frame[0] = 0xAA;     // start sequence
+  frame[1] = 0x55;     // start sequence
+  frame[2] = 0x90;     // start sequence
+  frame[3] = 0xEB;     // start sequence
+  frame[4] = address;  // holding register
+  frame[5] = 0x04;     // size of the value in byte
+  frame[6] = value >> 24;
+  frame[7] = value >> 16;
+  frame[8] = value >> 8;
+  frame[9] = value >> 0;
+  frame[10] = 0x00;
+  frame[11] = 0x00;
+  frame[12] = 0x00;
+  frame[13] = 0x00;
+  frame[14] = 0x00;
+  frame[15] = 0x00;
+  frame[16] = 0x00;
+  frame[17] = 0x00;
+  frame[18] = 0x00;
+  frame[19] = crc(frame, sizeof(frame) - 1);
+
+  ESP_LOGD(TAG, "Write register: %s", format_hex_pretty(frame, sizeof(frame)).c_str());
+  auto status = esp_ble_gattc_write_char(this->parent_->gattc_if, this->parent_->conn_id, this->char_handle_,
+                                         sizeof(frame), frame, ESP_GATT_WRITE_TYPE_NO_RSP, ESP_GATT_AUTH_REQ_NONE);
+
+  if (status)
+    ESP_LOGW(TAG, "[%s] esp_ble_gattc_write_char failed, status=%d", this->parent_->address_str().c_str(), status);
+
+  return (status == 0);
+}
+
 void JkBmsBle::publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state) {
   if (binary_sensor == nullptr)
     return;
@@ -874,6 +914,13 @@ void JkBmsBle::publish_state_(sensor::Sensor *sensor, float value) {
     return;
 
   sensor->publish_state(value);
+}
+
+void JkBmsBle::publish_state_(switch_::Switch *obj, const bool &state) {
+  if (obj == nullptr)
+    return;
+
+  obj->publish_state(state);
 }
 
 void JkBmsBle::publish_state_(text_sensor::TextSensor *text_sensor, const std::string &state) {

@@ -202,6 +202,15 @@ sensor:
     balancing_current:
       name: "${name} balancing current"
 
+switch:
+  - platform: jk_bms_ble
+    charging:
+      name: "${name} charging"
+    discharging:
+      name: "${name} discharging"
+    balancer:
+      name: "${name} balancer"
+
 text_sensor:
   - platform: jk_bms_ble
     total_runtime_formatted:
