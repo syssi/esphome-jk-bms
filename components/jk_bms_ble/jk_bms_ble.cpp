@@ -862,6 +862,35 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
   ESP_LOGI(TAG, "  Setup passcode: %s", std::string(data.begin() + 118, data.begin() + 118 + 16).c_str());
 }
 
+void JkBmsBle::write_register(uint8_t address, uint32_t value) {
+  uint8_t frame[20];
+  frame[0] = 0xAA;     // start sequence
+  frame[1] = 0x55;     // start sequence
+  frame[2] = 0x90;     // start sequence
+  frame[3] = 0xEB;     // start sequence
+  frame[4] = address;  // holding register
+  frame[5] = 0x04;     // size of the value in byte
+  frame[6] = value;
+  frame[7] = value;
+  frame[8] = value;
+  frame[9] = value;
+  frame[10] = 0x00;
+  frame[11] = 0x00;
+  frame[12] = 0x00;
+  frame[13] = 0x00;
+  frame[14] = 0x00;
+  frame[15] = 0x00;
+  frame[16] = 0x00;
+  frame[17] = 0x00;
+  frame[18] = 0x00;
+  frame[19] = crc(frame, 19);
+
+  auto status = esp_ble_gattc_write_char(this->parent_->gattc_if, this->parent_->conn_id, this->char_handle_,
+                                         sizeof(frame), frame, ESP_GATT_WRITE_TYPE_NO_RSP, ESP_GATT_AUTH_REQ_NONE);
+  if (status)
+    ESP_LOGW(TAG, "[%s] esp_ble_gattc_write_char failed, status=%d", this->parent_->address_str().c_str(), status);
+}
+
 void JkBmsBle::publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state) {
   if (binary_sensor == nullptr)
     return;
