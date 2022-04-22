@@ -114,7 +114,7 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
 
   void set_enable_fake_traffic(bool enable_fake_traffic) { enable_fake_traffic_ = enable_fake_traffic; }
   void set_protocol_version(ProtocolVersion protocol_version) { this->protocol_version_ = protocol_version; }
-  void write_register(uint8_t address, uint32_t value);
+  bool write_register(uint8_t address, uint32_t value);
 
   struct Cell {
     sensor::Sensor *cell_voltage_sensor_{nullptr};
