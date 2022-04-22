@@ -14,6 +14,26 @@ static const uint16_t JK_BMS_CHARACTERISTIC_UUID = 0xFFE1;
 static const uint16_t MIN_RESPONSE_SIZE = 300;
 static const uint16_t MAX_RESPONSE_SIZE = 320;
 
+static const uint8_t ERRORS_SIZE = 16;
+static const char *const ERRORS[ERRORS_SIZE] = {
+    "Charge Overtemperature",               // 0000 0000 0000 0001
+    "Charge Undertemperature",              // 0000 0000 0000 0010
+    "Error 0x00 0x04",                      // 0000 0000 0000 0100
+    "Cell Undervoltage",                    // 0000 0000 0000 1000
+    "Error 0x00 0x10",                      // 0000 0000 0001 0000
+    "Error 0x00 0x20",                      // 0000 0000 0010 0000
+    "Error 0x00 0x40",                      // 0000 0000 0100 0000
+    "Error 0x00 0x80",                      // 0000 0000 1000 0000
+    "Error 0x01 0x00",                      // 0000 0001 0000 0000
+    "Error 0x02 0x00",                      // 0000 0010 0000 0000
+    "Cell count is not equal to settings",  // 0000 0100 0000 0000
+    "Error 0x08 0x00",                      // 0000 1000 0000 0000
+    "Cell Overvoltage",                     // 0001 0000 0000 0000
+    "Error 0x20 0x00",                      // 0010 0000 0000 0000
+    "Error 0x40 0x00",                      // 0100 0000 0000 0000
+    "Error 0x80 0x00",                      // 1000 0000 0000 0000
+};
+
 uint8_t crc(const uint8_t data[], const uint16_t len) {
   uint8_t crc = 0;
   for (uint16_t i = 0; i < len; i++) {
@@ -420,7 +440,9 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   //                                    Cell count is not equal to settings
   //           0x04 0x08                Cell Undervoltage +                  0000 0100 0000 1000
   //                                    Cell count is not equal to settings
-  ESP_LOGI(TAG, "System alarms: %02X %02X", data[136], data[137]);
+  uint16_t raw_errors_bitmask = jk_get_16bit(data[136]);
+  this->publish_state_(this->errors_bitmask_sensor_, (float) raw_errors_bitmask);
+  this->publish_state_(this->errors_text_sensor_, this->error_bits_to_string_(raw_errors_bitmask));
 
   // 138   2   0x00 0x00              Balance current      0.001         A
   this->publish_state_(this->balancing_current_sensor_, (float) ((int16_t) jk_get_16bit(138)) * 0.001f);
@@ -928,6 +950,26 @@ void JkBmsBle::publish_state_(text_sensor::TextSensor *text_sensor, const std::s
     return;
 
   text_sensor->publish_state(state);
+}
+
+std::string JkBmsBle::error_bits_to_string_(const uint16_t mask) {
+  bool first = true;
+  std::string errors_list = "";
+
+  if (mask) {
+    for (int i = 0; i < ERRORS_SIZE; i++) {
+      if (mask & (1 << i)) {
+        if (first) {
+          first = false;
+        } else {
+          errors_list.append(";");
+        }
+        errors_list.append(ERRORS[i]);
+      }
+    }
+  }
+
+  return errors_list;
 }
 
 }  // namespace jk_bms_ble

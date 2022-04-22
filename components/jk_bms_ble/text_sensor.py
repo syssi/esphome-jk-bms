@@ -9,15 +9,25 @@ DEPENDENCIES = ["jk_bms_ble"]
 
 CODEOWNERS = ["@syssi"]
 
+CONF_ERRORS = "errors"
 CONF_TOTAL_RUNTIME_FORMATTED = "total_runtime_formatted"
 
+ICON_ERRORS = "mdi:alert-circle-outline"
+
 TEXT_SENSORS = [
+    CONF_ERRORS,
     CONF_TOTAL_RUNTIME_FORMATTED,
 ]
 
 CONFIG_SCHEMA = cv.Schema(
     {
         cv.GenerateID(CONF_JK_BMS_BLE_ID): cv.use_id(JkBmsBle),
+        cv.Optional(CONF_ERRORS): text_sensor.TEXT_SENSOR_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
+                cv.Optional(CONF_ICON, default=ICON_ERRORS): cv.icon,
+            }
+        ),
         cv.Optional(
             CONF_TOTAL_RUNTIME_FORMATTED
         ): text_sensor.TEXT_SENSOR_SCHEMA.extend(
