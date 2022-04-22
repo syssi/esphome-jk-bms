@@ -10,7 +10,7 @@ namespace jk_bms_ble {
 class JkBmsBle;
 class JkSwitch : public switch_::Switch, public Component {
  public:
-  void set_parent(JkBms *parent) { this->parent_ = parent; };
+  void set_parent(JkBmsBle *parent) { this->parent_ = parent; };
   void set_holding_register(uint8_t holding_register) { this->holding_register_ = holding_register; };
   void dump_config() override;
   void loop() override {}
