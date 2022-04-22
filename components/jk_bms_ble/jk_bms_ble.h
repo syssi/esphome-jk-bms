@@ -103,7 +103,11 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   void set_balancing_current_sensor(sensor::Sensor *balancing_current_sensor) {
     balancing_current_sensor_ = balancing_current_sensor;
   }
+  void set_errors_bitmask_sensor(sensor::Sensor *errors_bitmask_sensor) {
+    errors_bitmask_sensor_ = errors_bitmask_sensor;
+  }
 
+  void set_errors_text_sensor(text_sensor::TextSensor *errors_text_sensor) { errors_text_sensor_ = errors_text_sensor; }
   void set_total_runtime_formatted_text_sensor(text_sensor::TextSensor *total_runtime_formatted_text_sensor) {
     total_runtime_formatted_text_sensor_ = total_runtime_formatted_text_sensor;
   }
@@ -149,11 +153,13 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   sensor::Sensor *total_charging_cycle_capacity_sensor_;
   sensor::Sensor *total_runtime_sensor_;
   sensor::Sensor *balancing_current_sensor_;
+  sensor::Sensor *errors_bitmask_sensor_;
 
   switch_::Switch *charging_switch_;
   switch_::Switch *discharging_switch_;
   switch_::Switch *balancer_switch_;
 
+  text_sensor::TextSensor *errors_text_sensor_;
   text_sensor::TextSensor *total_runtime_formatted_text_sensor_;
 
   std::vector<uint8_t> frame_buffer_;

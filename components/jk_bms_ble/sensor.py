@@ -95,6 +95,7 @@ CONF_CHARGING_CYCLES = "charging_cycles"
 CONF_TOTAL_CHARGING_CYCLE_CAPACITY = "total_charging_cycle_capacity"
 CONF_TOTAL_RUNTIME = "total_runtime"
 CONF_BALANCING_CURRENT = "balancing_current"
+CONF_ERRORS_BITMASK = "errors_bitmask"
 
 UNIT_AMPERE_HOURS = "Ah"
 UNIT_OHM = "Ω"
@@ -106,6 +107,7 @@ ICON_MAX_VOLTAGE_CELL = "mdi:battery-plus-outline"
 ICON_STATE_OF_CHARGE = "mdi:battery-50"
 ICON_CAPACITY_REMAINING = "mdi:battery-50"
 ICON_CHARGING_CYCLES = "mdi:battery-sync"
+ICON_ERRORS_BITMASK = "mdi:alert-circle-outline"
 
 CELL_VOLTAGES = [
     CONF_CELL_VOLTAGE_1,
@@ -183,6 +185,7 @@ SENSORS = [
     CONF_TOTAL_CHARGING_CYCLE_CAPACITY,
     CONF_TOTAL_RUNTIME,
     CONF_BALANCING_CURRENT,
+    CONF_ERRORS_BITMASK,
 ]
 
 # pylint: disable=too-many-function-args
@@ -670,6 +673,13 @@ CONFIG_SCHEMA = cv.Schema(
             icon=ICON_EMPTY,
             accuracy_decimals=2,
             device_class=DEVICE_CLASS_CURRENT,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_ERRORS_BITMASK): sensor.sensor_schema(
+            unit_of_measurement=UNIT_EMPTY,
+            icon=ICON_ERRORS_BITMASK,
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
     }
