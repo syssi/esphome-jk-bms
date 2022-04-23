@@ -5,7 +5,7 @@
 namespace esphome {
 namespace jk_bms_ble {
 
-static const char *const TAG = "ant_bms.button";
+static const char *const TAG = "jk_bms_ble.button";
 
 void JkButton::dump_config() { LOG_BUTTON("", "JkBmsBle Button", this); }
 void JkButton::press_action() { this->parent_->write_register(this->holding_register_, 0x00000000); }
