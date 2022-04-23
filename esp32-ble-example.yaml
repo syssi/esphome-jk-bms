@@ -60,6 +60,11 @@ binary_sensor:
     discharging:
       name: "${name} discharging"
 
+button:
+  - platform: jk_bms_ble
+    retrieve_settings:
+      name: "${name} retrieve settings"
+
 sensor:
   - platform: jk_bms_ble
     jk_bms_ble_id: bms0

@@ -153,8 +153,8 @@ void JkBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gat
 
       ESP_LOGW(TAG, "Request device info");
       // Request extracted from btsnoop_hci_jk-bd6a17s6p_hw72_sw710h.log
-      static uint8_t req_device_info[20] = {0xaa, 0x55, 0x90, 0xeb, 0x97, 0x00, 0xf4, 0x5f, 0xe2, 0x03,
-                                            0x6d, 0xfb, 0xe0, 0x38, 0xaa, 0xbc, 0x44, 0x12, 0x34, 0xb9};
+      static uint8_t req_device_info[20] = {0xAA, 0x55, 0x90, 0xEB, 0x97, 0x00, 0xF4, 0x5F, 0xe2, 0x03,
+                                            0x6D, 0xFB, 0xE0, 0x38, 0xAA, 0xBC, 0x44, 0x12, 0x34, 0xB9};
       auto status = esp_ble_gattc_write_char(this->parent_->gattc_if, this->parent_->conn_id, this->char_handle_,
                                              sizeof(req_device_info), req_device_info, ESP_GATT_WRITE_TYPE_NO_RSP,
                                              ESP_GATT_AUTH_REQ_NONE);
@@ -234,8 +234,8 @@ void JkBmsBle::update() {
   if (!this->status_notification_received_) {
     ESP_LOGI(TAG, "Request status notification");
     // Request extracted from btsnoop_hci_jk-bd6a17s6p_hw72_sw710h.log
-    static uint8_t req_status[20] = {0xaa, 0x55, 0x90, 0xeb, 0x96, 0x00, 0x79, 0x62, 0x96, 0xed,
-                                     0xe3, 0xd0, 0x82, 0xa1, 0x9b, 0x5b, 0x3c, 0x9c, 0x4b, 0x5d};
+    static uint8_t req_status[20] = {0xAA, 0x55, 0x90, 0xEB, 0x96, 0x00, 0x79, 0x62, 0x96, 0xED,
+                                     0xE3, 0xD0, 0x82, 0xA1, 0x9B, 0x5B, 0x3C, 0x9C, 0x4B, 0x5D};
     auto status =
         esp_ble_gattc_write_char(this->parent_->gattc_if, this->parent_->conn_id, this->char_handle_,
                                  sizeof(req_status), req_status, ESP_GATT_WRITE_TYPE_NO_RSP, ESP_GATT_AUTH_REQ_NONE);
