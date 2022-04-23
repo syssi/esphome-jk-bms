@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../jk_bms.h"
+#include "../jk_bms_ble.h"
 #include "esphome/core/component.h"
 #include "esphome/components/button/button.h"
 
