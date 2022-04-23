@@ -10,11 +10,15 @@ DEPENDENCIES = ["jk_bms_ble"]
 CODEOWNERS = ["@syssi"]
 
 CONF_RETRIEVE_SETTINGS = "retrieve_settings"
+CONF_RETRIEVE_DEVICE_INFO = "retrieve_device_info"
 
 ICON_RETRIEVE_SETTINGS = "mdi:cog"
+ICON_RETRIEVE_DEVICE_INFO = "mdi:information-variant"
 
 BUTTONS = {
-    CONF_RETRIEVE_SETTINGS: 0x97,
+    # The BMS responds to the 0x96 request with a single settings frame and enables the notification stream
+    CONF_RETRIEVE_SETTINGS: 0x96,
+    CONF_RETRIEVE_DEVICE_INFO: 0x97,
 }
 
 JkButton = jk_bms_ble_ns.class_("JkButton", button.Button, cg.Component)
@@ -26,6 +30,12 @@ CONFIG_SCHEMA = cv.Schema(
             {
                 cv.GenerateID(): cv.declare_id(JkButton),
                 cv.Optional(CONF_ICON, default=ICON_RETRIEVE_SETTINGS): cv.icon,
+            }
+        ).extend(cv.COMPONENT_SCHEMA),
+        cv.Optional(CONF_RETRIEVE_DEVICE_INFO): button.BUTTON_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(JkButton),
+                cv.Optional(CONF_ICON, default=ICON_RETRIEVE_DEVICE_INFO): cv.icon,
             }
         ).extend(cv.COMPONENT_SCHEMA),
     }
