@@ -171,10 +171,11 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
 
   void assemble_(const uint8_t *data, uint16_t length);
   void decode_(const std::vector<uint8_t> &data);
+  void decode_device_info_(const std::vector<uint8_t> &data);
   void decode_jk02_cell_info_(const std::vector<uint8_t> &data);
   void decode_jk04_cell_info_(const std::vector<uint8_t> &data);
-  void decode_device_info_(const std::vector<uint8_t> &data);
-  void decode_settings_(const std::vector<uint8_t> &data);
+  void decode_jk02_settings_(const std::vector<uint8_t> &data);
+  void decode_jk04_settings_(const std::vector<uint8_t> &data);
   void publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state);
   void publish_state_(sensor::Sensor *sensor, float value);
   void publish_state_(switch_::Switch *obj, const bool &state);
