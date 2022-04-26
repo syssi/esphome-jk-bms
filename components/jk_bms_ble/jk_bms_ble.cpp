@@ -155,7 +155,7 @@ void JkBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gat
       this->status_notification_received_ = false;
 
       ESP_LOGI(TAG, "Request device info");
-      this->write_register(COMMAND_DEVICE_INFO, 0x00000000);
+      this->write_register(COMMAND_DEVICE_INFO, 0x00000000, 0x00);
 
       break;
     }
@@ -229,7 +229,7 @@ void JkBmsBle::update() {
 
   if (!this->status_notification_received_) {
     ESP_LOGI(TAG, "Request status notification");
-    this->write_register(COMMAND_CELL_INFO, 0x00000000);
+    this->write_register(COMMAND_CELL_INFO, 0x00000000, 0x00);
   }
 }
 
