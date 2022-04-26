@@ -10,7 +10,7 @@ static const char *const TAG = "jk_bms_ble.switch";
 void JkSwitch::dump_config() { LOG_SWITCH("", "JkBmsBle Switch", this); }
 void JkSwitch::write_state(bool state) {
   if (this->parent_->get_protocol_version() == PROTOCOL_VERSION_JK02) {
-    if (this->parent_->write_register(this->jk02_holding_register_, (state) ? 0x01000000 : 0x00000000, 0x04) {
+    if (this->parent_->write_register(this->jk02_holding_register_, (state) ? 0x01000000 : 0x00000000, 0x04)) {
       this->publish_state(state);
     }
     return;
@@ -21,7 +21,7 @@ void JkSwitch::write_state(bool state) {
     return;
   }
 
-  if (this->parent_->write_register(this->jk04_holding_register_, (state) ? 0x01000000 : 0x00000000, 0x01) {
+  if (this->parent_->write_register(this->jk04_holding_register_, (state) ? 0x01000000 : 0x00000000, 0x01)) {
     this->publish_state(state);
   }
 }
