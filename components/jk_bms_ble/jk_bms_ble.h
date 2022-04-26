@@ -117,8 +117,9 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   void set_balancer_switch(switch_::Switch *balancer_switch) { balancer_switch_ = balancer_switch; }
 
   void set_enable_fake_traffic(bool enable_fake_traffic) { enable_fake_traffic_ = enable_fake_traffic; }
-  void set_protocol_version(ProtocolVersion protocol_version) { this->protocol_version_ = protocol_version; }
-  bool write_register(uint8_t address, uint32_t value);
+  void set_protocol_version(ProtocolVersion protocol_version) { protocol_version_ = protocol_version; }
+  bool get_protocol_version() { return protocol_version_; }
+  bool write_register(uint8_t address, uint32_t value, uint8_t length);
 
   struct Cell {
     sensor::Sensor *cell_voltage_sensor_{nullptr};
