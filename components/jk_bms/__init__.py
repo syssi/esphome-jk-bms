@@ -25,9 +25,9 @@ CONFIG_SCHEMA = (
 )
 
 
-def to_code(config):
+async def to_code(config):
     var = cg.new_Pvariable(config[CONF_ID])
-    yield cg.register_component(var, config)
-    yield jk_modbus.register_jk_modbus_device(var, config)
+    await cg.register_component(var, config)
+    await jk_modbus.register_jk_modbus_device(var, config)
 
     cg.add(var.set_enable_fake_traffic(config[CONF_ENABLE_FAKE_TRAFFIC]))
