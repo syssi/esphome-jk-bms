@@ -888,10 +888,10 @@ void JkBmsBle::decode_jk04_settings_(const std::vector<uint8_t> &data) {
   // 22    4   0x00 0x00 0x00 0x00
   // 26    4   0x00 0x00 0x00 0x00
   // 30    4   0x00 0x00 0x00 0x00
-  // 34    4   0x10 0x00 0x00 0x00
+  // 34    4   0x10 0x00 0x00 0x00    Cell count
   ESP_LOGI(TAG, "  Cell count: %d", data[34]);
 
-  // 38    4   0x00 0x00 0x40 0x40
+  // 38    4   0x00 0x00 0x40 0x40    Power off voltage
   ESP_LOGI(TAG, "  Power off voltage: %f V", (float) ieee_float_(jk_get_32bit(38)));
 
   // 42    4   0x00 0x00 0x00 0x00
@@ -910,20 +910,19 @@ void JkBmsBle::decode_jk04_settings_(const std::vector<uint8_t> &data) {
   // 86    4   0x00 0x00 0x00 0x00
   // 90    4   0x00 0x00 0x00 0x00
   // 94    4   0x00 0x00 0x00 0x00
-  // 98    4   0x00 0x00 0x88 0x40
+  // 98    4   0x00 0x00 0x88 0x40    Start balance voltage
   ESP_LOGI(TAG, "  Start balance voltage: %f V", (float) ieee_float_(jk_get_32bit(98)));
 
   // 102   4   0x9A 0x99 0x59 0x40
   ESP_LOGI(TAG, "  Unknown102: %f", (float) ieee_float_(jk_get_32bit(102)));
 
-  // 106   4   0x0A 0xD7 0xA3 0x3B
+  // 106   4   0x0A 0xD7 0xA3 0x3B    Trigger delta voltage
   ESP_LOGI(TAG, "  Trigger Delta Voltage: %f V", (float) ieee_float_(jk_get_32bit(106)));
 
-  // 110   4   0x00 0x00 0x00 0x40
+  // 110   4   0x00 0x00 0x00 0x40    Max. balance current
   ESP_LOGI(TAG, "  Max. balance current: %f A", (float) ieee_float_(jk_get_32bit(110)));
-  // 114   4   0x01 0x00 0x00 0x00
-  ESP_LOGI(TAG, "  Unknown114/Balancer enabled?: %02X %02X %02X %02X (always 0x01 0x00 0x00 0x00?)", data[114],
-           data[115], data[116], data[117]);
+  // 114   4   0x01 0x00 0x00 0x00    Balancer switch
+  this->publish_state_(this->balancer_switch_, (bool) (data[114]));
 
   ESP_LOGI(TAG, "  ADC Vref: unknown V");  // 53.67 V?
 
