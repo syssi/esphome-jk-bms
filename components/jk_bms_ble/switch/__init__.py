@@ -18,9 +18,9 @@ ICON_DISCHARGING = "mdi:battery-charging-50"
 ICON_BALANCER = "mdi:seesaw"
 
 SWITCHES = {
-    CONF_CHARGING: 0x1D,
-    CONF_DISCHARGING: 0x1E,
-    CONF_BALANCER: 0x1F,
+    CONF_CHARGING: [0x1D, 0x00],
+    CONF_DISCHARGING: [0x1E, 0x00],
+    CONF_BALANCER: [0x1F, 0x6C],
 }
 
 JkSwitch = jk_bms_ble_ns.class_("JkSwitch", switch.Switch, cg.Component)
@@ -60,4 +60,5 @@ async def to_code(config):
             await switch.register_switch(var, conf)
             cg.add(getattr(hub, f"set_{key}_switch")(var))
             cg.add(var.set_parent(hub))
-            cg.add(var.set_holding_register(address))
+            cg.add(var.set_jk02_holding_register(address[0]))
+            cg.add(var.set_jk04_holding_register(address[1]))

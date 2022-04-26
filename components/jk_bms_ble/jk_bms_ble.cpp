@@ -155,7 +155,7 @@ void JkBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gat
       this->status_notification_received_ = false;
 
       ESP_LOGI(TAG, "Request device info");
-      this->write_register(COMMAND_DEVICE_INFO, 0x00000000);
+      this->write_register(COMMAND_DEVICE_INFO, 0x00000000, 0x00);
 
       break;
     }
@@ -229,7 +229,7 @@ void JkBmsBle::update() {
 
   if (!this->status_notification_received_) {
     ESP_LOGI(TAG, "Request status notification");
-    this->write_register(COMMAND_CELL_INFO, 0x00000000);
+    this->write_register(COMMAND_CELL_INFO, 0x00000000, 0x00);
   }
 }
 
@@ -1010,14 +1010,14 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
   ESP_LOGI(TAG, "  Setup passcode: %s", std::string(data.begin() + 118, data.begin() + 118 + 16).c_str());
 }
 
-bool JkBmsBle::write_register(uint8_t address, uint32_t value) {
+bool JkBmsBle::write_register(uint8_t address, uint32_t value, uint8_t length) {
   uint8_t frame[20];
   frame[0] = 0xAA;     // start sequence
   frame[1] = 0x55;     // start sequence
   frame[2] = 0x90;     // start sequence
   frame[3] = 0xEB;     // start sequence
   frame[4] = address;  // holding register
-  frame[5] = 0x04;     // size of the value in byte
+  frame[5] = length;   // size of the value in byte
   frame[6] = value >> 24;
   frame[7] = value >> 16;
   frame[8] = value >> 8;
