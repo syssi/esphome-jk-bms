@@ -42,13 +42,13 @@ CONFIG_SCHEMA = cv.Schema(
 )
 
 
-def to_code(config):
-    hub = yield cg.get_variable(config[CONF_JK_BMS_BLE_ID])
+async def to_code(config):
+    hub = await cg.get_variable(config[CONF_JK_BMS_BLE_ID])
     for key, address in BUTTONS.items():
         if key in config:
             conf = config[key]
             var = cg.new_Pvariable(conf[CONF_ID])
-            yield cg.register_component(var, conf)
-            yield button.register_button(var, conf)
+            await cg.register_component(var, conf)
+            await button.register_button(var, conf)
             cg.add(var.set_parent(hub))
             cg.add(var.set_holding_register(address))

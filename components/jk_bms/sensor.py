@@ -812,15 +812,15 @@ CONFIG_SCHEMA = cv.Schema(
 )
 
 
-def to_code(config):
-    hub = yield cg.get_variable(config[CONF_JK_BMS_ID])
+async def to_code(config):
+    hub = await cg.get_variable(config[CONF_JK_BMS_ID])
     for i, key in enumerate(CELLS):
         if key in config:
             conf = config[key]
-            sens = yield sensor.new_sensor(conf)
+            sens = await sensor.new_sensor(conf)
             cg.add(hub.set_cell_voltage_sensor(i, sens))
     for key in SENSORS:
         if key in config:
             conf = config[key]
-            sens = yield sensor.new_sensor(conf)
+            sens = await sensor.new_sensor(conf)
             cg.add(getattr(hub, f"set_{key}_sensor")(sens))
