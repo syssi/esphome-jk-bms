@@ -10,12 +10,15 @@ DEPENDENCIES = ["jk_bms_ble"]
 CODEOWNERS = ["@syssi"]
 
 CONF_ERRORS = "errors"
+CONF_OPERATION_STATUS = "operation_status"
 CONF_TOTAL_RUNTIME_FORMATTED = "total_runtime_formatted"
 
 ICON_ERRORS = "mdi:alert-circle-outline"
+ICON_OPERATION_STATUS = "mdi:heart-pulse"
 
 TEXT_SENSORS = [
     CONF_ERRORS,
+    CONF_OPERATION_STATUS,
     CONF_TOTAL_RUNTIME_FORMATTED,
 ]
 
@@ -26,6 +29,12 @@ CONFIG_SCHEMA = cv.Schema(
             {
                 cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
                 cv.Optional(CONF_ICON, default=ICON_ERRORS): cv.icon,
+            }
+        ),
+        cv.Optional(CONF_OPERATION_STATUS): text_sensor.TEXT_SENSOR_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
+                cv.Optional(CONF_ICON, default=ICON_OPERATION_STATUS): cv.icon,
             }
         ),
         cv.Optional(

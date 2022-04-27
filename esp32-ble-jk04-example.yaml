@@ -183,5 +183,7 @@ sensor:
 
 text_sensor:
   - platform: jk_bms_ble
+    operation_status:
+      name: "${name} operation status"
     total_runtime_formatted:
       name: "${name} total runtime formatted"

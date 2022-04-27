@@ -108,6 +108,9 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   }
 
   void set_errors_text_sensor(text_sensor::TextSensor *errors_text_sensor) { errors_text_sensor_ = errors_text_sensor; }
+  void set_operation_status_text_sensor(text_sensor::TextSensor *operation_status_text_sensor) {
+    operation_status_text_sensor_ = operation_status_text_sensor;
+  }
   void set_total_runtime_formatted_text_sensor(text_sensor::TextSensor *total_runtime_formatted_text_sensor) {
     total_runtime_formatted_text_sensor_ = total_runtime_formatted_text_sensor;
   }
@@ -161,6 +164,7 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   switch_::Switch *balancer_switch_;
 
   text_sensor::TextSensor *errors_text_sensor_;
+  text_sensor::TextSensor *operation_status_text_sensor_;
   text_sensor::TextSensor *total_runtime_formatted_text_sensor_;
 
   std::vector<uint8_t> frame_buffer_;
