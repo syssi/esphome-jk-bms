@@ -341,10 +341,8 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
   // 0xB5 0x32 0x31 0x30 0x31: Date of manufacture
   // 0xB6 0x00 0x00 0xE2 0x00: System working hours
   this->publish_state_(this->total_runtime_sensor_, (float) jk_get_32bit(offset + 46 + 3 * 40) * 0.0166666666667);
-  if (this->total_runtime_formatted_text_sensor_ != nullptr) {
-    this->publish_state_(this->total_runtime_formatted_text_sensor_,
-                         format_total_runtime_(jk_get_32bit(offset + 46 + 3 * 40) * 60));
-  }
+  this->publish_state_(this->total_runtime_formatted_text_sensor_,
+                       format_total_runtime_(jk_get_32bit(offset + 46 + 3 * 40) * 60));
 
   // 0xB7 0x48 0x36 0x2E 0x58 0x5F 0x5F 0x53
   //      0x36 0x2E 0x31 0x2E 0x33 0x53 0x5F 0x5F: Software version number

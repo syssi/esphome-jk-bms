@@ -115,6 +115,7 @@ void JkBmsBle::dump_config() {  // NOLINT(google-readability-function-size,reada
   LOG_SENSOR("", "Charging Cycles", this->charging_cycles_sensor_);
   LOG_SENSOR("", "Total Charging Cycle Capacity", this->total_charging_cycle_capacity_sensor_);
   LOG_SENSOR("", "Total Runtime", this->total_runtime_sensor_);
+  LOG_TEXT_SENSOR("", "Operation Status", this->operation_status_text_sensor_);
   LOG_TEXT_SENSOR("", "Total Runtime Formatted", this->total_runtime_formatted_text_sensor_);
   LOG_BINARY_SENSOR("", "Balancing", this->balancing_binary_sensor_);
   LOG_BINARY_SENSOR("", "Charging", this->charging_binary_sensor_);
@@ -468,9 +469,7 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
 
   // 162   4   0xCA 0x03 0x10 0x00    Total runtime in seconds           s
   this->publish_state_(this->total_runtime_sensor_, (float) jk_get_32bit(162));
-  if (this->total_runtime_formatted_text_sensor_ != nullptr) {
-    this->publish_state_(this->total_runtime_formatted_text_sensor_, format_total_runtime_(jk_get_32bit(162)));
-  }
+  this->publish_state_(this->total_runtime_formatted_text_sensor_, format_total_runtime_(jk_get_32bit(162)));
 
   // 166   1   0x01                   Charging switch enabled                      0x00: off, 0x01: on
   this->publish_state_(this->charging_binary_sensor_, (bool) data[166]);
@@ -651,7 +650,9 @@ void JkBmsBle::decode_jk04_cell_info_(const std::vector<uint8_t> &data) {
   ESP_LOGI(TAG, "Unknown219: %02X", data[219]);
 
   // 220   1   0x00                  Blink cells (0x00: Off, 0x01: Charging balancer, 0x02: Discharging balancer)
-  this->publish_state_(this->balancing_binary_sensor_, (bool) (data[220] != 0x00));
+  bool balancing = (bool) (data[220] != 0x00);
+  this->publish_state_(this->balancing_binary_sensor_, balancing);
+  this->publish_state_(this->operation_status_text_sensor_, (balancing) ? "Balancing" : "Idle");
 
   // 221   1   0x01                  Unknown221
   ESP_LOGI(TAG, "Unknown221: %02X", data[221]);
@@ -679,9 +680,7 @@ void JkBmsBle::decode_jk04_cell_info_(const std::vector<uint8_t> &data) {
   //           0x00 0x00 0x00 0x00 0x00
   // 286   3   0x53 0x96 0x1C 0x00        Uptime
   this->publish_state_(this->total_runtime_sensor_, (float) jk_get_32bit(286));
-  if (this->total_runtime_formatted_text_sensor_ != nullptr) {
-    this->publish_state_(this->total_runtime_formatted_text_sensor_, format_total_runtime_(jk_get_32bit(286)));
-  }
+  this->publish_state_(this->total_runtime_formatted_text_sensor_, format_total_runtime_(jk_get_32bit(286)));
 
   // 290   4   0x00 0x00 0x00 0x00    Unknown290
   ESP_LOGI(TAG, "Unknown290: %02X %02X %02X %02X (always 0x00 0x00 0x00 0x00?)", data[290], data[291], data[292],
