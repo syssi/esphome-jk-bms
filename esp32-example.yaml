@@ -70,6 +70,8 @@ sensor:
       name: "${name} max voltage cell"
     delta_cell_voltage:
       name: "${name} delta cell voltage"
+    average_cell_voltage:
+      name: "${name} average cell voltage"
     cell_voltage_1:
       name: "${name} cell voltage 1"
     cell_voltage_2:
