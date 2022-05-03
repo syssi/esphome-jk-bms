@@ -137,6 +137,7 @@ ICON_BATTERY_STRINGS = "mdi:car-battery"
 ICON_CAPACITY_REMAINING = "mdi:battery-50"
 ICON_CAPACITY_REMAINING_DERIVED = "mdi:battery-50"
 ICON_ACTUAL_BATTERY_CAPACITY = "mdi:battery-50"
+ICON_TOTAL_BATTERY_CAPACITY_SETTING = "mdi:battery-sync"
 
 ICON_DEVICE_ADDRESS = "mdi:identifier"
 ICON_ERRORS_BITMASK = "mdi:alert-circle-outline"
@@ -750,7 +751,7 @@ CONFIG_SCHEMA = cv.Schema(
         ),
         cv.Optional(CONF_TOTAL_BATTERY_CAPACITY_SETTING): sensor.sensor_schema(
             unit_of_measurement=UNIT_AMPERE_HOURS,
-            icon=ICON_EMPTY,
+            icon=ICON_TOTAL_BATTERY_CAPACITY_SETTING,
             accuracy_decimals=0,
             device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
