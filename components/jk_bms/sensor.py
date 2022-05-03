@@ -9,6 +9,7 @@ from esphome.const import (
     DEVICE_CLASS_POWER,
     DEVICE_CLASS_TEMPERATURE,
     DEVICE_CLASS_VOLTAGE,
+    ICON_COUNTER,
     ICON_EMPTY,
     ICON_TIMELAPSE,
     STATE_CLASS_MEASUREMENT,
@@ -534,8 +535,8 @@ CONFIG_SCHEMA = cv.Schema(
             state_class=STATE_CLASS_MEASUREMENT,
         ),
         cv.Optional(CONF_TOTAL_CHARGING_CYCLE_CAPACITY): sensor.sensor_schema(
-            unit_of_measurement=UNIT_EMPTY,
-            icon=ICON_EMPTY,
+            unit_of_measurement=UNIT_AMPERE_HOURS,
+            icon=ICON_COUNTER,
             accuracy_decimals=0,
             device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
