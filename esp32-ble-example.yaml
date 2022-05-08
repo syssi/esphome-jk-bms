@@ -222,8 +222,7 @@ switch:
 
   - platform: ble_client
     ble_client_id: client0
-    name: "${name} suspend bluetooth connection"
-    inverted: true
+    name: "${name} enable bluetooth connection"
 
 text_sensor:
   - platform: jk_bms_ble
