@@ -6,13 +6,15 @@ Since hardware version 10 the JK-BMS comes with a display port. The port can be 
 
 | Model          | Connector type                    |
 | -------------- | --------------------------------- |
-| JK-BD6A17S6P   | 6 Pin, Micro JST 1.25mm pinch(?)  |
-| JK-BD6A20S6P   | 6 Pin, Micro JST 1.25mm pinch(?)  |
-| JK-BD6A24S6P   | 6 Pin, Micro JST 1.25mm pinch(?)  |
-| JK-BD6A17S8P   | 6 Pin, Micro JST 1.25mm pinch(?)  |
-| JK-BD6A20S8P   | 6 Pin, Micro JST 1.25mm pinch(?)  |
-| JK-BD6A24S8P   | 6 Pin, Micro JST 1.25mm pinch(?)  |
-| JK-B2A8S20P    | 6 Pin, Micro JST 1.25mm pinch(?)  |
+| JK-BD4A17S4P   | No display port                   |
+| JK-BD6A17S6P   | 6 Pin, Micro JST 1.25mm pinch(?) or Micro JST GH 1.25mm pinch |
+| JK-BD6A17S8P   | 6 Pin, Micro JST 1.25mm pinch(?) or Micro JST GH 1.25mm pinch |
+| JK-BD6A20S6P   | 6 Pin, Micro JST 1.25mm pinch(?) or Micro JST GH 1.25mm pinch |
+| JK-BD6A20S8P   | 6 Pin, Micro JST 1.25mm pinch(?) or Micro JST GH 1.25mm pinch |
+| JK-BD6A24S6P   | 6 Pin, Micro JST 1.25mm pinch(?) or Micro JST GH 1.25mm pinch |
+| JK-BD6A24S8P   | 6 Pin, Micro JST 1.25mm pinch(?) or Micro JST GH 1.25mm pinch |
+| JK-B1A8S20P    | 6 Pin, Micro JST 1.25mm pinch(?) or Micro JST GH 1.25mm pinch |
+| JK-B2A8S20P    | 6 Pin, Micro JST 1.25mm pinch(?) or Micro JST GH 1.25mm pinch |
 | JK-BD6A20S10P  | 6 Pin, Micro JST GH 1.25mm pinch  |
 | JK-BD6A24S10P  | 6 Pin, Micro JST GH 1.25mm pinch  |
 | JK-B1A20S15P   | 6 Pin, Micro JST GH 1.25mm pinch  |
@@ -62,6 +64,6 @@ Since hardware version 10 the JK-BMS comes with a display port. The port can be 
 
 ## References
 
+* https://de.aliexpress.com/item/1005003451100409.html
 * https://diysolarforum.com/threads/heltec-jk-200a-smart-bms-with-2a-active-balance.17831/page-27#post-472301
 * https://forum.drbacke.de/viewtopic.php?p=22931
-
