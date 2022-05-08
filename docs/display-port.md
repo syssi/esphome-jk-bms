@@ -1,5 +1,7 @@
 # JK-BMS display port
 
+Since hardware version 8 the JK-BMS comes with a display port. The port can be used to turn the BMS on (short press = 1s) and off (long press = 3s).
+
 ## Connector
 
 | Model          | Connector type                    |
