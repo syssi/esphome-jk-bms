@@ -33,8 +33,8 @@ Since hardware version 10 the JK-BMS comes with a display port. The port can be 
 └────────────────────[oooo]─────────────[oooooo]──┘
                                          ││
                                          ││
-                                         │└─── Black
-                                         └──── Red
+                                         │└─── K+
+                                         └──── K-
 
 
 # JK-B2A8S20P
@@ -45,8 +45,8 @@ Since hardware version 10 the JK-BMS comes with a display port. The port can be 
 └──[oooo]──[ooo]──[oooo]──[oooooo]──[oooooooooo]──┘
                                ││
                                ││
-                               │└─── Red
-                               └──── Black
+                               │└─── K-
+                               └──── K+
 
 
 # JK-BD6A2xS10P, JK-BxA24SxxP
@@ -55,10 +55,13 @@ Since hardware version 10 the JK-BMS comes with a display port. The port can be 
 │                                                 │
 │     CAN   RS485    Display      Heat            │
 └────[ooo]─[oooo]───[oooooo]───[ooooooo]──────────┘
-                     ││
-                     ││
-                     │└─── Black
-                     └──── Red
+                     ││││││
+                     │││││└─ VCC
+                     ││││└── A
+                     │││└─── B
+                     ││└──── GND
+                     │└───── K+
+                     └────── K-
 
 ```
 
