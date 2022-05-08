@@ -187,3 +187,8 @@ text_sensor:
       name: "${name} operation status"
     total_runtime_formatted:
       name: "${name} total runtime formatted"
+
+switch:
+  - platform: ble_client
+    ble_client_id: client0
+    name: "${name} enable bluetooth connection"

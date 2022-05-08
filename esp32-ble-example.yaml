@@ -220,6 +220,10 @@ switch:
     balancer:
       name: "${name} balancer"
 
+  - platform: ble_client
+    ble_client_id: client0
+    name: "${name} enable bluetooth connection"
+
 text_sensor:
   - platform: jk_bms_ble
     errors:
