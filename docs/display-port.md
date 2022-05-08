@@ -1,6 +1,6 @@
 # JK-BMS display port
 
-Since hardware version 8 the JK-BMS comes with a display port. The port can be used to turn the BMS on (short press = 1s) and off (long press = 3s).
+Since hardware version 10 the JK-BMS comes with a display port. The port can be used to turn the BMS on (short press = 1s) and off (long press = 3s).
 
 ## Connector
 
@@ -23,29 +23,41 @@ Since hardware version 8 the JK-BMS comes with a display port. The port can be u
 ## Schematics
 
 ```
-# LCD port (6 Pin, Micro JST 1.25mm pinch)
-┌─── ─────────────── ───┐
-│                       │
-│ O   O   O   O   O   O │
-│                       │
-└───────────────────────┘
-  │   │
-  │   │
-  │   └─────── Black
-  └─────────── Red
+# JK-BD6AxxSxP
+
+│                 JK-BD6AxxSxP                    │
+│                                                 │
+│                     RS485              Display  │
+└────────────────────[oooo]─────────────[oooooo]──┘
+                                         ││
+                                         ││
+                                         │└─── Black
+                                         └──── Red
 
 
-# LCD port (6 Pin, Micro JST GH 1.25mm pinch)
-┌───────────────────────┐
-│                       │
-│ O   O   O   O   O   O │
-│                       │
-├───────────────────────┤
-│ ───────────────────── │
-  │   │
-  │   │
-  │   └─────── Black
-  └─────────── Red
+# JK-B2A8S20P
+
+│                   JK-B2A8S20P                   │
+│                                                 │
+│   Temp           RS485   Display    Balancer    │
+└──[oooo]──[ooo]──[oooo]──[oooooo]──[oooooooooo]──┘
+                               ││
+                               ││
+                               │└─── Red
+                               └──── Black
+
+
+# JK-BD6A2xS10P, JK-BxA24SxxP
+
+│           JK-BD6A2xS10P, JK-BxA24SxxP           │
+│                                                 │
+│     CAN   RS485    Display      Heat            │
+└────[ooo]─[oooo]───[oooooo]───[ooooooo]──────────┘
+                     ││
+                     ││
+                     │└─── Black
+                     └──── Red
+
 ```
 
 ## References
