@@ -46,6 +46,13 @@ bool JkModbus::parse_jk_modbus_byte_(uint8_t byte) {
   if (at == 1)
     return true;
 
+  if (raw[0] != 0x4E || raw[1] != 0x57) {
+    ESP_LOGW(TAG, "Invalid header");
+
+    // return false to reset buffer
+    return false;
+  }
+
   // Byte 2: Size (low byte)
   if (at == 2)
     return true;
