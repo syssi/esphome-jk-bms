@@ -52,7 +52,7 @@ All JK-BMS models with software version `>=6.0` are using the implemented protoc
 │          │                │         │<-- GND
 └──────────┘                └─────────┘
 
-# RS485-TTL jack (4 Pin, JST 1.25mm pinch)
+# RS485-TTL jack (4 Pin, JST 1.25mm pitch)
 ┌─── ─────── ────┐
 │                │
 │ O   O   O   O  │
