@@ -74,15 +74,15 @@ K+   o---------------------o/
 
 
 <a href="https://raw.githubusercontent.com/syssi/esphome-jk-bms/power-button-docs/images/display-port/power-button.jpg" target="_blank">
-<img src="https://raw.githubusercontent.com/syssi/esphome-jk-bms/power-button-docs/images/display-port/power-button_thumbnail.jpg" width="50%">
+<img src="https://raw.githubusercontent.com/syssi/esphome-jk-bms/power-button-docs/images/display-port/power-button_thumbnail.jpg" width="40%">
 </a>
 
 <a href="https://raw.githubusercontent.com/syssi/esphome-jk-bms/power-button-docs/images/display-port/power-button2.jpg" target="_blank">
-<img src="https://raw.githubusercontent.com/syssi/esphome-jk-bms/power-button-docs/images/display-port/power-button2_thumbnail.jpg" width="50%">
+<img src="https://raw.githubusercontent.com/syssi/esphome-jk-bms/power-button-docs/images/display-port/power-button2_thumbnail.jpg" width="40%">
 </a>
 
 <a href="https://raw.githubusercontent.com/syssi/esphome-jk-bms/power-button-docs/images/display-port/power-button3.jpg" target="_blank">
-<img src="https://raw.githubusercontent.com/syssi/esphome-jk-bms/power-button-docs/images/display-port/power-button3_thumbnail.jpg" width="50%">
+<img src="https://raw.githubusercontent.com/syssi/esphome-jk-bms/power-button-docs/images/display-port/power-button3_thumbnail.jpg" width="40%">
 </a>
 
 ## References
