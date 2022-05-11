@@ -2,7 +2,7 @@
 
 Since hardware version 10 the JK-BMS comes with a display port. The port can be used to turn the BMS on (short press = 1s) and off (long press = 3s).
 
-## Connector
+## Connector and pinout
 
 | Model          | Connector type                    |
 | -------------- | --------------------------------- |
@@ -21,8 +21,6 @@ Since hardware version 10 the JK-BMS comes with a display port. The port can be 
 | JK-B1A24S15P   | 6 Pin, Micro JST GH 1.25mm pinch  |
 | JK-B2A24S15P   | 6 Pin, Micro JST GH 1.25mm pinch  |
 | JK-B2A24S20P   | 6 Pin, Micro JST GH 1.25mm pinch  |
-
-## Schematics
 
 ```
 # JK-BD6AxxSxP
@@ -62,8 +60,30 @@ Since hardware version 10 the JK-BMS comes with a display port. The port can be 
                      ││└──── GND
                      │└───── K+
                      └────── K-
+```
+
+## Schematics
 
 ```
+
+K-   o-------[ 100kΩ ]-----o  /
+                             /---|
+K+   o---------------------o/
+
+```
+
+
+<a href="https://raw.githubusercontent.com/syssi/esphome-jk-bms/power-button-docs/images/display-port/power-button.jpg" target="_blank">
+<img src="https://raw.githubusercontent.com/syssi/esphome-jk-bms/power-button-docs/images/display-port/power-button_thumbnail.jpg" width="50%">
+</a>
+
+<a href="https://raw.githubusercontent.com/syssi/esphome-jk-bms/power-button-docs/images/display-port/power-button2.jpg" target="_blank">
+<img src="https://raw.githubusercontent.com/syssi/esphome-jk-bms/power-button-docs/images/display-port/power-button2_thumbnail.jpg" width="50%">
+</a>
+
+<a href="https://raw.githubusercontent.com/syssi/esphome-jk-bms/power-button-docs/images/display-port/power-button3.jpg" target="_blank">
+<img src="https://raw.githubusercontent.com/syssi/esphome-jk-bms/power-button-docs/images/display-port/power-button3_thumbnail.jpg" width="50%">
+</a>
 
 ## References
 
