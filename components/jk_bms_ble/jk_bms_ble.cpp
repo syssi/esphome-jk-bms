@@ -813,13 +813,13 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   // 94    4   0x58 0x02 0x00 0x00    Discharge OTP Recovery
   ESP_LOGI(TAG, "  Discharge OTP recovery: %f °C", (float) jk_get_32bit(94) * 0.1f);
   // 98    4   0x38 0xFF 0xFF 0xFF    Charge UTP
-  ESP_LOGI(TAG, "  Charge UTP: %f °C", (float) jk_get_32bit(98) * 0.1f);
+  ESP_LOGI(TAG, "  Charge UTP: %f °C", (float) ((int) jk_get_32bit(98)) * 0.1f);
   // 102   4   0x9C 0xFF 0xFF 0xFF    Charge UTP Recovery
-  ESP_LOGI(TAG, "  Charge UTP recovery: %f °C", (float) jk_get_32bit(102) * 0.1f);
+  ESP_LOGI(TAG, "  Charge UTP recovery: %f °C", (float) ((int) jk_get_32bit(102)) * 0.1f);
   // 106   4   0x84 0x03 0x00 0x00    MOS OTP
-  ESP_LOGI(TAG, "  MOS OTP: %f °C", (float) jk_get_32bit(106) * 0.1f);
+  ESP_LOGI(TAG, "  MOS OTP: %f °C", (float) ((int) jk_get_32bit(106)) * 0.1f);
   // 110   4   0xBC 0x02 0x00 0x00    MOS OTP Recovery
-  ESP_LOGI(TAG, "  MOS OTP recovery: %f °C", (float) jk_get_32bit(110) * 0.1f);
+  ESP_LOGI(TAG, "  MOS OTP recovery: %f °C", (float) ((int) jk_get_32bit(110)) * 0.1f);
   // 114   4   0x0D 0x00 0x00 0x00    Cell count
   ESP_LOGI(TAG, "  Cell count: %f", (float) jk_get_32bit(114));
 
