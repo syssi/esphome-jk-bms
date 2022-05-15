@@ -474,7 +474,7 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   //                                    Cell count is not equal to settings
   //           0x04 0x08                Cell Undervoltage +                  0000 0100 0000 1000
   //                                    Cell count is not equal to settings
-  uint16_t raw_errors_bitmask = jk_get_16bit(data[136]);
+  uint16_t raw_errors_bitmask = (uint16_t(data[136]) << 8) | (uint16_t(data[136 + 1]) << 0);
   this->publish_state_(this->errors_bitmask_sensor_, (float) raw_errors_bitmask);
   this->publish_state_(this->errors_text_sensor_, this->error_bits_to_string_(raw_errors_bitmask));
 
