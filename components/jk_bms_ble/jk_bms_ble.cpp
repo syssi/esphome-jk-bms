@@ -428,7 +428,7 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   ESP_LOGI(TAG, "Wire resistance warning: %02X %02X %02X %02X", data[114], data[115], data[116], data[117]);
 
   // 118   4   0x03 0xD0 0x00 0x00    Battery voltage       0.001        V
-  float total_voltage = (float) jk_get_16bit(118) * 0.001f;
+  float total_voltage = (float) jk_get_32bit(118) * 0.001f;
   this->publish_state_(this->total_voltage_sensor_, total_voltage);
 
   // 122   4   0x00 0x00 0x00 0x00    Battery power         0.001        W
