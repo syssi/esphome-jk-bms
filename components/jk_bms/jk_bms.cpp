@@ -154,7 +154,7 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
   // 0x89 0x00 0x00 0x00 0x00: Total battery cycle capacity
   this->publish_state_(this->total_charging_cycle_capacity_sensor_, (float) jk_get_32bit(offset + 4 + 3 * 6));
 
-  // 0x8A 0x00 0x0E: Total number of battery strings             14                        1.0  count
+  // 0x8A 0x00 0x0E: Total number of battery strings             16                        1.0  count
   this->publish_state_(this->battery_strings_sensor_, (float) jk_get_16bit(offset + 6 + 3 * 7));
 
   // 0x8B 0x00 0x00: Battery warning message                     0000 0000 0000 0000
