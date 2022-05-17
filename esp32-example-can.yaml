@@ -1,15 +1,19 @@
 substitutions:
   name: jk-bms
-  external_components_source: github://uksa007/esphome-jk-bms-can@main
+#  external_components_source: github://uksa007/esphome-jk-bms-can@main 
+  external_components_source: github://syssi/esphome-jk-bms@main
   tx_pin: GPIO16
   rx_pin: GPIO17
-  charge_v: "55.2"    #This is the volatge you want to charge at for eg. 16S 3.45V/cell *16
-
 
 esphome:
   name: ${name}
-  platform: ESP32
+
+esp32:
   board: esp32doit-devkit-v1
+  framework:
+    type: esp-idf
+    version: latest
+
 
 external_components:
   - source: ${external_components_source}
@@ -21,31 +25,34 @@ wifi:
 
 ota:
 logger:
-  baud_rate: 0
-  level: INFO
 
+# Please use the native `api` component instead of the `mqtt` section
+# if you use Home Assistant. The native API is more lightweight.
+#
 api:
+#mqtt:
+#  broker: !secret mqtt_host
+#  username: !secret mqtt_username
+#  password: !secret mqtt_password
+#  id: mqtt_client
 
-# mqtt:
-#   broker: !secret mqtt_host
-#   username: !secret mqtt_username
-#   password: !secret mqtt_password
-#   id: mqtt_client
+canbus:
+  - platform: esp32_can
+    tx_pin: GPIO5
+    rx_pin: GPIO4
+    can_id: 4
+    bit_rate: 500kbps
 
-#output:
-#  - platform: gpio
-#    id: "LED"
-#    pin: D4
-#    inverted: true
-    
-switch:
-#  - platform: binary
-  - platform: gpio
-    id: "inv_output"
-    pin: GPIO2
-    inverted: true
-#    output: "LED"
-    name: "Inverter Disable"
+time:
+  - platform: sntp
+    on_time:
+      - seconds: /1
+        then:
+          - canbus.send:
+              # Extended ID explicit
+              #use_extended_id: true
+              can_id: 0x100
+              data: [0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08]
 
 uart:
   id: uart0
@@ -62,24 +69,6 @@ jk_bms:
   id: bms0
   jk_modbus_id: modbus0
   enable_fake_traffic: true
-  
-canbus:
-  - platform: esp32_can
-    tx_pin: GPIO5
-    rx_pin: GPIO4
-    can_id: 4
-    bit_rate: 500kbps
-
-time:
-  - platform: sntp
-    on_time:
-      - seconds: /1
-        then:
-          - canbus.send:
-              # Extended ID explicit
-              use_extended_id: true
-              can_id: 0x351
-              data: [0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08] #dummy data
 
 binary_sensor:
   - platform: jk_bms
@@ -144,22 +133,22 @@ sensor:
       name: "${name} cell voltage 15"
     cell_voltage_16:
       name: "${name} cell voltage 16"
-#    cell_voltage_17:
-#      name: "${name} cell voltage 17"
-#    cell_voltage_18:
-#      name: "${name} cell voltage 18"
-#    cell_voltage_19:
-#      name: "${name} cell voltage 19"
-#    cell_voltage_20:
-#      name: "${name} cell voltage 20"
-#    cell_voltage_21:
-#      name: "${name} cell voltage 21"
-#    cell_voltage_22:
-#      name: "${name} cell voltage 22"
-#    cell_voltage_23:
-#      name: "${name} cell voltage 23"
-#    cell_voltage_24:
-#      name: "${name} cell voltage 24"
+    cell_voltage_17:
+      name: "${name} cell voltage 17"
+    cell_voltage_18:
+      name: "${name} cell voltage 18"
+    cell_voltage_19:
+      name: "${name} cell voltage 19"
+    cell_voltage_20:
+      name: "${name} cell voltage 20"
+    cell_voltage_21:
+      name: "${name} cell voltage 21"
+    cell_voltage_22:
+      name: "${name} cell voltage 22"
+    cell_voltage_23:
+      name: "${name} cell voltage 23"
+    cell_voltage_24:
+      name: "${name} cell voltage 24"
     power_tube_temperature:
       name: "${name} power tube temperature"
     temperature_sensor_1:
@@ -178,13 +167,6 @@ sensor:
       name: "${name} discharging power"
     capacity_remaining:
       name: "${name} capacity remaining"
-      on_value_range:
-        - above: 15.0
-          then:
-            - switch.turn_off: inv_output
-        - below: 10.0
-          then:
-            - switch.turn_on: inv_output
     capacity_remaining_derived:
       name: "${name} capacity remaining derived"
     temperature_sensors:
