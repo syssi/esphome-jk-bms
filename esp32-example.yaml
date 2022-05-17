@@ -6,8 +6,13 @@ substitutions:
 
 esphome:
   name: ${name}
-  platform: ESP32
-  board: esp-wrover-kit
+
+esp32:
+  board: wemos_d1_mini32
+  framework:
+    type: esp-idf
+    version: latest
+
 
 external_components:
   - source: ${external_components_source}
@@ -20,6 +25,10 @@ wifi:
 ota:
 logger:
 
+# Please use the native `api` component instead of the `mqtt` section
+# if you use Home Assistant. The native API is more lightweight.
+#
+# api:
 mqtt:
   broker: !secret mqtt_host
   username: !secret mqtt_username
