@@ -1,0 +1,45 @@
+# Will reveive CAN packets for SMA CAN protocol testing
+esphome:
+  name: test-esp32-receiver-can.yaml
+
+esp32:
+  board: esp32doit-devkit-v1
+  framework:
+    type: esp-idf
+    version: latest
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+ota:
+  password: "ab2bd180221ddd4ea7ea24bf58bf4d07"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+canbus:
+  - platform: esp32_can
+    tx_pin: GPIO5
+    rx_pin: GPIO4
+    can_id: 2
+    bit_rate: 500kbps
+    on_frame:
+    - can_id: 0x351
+      then:
+      - lambda: |-
+          std::string b(x.begin(), x.end());
+          ESP_LOGD("can id 0x351", "%s", &b[0] );
+    - can_id: 0x355
+      then:
+      - lambda: |-
+          std::string b(x.begin(), x.end());
+          ESP_LOGD("can id 0x355", "%s", &b[0] );
+    - can_id: 0x35A
+      then:
+      - lambda: |-
+          std::string b(x.begin(), x.end());
+          ESP_LOGD("can id 0x35A", "%s", &b[0] );
