@@ -1,0 +1,41 @@
+esphome:
+  name: test-esp32-send-can
+
+esp32:
+  board: esp32doit-devkit-v1
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+ota:
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  
+canbus:
+  - platform: esp32_can
+    tx_pin: GPIO5
+    rx_pin: GPIO4
+    can_id: 4
+    bit_rate: 500kbps
+
+interval:
+  - interval: 1s
+    then:
+      - canbus.send:
+          # Extended ID explicit
+          #use_extended_id: true
+          can_id: 0x351
+          data: [0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08]
+      - canbus.send:
+          can_id: 0x355
+          data: [0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10]
+      - canbus.send:
+          can_id: 0x35A
+          data: [0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18]
