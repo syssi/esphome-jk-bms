@@ -2,15 +2,15 @@
 #include "esphome/core/log.h"
 
 namespace esphome {
-namespace jk_modbus {
+namespace jk_can {
 
-static const char *const TAG = "jk_modbus";
+static const char *const TAG = "jk_can";
 
 void JkCAN::loop() {
   const uint32_t now = millis();
   if (now - this->last_jk_can_byte_ > 50) {
     this->rx_buffer_.clear();
-    this->last_jk_modbus_byte_ = now;
+    this->last_jk_can_byte_ = now;
   }
 
   while (this->available()) {
