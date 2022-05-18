@@ -1,4 +1,4 @@
-# Will reveive CAN packets for SMA CAN protocol testing
+# Will receive CAN packets for SMA CAN protocol testing
 esphome:
   name: test-esp32-receiver-can.yaml
 
