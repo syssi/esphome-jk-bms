@@ -1,12 +1,33 @@
-# esphome-jk-bms
+# esphome-jk-bms-can
 
-![GitHub actions](https://github.com/syssi/esphome-jk-bms/actions/workflows/ci.yaml/badge.svg)
-![GitHub stars](https://img.shields.io/github/stars/syssi/esphome-jk-bms)
-![GitHub forks](https://img.shields.io/github/forks/syssi/esphome-jk-bms)
-![GitHub watchers](https://img.shields.io/github/watchers/syssi/esphome-jk-bms)
-[!["Buy Me A Coffee"](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg)](https://www.buymeacoffee.com/syssi)
+![GitHub stars](https://img.shields.io/github/stars/Uksa007/esphome-jk-bms-can)
+![GitHub forks](https://img.shields.io/github/forks/Uksa007/esphome-jk-bms-can)
+![GitHub watchers](https://img.shields.io/github/watchers/Uksa007/esphome-jk-bms-can)
 
 ESPHome component to monitor a Jikong Battery Management System (JK-BMS) via RS485 or BLE
+
+This fork supports CAN bus commuinaction with inverters supporting the SMA CAN bus protocol battery standard eg (Goodwe, Pylotech, LG)
+**Note:- CAN bus support is still in development and testing!!!**
+
+Thanks go to syssi for help and making the original RS485 code! Buy him a coffee here https://www.buymeacoffee.com/syssi)
+
+
+* Connect a TJA1050 to an ESP32 as per https://esphome.io/components/canbus.html?highlight=can#wiring-options
+* Use this code in esphome https://github.com/Uksa007/esphome-jk-bms-can/blob/main/esp32-example-can.yaml
+* A second ESP32 and TJA1050 make a test CAN bus/receiver https://github.com/Uksa007/esphome-jk-bms-can/blob/main/test-esp32-receiver-can.yaml
+* If you don't yet have TJA1050 you can still test with two ESP32 by making a makeshif CAN bus DO NOT CONNECT TO A REAL CAN BUS!
+  Add a blocking diode between the CAN-TX and CAN-RX pins (cathode towards the CAN-TX pin) at both ESP32s!
+  So a Diode between GPIO5, GPIO4 diode cathode to GPIO5 at both ESP32
+  Then tie the CAN-RX lines together with a pull-up resistor to 3.3V I used 10K pullup.
+  
+ Sample CAN messages received:<br>
+
+    [I][main:046]: received can id: 0x351 hex: 28 2 32 0 46 0 ab 1
+    [I][main:056]: received can id: 0x355 hex: f 0 64 0 dc 5
+    [I][main:066]: received can id: 0x356 hex: ef 14 14 0 22 1
+    [I][main:078]: received can id: 0x35A hex: 0 0 0 0 0 0 0 0
+
+ 
 
 ![Lovelace entities card](lovelace-entities-card.png "Lovelace entities card")
 
