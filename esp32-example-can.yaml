@@ -62,12 +62,12 @@ interval:
             uint8_t can_mesg[7];
             can_mesg[0] = chg_v & 0xff;
             can_mesg[1] = chg_v >> 8 & 0xff;
-            can_mesg[2] = uint16_t(id(charging_overcurrent_protection).state) * 10  & 0xff;
-            can_mesg[3] = uint16_t(id(charging_overcurrent_protection).state) *10 >> 8 & 0xff;
-            can_mesg[4] = uint16_t(id(discharging_overcurrent_protection).state) * 10 & 0xff;
-            can_mesg[5] = uint16_t(id(discharging_overcurrent_protection).state) * 10 >> 8 & 0xff;
-            can_mesg[6] = uint16_t(id(total_voltage_undervoltage_protection).state) * 10 & 0xff;
-            can_mesg[7] = uint16_t(id(total_voltage_undervoltage_protection).state) * 10 >> 8 & 0xff;
+            can_mesg[2] = uint16_t(id(charging_overcurrent_protection).state * 10) & 0xff;
+            can_mesg[3] = uint16_t(id(charging_overcurrent_protection).state * 10) >> 8 & 0xff;
+            can_mesg[4] = uint16_t(id(discharging_overcurrent_protection).state * 10) & 0xff;
+            can_mesg[5] = uint16_t(id(discharging_overcurrent_protection).state * 10) >> 8 & 0xff;
+            can_mesg[6] = uint16_t(id(total_voltage_undervoltage_protection).state * 10) & 0xff;
+            can_mesg[7] = uint16_t(id(total_voltage_undervoltage_protection).state * 10) >> 8 & 0xff;
             ESP_LOGI("main", "send can id: 0x351 hex: %x %x %x %x %x %x %x %x", can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5], can_mesg[6], can_mesg[7]);
             return {can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5], can_mesg[6], can_mesg[7]};
 
@@ -80,8 +80,8 @@ interval:
             can_mesg[1] = uint16_t(id(capacity_remaining).state) >> 8 & 0xff;
             can_mesg[2] = ${soh} & 0xff;
             can_mesg[3] = ${soh} >> 8 & 0xff; 
-            can_mesg[4] = uint16_t(id(capacity_remaining).state) * 100 & 0xff;
-            can_mesg[5] = uint16_t(id(capacity_remaining).state) * 100 >> 8 & 0xff;
+            can_mesg[4] = uint16_t(id(capacity_remaining).state * 100) & 0xff;
+            can_mesg[5] = uint16_t(id(capacity_remaining).state * 100) >> 8 & 0xff;
             ESP_LOGI("main", "send can id: 0x355 hex: %x %x %x %x %x %x", can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5]);
             return {can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5]};      
 
@@ -90,12 +90,12 @@ interval:
           data: !lambda |-
             int chg_v = ${charge_v} * 10;
             uint8_t can_mesg[5];
-            can_mesg[0] = uint16_t(id(total_voltage).state) * 100 & 0xff;
-            can_mesg[1] = uint16_t(id(total_voltage).state) * 100 >> 8 & 0xff;
-            can_mesg[2] = uint16_t(id(current).state) * 10 & 0xff;
-            can_mesg[3] = uint16_t(id(current).state) * 10 >> 8 & 0xff; 
-            can_mesg[4] = uint16_t(id(power_tube_temperature).state) * 10 & 0xff;
-            can_mesg[5] = uint16_t(id(power_tube_temperature).state) * 10 >> 8 & 0xff;
+            can_mesg[0] = uint16_t(id(total_voltage).state * 100) & 0xff;
+            can_mesg[1] = uint16_t(id(total_voltage).state * 100) >> 8 & 0xff;
+            can_mesg[2] = uint16_t(id(current).state * 10) & 0xff;
+            can_mesg[3] = uint16_t(id(current).state * 10) >> 8 & 0xff; 
+            can_mesg[4] = uint16_t(id(power_tube_temperature).state * 10) & 0xff;
+            can_mesg[5] = uint16_t(id(power_tube_temperature).state * 10) >> 8 & 0xff;
             ESP_LOGI("main", "send can id: 0x356 hex: %x %x %x %x %x %x", can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5]);
             return {can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5]};
 
@@ -104,18 +104,17 @@ interval:
           data: !lambda |-
             int chg_v = ${charge_v} * 10;
             uint8_t can_mesg[7];
-            can_mesg[0] = chg_v & 0xff;
-            can_mesg[1] = chg_v >> 8 & 0xff;
-            can_mesg[2] = uint16_t(id(charging_overcurrent_protection).state) & 0xff;
-            can_mesg[3] = uint16_t(id(charging_overcurrent_protection).state) >> 8 & 0xff;
-            can_mesg[4] = uint16_t(id(discharging_overcurrent_protection).state) & 0xff;
-            can_mesg[5] = uint16_t(id(discharging_overcurrent_protection).state) >> 8 & 0xff;
-            can_mesg[6] = uint16_t(id(total_voltage_undervoltage_protection).state) & 0xff;
-            can_mesg[7] = uint16_t(id(total_voltage_undervoltage_protection).state) >> 8 & 0xff;
+            can_mesg[0] = uint16_t(id(errors_bitmask).state) & 0x1; /// low capacity jk bit 0
+            can_mesg[1] = 0; /// low capacity leave
+            can_mesg[2] = uint16_t(id(errors_bitmask).state) & 0x4 >> 2; ///High V jk bit 2
+            can_mesg[3] = 0; ///High V leave
+            can_mesg[4] = uint16_t(id(errors_bitmask).state) & 0x8 >> 3; ///Low V jk bit 3
+            can_mesg[5] = 0; ///Low V leave
+            can_mesg[6] = uint16_t(id(errors_bitmask).state) & 0x2 >> 1; ///High temp jk bit1
+            can_mesg[7] = 0; ///High temp leave
             ESP_LOGI("main", "send can id: 0x35A hex: %x %x %x %x %x %x %x %x", can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5], can_mesg[6], can_mesg[7]);
             return {can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5], can_mesg[6], can_mesg[7]};
         
-
 uart:
   id: uart0
   baud_rate: 115200
@@ -244,6 +243,7 @@ sensor:
     battery_strings:
       name: "${name} battery strings"
     errors_bitmask:
+      id: errors_bitmask
       name: "${name} errors bitmask"
     operation_mode_bitmask:
       name: "${name} operation mode bitmask"
@@ -324,7 +324,7 @@ sensor:
 #      name: "${name} protocol version"
 # Uptime sensor
   - platform: uptime
-    name: Uptime Sensor
+    name: ${name} Uptime Sensor
     id: uptime_sensor
     update_interval: 60s
     on_raw_value:
@@ -366,6 +366,6 @@ text_sensor:
       name: "${name} total runtime formatted"
 # Uptime Sensor
   - platform: template
-    name: Uptime Human Readable
+    name: ${name} Uptime Human Readable
     id: uptime_human
     icon: mdi:clock-start
