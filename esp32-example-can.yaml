@@ -62,10 +62,10 @@ interval:
             uint8_t can_mesg[7];
             can_mesg[0] = chg_v & 0xff;
             can_mesg[1] = chg_v >> 8 & 0xff;
-            can_mesg[2] = uint16_t(id(charging_overcurrent_protection).state * 10) & 0xff;
-            can_mesg[3] = uint16_t(id(charging_overcurrent_protection).state * 10) >> 8 & 0xff;
-            can_mesg[4] = uint16_t(id(discharging_overcurrent_protection).state * 10) & 0xff;
-            can_mesg[5] = uint16_t(id(discharging_overcurrent_protection).state * 10) >> 8 & 0xff;
+            can_mesg[2] = int16_t(id(charging_overcurrent_protection).state * 10) & 0xff;
+            can_mesg[3] = int16_t(id(charging_overcurrent_protection).state * 10) >> 8 & 0xff;
+            can_mesg[4] = int16_t(id(discharging_overcurrent_protection).state * 10) & 0xff;
+            can_mesg[5] = int16_t(id(discharging_overcurrent_protection).state * 10) >> 8 & 0xff;
             can_mesg[6] = uint16_t(id(total_voltage_undervoltage_protection).state * 10) & 0xff;
             can_mesg[7] = uint16_t(id(total_voltage_undervoltage_protection).state * 10) >> 8 & 0xff;
             ESP_LOGI("main", "send can id: 0x351 hex: %x %x %x %x %x %x %x %x", can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5], can_mesg[6], can_mesg[7]);
@@ -92,10 +92,10 @@ interval:
             uint8_t can_mesg[5];
             can_mesg[0] = uint16_t(id(total_voltage).state * 100) & 0xff;
             can_mesg[1] = uint16_t(id(total_voltage).state * 100) >> 8 & 0xff;
-            can_mesg[2] = uint16_t(id(current).state * 10) & 0xff;
-            can_mesg[3] = uint16_t(id(current).state * 10) >> 8 & 0xff; 
-            can_mesg[4] = uint16_t(id(power_tube_temperature).state * 10) & 0xff;
-            can_mesg[5] = uint16_t(id(power_tube_temperature).state * 10) >> 8 & 0xff;
+            can_mesg[2] = int16_t(id(current).state * 10) & 0xff;
+            can_mesg[3] = int16_t(id(current).state * 10) >> 8 & 0xff; 
+            can_mesg[4] = int16_t(id(power_tube_temperature).state * 10) & 0xff;
+            can_mesg[5] = int16_t(id(power_tube_temperature).state * 10) >> 8 & 0xff;
             ESP_LOGI("main", "send can id: 0x356 hex: %x %x %x %x %x %x", can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5]);
             return {can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5]};
 
