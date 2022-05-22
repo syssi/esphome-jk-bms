@@ -1,11 +1,13 @@
 substitutions:
-# name that will appear in esphome and homeassistant
+# name that will appear in esphome and homeassistant.
   name: jk-bms-can
+# Battery name that will be sent to inverter over CAN bus max 8 charaters.
+  batt_name: Battery1
 # This is voltage you want the inverter to change battery with eg 3.45v/cell for 16 cells 48V battery. 
   charge_v: "55.2" 
 # This is the percentage state of health new would be 100 
   soh: "100"
-# GPIO pins your CAN bus transceiver(TJA1050) is connected to the ESP note! TX->TX and RX->RX. 
+# GPIO pins your CAN bus transceiver(TJA1050) is connected to the ESP, note! TX->TX and RX->RX. 
   can_tx_pin: GPIO5
   can_rx_pin: GPIO4
 # GPIO pins your JK-BMS RS485(TTL) is connected to the ESP TX->RX and RX->TX. 
@@ -114,7 +116,23 @@ interval:
             can_mesg[7] = 0; ///High temp leave
             ESP_LOGI("main", "send can id: 0x35A hex: %x %x %x %x %x %x %x %x", can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5], can_mesg[6], can_mesg[7]);
             return {can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5], can_mesg[6], can_mesg[7]};
-        
+
+      - canbus.send:
+          can_id: 0x35E
+          data: !lambda |-
+            char batt_name[] = "${batt_name}";
+            uint8_t can_mesg[7];
+            can_mesg[0] = batt_name[0];
+            can_mesg[1] = batt_name[1];
+            can_mesg[2] = batt_name[2];
+            can_mesg[3] = batt_name[3];
+            can_mesg[4] = batt_name[4];
+            can_mesg[5] = batt_name[5];
+            can_mesg[6] = batt_name[6];
+            can_mesg[7] = batt_name[7];
+            ESP_LOGI("main", "send can id: 0x35E hex: %x %x %x %x %x %x %x %x", can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5], can_mesg[6], can_mesg[7]);
+            return {can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5], can_mesg[6], can_mesg[7]};
+         
 uart:
   id: uart0
   baud_rate: 115200
