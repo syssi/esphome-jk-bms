@@ -433,11 +433,11 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
 
   // 122   4   0x00 0x00 0x00 0x00    Battery power         0.001        W
   // 126   4   0x00 0x00 0x00 0x00    Charge current        0.001        A
-  float current = (float) ((int) jk_get_32bit(126)) * 0.001f;
-  this->publish_state_(this->current_sensor_, (float) ((int) jk_get_32bit(126)) * 0.001f);
+  float current = (float) ((int32_t) jk_get_32bit(126)) * 0.001f;
+  this->publish_state_(this->current_sensor_, (float) ((int32_t) jk_get_32bit(126)) * 0.001f);
 
   // Don't use byte 122 because it's unsigned
-  // float power = (float) ((int) jk_get_32bit(122)) * 0.001f;
+  // float power = (float) ((int32_t) jk_get_32bit(122)) * 0.001f;
   float power = total_voltage * current;
   this->publish_state_(this->power_sensor_, power);
   this->publish_state_(this->charging_power_sensor_, std::max(0.0f, power));               // 500W vs 0W -> 500W
@@ -811,13 +811,13 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   // 94    4   0x58 0x02 0x00 0x00    Discharge OTP Recovery
   ESP_LOGI(TAG, "  Discharge OTP recovery: %f °C", (float) jk_get_32bit(94) * 0.1f);
   // 98    4   0x38 0xFF 0xFF 0xFF    Charge UTP
-  ESP_LOGI(TAG, "  Charge UTP: %f °C", (float) ((int) jk_get_32bit(98)) * 0.1f);
+  ESP_LOGI(TAG, "  Charge UTP: %f °C", (float) ((int32_t) jk_get_32bit(98)) * 0.1f);
   // 102   4   0x9C 0xFF 0xFF 0xFF    Charge UTP Recovery
-  ESP_LOGI(TAG, "  Charge UTP recovery: %f °C", (float) ((int) jk_get_32bit(102)) * 0.1f);
+  ESP_LOGI(TAG, "  Charge UTP recovery: %f °C", (float) ((int32_t) jk_get_32bit(102)) * 0.1f);
   // 106   4   0x84 0x03 0x00 0x00    MOS OTP
-  ESP_LOGI(TAG, "  MOS OTP: %f °C", (float) ((int) jk_get_32bit(106)) * 0.1f);
+  ESP_LOGI(TAG, "  MOS OTP: %f °C", (float) ((int32_t) jk_get_32bit(106)) * 0.1f);
   // 110   4   0xBC 0x02 0x00 0x00    MOS OTP Recovery
-  ESP_LOGI(TAG, "  MOS OTP recovery: %f °C", (float) ((int) jk_get_32bit(110)) * 0.1f);
+  ESP_LOGI(TAG, "  MOS OTP recovery: %f °C", (float) ((int32_t) jk_get_32bit(110)) * 0.1f);
   // 114   4   0x0D 0x00 0x00 0x00    Cell count
   ESP_LOGI(TAG, "  Cell count: %f", (float) jk_get_32bit(114));
 
