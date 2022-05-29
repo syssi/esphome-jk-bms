@@ -6,7 +6,13 @@
 
 ESPHome component to monitor a Jikong Battery Management System (JK-BMS) via RS485 or BLE
 
-This fork supports CAN bus commuinaction with inverters supporting the SMA CAN bus protocol battery standard eg (Goodwe, Pylotech, LG)
+This fork supports CAN bus commuinaction with inverters supporting the CANBUS Protocol compatible with Pylontech V1.3 and Goodwe V1.5.
+
+It communicates with the JK-BMS using the RS485 port which is in fact not RS485, it is 3.3V TTL so it can be directly connected to the ESP32.
+The ESP32 then sends the required CAN bus data to the inverter.
+
+I have been testing using the Goodwe SECU-A*3 batteries selected in the inverter.<br>
+Each SECA-A battery has 5.4kWh of storage, so select the number that are closest to your match batteries total capacity.<br>
 **Note:- CAN bus support is still in development and testing!!!**
 
 Thanks go to syssi for help and making the original RS485 code! Buy him a coffee here https://www.buymeacoffee.com/syssi)
@@ -20,12 +26,14 @@ Thanks go to syssi for help and making the original RS485 code! Buy him a coffee
   So a Diode between GPIO5, GPIO4 diode cathode to GPIO5 at both ESP32
   Then tie the CAN-RX lines together with a pull-up resistor to 3.3V I used 10K pullup.
   
- Sample CAN messages received:<br>
+ Sample CAN messages sent:<br>
 
-    [I][main:046]: received can id: 0x351 hex: 28 2 32 0 46 0 ab 1
-    [I][main:056]: received can id: 0x355 hex: f 0 64 0 dc 5
-    [I][main:066]: received can id: 0x356 hex: ef 14 14 0 22 1
-    [I][main:078]: received can id: 0x35A hex: 0 0 0 0 0 0 0 0
+    can id: 0x359 hex: 0x00, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x22
+    can id: 0x351 hex: 0x28, 0x02, 0xE8, 0x03, 0xE8, 0x03, 0xF7, 0x01
+    can id: 0x355 hex: 0x1A, 0x00, 0x64, 0x00
+    can id: 0x356 hex: 0x00, 0x00, 0x00, 0x00, 0xFA, 0x00
+    can id: 0x35C hex: 0xC0
+    can id: 0x35E hex: 0x45, 0x6E, 0x65, 0x72, 0x67, 0x79
 
  
 
