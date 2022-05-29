@@ -4,7 +4,22 @@ esphome:
 esp32:
   board: esp32doit-devkit-v1
   framework:
-    type: arduino
+    type: esp-idf
+    version: latest
+
+output:
+  - platform: gpio
+    id: led
+    pin: 2
+    inverted: true
+
+light:
+  - platform: binary
+    output: led
+    id: led_buitin
+    name: "Builtin LED"
+    internal: true
+
 
 # Enable logging
 logger:
@@ -20,22 +35,47 @@ wifi:
 
 canbus:
   - platform: esp32_can
-    tx_pin: GPIO5
-    rx_pin: GPIO4
+    tx_pin: GPIO23
+    rx_pin: GPIO22
     can_id: 4
     bit_rate: 500kbps
+    on_frame:
+# SMA/LG/Pylon/Goodwe reply
+    - can_id: 0x305
+      then:
+        - light.toggle:
+            id: led_buitin
 
 interval:
-  - interval: 1s
+  - interval: 950ms
     then:
-      - canbus.send:
-          # Extended ID explicit
-          #use_extended_id: true
-          can_id: 0x351
-          data: [0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08]
-      - canbus.send:
+      - canbus.send: # Warn Alarm
+          can_id: 0x359
+          data: [0x00, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x22]
+      - delay: 10ms
+      - canbus.send: # BMS limits
+          can_id: 0x351 
+          data: [0x28, 0x02, 0xE8, 0x03, 0xE8, 0x03, 0xF7, 0x01]
+      - delay: 10ms
+      - canbus.send: # SOC SOH
           can_id: 0x355
-          data: [0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10]
-      - canbus.send:
-          can_id: 0x35A
-          data: [0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18]
+          data: [0x1A, 0x00, 0x64, 0x00] #, 0x10, 0x27
+      - delay: 10ms
+      - canbus.send: # Volts Amps Temp
+          can_id: 0x356
+          data: [0x00, 0x00, 0x00, 0x00, 0xFA, 0x00]
+      - delay: 10ms
+      - canbus.send: # Request flag
+          can_id: 0x35C
+          data: [0x00]
+      - delay: 10ms
+      - canbus.send: # Max Cell Temp, Min Cell Temp, Max Cell V, Min Cell V
+          can_id: 0x70
+          data: [0xFA, 0x00, 0xF9, 0x00, 0x5E, 0x01, 0x54, 0x01]
+      - delay: 10ms
+      - canbus.send: # Max Cell Temp ID, Min Cell Temp ID, Max Cell V ID, Min Cell ID
+          can_id: 0x371
+          data: [0x05, 0x00, 0x09, 0x00, 0x04, 0x00, 0x0A, 0x00] #
+      - canbus.send: # Energy
+          can_id: 0x35E
+          data: [0x45, 0x6E, 0x65, 0x72, 0x67, 0x79] #0x50, 0x59, 0x4C, 0x4F, 0x4E, 0x20, 0x20, 0x20
