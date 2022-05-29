@@ -12,7 +12,7 @@ It communicates with the JK-BMS using the RS485 port which is in fact not RS485,
 The ESP32 then sends the required CAN bus data to the inverter.
 
 I have been testing using the Goodwe SECU-A*3 batteries selected in the inverter.<br>
-Each SECA-A battery has 5.4kWh of storage, so select the number that are closest to your match batteries total capacity.<br>
+Each SECA-A battery has 5.4kWh of storage, so select the number that is the closest match to your battery's total capacity.<br>
 **Note:- CAN bus support is still in development and testing!!!**
 
 Thanks go to syssi for help and making the original RS485 code! Buy him a coffee here https://www.buymeacoffee.com/syssi)
