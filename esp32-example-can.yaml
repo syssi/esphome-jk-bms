@@ -1,15 +1,15 @@
 substitutions:
 # name that will appear in esphome and homeassistant.
   name: jk-bms-can
-# Battery name that will be sent to inverter over CAN bus max 8 charaters.
-  batt_name: Battery1
+# Number of Battery modules max 8 
+  batt_modules: "3"
 # This is voltage you want the inverter to change battery with eg 3.45v/cell for 16 cells 48V battery. 
   charge_v: "55.2" 
-# This is the percentage state of health new would be 100 
+# This is the percentage state of health new would be 100 as battery gets older reduce. 
   soh: "100"
 # GPIO pins your CAN bus transceiver(TJA1050) is connected to the ESP, note! TX->TX and RX->RX. 
-  can_tx_pin: GPIO5
-  can_rx_pin: GPIO4
+  can_tx_pin: GPIO23
+  can_rx_pin: GPIO22
 # GPIO pins your JK-BMS RS485(TTL) is connected to the ESP TX->RX and RX->TX. 
   tx_pin: GPIO16
   rx_pin: GPIO17
@@ -47,92 +47,19 @@ api:
 #  password: !secret mqtt_password
 #  id: mqtt_client
 
-canbus:
-  - platform: esp32_can
-    tx_pin: ${can_tx_pin}
-    rx_pin: ${can_rx_pin}
-    can_id: 4
-    bit_rate: 500kbps
+output:
+  - platform: gpio
+    pin: 2
+    id: led
+    inverted: true
 
-interval:
-  - interval: 1000ms
-    then:
-      - canbus.send:
-          can_id: 0x351
-          data: !lambda |-
-            int chg_v = ${charge_v} * 10;
-            uint8_t can_mesg[7];
-            can_mesg[0] = chg_v & 0xff;
-            can_mesg[1] = chg_v >> 8 & 0xff;
-            can_mesg[2] = int16_t(id(charging_overcurrent_protection).state * 10) & 0xff;
-            can_mesg[3] = int16_t(id(charging_overcurrent_protection).state * 10) >> 8 & 0xff;
-            can_mesg[4] = int16_t(id(discharging_overcurrent_protection).state * 10) & 0xff;
-            can_mesg[5] = int16_t(id(discharging_overcurrent_protection).state * 10) >> 8 & 0xff;
-            can_mesg[6] = uint16_t(id(total_voltage_undervoltage_protection).state * 10) & 0xff;
-            can_mesg[7] = uint16_t(id(total_voltage_undervoltage_protection).state * 10) >> 8 & 0xff;
-            ESP_LOGI("main", "send can id: 0x351 hex: %x %x %x %x %x %x %x %x", can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5], can_mesg[6], can_mesg[7]);
-            return {can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5], can_mesg[6], can_mesg[7]};
+light:
+  - platform: binary
+    output: led
+    id: led_buitin
+    name: "Builtin LED"
+    internal: true
 
-      - canbus.send:
-          can_id: 0x355
-          data: !lambda |-
-            int chg_v = ${charge_v} * 10;
-            uint8_t can_mesg[5];
-            can_mesg[0] = uint16_t(id(capacity_remaining).state) & 0xff;
-            can_mesg[1] = uint16_t(id(capacity_remaining).state) >> 8 & 0xff;
-            can_mesg[2] = ${soh} & 0xff;
-            can_mesg[3] = ${soh} >> 8 & 0xff; 
-            can_mesg[4] = uint16_t(id(capacity_remaining).state * 100) & 0xff;
-            can_mesg[5] = uint16_t(id(capacity_remaining).state * 100) >> 8 & 0xff;
-            ESP_LOGI("main", "send can id: 0x355 hex: %x %x %x %x %x %x", can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5]);
-            return {can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5]};      
-
-      - canbus.send:
-          can_id: 0x356
-          data: !lambda |-
-            int chg_v = ${charge_v} * 10;
-            uint8_t can_mesg[5];
-            can_mesg[0] = uint16_t(id(total_voltage).state * 100) & 0xff;
-            can_mesg[1] = uint16_t(id(total_voltage).state * 100) >> 8 & 0xff;
-            can_mesg[2] = int16_t(id(current).state * 10) & 0xff;
-            can_mesg[3] = int16_t(id(current).state * 10) >> 8 & 0xff; 
-            can_mesg[4] = int16_t(id(power_tube_temperature).state * 10) & 0xff;
-            can_mesg[5] = int16_t(id(power_tube_temperature).state * 10) >> 8 & 0xff;
-            ESP_LOGI("main", "send can id: 0x356 hex: %x %x %x %x %x %x", can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5]);
-            return {can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5]};
-
-      - canbus.send:
-          can_id: 0x35A
-          data: !lambda |-
-            int chg_v = ${charge_v} * 10;
-            uint8_t can_mesg[7];
-            can_mesg[0] = uint16_t(id(errors_bitmask).state) & 0x1; /// low capacity jk bit 0
-            can_mesg[1] = 0; /// low capacity leave
-            can_mesg[2] = uint16_t(id(errors_bitmask).state) & 0x4 >> 2; ///High V jk bit 2
-            can_mesg[3] = 0; ///High V leave
-            can_mesg[4] = uint16_t(id(errors_bitmask).state) & 0x8 >> 3; ///Low V jk bit 3
-            can_mesg[5] = 0; ///Low V leave
-            can_mesg[6] = uint16_t(id(errors_bitmask).state) & 0x2 >> 1; ///High temp jk bit1
-            can_mesg[7] = 0; ///High temp leave
-            ESP_LOGI("main", "send can id: 0x35A hex: %x %x %x %x %x %x %x %x", can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5], can_mesg[6], can_mesg[7]);
-            return {can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5], can_mesg[6], can_mesg[7]};
-
-      - canbus.send:
-          can_id: 0x35E
-          data: !lambda |-
-            char batt_name[] = "${batt_name}";
-            uint8_t can_mesg[7];
-            can_mesg[0] = batt_name[0];
-            can_mesg[1] = batt_name[1];
-            can_mesg[2] = batt_name[2];
-            can_mesg[3] = batt_name[3];
-            can_mesg[4] = batt_name[4];
-            can_mesg[5] = batt_name[5];
-            can_mesg[6] = batt_name[6];
-            can_mesg[7] = batt_name[7];
-            ESP_LOGI("main", "send can id: 0x35E hex: %x %x %x %x %x %x %x %x", can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5], can_mesg[6], can_mesg[7]);
-            return {can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5], can_mesg[6], can_mesg[7]};
-         
 uart:
   id: uart0
   baud_rate: 115200
@@ -149,6 +76,134 @@ jk_bms:
   jk_modbus_id: modbus0
   enable_fake_traffic: true
 
+canbus:
+  - platform: esp32_can
+    tx_pin: ${can_tx_pin}
+    rx_pin: ${can_rx_pin}
+    can_id: 4
+    bit_rate: 500kbps
+    on_frame:
+# SMA/LG/Pylon/Goodwe reply
+    - can_id: 0x305
+      then:
+        - light.toggle:
+            id: led_buitin
+
+interval:
+  - interval: 1000ms
+    then:
+      - canbus.send: # Warn Alarm
+          can_id: 0x359
+          data: !lambda |-
+            uint8_t can_mesg[7];
+            uint16_t jk_errormask = uint16_t(id(errors_bitmask).state);
+            int batt_mods = ${batt_modules};
+            /// Alarms
+            can_mesg[0] = (jk_errormask & 0x04 >> 1) | (jk_errormask & 0x80 >> 6) | (jk_errormask & 0x400 >> 9); /// H.V.A Jk bit 2,7,10
+            can_mesg[0] = can_mesg[0] | (jk_errormask & 0x08 >> 1) | (jk_errormask & 0x800 >> 9); ///L.V.A Jk bit 3,11
+            can_mesg[0] = can_mesg[0] | (jk_errormask & 0x02 << 2) | (jk_errormask & 0x10 >> 1) | (jk_errormask & 0x100 >> 5); //H.T.A bit 1,4,8
+            can_mesg[0] = can_mesg[0] | (jk_errormask & 0x200 >> 5); ///L.T.A Jk bit 9
+            can_mesg[0] = can_mesg[0] | (jk_errormask & 0x40 << 1); ///D.O.C Jk bit 6
+            can_mesg[1] = (jk_errormask & 0x20 >> 5); ///C.O.C Jk bit 5
+            can_mesg[1] = can_mesg[1] | (jk_errormask & 0x1000 >> 9) | (jk_errormask & 0x2000 >> 10); /// BMS Internal Jk bit 12,13
+            /// Warnings
+            can_mesg[2] = 0x00;
+            can_mesg[3] = 0x00;
+            /// Flags
+            can_mesg[4] = batt_mods; ///Module in parallel
+            can_mesg[5] = 0x00;
+            can_mesg[6] = 0x00;
+            can_mesg[7] = 0x22; ///DIP switches
+            ESP_LOGI("main", "send can id: 0x359 hex: %x %x %x %x %x %x %x %x", can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5], can_mesg[6], can_mesg[7]);
+            return {can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5], can_mesg[6], can_mesg[7]};
+      - delay: 12ms
+
+      - canbus.send: # BMS limts
+          can_id: 0x351
+          data: !lambda |-
+            int chg_v = ${charge_v} * 10;
+            uint8_t can_mesg[7];
+            can_mesg[0] = chg_v & 0xff;
+            can_mesg[1] = chg_v >> 8 & 0xff;
+            can_mesg[2] = int16_t(id(charging_overcurrent_protection).state * 10) & 0xff;
+            can_mesg[3] = int16_t(id(charging_overcurrent_protection).state * 10) >> 8 & 0xff;
+            can_mesg[4] = int16_t(id(discharging_overcurrent_protection).state * 10) & 0xff;
+            can_mesg[5] = int16_t(id(discharging_overcurrent_protection).state * 10) >> 8 & 0xff;
+            can_mesg[6] = uint16_t(id(total_voltage_undervoltage_protection).state * 10) & 0xff;
+            can_mesg[7] = uint16_t(id(total_voltage_undervoltage_protection).state * 10) >> 8 & 0xff;
+            ESP_LOGI("main", "send can id: 0x351 hex: %x %x %x %x %x %x %x %x", can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5], can_mesg[6], can_mesg[7]);
+            return {can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5], can_mesg[6], can_mesg[7]};
+      - delay: 12ms
+
+      - canbus.send: # SOC, SOH
+          can_id: 0x355
+          data: !lambda |-
+            uint8_t can_mesg[3];
+            if (id(discharging_switch).state) {
+               can_mesg[0] = uint16_t(id(capacity_remaining).state) & 0xff;
+               can_mesg[1] = uint16_t(id(capacity_remaining).state) >> 8 & 0xff;
+            } else {
+               can_mesg[0] = 0x00;
+               can_mesg[1] = 0x00;
+            }             
+            can_mesg[2] = ${soh} & 0xff;
+            can_mesg[3] = ${soh} >> 8 & 0xff;
+            ESP_LOGI("main", "send can id: 0x355 hex: %x %x %x %x", can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3]);
+            return {can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3]};      
+      - delay: 12ms
+
+      - canbus.send: # Volts,Amps, Temp
+          can_id: 0x356
+          data: [0x00, 0x00, 0x00, 0x00, 0xFA, 0x00]
+      - delay: 12ms
+
+      - canbus.send: # Request flag
+          can_id: 0x35C
+          data: !lambda |-
+            uint8_t can_mesg[1];
+            if (id(charging_switch).state) {
+               can_mesg[0] = 0x80;
+            } else {
+               can_mesg[0] = 0x00;
+              }
+            if (id(discharging_switch).state) {
+               can_mesg[0] = can_mesg[0] | 0x40;
+            }
+               can_mesg[1] = 0x00;
+            ESP_LOGI("main", "send can id: 0x35C hex: %x %x", can_mesg[0], can_mesg[1]);
+            return {can_mesg[0], can_mesg[1]};
+      - delay: 12ms
+
+      - canbus.send: # Max Cell Temp, Min Cell Temp, Max Cell V, Min Cell V
+          can_id: 0x70
+          data: [0xFA, 0x00, 0xF9, 0x00, 0x5E, 0x01, 0x54, 0x01]
+      - delay: 12ms
+
+      - canbus.send: # Max Cell Temp ID, Min Cell Temp ID, Max Cell V ID, Min Cell ID
+          can_id: 0x371
+          data: [0x05, 0x00, 0x09, 0x00, 0x04, 0x00, 0x0A, 0x00] #
+      - delay: 12ms
+
+      - canbus.send: # Energy
+          can_id: 0x35E
+          data: [0x45, 0x6E, 0x65, 0x72, 0x67, 0x79]
+
+#      - canbus.send: # PYLON
+#          can_id: 0x35E
+#          data: !lambda |-
+#            char batt_name[] = "${batt_name}";
+#            uint8_t can_mesg[7];
+#            can_mesg[0] = batt_name[0];
+#            can_mesg[1] = batt_name[1];
+#            can_mesg[2] = batt_name[2];
+#            can_mesg[3] = batt_name[3];
+#            can_mesg[4] = batt_name[4];
+#            can_mesg[5] = batt_name[5];
+#            can_mesg[6] = batt_name[6];
+#            can_mesg[7] = batt_name[7];
+#            ESP_LOGI("main", "send can id: 0x35E hex: %x %x %x %x %x %x %x %x", can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5], can_mesg[6], can_mesg[7]);
+#            return {can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5], can_mesg[6], can_mesg[7]};
+
 binary_sensor:
   - platform: jk_bms
     balancing:
@@ -158,10 +213,12 @@ binary_sensor:
     charging:
       name: "${name} charging"
     charging_switch:
+      id: charging_switch
       name: "${name} charging switch"
     discharging:
       name: "${name} discharging"
     discharging_switch:
+      id: discharging_switch
       name: "${name} discharging switch"
     dedicated_charger_switch:
       name: "${name} dedicated charger switch"
