@@ -3,8 +3,8 @@ substitutions:
   name: jk-bms-can
 # Number of Battery modules max 8 
   batt_modules: "3"
-# This is voltage you want the inverter to change battery with eg 3.45v/cell for 16 cells 48V battery. 
-  charge_v: "55.2" 
+# This is voltage you want the inverter to change battery with 55.2 eg 3.45v/cell for 16 cells 48V battery. 
+  charge_v: "57.6" 
 # This is the percentage state of health new would be 100 as battery gets older reduce. 
   soh: "100"
 # GPIO pins your CAN bus transceiver(TJA1050) is connected to the ESP, note! TX->TX and RX->RX. 
@@ -29,6 +29,18 @@ esp32:
 external_components:
   - source: ${external_components_source}
     refresh: 0s
+
+globals:
+  - id: can_305_rx
+    type: int
+    restore_value: no
+    initial_value: '0'
+
+button:
+  - platform: restart
+    name: "Restart button"
+    id: restart_button
+    internal: true
 
 wifi:
   ssid: !secret wifi_ssid
@@ -59,6 +71,7 @@ light:
     id: led_buitin
     name: "Builtin LED"
     internal: true
+#    restore_mode: ALWAYS_ON # what you need
 
 uart:
   id: uart0
@@ -74,7 +87,7 @@ jk_modbus:
 jk_bms:
   id: bms0
   jk_modbus_id: modbus0
-  enable_fake_traffic: true
+#  enable_fake_traffic: true
 
 canbus:
   - platform: esp32_can
@@ -83,14 +96,17 @@ canbus:
     can_id: 4
     bit_rate: 500kbps
     on_frame:
-# SMA/LG/Pylon/Goodwe reply
-    - can_id: 0x305
+    - can_id: 0x305 # SMA/LG/Pylon/Goodwe reply
       then:
         - light.toggle:
             id: led_buitin
+        - lambda: |-
+            // ESP_LOGI("main", "received can id: 0x305 ACK");
+            id(can_305_rx) = 0;
+
 
 interval:
-  - interval: 1000ms
+  - interval: 950ms
     then:
       - canbus.send: # Warn Alarm
           can_id: 0x359
@@ -116,7 +132,7 @@ interval:
             can_mesg[7] = 0x22; ///DIP switches
             ESP_LOGI("main", "send can id: 0x359 hex: %x %x %x %x %x %x %x %x", can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5], can_mesg[6], can_mesg[7]);
             return {can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5], can_mesg[6], can_mesg[7]};
-      - delay: 12ms
+      - delay: 10ms
 
       - canbus.send: # BMS limts
           can_id: 0x351
@@ -133,7 +149,7 @@ interval:
             can_mesg[7] = uint16_t(id(total_voltage_undervoltage_protection).state * 10) >> 8 & 0xff;
             ESP_LOGI("main", "send can id: 0x351 hex: %x %x %x %x %x %x %x %x", can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5], can_mesg[6], can_mesg[7]);
             return {can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5], can_mesg[6], can_mesg[7]};
-      - delay: 12ms
+      - delay: 10ms
 
       - canbus.send: # SOC, SOH
           can_id: 0x355
@@ -150,12 +166,24 @@ interval:
             can_mesg[3] = ${soh} >> 8 & 0xff;
             ESP_LOGI("main", "send can id: 0x355 hex: %x %x %x %x", can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3]);
             return {can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3]};      
-      - delay: 12ms
+      - delay: 10ms
 
       - canbus.send: # Volts,Amps, Temp
           can_id: 0x356
-          data: [0x00, 0x00, 0x00, 0x00, 0xFA, 0x00]
-      - delay: 12ms
+          # data: [0x00, 0x00, 0x00, 0x00, 0xFA, 0x00]
+          data: !lambda |-
+            int chg_v = ${charge_v} * 10;
+            uint8_t can_mesg[5];
+            if (id(discharging_switch).state) can_mesg[0] = 0x00;
+            else can_mesg[0] = uint16_t(id(total_voltage).state * 100) & 0xff;
+            can_mesg[1] = uint16_t(id(total_voltage).state * 100) >> 8 & 0xff;
+            can_mesg[2] = int16_t(id(current).state * 10) & 0xff;
+            can_mesg[3] = int16_t(id(current).state * 10) >> 8 & 0xff; 
+            can_mesg[4] = int16_t(id(power_tube_temperature).state * 10) & 0xff;
+            can_mesg[5] = int16_t(id(power_tube_temperature).state * 10) >> 8 & 0xff;
+            ESP_LOGI("main", "send can id: 0x356 hex: %x %x %x %x %x %x", can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5]);
+            return {can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5]};
+      - delay: 10ms
 
       - canbus.send: # Request flag
           can_id: 0x35C
@@ -172,37 +200,19 @@ interval:
                can_mesg[1] = 0x00;
             ESP_LOGI("main", "send can id: 0x35C hex: %x %x", can_mesg[0], can_mesg[1]);
             return {can_mesg[0], can_mesg[1]};
-      - delay: 12ms
+      - delay: 10ms
 
-      - canbus.send: # Max Cell Temp, Min Cell Temp, Max Cell V, Min Cell V
-          can_id: 0x70
-          data: [0xFA, 0x00, 0xF9, 0x00, 0x5E, 0x01, 0x54, 0x01]
-      - delay: 12ms
-
-      - canbus.send: # Max Cell Temp ID, Min Cell Temp ID, Max Cell V ID, Min Cell ID
-          can_id: 0x371
-          data: [0x05, 0x00, 0x09, 0x00, 0x04, 0x00, 0x0A, 0x00] #
-      - delay: 12ms
-
-      - canbus.send: # Energy
+      - canbus.send: # GOODWE
           can_id: 0x35E
-          data: [0x45, 0x6E, 0x65, 0x72, 0x67, 0x79]
+          data: [0x47, 0x4F, 0x4F, 0x44, 0x57, 0x45, 0x20, 0x20]
 
-#      - canbus.send: # PYLON
-#          can_id: 0x35E
-#          data: !lambda |-
-#            char batt_name[] = "${batt_name}";
-#            uint8_t can_mesg[7];
-#            can_mesg[0] = batt_name[0];
-#            can_mesg[1] = batt_name[1];
-#            can_mesg[2] = batt_name[2];
-#            can_mesg[3] = batt_name[3];
-#            can_mesg[4] = batt_name[4];
-#            can_mesg[5] = batt_name[5];
-#            can_mesg[6] = batt_name[6];
-#            can_mesg[7] = batt_name[7];
-#            ESP_LOGI("main", "send can id: 0x35E hex: %x %x %x %x %x %x %x %x", can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5], can_mesg[6], can_mesg[7]);
-#            return {can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5], can_mesg[6], can_mesg[7]};
+      - lambda: |-
+           if (id(can_305_rx) > 30) {
+             ESP_LOGI("main", "No rx can 0x305. Rebooting...");
+             id(restart_button).press();
+           } else {
+             id(can_305_rx) ++;
+           }
 
 binary_sensor:
   - platform: jk_bms
