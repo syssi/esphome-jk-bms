@@ -837,8 +837,8 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   ESP_LOGI(TAG, "  Nominal battery capacity: %f Ah", (float) jk_get_32bit(130) * 0.001f);
   // 134   4   0xDC 0x05 0x00 0x00    Unknown134
   ESP_LOGI(TAG, "  Unknown134: %f", (float) jk_get_32bit(134) * 0.001f);
-  // 138   4   0xE4 0x0C 0x00 0x00    Unknown138
-  ESP_LOGI(TAG, "  Unknown138: %f", (float) jk_get_32bit(138) * 0.001f);
+  // 138   4   0xE4 0x0C 0x00 0x00    Start balance voltage
+  ESP_LOGI(TAG, "  Start balance voltage: %f V", (float) jk_get_32bit(138) * 0.001f);
   // 142   4   0x00 0x00 0x00 0x00
   // 146   4   0x00 0x00 0x00 0x00
   // 150   4   0x00 0x00 0x00 0x00
