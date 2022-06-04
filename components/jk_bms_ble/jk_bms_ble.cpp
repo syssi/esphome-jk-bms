@@ -423,7 +423,7 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // 110   2   0x00 0x00              Resistance Cell 24    0.001        Ohm
 
   // 112   2   0x00 0x00              Unknown112
-  ESP_LOGI(TAG, "Unknown112: %02X %02X", data[112], data[113]);
+  ESP_LOGD(TAG, "Unknown112: %02X %02X", data[112], data[113]);
   // 114   4   0x00 0x00 0x00 0x00    Warning wire resistance too high?
   ESP_LOGI(TAG, "Wire resistance warning: %02X %02X %02X %02X", data[114], data[115], data[116], data[117]);
 
@@ -502,10 +502,10 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->total_charging_cycle_capacity_sensor_, (float) jk_get_32bit(154));
 
   // 158   2   0x64 0x00              Unknown158
-  ESP_LOGI(TAG, "Unknown158: %02X %02X (always 0x64 0x00?)", data[158], data[159]);
+  ESP_LOGD(TAG, "Unknown158: %02X %02X (always 0x64 0x00?)", data[158], data[159]);
 
   // 160   2   0x79 0x04              Unknown160 (Cycle capacity?)
-  ESP_LOGI(TAG, "Unknown160: %02X %02X (always 0xC5 0x09?)", data[160], data[161]);
+  ESP_LOGD(TAG, "Unknown160: %02X %02X (always 0xC5 0x09?)", data[160], data[161]);
 
   // 162   4   0xCA 0x03 0x10 0x00    Total runtime in seconds           s
   this->publish_state_(this->total_runtime_sensor_, (float) jk_get_32bit(162));
@@ -517,7 +517,7 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // 167   1   0x01                   Discharging switch enabled                   0x00: off, 0x01: on
   this->publish_state_(this->discharging_binary_sensor_, (bool) data[167]);
 
-  ESP_LOGI(TAG, "Unknown168: %s", format_hex_pretty(&data.front() + 168, data.size() - 168 - 4 - 81 - 1).c_str());
+  ESP_LOGD(TAG, "Unknown168: %s", format_hex_pretty(&data.front() + 168, data.size() - 168 - 4 - 81 - 1).c_str());
 
   // 168   1   0xAA                   Unknown168
   // 169   2   0x06 0x00              Unknown169
@@ -531,14 +531,14 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // 185   2   0x00 0x00              Unknown185
   // 187   2   0x00 0xD5              Unknown187
   // 189   2   0x02 0x00              Unknown189
-  ESP_LOGI(TAG, "Unknown189: %02X %02X", data[189], data[190]);
+  ESP_LOGD(TAG, "Unknown189: %02X %02X", data[189], data[190]);
   // 191   1   0x00                   Balancer status (working: 0x01, idle: 0x00)
   // 192   1   0x00                   Unknown192
-  ESP_LOGI(TAG, "Unknown192: %02X", data[192]);
+  ESP_LOGD(TAG, "Unknown192: %02X", data[192]);
   // 193   2   0x00 0xAE              Unknown193
-  ESP_LOGI(TAG, "Unknown193: %02X %02X (0x00 0x8D)", data[193], data[194]);
+  ESP_LOGD(TAG, "Unknown193: %02X %02X (0x00 0x8D)", data[193], data[194]);
   // 195   2   0xD6 0x3B              Unknown195
-  ESP_LOGI(TAG, "Unknown195: %02X %02X (0x21 0x40)", data[195], data[196]);
+  ESP_LOGD(TAG, "Unknown195: %02X %02X (0x21 0x40)", data[195], data[196]);
   // 197   10  0x40 0x00 0x00 0x00 0x00 0x58 0xAA 0xFD 0xFF 0x00
   // 207   7   0x00 0x00 0x01 0x00 0x02 0x00 0x00
   // 214   4   0xEC 0xE6 0x4F 0x00    Uptime 100ms
@@ -677,17 +677,17 @@ void JkBmsBle::decode_jk04_cell_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->delta_cell_voltage_sensor_, (float) ieee_float_(jk_get_32bit(206)));
 
   // 210   4   0x00 0x00 0x00 0x00    Unknown210
-  ESP_LOGI(TAG, "Unknown210: %02X %02X %02X %02X (always 0x00 0x00 0x00 0x00)", data[210], data[211], data[212],
+  ESP_LOGD(TAG, "Unknown210: %02X %02X %02X %02X (always 0x00 0x00 0x00 0x00)", data[210], data[211], data[212],
            data[213]);
 
   // 214   4   0xFF 0xFF 0x00 0x00    Unknown214
-  ESP_LOGI(TAG, "Unknown214: %02X %02X %02X %02X (0xFF 0xFF: 24 cells?)", data[214], data[215], data[216], data[217]);
+  ESP_LOGD(TAG, "Unknown214: %02X %02X %02X %02X (0xFF 0xFF: 24 cells?)", data[214], data[215], data[216], data[217]);
 
   // 218   1   0x01                   Unknown218
-  ESP_LOGI(TAG, "Unknown218: %02X", data[218]);
+  ESP_LOGD(TAG, "Unknown218: %02X", data[218]);
 
   // 219   1   0x00                   Unknown219
-  ESP_LOGI(TAG, "Unknown219: %02X", data[219]);
+  ESP_LOGD(TAG, "Unknown219: %02X", data[219]);
 
   // 220   1   0x00                  Blink cells (0x00: Off, 0x01: Charging balancer, 0x02: Discharging balancer)
   bool balancing = (bool) (data[220] != 0x00);
@@ -695,21 +695,21 @@ void JkBmsBle::decode_jk04_cell_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->operation_status_text_sensor_, (balancing) ? "Balancing" : "Idle");
 
   // 221   1   0x01                  Unknown221
-  ESP_LOGI(TAG, "Unknown221: %02X", data[221]);
+  ESP_LOGD(TAG, "Unknown221: %02X", data[221]);
 
   // 222   4   0x00 0x00 0x00 0x00    Balancing current
   this->publish_state_(this->balancing_current_sensor_, (float) ieee_float_(jk_get_32bit(222)));
 
   // 226   7   0x00 0x00 0x00 0x00 0x00 0x00 0x00    Unknown226
-  ESP_LOGI(TAG, "Unknown226: %02X %02X %02X %02X %02X %02X %02X (always 0x00...0x00?)", data[226], data[227], data[228],
+  ESP_LOGD(TAG, "Unknown226: %02X %02X %02X %02X %02X %02X %02X (always 0x00...0x00?)", data[226], data[227], data[228],
            data[229], data[230], data[231], data[232]);
 
   // 233   4   0x66 0xA0 0xD2 0x4A    Unknown233
-  ESP_LOGI(TAG, "Unknown233: %02X %02X %02X %02X (%f)", data[233], data[234], data[235], data[236],
+  ESP_LOGD(TAG, "Unknown233: %02X %02X %02X %02X (%f)", data[233], data[234], data[235], data[236],
            ieee_float_(jk_get_32bit(233)));
 
   // 237   4   0x40 0x00 0x00 0x00    Unknown237
-  ESP_LOGI(TAG, "Unknown237: %02X %02X %02X %02X (always 0x40 0x00 0x00 0x00?)", data[237], data[238], data[239],
+  ESP_LOGD(TAG, "Unknown237: %02X %02X %02X %02X (always 0x40 0x00 0x00 0x00?)", data[237], data[238], data[239],
            data[240]);
 
   // 241   45  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
@@ -723,14 +723,14 @@ void JkBmsBle::decode_jk04_cell_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->total_runtime_formatted_text_sensor_, format_total_runtime_(jk_get_32bit(286)));
 
   // 290   4   0x00 0x00 0x00 0x00    Unknown290
-  ESP_LOGI(TAG, "Unknown290: %02X %02X %02X %02X (always 0x00 0x00 0x00 0x00?)", data[290], data[291], data[292],
+  ESP_LOGD(TAG, "Unknown290: %02X %02X %02X %02X (always 0x00 0x00 0x00 0x00?)", data[290], data[291], data[292],
            data[293]);
 
   // 294   4   0x00 0x48 0x22 0x40    Unknown294
-  ESP_LOGI(TAG, "Unknown294: %02X %02X %02X %02X", data[294], data[295], data[296], data[297]);
+  ESP_LOGD(TAG, "Unknown294: %02X %02X %02X %02X", data[294], data[295], data[296], data[297]);
 
   // 298   1   0x00                   Unknown298
-  ESP_LOGI(TAG, "Unknown298: %02X", data[298]);
+  ESP_LOGD(TAG, "Unknown298: %02X", data[298]);
 
   // 299   1   0x13                   Checksm
 
@@ -769,7 +769,7 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   // 4     1   0x01                   Frame type
   // 5     1   0x4F                   Frame counter
   // 6     4   0x58 0x02 0x00 0x00    Unknown6
-  ESP_LOGI(TAG, "  Unknown6: %f", (float) jk_get_32bit(6) * 0.001f);
+  ESP_LOGD(TAG, "  Unknown6: %f", (float) jk_get_32bit(6) * 0.001f);
   // 10    4   0x54 0x0B 0x00 0x00    Cell UVP
   ESP_LOGI(TAG, "  Cell UVP: %f V", (float) jk_get_32bit(10) * 0.001f);
   // 14    4   0x80 0x0C 0x00 0x00    Cell OVP Recovery
@@ -836,7 +836,7 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   // 130   4   0x88 0x13 0x00 0x00    Nominal battery capacity
   ESP_LOGI(TAG, "  Nominal battery capacity: %f Ah", (float) jk_get_32bit(130) * 0.001f);
   // 134   4   0xDC 0x05 0x00 0x00    Unknown134
-  ESP_LOGI(TAG, "  Unknown134: %f", (float) jk_get_32bit(134) * 0.001f);
+  ESP_LOGD(TAG, "  Unknown134: %f", (float) jk_get_32bit(134) * 0.001f);
   // 138   4   0xE4 0x0C 0x00 0x00    Start balance voltage
   ESP_LOGI(TAG, "  Start balance voltage: %f V", (float) jk_get_32bit(138) * 0.001f);
   // 142   4   0x00 0x00 0x00 0x00
@@ -918,7 +918,7 @@ void JkBmsBle::decode_jk04_settings_(const std::vector<uint8_t> &data) {
   // 4     1   0x01                   Frame type
   // 5     1   0x50                   Frame counter
   // 6     4   0x00 0x00 0x80 0x3F
-  ESP_LOGI(TAG, "  Unknown6: %02X %02X %02X %02X (%f)", data[6], data[7], data[8], data[9],
+  ESP_LOGD(TAG, "  Unknown6: %02X %02X %02X %02X (%f)", data[6], data[7], data[8], data[9],
            (float) ieee_float_(jk_get_32bit(6)));
 
   // 10    4   0x00 0x00 0x00 0x00
@@ -942,7 +942,7 @@ void JkBmsBle::decode_jk04_settings_(const std::vector<uint8_t> &data) {
   // 66    4   0x00 0x00 0x00 0x00
   // 70    4   0x00 0x00 0x00 0x00
   // 74    4   0xA3 0xFD 0x40 0x40
-  ESP_LOGI(TAG, "  Unknown74: %f", (float) ieee_float_(jk_get_32bit(74)));
+  ESP_LOGD(TAG, "  Unknown74: %f", (float) ieee_float_(jk_get_32bit(74)));
 
   // 78    4   0x00 0x00 0x00 0x00
   // 82    4   0x00 0x00 0x00 0x00
@@ -953,7 +953,7 @@ void JkBmsBle::decode_jk04_settings_(const std::vector<uint8_t> &data) {
   ESP_LOGI(TAG, "  Start balance voltage: %f V", (float) ieee_float_(jk_get_32bit(98)));
 
   // 102   4   0x9A 0x99 0x59 0x40
-  ESP_LOGI(TAG, "  Unknown102: %f", (float) ieee_float_(jk_get_32bit(102)));
+  ESP_LOGD(TAG, "  Unknown102: %f", (float) ieee_float_(jk_get_32bit(102)));
 
   // 106   4   0x0A 0xD7 0xA3 0x3B    Trigger delta voltage
   ESP_LOGI(TAG, "  Trigger Delta Voltage: %f V", (float) ieee_float_(jk_get_32bit(106)));
