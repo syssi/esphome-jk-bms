@@ -182,6 +182,9 @@ esphome run esp32-example.yaml
 
 * The battery type sensor is pretty useless because the BMS reports always the same value (`Ternary Lithium`). Regardless of which battery type was set / parameter set was loaded via the android app. ([#9][i9])
 * ESP32: Adding all supported sensors can lead to a stack overflow / boot loop. This can be solved by increasing the stack size. ([#63][i63])
+* BLE: Please stick to the `esp-idf` framework because the Arduino framework crashs on the first received BLE notification.
+* Raspberry Pi & ESP-IDF: If the project doesn't compile because of `Error: Could not find the package with 'platformio/toolchain-esp32ulp @ ~1.22851.0' requirements for your system 'linux_aarch64'` please use a host with another processor architecture (f.e. x86). The toolchain isn't `linux_aarch64` (ARM64) compatible at the moment.
+* MQTT & BLE: Please use ESPHome `>=2022.4.0` if you want to use the BLE component (requires `esp-idf`) and MQTT. The MQTT component wasn't ESP-IDF compatible until then.
 
 [i9]: https://github.com/syssi/esphome-jk-bms/issues/9
 [i63]: https://github.com/syssi/esphome-jk-bms/issues/63
