@@ -5,6 +5,7 @@
 #include "esphome/components/ble_client/ble_client.h"
 #include "esphome/components/esp32_ble_tracker/esp32_ble_tracker.h"
 #include "esphome/components/binary_sensor/binary_sensor.h"
+#include "esphome/components/number/number.h"
 #include "esphome/components/sensor/sensor.h"
 #include "esphome/components/switch/switch.h"
 #include "esphome/components/text_sensor/text_sensor.h"
@@ -30,6 +31,47 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   void dump_config() override;
   void update() override;
   float get_setup_priority() const override { return setup_priority::DATA; }
+
+  void set_balance_trigger_voltage_number(number::Number *balance_trigger_voltage_number) {
+    balance_trigger_voltage_number_ = balance_trigger_voltage_number;
+  }
+  void set_cell_count_number(number::Number *cell_count_number) { cell_count_number_ = cell_count_number; }
+  void set_total_battery_capacity_number(number::Number *total_battery_capacity_number) {
+    total_battery_capacity_number_ = total_battery_capacity_number;
+  }
+  void set_cell_voltage_overvoltage_protection_number(number::Number *cell_voltage_overvoltage_protection_number) {
+    cell_voltage_overvoltage_protection_number_ = cell_voltage_overvoltage_protection_number;
+  }
+  void set_cell_voltage_overvoltage_recovery_number(number::Number *cell_voltage_overvoltage_recovery_number) {
+    cell_voltage_overvoltage_recovery_number_ = cell_voltage_overvoltage_recovery_number;
+  }
+  void set_cell_voltage_undervoltage_protection_number(number::Number *cell_voltage_undervoltage_protection_number) {
+    cell_voltage_undervoltage_protection_number_ = cell_voltage_undervoltage_protection_number;
+  }
+  void set_cell_voltage_undervoltage_recovery_number(number::Number *cell_voltage_undervoltage_recovery_number) {
+    cell_voltage_undervoltage_recovery_number_ = cell_voltage_undervoltage_recovery_number;
+  }
+  void set_balance_starting_voltage_number(number::Number *balance_starting_voltage_number) {
+    balance_starting_voltage_number_ = balance_starting_voltage_number;
+  }
+  void set_voltage_calibration_number(number::Number *voltage_calibration_number) {
+    voltage_calibration_number_ = voltage_calibration_number;
+  }
+  void set_current_calibration_number(number::Number *current_calibration_number) {
+    current_calibration_number_ = current_calibration_number;
+  }
+  void set_power_off_voltage_number(number::Number *power_off_voltage_number) {
+    power_off_voltage_number_ = power_off_voltage_number;
+  }
+  void set_max_balance_current_number(number::Number *max_balance_current_number) {
+    max_balance_current_number_ = max_balance_current_number;
+  }
+  void set_max_charge_current_number(number::Number *max_charge_current_number) {
+    max_charge_current_number_ = max_charge_current_number;
+  }
+  void set_max_discharge_current_number(number::Number *max_discharge_current_number) {
+    max_discharge_current_number_ = max_discharge_current_number;
+  }
 
   void set_balancing_binary_sensor(binary_sensor::BinarySensor *balancing_binary_sensor) {
     balancing_binary_sensor_ = balancing_binary_sensor;
@@ -136,6 +178,21 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   binary_sensor::BinarySensor *charging_binary_sensor_;
   binary_sensor::BinarySensor *discharging_binary_sensor_;
 
+  number::Number *balance_trigger_voltage_number_;
+  number::Number *cell_count_number_;
+  number::Number *total_battery_capacity_number_;
+  number::Number *cell_voltage_overvoltage_protection_number_;
+  number::Number *cell_voltage_overvoltage_recovery_number_;
+  number::Number *cell_voltage_undervoltage_protection_number_;
+  number::Number *cell_voltage_undervoltage_recovery_number_;
+  number::Number *balance_starting_voltage_number_;
+  number::Number *voltage_calibration_number_;  // @FIXME: Identify value at the settings frame
+  number::Number *current_calibration_number_;  // @FIXME: Identify value at the settings frame
+  number::Number *power_off_voltage_number_;
+  number::Number *max_balance_current_number_;
+  number::Number *max_charge_current_number_;
+  number::Number *max_discharge_current_number_;
+
   sensor::Sensor *min_cell_voltage_sensor_;
   sensor::Sensor *max_cell_voltage_sensor_;
   sensor::Sensor *min_voltage_cell_sensor_;
@@ -182,6 +239,7 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   void decode_jk02_settings_(const std::vector<uint8_t> &data);
   void decode_jk04_settings_(const std::vector<uint8_t> &data);
   void publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state);
+  void publish_state_(number::Number *number, float value);
   void publish_state_(sensor::Sensor *sensor, float value);
   void publish_state_(switch_::Switch *obj, const bool &state);
   void publish_state_(text_sensor::TextSensor *text_sensor, const std::string &state);

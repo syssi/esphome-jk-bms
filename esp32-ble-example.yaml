@@ -67,6 +67,38 @@ button:
     retrieve_device_info:
       name: "${name} retrieve device info"
 
+number:
+  - platform: jk_bms_ble
+    jk_bms_ble_id: bms0
+    balance_trigger_voltage:
+      name: "${name} balance trigger voltage"
+    cell_count:
+      name: "${name} cell count"
+    total_battery_capacity:
+      name: "${name} total battery capacity"
+    cell_voltage_overvoltage_protection:
+      name: "${name} cell voltage overvoltage protection"
+    cell_voltage_overvoltage_recovery:
+      name: "${name} cell voltage overvoltage recovery"
+    cell_voltage_undervoltage_protection:
+      name: "${name} cell voltage undervoltage protection"
+    cell_voltage_undervoltage_recovery:
+      name: "${name} cell voltage undervoltage recovery"
+    balance_starting_voltage:
+      name: "${name} balance starting voltage"
+    voltage_calibration:
+      name: "${name} voltage calibration"
+    current_calibration:
+      name: "${name} current calibration"
+    power_off_voltage:
+      name: "${name} power off voltage"
+    max_balance_current:
+      name: "${name} max balance current"
+    max_charge_current:
+      name: "${name} max charge current"
+    max_discharge_current:
+      name: "${name} max discharge current"
+
 sensor:
   - platform: jk_bms_ble
     jk_bms_ble_id: bms0
