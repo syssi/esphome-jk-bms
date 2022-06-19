@@ -489,6 +489,7 @@ void JkBms::dump_config() {  // NOLINT(google-readability-function-size,readabil
   LOG_SENSOR("", "Minimum Voltage Cell", this->min_voltage_cell_sensor_);
   LOG_SENSOR("", "Maximum Voltage Cell", this->max_voltage_cell_sensor_);
   LOG_SENSOR("", "Delta Cell Voltage", this->delta_cell_voltage_sensor_);
+  LOG_SENSOR("", "Average Cell Voltage", this->average_cell_voltage_sensor_);
   LOG_SENSOR("", "Cell Voltage 1", this->cells_[0].cell_voltage_sensor_);
   LOG_SENSOR("", "Cell Voltage 2", this->cells_[1].cell_voltage_sensor_);
   LOG_SENSOR("", "Cell Voltage 3", this->cells_[2].cell_voltage_sensor_);
