@@ -1096,7 +1096,6 @@ bool JkBmsBle::write_register(uint8_t address, uint32_t value, uint8_t length) {
   frame[19] = crc(frame, sizeof(frame) - 1);
 
   ESP_LOGD(TAG, "Write register: %s", format_hex_pretty(frame, sizeof(frame)).c_str());
-
   auto status = esp_ble_gattc_write_char(this->parent_->gattc_if, this->parent_->conn_id, this->char_handle_,
                                          sizeof(frame), frame, ESP_GATT_WRITE_TYPE_NO_RSP, ESP_GATT_AUTH_REQ_NONE);
 
