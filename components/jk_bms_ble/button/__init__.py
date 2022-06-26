@@ -3,7 +3,7 @@ from esphome.components import button
 import esphome.config_validation as cv
 from esphome.const import CONF_ICON, CONF_ID
 
-from .. import CONF_JK_BMS_BLE_ID, JkBmsBle, jk_bms_ble_ns
+from .. import CONF_JK_BMS_BLE_ID, JK_BMS_BLE_COMPONENT_SCHEMA, jk_bms_ble_ns
 
 DEPENDENCIES = ["jk_bms_ble"]
 
@@ -23,9 +23,8 @@ BUTTONS = {
 
 JkButton = jk_bms_ble_ns.class_("JkButton", button.Button, cg.Component)
 
-CONFIG_SCHEMA = cv.Schema(
+CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
     {
-        cv.GenerateID(CONF_JK_BMS_BLE_ID): cv.use_id(JkBmsBle),
         cv.Optional(CONF_RETRIEVE_SETTINGS): button.BUTTON_SCHEMA.extend(
             {
                 cv.GenerateID(): cv.declare_id(JkButton),

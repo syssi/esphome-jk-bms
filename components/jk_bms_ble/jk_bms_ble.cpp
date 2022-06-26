@@ -772,28 +772,44 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   ESP_LOGD(TAG, "  Unknown6: %f", (float) jk_get_32bit(6) * 0.001f);
   // 10    4   0x54 0x0B 0x00 0x00    Cell UVP
   ESP_LOGI(TAG, "  Cell UVP: %f V", (float) jk_get_32bit(10) * 0.001f);
+  this->publish_state_(this->cell_voltage_undervoltage_protection_number_, (float) jk_get_32bit(10) * 0.001f);
+
   // 14    4   0x80 0x0C 0x00 0x00    Cell OVP Recovery
   ESP_LOGI(TAG, "  Cell UVPR: %f V", (float) jk_get_32bit(14) * 0.001f);
+  this->publish_state_(this->cell_voltage_undervoltage_recovery_number_, (float) jk_get_32bit(14) * 0.001f);
+
   // 18    4   0xCC 0x10 0x00 0x00    Cell OVP
   ESP_LOGI(TAG, "  Cell OVP: %f V", (float) jk_get_32bit(18) * 0.001f);
+  this->publish_state_(this->cell_voltage_overvoltage_protection_number_, (float) jk_get_32bit(18) * 0.001f);
+
   // 22    4   0x68 0x10 0x00 0x00    Cell OVP Recovery
   ESP_LOGI(TAG, "  Cell OVPR: %f V", (float) jk_get_32bit(22) * 0.001f);
+  this->publish_state_(this->cell_voltage_overvoltage_recovery_number_, (float) jk_get_32bit(22) * 0.001f);
+
   // 26    4   0x0A 0x00 0x00 0x00    Balance trigger voltage
   ESP_LOGI(TAG, "  Balance trigger voltage: %f V", (float) jk_get_32bit(26) * 0.001f);
+  this->publish_state_(this->balance_trigger_voltage_number_, (float) jk_get_32bit(26) * 0.001f);
+
   // 30    4   0x00 0x00 0x00 0x00    Unknown30
   // 34    4   0x00 0x00 0x00 0x00    Unknown34
   // 38    4   0x00 0x00 0x00 0x00    Unknown38
   // 42    4   0x00 0x00 0x00 0x00    Unknown42
-  // 46    4   0xF0 0x0A 0x00 0x00    Power off value
+  // 46    4   0xF0 0x0A 0x00 0x00    Power off voltage
   ESP_LOGI(TAG, "  Power off voltage: %f V", (float) jk_get_32bit(46) * 0.001f);
+  this->publish_state_(this->power_off_voltage_number_, (float) jk_get_32bit(46) * 0.001f);
+
   // 50    4   0xA8 0x61 0x00 0x00    Max. charge current
   ESP_LOGI(TAG, "  Max. charge current: %f A", (float) jk_get_32bit(50) * 0.001f);
+  this->publish_state_(this->max_charge_current_number_, (float) jk_get_32bit(50) * 0.001f);
+
   // 54    4   0x1E 0x00 0x00 0x00    Charge OCP delay
   ESP_LOGI(TAG, "  Charge OCP delay: %f s", (float) jk_get_32bit(54));
   // 58    4   0x3C 0x00 0x00 0x00    Charge OCP recovery delay
   ESP_LOGI(TAG, "  Charge OCP recovery delay: %f s", (float) jk_get_32bit(58));
   // 62    4   0xF0 0x49 0x02 0x00    Max. discharge current
   ESP_LOGI(TAG, "  Max. discharge current: %f A", (float) jk_get_32bit(62) * 0.001f);
+  this->publish_state_(this->max_discharge_current_number_, (float) jk_get_32bit(62) * 0.001f);
+
   // 66    4   0x2C 0x01 0x00 0x00    Discharge OCP delay
   ESP_LOGI(TAG, "  Discharge OCP recovery delay: %f s", (float) jk_get_32bit(66));
   // 70    4   0x3C 0x00 0x00 0x00    Discharge OCP recovery delay
@@ -802,6 +818,8 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   ESP_LOGI(TAG, "  SCP recovery time: %f s", (float) jk_get_32bit(74));
   // 78    4   0xD0 0x07 0x00 0x00    Max balance current
   ESP_LOGI(TAG, "  Max. balance current: %f A", (float) jk_get_32bit(78) * 0.001f);
+  this->publish_state_(this->max_balance_current_number_, (float) jk_get_32bit(78) * 0.001f);
+
   // 82    4   0xBC 0x02 0x00 0x00    Charge OTP
   ESP_LOGI(TAG, "  Charge OTP: %f °C", (float) jk_get_32bit(82) * 0.1f);
   // 86    4   0x58 0x02 0x00 0x00    Charge OTP Recovery
@@ -820,6 +838,7 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   ESP_LOGI(TAG, "  MOS OTP recovery: %f °C", (float) ((int32_t) jk_get_32bit(110)) * 0.1f);
   // 114   4   0x0D 0x00 0x00 0x00    Cell count
   ESP_LOGI(TAG, "  Cell count: %f", (float) jk_get_32bit(114));
+  this->publish_state_(this->cell_count_number_, (float) data[114]);
 
   // 118   4   0x01 0x00 0x00 0x00    Charge switch
   ESP_LOGI(TAG, "  Charge switch: %s", ((bool) data[118]) ? "on" : "off");
@@ -835,10 +854,14 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
 
   // 130   4   0x88 0x13 0x00 0x00    Nominal battery capacity
   ESP_LOGI(TAG, "  Nominal battery capacity: %f Ah", (float) jk_get_32bit(130) * 0.001f);
+  this->publish_state_(this->total_battery_capacity_number_, (float) jk_get_32bit(130) * 0.001f);
+
   // 134   4   0xDC 0x05 0x00 0x00    Unknown134
   ESP_LOGD(TAG, "  Unknown134: %f", (float) jk_get_32bit(134) * 0.001f);
   // 138   4   0xE4 0x0C 0x00 0x00    Start balance voltage
   ESP_LOGI(TAG, "  Start balance voltage: %f V", (float) jk_get_32bit(138) * 0.001f);
+  this->publish_state_(this->balance_starting_voltage_number_, (float) jk_get_32bit(138) * 0.001f);
+
   // 142   4   0x00 0x00 0x00 0x00
   // 146   4   0x00 0x00 0x00 0x00
   // 150   4   0x00 0x00 0x00 0x00
@@ -1057,10 +1080,10 @@ bool JkBmsBle::write_register(uint8_t address, uint32_t value, uint8_t length) {
   frame[3] = 0xEB;     // start sequence
   frame[4] = address;  // holding register
   frame[5] = length;   // size of the value in byte
-  frame[6] = value >> 24;
-  frame[7] = value >> 16;
-  frame[8] = value >> 8;
-  frame[9] = value >> 0;
+  frame[6] = value >> 0;
+  frame[7] = value >> 8;
+  frame[8] = value >> 16;
+  frame[9] = value >> 24;
   frame[10] = 0x00;
   frame[11] = 0x00;
   frame[12] = 0x00;
@@ -1080,6 +1103,8 @@ bool JkBmsBle::write_register(uint8_t address, uint32_t value, uint8_t length) {
     ESP_LOGW(TAG, "[%s] esp_ble_gattc_write_char failed, status=%d", this->parent_->address_str().c_str(), status);
 
   return (status == 0);
+
+  return true;
 }
 
 void JkBmsBle::publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state) {
@@ -1087,6 +1112,13 @@ void JkBmsBle::publish_state_(binary_sensor::BinarySensor *binary_sensor, const 
     return;
 
   binary_sensor->publish_state(state);
+}
+
+void JkBmsBle::publish_state_(number::Number *number, float value) {
+  if (number == nullptr)
+    return;
+
+  number->publish_state(value);
 }
 
 void JkBmsBle::publish_state_(sensor::Sensor *sensor, float value) {

@@ -3,7 +3,7 @@ from esphome.components import ble_client
 import esphome.config_validation as cv
 from esphome.const import CONF_ID, CONF_THROTTLE
 
-AUTO_LOAD = ["binary_sensor", "button", "sensor", "switch", "text_sensor"]
+AUTO_LOAD = ["binary_sensor", "button", "number", "sensor", "switch", "text_sensor"]
 CODEOWNERS = ["@syssi"]
 MULTI_CONF = True
 
@@ -21,6 +21,12 @@ PROTOCOL_VERSION_OPTIONS = {
     "JK02": ProtocolVersion.PROTOCOL_VERSION_JK02,
     "JK04": ProtocolVersion.PROTOCOL_VERSION_JK04,
 }
+
+JK_BMS_BLE_COMPONENT_SCHEMA = cv.Schema(
+    {
+        cv.GenerateID(CONF_JK_BMS_BLE_ID): cv.use_id(JkBmsBle),
+    }
+)
 
 CONFIG_SCHEMA = (
     cv.Schema(
