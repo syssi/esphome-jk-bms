@@ -317,8 +317,8 @@ void JkBmsBle::assemble_(const uint8_t *data, uint16_t length) {
     // Even if the frame is 320 bytes long the CRC is at position 300 in front of 0xAA 0x55 0x90 0xEB
     const uint16_t frame_size = 300;  // this->frame_buffer_.size();
 
-    uint16_t computed_crc = crc(raw, frame_size - 1);
-    uint16_t remote_crc = raw[frame_size - 1];
+    uint8_t computed_crc = crc(raw, frame_size - 1);
+    uint8_t remote_crc = raw[frame_size - 1];
     if (computed_crc != remote_crc) {
       ESP_LOGW(TAG, "JkBmsBle CRC Check failed! %02X!=%02X", computed_crc, remote_crc);
       this->frame_buffer_.clear();
@@ -610,7 +610,7 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   //           0x00
   // 299   1   0xCD                   CRC
 
-  status_notification_received_ = true;
+  this->status_notification_received_ = true;
 }
 
 void JkBmsBle::decode_jk04_cell_info_(const std::vector<uint8_t> &data) {
@@ -1159,8 +1159,6 @@ bool JkBmsBle::write_register(uint8_t address, uint32_t value, uint8_t length) {
     ESP_LOGW(TAG, "[%s] esp_ble_gattc_write_char failed, status=%d", this->parent_->address_str().c_str(), status);
 
   return (status == 0);
-
-  return true;
 }
 
 void JkBmsBle::publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state) {
