@@ -33,11 +33,12 @@ wifi:
 ota:
 logger:
 
+# If you don't use Home Assistant please remove this `api` section and uncomment the `mqtt` component!
 api:
 
-# This feature is only available with frameworks ['arduino'] <= 2022.3.1
-# https://github.com/esphome/esphome/pull/2930: Add mqtt for idf >= 2022.4.0
-#
+# The MQTT component is ESP-IDF compatible since ESPHome version 2022.4.0. If
+# ESPHome suggests to use the arduino framework instead because of missing ESP-IDF
+# framework support you should update your setup.
 # mqtt:
 #   broker: !secret mqtt_host
 #   username: !secret mqtt_username
