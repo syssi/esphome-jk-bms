@@ -169,7 +169,7 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   struct Cell {
     sensor::Sensor *cell_voltage_sensor_{nullptr};
     sensor::Sensor *cell_resistance_sensor_{nullptr};
-  } cells_[24];
+  } cells_[32];
 
  protected:
   ProtocolVersion protocol_version_{PROTOCOL_VERSION_JK02};

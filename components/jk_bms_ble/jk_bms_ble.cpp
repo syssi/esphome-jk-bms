@@ -8,6 +8,10 @@ namespace jk_bms_ble {
 
 static const char *const TAG = "jk_bms_ble";
 
+static const uint8_t FRAME_VERSION_JK04 = 0x01;
+static const uint8_t FRAME_VERSION_JK02 = 0x02;
+static const uint8_t FRAME_VERSION_JK02_32S = 0x03;
+
 static const uint16_t JK_BMS_SERVICE_UUID = 0xFFE0;
 static const uint16_t JK_BMS_CHARACTERISTIC_UUID = 0xFFE1;
 
@@ -219,7 +223,7 @@ void JkBmsBle::update() {
           0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFC};
       this->assemble_(frame, 300);
 
-      const uint8_t frame2[320] = {
+      const uint8_t frame2[300] = {
           0x55, 0xAA, 0xEB, 0x90, 0x01, 0xFC, 0x58, 0x02, 0x00, 0x00, 0x28, 0x0A, 0x00, 0x00, 0x78, 0x0A, 0x00, 0x00,
           0xDE, 0x0D, 0x00, 0x00, 0x48, 0x0D, 0x00, 0x00, 0x05, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
           0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xF6, 0x09, 0x00, 0x00, 0x50, 0xC3, 0x00, 0x00,
@@ -237,9 +241,9 @@ void JkBmsBle::update() {
           0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
           0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
           0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x74};
-      this->assemble_(frame2, 320);
+      this->assemble_(frame2, 300);
 
-      const uint8_t frame3[320] = {
+      const uint8_t frame3[300] = {
           0x55, 0xAA, 0xEB, 0x90, 0x02, 0xFC, 0xD4, 0x0C, 0xD0, 0x0C, 0xCF, 0x0C, 0xD0, 0x0C, 0xD0, 0x0C, 0xCF, 0x0C,
           0xCF, 0x0C, 0xD1, 0x0C, 0xD0, 0x0C, 0xCF, 0x0C, 0xD0, 0x0C, 0xCF, 0x0C, 0xD2, 0x0C, 0xD4, 0x0C, 0xCF, 0x0C,
           0xCF, 0x0C, 0xD0, 0x0C, 0xCF, 0x0C, 0xD1, 0x0C, 0xD2, 0x0C, 0xD2, 0x0C, 0xD2, 0x0C, 0xD5, 0x0C, 0xD1, 0x0C,
@@ -257,7 +261,27 @@ void JkBmsBle::update() {
           0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
           0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
           0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x43};
-      this->assemble_(frame3, 320);
+      this->assemble_(frame3, 300);
+
+      const uint8_t cell_info_jk02_32s[300] = {
+          0x55, 0xAA, 0xEB, 0x90, 0x02, 0x2F, 0x8F, 0x0C, 0xD4, 0x0C, 0x9D, 0x0C, 0xE0, 0x0C, 0xE0, 0x0C, 0x8D, 0x0C,
+          0x8D, 0x0C, 0xDF, 0x0C, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0x00,
+          0x00, 0x00, 0xB7, 0x0C, 0x53, 0x00, 0x03, 0x05, 0x34, 0x00, 0x33, 0x00, 0x33, 0x00, 0x33, 0x00, 0x32, 0x00,
+          0x32, 0x00, 0x32, 0x00, 0x32, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+          0x34, 0x01, 0x00, 0x00, 0x00, 0x00, 0xBB, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+          0x19, 0x01, 0x26, 0x01, 0x10, 0x00, 0x00, 0x00, 0xFC, 0xF7, 0x02, 0x63, 0x5F, 0xEA, 0x00, 0x00, 0x60, 0xEA,
+          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x09, 0x00, 0x00, 0x00, 0x64, 0x00, 0x00, 0x00, 0xA3, 0x08, 0x03, 0x00,
+          0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x07, 0x00,
+          0x01, 0x00, 0x00, 0x00, 0xCA, 0x03, 0x00, 0x00, 0x00, 0x00, 0xA7, 0xB3, 0x40, 0x40, 0x84, 0x00, 0x00, 0x00,
+          0x2C, 0x0A, 0xDC, 0xE1, 0x00, 0x01, 0x00, 0x01, 0x00, 0x05, 0x00, 0x00, 0x12, 0xB2, 0x03, 0x00, 0x00, 0x00,
+          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFE,
+          0xFF, 0x7F, 0xDC, 0x1F, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x8F};
+      this->assemble_(cell_info_jk02_32s, 300);
     }
 
     return;
@@ -345,7 +369,14 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   }
   this->last_cell_info_ = now;
 
-  ESP_LOGVV(TAG, "Cell info frame (%d bytes):", data.size());
+  uint8_t offset = 0;
+  // Assumption: The value of data[189] (JK02) or data[189+32] (JK02_32S) is 0x01, 0x02 or 0x03
+  uint8_t frame_version = (data[189] == 0x00 && data[189 + 32] > 0) ? FRAME_VERSION_JK02_32S : FRAME_VERSION_JK02;
+  if (frame_version == FRAME_VERSION_JK02_32S) {
+    offset = 16;
+  }
+
+  ESP_LOGVV(TAG, "Cell info frame (version %d, %d bytes):", frame_version, data.size());
   ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front(), 150).c_str());
   ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front() + 150, data.size() - 150).c_str());
 
@@ -384,12 +415,12 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // 8     2   0x01 0x0D              Voltage cell 02       0.001        V
   // 10    2   0x01 0x0D              Voltage cell 03       0.001        V
   // ...
-  uint8_t cells = 24;
+  uint8_t cells = 24 + (offset / 2);
   float min_cell_voltage = 100.0f;
   float max_cell_voltage = -100.0f;
   for (uint8_t i = 0; i < cells; i++) {
     float cell_voltage = (float) jk_get_16bit(i * 2 + 6) * 0.001f;
-    float cell_resistance = (float) jk_get_16bit(i * 2 + 64) * 0.001f;
+    float cell_resistance = (float) jk_get_16bit(i * 2 + 64 + offset) * 0.001f;
     if (cell_voltage > 0 && cell_voltage < min_cell_voltage) {
       min_cell_voltage = cell_voltage;
     }
@@ -402,55 +433,76 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->min_cell_voltage_sensor_, min_cell_voltage);
   this->publish_state_(this->max_cell_voltage_sensor_, max_cell_voltage);
 
-  // 54    4   0xFF 0xFF 0x00 0x00    Enabled cells
-  ESP_LOGI(TAG, "Enabled cells: %02X %02X %02X %02X (0xFF 0x1F: 13 cells, 0xFF 0xFF: 16 cells)", data[54], data[55],
-           data[56], data[57]);
+  // 54    4   0xFF 0xFF 0x00 0x00    Enabled cells bitmask
+  //           0x0F 0x00 0x00 0x00    4 cells enabled
+  //           0xFF 0x00 0x00 0x00    8 cells enabled
+  //           0xFF 0x0F 0x00 0x00    12 cells enabled
+  //           0xFF 0x1F 0x00 0x00    13 cells enabled
+  //           0xFF 0xFF 0x00 0x00    16 cells enabled
+  //           0xFF 0xFF 0xFF 0x00    24 cells enabled
+  //           0xFF 0xFF 0xFF 0xFF    32 cells enabled
+  ESP_LOGI(TAG, "Enabled cells: %02X %02X %02X %02X", data[54 + offset], data[55 + offset], data[56 + offset],
+           data[57 + offset]);
 
   // 58    2   0x00 0x0D              Average Cell Voltage  0.001        V
-  this->publish_state_(this->average_cell_voltage_sensor_, (float) jk_get_16bit(58) * 0.001f);
+  this->publish_state_(this->average_cell_voltage_sensor_, (float) jk_get_16bit(58 + offset) * 0.001f);
 
   // 60    2   0x00 0x00              Delta Cell Voltage    0.001        V
-  this->publish_state_(this->delta_cell_voltage_sensor_, (float) jk_get_16bit(60) * 0.001f);
+  this->publish_state_(this->delta_cell_voltage_sensor_, (float) jk_get_16bit(60 + offset) * 0.001f);
 
   // 62    1   0x00                   Max voltage cell      1
-  this->publish_state_(this->max_voltage_cell_sensor_, (float) data[62] + 1);
+  this->publish_state_(this->max_voltage_cell_sensor_, (float) data[62 + offset] + 1);
   // 63    1   0x00                   Min voltage cell      1
-  this->publish_state_(this->min_voltage_cell_sensor_, (float) data[63] + 1);
+  this->publish_state_(this->min_voltage_cell_sensor_, (float) data[63 + offset] + 1);
   // 64    2   0x9D 0x01              Resistance Cell 01    0.001        Ohm
   // 66    2   0x96 0x01              Resistance Cell 02    0.001        Ohm
   // 68    2   0x8C 0x01              Resistance Cell 03    0.001        Ohm
   // ...
   // 110   2   0x00 0x00              Resistance Cell 24    0.001        Ohm
 
+  offset = offset * 2;
+
   // 112   2   0x00 0x00              Unknown112
-  ESP_LOGD(TAG, "Unknown112: %02X %02X", data[112], data[113]);
+  if (frame_version == FRAME_VERSION_JK02_32S) {
+    this->publish_state_(this->power_tube_temperature_sensor_, (float) jk_get_16bit(112 + offset) * 0.1f);
+  } else {
+    ESP_LOGD(TAG, "Unknown112: %02X %02X", data[112 + offset], data[113 + offset]);
+  }
+
   // 114   4   0x00 0x00 0x00 0x00    Warning wire resistance too high?
-  ESP_LOGI(TAG, "Wire resistance warning: %02X %02X %02X %02X", data[114], data[115], data[116], data[117]);
+  ESP_LOGI(TAG, "Wire resistance warning: %02X %02X %02X %02X", data[114 + offset], data[115 + offset],
+           data[116 + offset], data[117 + offset]);
 
   // 118   4   0x03 0xD0 0x00 0x00    Battery voltage       0.001        V
-  float total_voltage = (float) jk_get_32bit(118) * 0.001f;
+  float total_voltage = (float) jk_get_32bit(118 + offset) * 0.001f;
   this->publish_state_(this->total_voltage_sensor_, total_voltage);
 
   // 122   4   0x00 0x00 0x00 0x00    Battery power         0.001        W
   // 126   4   0x00 0x00 0x00 0x00    Charge current        0.001        A
-  float current = (float) ((int32_t) jk_get_32bit(126)) * 0.001f;
-  this->publish_state_(this->current_sensor_, (float) ((int32_t) jk_get_32bit(126)) * 0.001f);
+  float current = (float) ((int32_t) jk_get_32bit(126 + offset)) * 0.001f;
+  this->publish_state_(this->current_sensor_, (float) ((int32_t) jk_get_32bit(126 + offset)) * 0.001f);
 
   // Don't use byte 122 because it's unsigned
-  // float power = (float) ((int32_t) jk_get_32bit(122)) * 0.001f;
+  // float power = (float) ((int32_t) jk_get_32bit(122 + offset)) * 0.001f;
   float power = total_voltage * current;
   this->publish_state_(this->power_sensor_, power);
   this->publish_state_(this->charging_power_sensor_, std::max(0.0f, power));               // 500W vs 0W -> 500W
   this->publish_state_(this->discharging_power_sensor_, std::abs(std::min(0.0f, power)));  // -500W vs 0W -> 500W
 
   // 130   2   0xBE 0x00              Temperature Sensor 1  0.1          °C
-  this->publish_state_(this->temperature_sensor_1_sensor_, (float) jk_get_16bit(130) * 0.1f);
+  this->publish_state_(this->temperature_sensor_1_sensor_, (float) jk_get_16bit(130 + offset) * 0.1f);
 
   // 132   2   0xBF 0x00              Temperature Sensor 2  0.1          °C
-  this->publish_state_(this->temperature_sensor_2_sensor_, (float) jk_get_16bit(132) * 0.1f);
+  this->publish_state_(this->temperature_sensor_2_sensor_, (float) jk_get_16bit(132 + offset) * 0.1f);
 
   // 134   2   0xD2 0x00              MOS Temperature       0.1          °C
-  this->publish_state_(this->power_tube_temperature_sensor_, (float) jk_get_16bit(134) * 0.1f);
+  if (frame_version == FRAME_VERSION_JK02_32S) {
+    uint16_t raw_errors_bitmask = (uint16_t(data[134 + offset]) << 8) | (uint16_t(data[134 + 1 + offset]) << 0);
+    this->publish_state_(this->errors_bitmask_sensor_, (float) raw_errors_bitmask);
+    this->publish_state_(this->errors_text_sensor_, this->error_bits_to_string_(raw_errors_bitmask));
+  } else {
+    this->publish_state_(this->power_tube_temperature_sensor_, (float) jk_get_16bit(134 + offset) * 0.1f);
+  }
 
   // 136   2   0x00 0x00              System alarms
   //           0x00 0x01                Charge overtemperature               0000 0000 0000 0001
@@ -474,50 +526,53 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   //                                    Cell count is not equal to settings
   //           0x04 0x08                Cell Undervoltage +                  0000 0100 0000 1000
   //                                    Cell count is not equal to settings
-  uint16_t raw_errors_bitmask = (uint16_t(data[136]) << 8) | (uint16_t(data[136 + 1]) << 0);
-  this->publish_state_(this->errors_bitmask_sensor_, (float) raw_errors_bitmask);
-  this->publish_state_(this->errors_text_sensor_, this->error_bits_to_string_(raw_errors_bitmask));
+  if (frame_version != FRAME_VERSION_JK02_32S) {
+    uint16_t raw_errors_bitmask = (uint16_t(data[136 + offset]) << 8) | (uint16_t(data[136 + 1 + offset]) << 0);
+    this->publish_state_(this->errors_bitmask_sensor_, (float) raw_errors_bitmask);
+    this->publish_state_(this->errors_text_sensor_, this->error_bits_to_string_(raw_errors_bitmask));
+  }
 
   // 138   2   0x00 0x00              Balance current      0.001         A
-  this->publish_state_(this->balancing_current_sensor_, (float) ((int16_t) jk_get_16bit(138)) * 0.001f);
+  this->publish_state_(this->balancing_current_sensor_, (float) ((int16_t) jk_get_16bit(138 + offset)) * 0.001f);
 
   // 140   1   0x00                   Balancing action                   0x00: Off
   //                                                                     0x01: Charging balancer
   //                                                                     0x02: Discharging balancer
-  this->publish_state_(this->balancing_binary_sensor_, (bool) (data[140] != 0x00));
+  this->publish_state_(this->balancing_binary_sensor_, (bool) (data[140 + offset] != 0x00));
 
   // 141   1   0x54                   State of charge in   1.0           %
-  this->publish_state_(this->state_of_charge_sensor_, (float) data[141]);
+  this->publish_state_(this->state_of_charge_sensor_, (float) data[141 + offset]);
 
   // 142   4   0x8E 0x0B 0x01 0x00    Capacity_Remain      0.001         Ah
-  this->publish_state_(this->capacity_remaining_sensor_, (float) jk_get_32bit(142) * 0.001f);
+  this->publish_state_(this->capacity_remaining_sensor_, (float) jk_get_32bit(142 + offset) * 0.001f);
 
   // 146   4   0x68 0x3C 0x01 0x00    Nominal_Capacity     0.001         Ah
-  this->publish_state_(this->total_battery_capacity_setting_sensor_, (float) jk_get_32bit(146) * 0.001f);
+  this->publish_state_(this->total_battery_capacity_setting_sensor_, (float) jk_get_32bit(146 + offset) * 0.001f);
 
   // 150   4   0x00 0x00 0x00 0x00    Cycle_Count          1.0
-  this->publish_state_(this->charging_cycles_sensor_, (float) jk_get_32bit(150));
+  this->publish_state_(this->charging_cycles_sensor_, (float) jk_get_32bit(150 + offset));
 
   // 154   4   0x3D 0x04 0x00 0x00    Cycle_Capacity       1.0
-  this->publish_state_(this->total_charging_cycle_capacity_sensor_, (float) jk_get_32bit(154));
+  this->publish_state_(this->total_charging_cycle_capacity_sensor_, (float) jk_get_32bit(154 + offset));
 
   // 158   2   0x64 0x00              Unknown158
-  ESP_LOGD(TAG, "Unknown158: %02X %02X (always 0x64 0x00?)", data[158], data[159]);
+  ESP_LOGD(TAG, "Unknown158: %02X %02X (always 0x64 0x00?)", data[158 + offset], data[159 + offset]);
 
   // 160   2   0x79 0x04              Unknown160 (Cycle capacity?)
-  ESP_LOGD(TAG, "Unknown160: %02X %02X (always 0xC5 0x09?)", data[160], data[161]);
+  ESP_LOGD(TAG, "Unknown160: %02X %02X (always 0xC5 0x09?)", data[160 + offset], data[161 + offset]);
 
   // 162   4   0xCA 0x03 0x10 0x00    Total runtime in seconds           s
-  this->publish_state_(this->total_runtime_sensor_, (float) jk_get_32bit(162));
-  this->publish_state_(this->total_runtime_formatted_text_sensor_, format_total_runtime_(jk_get_32bit(162)));
+  this->publish_state_(this->total_runtime_sensor_, (float) jk_get_32bit(162 + offset));
+  this->publish_state_(this->total_runtime_formatted_text_sensor_, format_total_runtime_(jk_get_32bit(162 + offset)));
 
   // 166   1   0x01                   Charging switch enabled                      0x00: off, 0x01: on
-  this->publish_state_(this->charging_binary_sensor_, (bool) data[166]);
+  this->publish_state_(this->charging_binary_sensor_, (bool) data[166 + offset]);
 
   // 167   1   0x01                   Discharging switch enabled                   0x00: off, 0x01: on
-  this->publish_state_(this->discharging_binary_sensor_, (bool) data[167]);
+  this->publish_state_(this->discharging_binary_sensor_, (bool) data[167 + offset]);
 
-  ESP_LOGD(TAG, "Unknown168: %s", format_hex_pretty(&data.front() + 168, data.size() - 168 - 4 - 81 - 1).c_str());
+  ESP_LOGD(TAG, "Unknown168: %s",
+           format_hex_pretty(&data.front() + 168 + offset, data.size() - (168 + offset) - 4 - 81 - 1).c_str());
 
   // 168   1   0xAA                   Unknown168
   // 169   2   0x06 0x00              Unknown169
@@ -532,13 +587,14 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // 187   2   0x00 0xD5              Unknown187
   // 189   2   0x02 0x00              Unknown189
   ESP_LOGD(TAG, "Unknown189: %02X %02X", data[189], data[190]);
+  // 190   1   0x00                   Unknown190
   // 191   1   0x00                   Balancer status (working: 0x01, idle: 0x00)
   // 192   1   0x00                   Unknown192
-  ESP_LOGD(TAG, "Unknown192: %02X", data[192]);
+  ESP_LOGD(TAG, "Unknown192: %02X", data[192 + offset]);
   // 193   2   0x00 0xAE              Unknown193
-  ESP_LOGD(TAG, "Unknown193: %02X %02X (0x00 0x8D)", data[193], data[194]);
+  ESP_LOGD(TAG, "Unknown193: %02X %02X (0x00 0x8D)", data[193 + offset], data[194 + offset]);
   // 195   2   0xD6 0x3B              Unknown195
-  ESP_LOGD(TAG, "Unknown195: %02X %02X (0x21 0x40)", data[195], data[196]);
+  ESP_LOGD(TAG, "Unknown195: %02X %02X (0x21 0x40)", data[195 + offset], data[196 + offset]);
   // 197   10  0x40 0x00 0x00 0x00 0x00 0x58 0xAA 0xFD 0xFF 0x00
   // 207   7   0x00 0x00 0x01 0x00 0x02 0x00 0x00
   // 214   4   0xEC 0xE6 0x4F 0x00    Uptime 100ms
