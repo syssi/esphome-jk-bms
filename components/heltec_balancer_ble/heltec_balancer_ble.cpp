@@ -515,10 +515,10 @@ void HeltecBalancerBle::decode_cell_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->temperature_sensor_2_sensor_, ieee_float_(heltec_get_32bit(225)));
 
   // 229   3   0x00 0x00 0x00                   Cell detection failed bitmask (24 bits = 1 bit per cell)
-  // 232   3   0x00 0x00 0x00                   Cell overvoltage bitmask
-  // 235   3   0x00 0x00 0x00                   Cell undervoltage bitmask
-  // 238   3   0x00 0x00 0x00                   Polarity error bitmask
-  // 241   3   0x00 0x00 0x00                   Excessive line resistance bitmask
+  // 232   3   0x00 0x00 0x00                   Cell overvoltage bitmask (24 cells)
+  // 235   3   0x00 0x00 0x00                   Cell undervoltage bitmask (24 cells)
+  // 238   3   0x00 0x00 0x00                   Polarity error bitmask (24 cells)
+  // 241   3   0x00 0x00 0x00                   Excessive line resistance bitmask (24 cells)
   // 244   1   0x00                             System overheating
   //                                              Bit0: Temperature sensor 1 warning
   //                                              Bit1: Temperature sensor 2 warning
