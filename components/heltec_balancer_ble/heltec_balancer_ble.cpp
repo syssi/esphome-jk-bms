@@ -563,17 +563,17 @@ void HeltecBalancerBle::decode_settings_(const std::vector<uint8_t> &data) {
   // 22    1   0x01                   Buzzer mode (0x01: Off, 0x02: Beep once, 0x03: Beep regular)
   uint8_t raw_buzzer_mode = data[22];
   if (raw_buzzer_mode < BUZZER_MODES_SIZE) {
-    ESP_LOGI(TAG, "  Buzzer mode: %s (%d)", BUZZER_MODES[raw_buzzer_mode], raw_buzzer_mode);
+    this->publish_state_(this->buzzer_mode_text_sensor_, BUZZER_MODES[raw_buzzer_mode]);
   } else {
-    ESP_LOGI(TAG, "  Buzzer mode: %s (%d)", "Unknown", raw_buzzer_mode);
+    this->publish_state_(this->buzzer_mode_text_sensor_, "Unknown");
   }
 
   // 23    1   0x02                   Battery type (0x01: NCM, 0x02: LFP, 0x03: LTO, 0x04: PbAc)
   uint8_t raw_battery_type = data[23];
   if (raw_battery_type < BATTERY_TYPES_SIZE) {
-    ESP_LOGI(TAG, "  Battery type: %s (%d)", BATTERY_TYPES[raw_battery_type], raw_battery_type);
+    this->publish_state_(this->battery_type_text_sensor_, BATTERY_TYPES[raw_battery_type]);
   } else {
-    ESP_LOGI(TAG, "  Battery type: %s (%d)", "Unknown", raw_battery_type);
+    this->publish_state_(this->battery_type_text_sensor_, "Unknown");
   }
 
   // 24    4   0x18 0x01 0x00 0x00    Nominal battery capacity

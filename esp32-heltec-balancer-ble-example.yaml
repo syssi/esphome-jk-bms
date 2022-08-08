@@ -218,3 +218,7 @@ text_sensor:
       name: "${name} operation status"
     total_runtime_formatted:
       name: "${name} total runtime formatted"
+    buzzer_mode:
+      name: "${name} buzzer mode"
+    battery_type:
+      name: "${name} battery type"

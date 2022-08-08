@@ -95,6 +95,12 @@ class HeltecBalancerBle : public esphome::ble_client::BLEClientNode, public Poll
   void set_total_runtime_formatted_text_sensor(text_sensor::TextSensor *total_runtime_formatted_text_sensor) {
     total_runtime_formatted_text_sensor_ = total_runtime_formatted_text_sensor;
   }
+  void set_buzzer_mode_text_sensor(text_sensor::TextSensor *buzzer_mode_text_sensor) {
+    buzzer_mode_text_sensor_ = buzzer_mode_text_sensor;
+  }
+  void set_battery_type_text_sensor(text_sensor::TextSensor *battery_type_text_sensor) {
+    battery_type_text_sensor_ = battery_type_text_sensor;
+  }
 
   void set_balancer_switch(switch_::Switch *balancer_switch) { balancer_switch_ = balancer_switch; }
 
@@ -134,6 +140,8 @@ class HeltecBalancerBle : public esphome::ble_client::BLEClientNode, public Poll
   text_sensor::TextSensor *errors_text_sensor_;
   text_sensor::TextSensor *operation_status_text_sensor_;
   text_sensor::TextSensor *total_runtime_formatted_text_sensor_;
+  text_sensor::TextSensor *buzzer_mode_text_sensor_;
+  text_sensor::TextSensor *battery_type_text_sensor_;
 
   std::vector<uint8_t> frame_buffer_;
   bool status_notification_received_ = false;
