@@ -68,14 +68,8 @@ static const char *const BATTERY_TYPES[BATTERY_TYPES_SIZE] = {
 
 static const uint8_t CELL_ERRORS_SIZE = 5;
 static const char *const CELL_ERRORS[CELL_ERRORS_SIZE] = {
-    "Battery detection failed",
-    "Overvoltage"
-    "Undervoltage",
-    "Polarity error",
-    "Excessive line resistance",
-    "System overheating",
-    "Charging fault",
-    "Discharge fault",
+    "Battery detection failed",  "Overvoltage",        "Undervoltage",   "Polarity error",
+    "Excessive line resistance", "System overheating", "Charging fault", "Discharge fault",
 };
 
 uint8_t crc(const uint8_t data[], const uint16_t len) {
