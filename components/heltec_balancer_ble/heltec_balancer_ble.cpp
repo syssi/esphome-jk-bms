@@ -718,7 +718,7 @@ void HeltecBalancerBle::decode_device_info_(const std::vector<uint8_t> &data) {
   // 40    8   0x56 0x31 0x2E 0x30 0x2E 0x30 0x00 0x00    Protocol version           V1.0.0
   ESP_LOGI(TAG, "  Protocol version: %s", std::string(data.begin() + 40, data.begin() + 40 + 8).c_str());
   // 48    8   0x32 0x30 0x32 0x32 0x30 0x35 0x33 0x31    Production date            20220531
-  ESP_LOGI(TAG, "  Protocol version: %s", std::string(data.begin() + 48, data.begin() + 48 + 8).c_str());
+  ESP_LOGI(TAG, "  Manufacturing date: %s", std::string(data.begin() + 48, data.begin() + 48 + 8).c_str());
   // 56    4   0x05 0x00 0x00 0x00    Power on count                                 5
   ESP_LOGI(TAG, "  Power on count: %d", heltec_get_16bit(56));
   // 60    4   0x01 0x91 0x0A 0x00    Total runtime                                  7D
