@@ -62,6 +62,7 @@ button:
   - platform: heltec_balancer_ble
     retrieve_settings:
       name: "${name} retrieve settings"
+      id: retrieve_settings_button
     retrieve_device_info:
       name: "${name} retrieve device info"
     retrieve_factory_defaults:
@@ -222,3 +223,8 @@ text_sensor:
       name: "${name} buzzer mode"
     battery_type:
       name: "${name} battery type"
+
+interval:
+  - interval: 30min
+    then:
+      - button.press: retrieve_settings_button
