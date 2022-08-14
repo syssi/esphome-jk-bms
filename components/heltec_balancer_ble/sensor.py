@@ -84,17 +84,15 @@ CONF_TEMPERATURE_SENSOR_2 = "temperature_sensor_2"
 CONF_TOTAL_RUNTIME = "total_runtime"
 CONF_BALANCING_CURRENT = "balancing_current"
 CONF_ERRORS_BITMASK = "errors_bitmask"
+CONF_CELL_DETECTION_FAILED_BITMASK = "cell_detection_failed_bitmask"
+CONF_CELL_OVERVOLTAGE_BITMASK = "cell_overvoltage_bitmask"
+CONF_CELL_UNDERVOLTAGE_BITMASK = "cell_undervoltage_bitmask"
+CONF_CELL_POLARITY_ERROR_BITMASK = "cell_polarity_error_bitmask"
+CONF_CELL_EXCESSIVE_LINE_RESISTANCE_BITMASK = "cell_excessive_line_resistance_bitmask"
 
 UNIT_AMPERE_HOURS = "Ah"
 UNIT_OHM = "Ω"
 UNIT_SECONDS = "s"
-
-ICON_CAPACITY = "mdi:battery-medium"
-ICON_MIN_VOLTAGE_CELL = "mdi:battery-minus-outline"
-ICON_MAX_VOLTAGE_CELL = "mdi:battery-plus-outline"
-ICON_CAPACITY_REMAINING = "mdi:battery-50"
-ICON_CHARGING_CYCLES = "mdi:battery-sync"
-ICON_ERRORS_BITMASK = "mdi:alert-circle-outline"
 
 CELL_VOLTAGES = [
     CONF_CELL_VOLTAGE_1,
@@ -164,6 +162,11 @@ SENSORS = [
     CONF_TOTAL_RUNTIME,
     CONF_BALANCING_CURRENT,
     CONF_ERRORS_BITMASK,
+    CONF_CELL_DETECTION_FAILED_BITMASK,
+    CONF_CELL_OVERVOLTAGE_BITMASK,
+    CONF_CELL_UNDERVOLTAGE_BITMASK,
+    CONF_CELL_POLARITY_ERROR_BITMASK,
+    CONF_CELL_EXCESSIVE_LINE_RESISTANCE_BITMASK,
 ]
 
 # pylint: disable=too-many-function-args
@@ -186,14 +189,14 @@ CONFIG_SCHEMA = cv.Schema(
         ),
         cv.Optional(CONF_MIN_VOLTAGE_CELL): sensor.sensor_schema(
             unit_of_measurement=UNIT_EMPTY,
-            icon=ICON_MIN_VOLTAGE_CELL,
+            icon="mdi:battery-minus-outline",
             accuracy_decimals=0,
             device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
         cv.Optional(CONF_MAX_VOLTAGE_CELL): sensor.sensor_schema(
             unit_of_measurement=UNIT_EMPTY,
-            icon=ICON_MAX_VOLTAGE_CELL,
+            icon="mdi:battery-plus-outline",
             accuracy_decimals=0,
             device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
@@ -592,7 +595,42 @@ CONFIG_SCHEMA = cv.Schema(
         ),
         cv.Optional(CONF_ERRORS_BITMASK): sensor.sensor_schema(
             unit_of_measurement=UNIT_EMPTY,
-            icon=ICON_ERRORS_BITMASK,
+            icon="mdi:alert-circle-outline",
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_CELL_DETECTION_FAILED_BITMASK): sensor.sensor_schema(
+            unit_of_measurement=UNIT_EMPTY,
+            icon="mdi:alert-circle-outline",
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_CELL_OVERVOLTAGE_BITMASK): sensor.sensor_schema(
+            unit_of_measurement=UNIT_EMPTY,
+            icon="mdi:alert-circle-outline",
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_CELL_UNDERVOLTAGE_BITMASK): sensor.sensor_schema(
+            unit_of_measurement=UNIT_EMPTY,
+            icon="mdi:alert-circle-outline",
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_CELL_POLARITY_ERROR_BITMASK): sensor.sensor_schema(
+            unit_of_measurement=UNIT_EMPTY,
+            icon="mdi:alert-circle-outline",
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_CELL_EXCESSIVE_LINE_RESISTANCE_BITMASK): sensor.sensor_schema(
+            unit_of_measurement=UNIT_EMPTY,
+            icon="mdi:alert-circle-outline",
             accuracy_decimals=0,
             device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,

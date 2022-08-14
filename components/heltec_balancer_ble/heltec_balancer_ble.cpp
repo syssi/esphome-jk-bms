@@ -360,6 +360,9 @@ void HeltecBalancerBle::decode_cell_info_(const std::vector<uint8_t> &data) {
   auto heltec_get_16bit = [&](size_t i) -> uint16_t {
     return (uint16_t(data[i + 1]) << 8) | (uint16_t(data[i + 0]) << 0);
   };
+  auto heltec_get_24bit = [&](size_t i) -> uint32_t {
+    return (uint32_t(data[i + 2]) << 16) | (uint32_t(data[i + 1]) << 8) | (uint32_t(data[i + 0]) << 0);
+  };
   auto heltec_get_32bit = [&](size_t i) -> uint32_t {
     return (uint32_t(heltec_get_16bit(i + 2)) << 16) | (uint32_t(heltec_get_16bit(i + 0)) << 0);
   };
@@ -515,19 +518,27 @@ void HeltecBalancerBle::decode_cell_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->temperature_sensor_2_sensor_, ieee_float_(heltec_get_32bit(225)));
 
   // 229   3   0x00 0x00 0x00                   Cell detection failed bitmask (24 bits = 1 bit per cell)
+  this->publish_state_(this->cell_detection_failed_bitmask_sensor_, heltec_get_24bit(229));
   // 232   3   0x00 0x00 0x00                   Cell overvoltage bitmask (24 cells)
+  this->publish_state_(this->cell_overvoltage_bitmask_sensor_, heltec_get_24bit(232));
   // 235   3   0x00 0x00 0x00                   Cell undervoltage bitmask (24 cells)
-  // 238   3   0x00 0x00 0x00                   Polarity error bitmask (24 cells)
+  this->publish_state_(this->cell_undervoltage_bitmask_sensor_, heltec_get_24bit(235));
+  // 238   3   0x00 0x00 0x00                   Cell polarity error bitmask (24 cells)
+  this->publish_state_(this->cell_polarity_error_bitmask_sensor_, heltec_get_24bit(238));
   // 241   3   0x00 0x00 0x00                   Excessive line resistance bitmask (24 cells)
+  this->publish_state_(this->cell_excessive_line_resistance_bitmask_sensor_, heltec_get_24bit(241));
   // 244   1   0x00                             System overheating
+  this->publish_state_(this->error_system_overheating_binary_sensor_, data[244] != 0x00);
   //                                              Bit0: Temperature sensor 1 warning
   //                                              Bit1: Temperature sensor 2 warning
   // 245   1   0x00                             Charging fault
   //                                              0x00: Off
   //                                              0x01: On
+  this->publish_state_(this->error_charging_binary_sensor_, (bool) data[245]);
   // 246   1   0x00                             Discharge fault
   //                                              0x00: Off
   //                                              0x01: On
+  this->publish_state_(this->error_discharging_binary_sensor_, (bool) data[246]);
   // 247   1   0x00                             Unknown
   //                                              Bit0: Read failed
   //                                              Bit1: Write failed

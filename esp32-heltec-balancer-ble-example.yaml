@@ -203,8 +203,19 @@ sensor:
       name: "${name} total runtime"
     balancing_current:
       name: "${name} balancing current"
-    errors_bitmask:
-      name: "${name} errors bitmask"
+    # Not implemented
+    # errors_bitmask:
+    #   name: "${name} errors bitmask"
+    cell_detection_failed_bitmask:
+      name: "${name} cell detection failed bitmask"
+    cell_overvoltage_bitmask:
+      name: "${name} cell overvoltage bitmask"
+    cell_undervoltage_bitmask:
+      name: "${name} cell undervoltage bitmask"
+    cell_polarity_error_bitmask:
+      name: "${name} cell polarity error bitmask"
+    cell_excessive_line_resistance_bitmask:
+      name: "${name} cell excessive line resistance bitmask"
 
 switch:
   - platform: heltec_balancer_ble
@@ -213,8 +224,9 @@ switch:
 
 text_sensor:
   - platform: heltec_balancer_ble
-    errors:
-      name: "${name} errors"
+    # Not implemented
+    # errors:
+    #   name: "${name} errors"
     operation_status:
       name: "${name} operation status"
     total_runtime_formatted:

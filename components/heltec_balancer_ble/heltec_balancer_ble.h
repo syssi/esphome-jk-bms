@@ -47,6 +47,15 @@ class HeltecBalancerBle : public esphome::ble_client::BLEClientNode, public Poll
   void set_balancing_binary_sensor(binary_sensor::BinarySensor *balancing_binary_sensor) {
     balancing_binary_sensor_ = balancing_binary_sensor;
   }
+  void set_error_charging_binary_sensor(binary_sensor::BinarySensor *error_charging_binary_sensor) {
+    error_charging_binary_sensor_ = error_charging_binary_sensor;
+  }
+  void set_error_discharging_binary_sensor(binary_sensor::BinarySensor *error_discharging_binary_sensor) {
+    error_discharging_binary_sensor_ = error_discharging_binary_sensor;
+  }
+  void set_error_system_overheating_binary_sensor(binary_sensor::BinarySensor *error_system_overheating_binary_sensor) {
+    error_system_overheating_binary_sensor_ = error_system_overheating_binary_sensor;
+  }
 
   void set_throttle(uint16_t throttle) { this->throttle_ = throttle; }
   void set_min_cell_voltage_sensor(sensor::Sensor *min_cell_voltage_sensor) {
@@ -87,6 +96,22 @@ class HeltecBalancerBle : public esphome::ble_client::BLEClientNode, public Poll
   void set_errors_bitmask_sensor(sensor::Sensor *errors_bitmask_sensor) {
     errors_bitmask_sensor_ = errors_bitmask_sensor;
   }
+  void set_cell_detection_failed_bitmask_sensor(sensor::Sensor *cell_detection_failed_bitmask_sensor) {
+    cell_detection_failed_bitmask_sensor_ = cell_detection_failed_bitmask_sensor;
+  }
+  void set_cell_overvoltage_bitmask_sensor(sensor::Sensor *cell_overvoltage_bitmask_sensor) {
+    cell_overvoltage_bitmask_sensor_ = cell_overvoltage_bitmask_sensor;
+  }
+  void set_cell_undervoltage_bitmask_sensor(sensor::Sensor *cell_undervoltage_bitmask_sensor) {
+    cell_undervoltage_bitmask_sensor_ = cell_undervoltage_bitmask_sensor;
+  }
+  void set_cell_polarity_error_bitmask_sensor(sensor::Sensor *cell_polarity_error_bitmask_sensor) {
+    cell_polarity_error_bitmask_sensor_ = cell_polarity_error_bitmask_sensor;
+  }
+  void set_cell_excessive_line_resistance_bitmask_sensor(
+      sensor::Sensor *cell_excessive_line_resistance_bitmask_sensor) {
+    cell_excessive_line_resistance_bitmask_sensor_ = cell_excessive_line_resistance_bitmask_sensor;
+  }
 
   void set_errors_text_sensor(text_sensor::TextSensor *errors_text_sensor) { errors_text_sensor_ = errors_text_sensor; }
   void set_operation_status_text_sensor(text_sensor::TextSensor *operation_status_text_sensor) {
@@ -114,6 +139,9 @@ class HeltecBalancerBle : public esphome::ble_client::BLEClientNode, public Poll
 
  protected:
   binary_sensor::BinarySensor *balancing_binary_sensor_;
+  binary_sensor::BinarySensor *error_charging_binary_sensor_;
+  binary_sensor::BinarySensor *error_discharging_binary_sensor_;
+  binary_sensor::BinarySensor *error_system_overheating_binary_sensor_;
 
   number::Number *cell_count_number_;
   number::Number *balance_trigger_voltage_number_;
@@ -134,6 +162,11 @@ class HeltecBalancerBle : public esphome::ble_client::BLEClientNode, public Poll
   sensor::Sensor *total_runtime_sensor_;
   sensor::Sensor *balancing_current_sensor_;
   sensor::Sensor *errors_bitmask_sensor_;
+  sensor::Sensor *cell_detection_failed_bitmask_sensor_;
+  sensor::Sensor *cell_overvoltage_bitmask_sensor_;
+  sensor::Sensor *cell_undervoltage_bitmask_sensor_;
+  sensor::Sensor *cell_polarity_error_bitmask_sensor_;
+  sensor::Sensor *cell_excessive_line_resistance_bitmask_sensor_;
 
   switch_::Switch *balancer_switch_;
 

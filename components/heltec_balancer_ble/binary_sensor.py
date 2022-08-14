@@ -10,11 +10,15 @@ DEPENDENCIES = ["heltec_balancer_ble"]
 CODEOWNERS = ["@syssi"]
 
 CONF_BALANCING = "balancing"
-
-ICON_BALANCING = "mdi:battery-heart-variant"
+CONF_ERROR_CHARGING = "error_charging"
+CONF_ERROR_DISCHARGING = "error_discharging"
+CONF_ERROR_SYSTEM_OVERHEATING = "error_system_overheating"
 
 BINARY_SENSORS = [
     CONF_BALANCING,
+    CONF_ERROR_CHARGING,
+    CONF_ERROR_DISCHARGING,
+    CONF_ERROR_SYSTEM_OVERHEATING,
 ]
 
 CONFIG_SCHEMA = cv.Schema(
@@ -23,7 +27,27 @@ CONFIG_SCHEMA = cv.Schema(
         cv.Optional(CONF_BALANCING): binary_sensor.BINARY_SENSOR_SCHEMA.extend(
             {
                 cv.GenerateID(): cv.declare_id(binary_sensor.BinarySensor),
-                cv.Optional(CONF_ICON, default=ICON_BALANCING): cv.icon,
+                cv.Optional(CONF_ICON, default="mdi:battery-heart-variant"): cv.icon,
+            }
+        ),
+        cv.Optional(CONF_ERROR_CHARGING): binary_sensor.BINARY_SENSOR_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(binary_sensor.BinarySensor),
+                cv.Optional(CONF_ICON, default="mdi:alert-circle-outline"): cv.icon,
+            }
+        ),
+        cv.Optional(CONF_ERROR_DISCHARGING): binary_sensor.BINARY_SENSOR_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(binary_sensor.BinarySensor),
+                cv.Optional(CONF_ICON, default="mdi:alert-circle-outline"): cv.icon,
+            }
+        ),
+        cv.Optional(
+            CONF_ERROR_SYSTEM_OVERHEATING
+        ): binary_sensor.BINARY_SENSOR_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(binary_sensor.BinarySensor),
+                cv.Optional(CONF_ICON, default="mdi:alert-circle-outline"): cv.icon,
             }
         ),
     }
