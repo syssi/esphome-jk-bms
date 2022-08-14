@@ -1,0 +1,242 @@
+substitutions:
+  name: heltec-balancer
+  device_description: "Monitor and control a Heltec/NEEY 4A balancer via bluetooth"
+  external_components_source: github://syssi/esphome-jk-bms@add-heltec-balancer-support
+  mac_address: C8:47:8C:E1:E2:FF
+
+esphome:
+  name: ${name}
+  comment: ${device_description}
+  project:
+    name: "syssi.esphome-jk-bms"
+    version: 1.1.0
+
+esp32:
+  board: wemos_d1_mini32
+  framework:
+#  The arduino platform crashs
+#    type: arduino
+#    version: latest
+    type: esp-idf
+    version: latest
+
+external_components:
+  - source: ${external_components_source}
+    refresh: 0s
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+ota:
+logger:
+
+api:
+
+# This feature is only available with frameworks ['arduino'] <= 2022.3.1
+# https://github.com/esphome/esphome/pull/2930: Add mqtt for idf >= 2022.4.0
+#
+# mqtt:
+#   broker: !secret mqtt_host
+#   username: !secret mqtt_username
+#   password: !secret mqtt_password
+#   id: mqtt_client
+
+esp32_ble_tracker:
+
+ble_client:
+  - mac_address: ${mac_address}
+    id: client0
+
+heltec_balancer_ble:
+  - ble_client_id: client0
+    throttle: 5s
+    id: bms0
+
+binary_sensor:
+  - platform: heltec_balancer_ble
+    balancing:
+      name: "${name} balancing"
+
+button:
+  - platform: heltec_balancer_ble
+    retrieve_settings:
+      name: "${name} retrieve settings"
+      id: retrieve_settings_button
+    retrieve_device_info:
+      name: "${name} retrieve device info"
+    retrieve_factory_defaults:
+      name: "${name} retrieve factory defaults"
+
+number:
+  - platform: heltec_balancer_ble
+    cell_count:
+      name: "${name} cell count"
+    balance_trigger_voltage:
+      name: "${name} balance trigger voltage"
+    max_balance_current:
+      name: "${name} max balance current"
+    balance_sleep_voltage:
+      name: "${name} balance sleep voltage"
+    balance_start_voltage:
+      name: "${name} balance start voltage"
+    nominal_battery_capacity:
+      name: "${name} nominal battery capacity"
+
+sensor:
+  - platform: heltec_balancer_ble
+    min_cell_voltage:
+      name: "${name} min cell voltage"
+    max_cell_voltage:
+      name: "${name} max cell voltage"
+    min_voltage_cell:
+      name: "${name} min voltage cell"
+    max_voltage_cell:
+      name: "${name} max voltage cell"
+    delta_cell_voltage:
+      name: "${name} delta cell voltage"
+    average_cell_voltage:
+      name: "${name} average cell voltage"
+    cell_voltage_1:
+      name: "${name} cell voltage 1"
+    cell_voltage_2:
+      name: "${name} cell voltage 2"
+    cell_voltage_3:
+      name: "${name} cell voltage 3"
+    cell_voltage_4:
+      name: "${name} cell voltage 4"
+    cell_voltage_5:
+      name: "${name} cell voltage 5"
+    cell_voltage_6:
+      name: "${name} cell voltage 6"
+    cell_voltage_7:
+      name: "${name} cell voltage 7"
+    cell_voltage_8:
+      name: "${name} cell voltage 8"
+    cell_voltage_9:
+      name: "${name} cell voltage 9"
+    cell_voltage_10:
+      name: "${name} cell voltage 10"
+    cell_voltage_11:
+      name: "${name} cell voltage 11"
+    cell_voltage_12:
+      name: "${name} cell voltage 12"
+    cell_voltage_13:
+      name: "${name} cell voltage 13"
+    cell_voltage_14:
+      name: "${name} cell voltage 14"
+    cell_voltage_15:
+      name: "${name} cell voltage 15"
+    cell_voltage_16:
+      name: "${name} cell voltage 16"
+    cell_voltage_17:
+      name: "${name} cell voltage 17"
+    cell_voltage_18:
+      name: "${name} cell voltage 18"
+    cell_voltage_19:
+      name: "${name} cell voltage 19"
+    cell_voltage_20:
+      name: "${name} cell voltage 20"
+    cell_voltage_21:
+      name: "${name} cell voltage 21"
+    cell_voltage_22:
+      name: "${name} cell voltage 22"
+    cell_voltage_23:
+      name: "${name} cell voltage 23"
+    cell_voltage_24:
+      name: "${name} cell voltage 24"
+    cell_resistance_1:
+      name: "${name} cell resistance 1"
+    cell_resistance_2:
+      name: "${name} cell resistance 2"
+    cell_resistance_3:
+      name: "${name} cell resistance 3"
+    cell_resistance_4:
+      name: "${name} cell resistance 4"
+    cell_resistance_5:
+      name: "${name} cell resistance 5"
+    cell_resistance_6:
+      name: "${name} cell resistance 6"
+    cell_resistance_7:
+      name: "${name} cell resistance 7"
+    cell_resistance_8:
+      name: "${name} cell resistance 8"
+    cell_resistance_9:
+      name: "${name} cell resistance 9"
+    cell_resistance_10:
+      name: "${name} cell resistance 10"
+    cell_resistance_11:
+      name: "${name} cell resistance 11"
+    cell_resistance_12:
+      name: "${name} cell resistance 12"
+    cell_resistance_13:
+      name: "${name} cell resistance 13"
+    cell_resistance_14:
+      name: "${name} cell resistance 14"
+    cell_resistance_15:
+      name: "${name} cell resistance 15"
+    cell_resistance_16:
+      name: "${name} cell resistance 16"
+    cell_resistance_17:
+      name: "${name} cell resistance 17"
+    cell_resistance_18:
+      name: "${name} cell resistance 18"
+    cell_resistance_19:
+      name: "${name} cell resistance 19"
+    cell_resistance_20:
+      name: "${name} cell resistance 20"
+    cell_resistance_21:
+      name: "${name} cell resistance 21"
+    cell_resistance_22:
+      name: "${name} cell resistance 22"
+    cell_resistance_23:
+      name: "${name} cell resistance 23"
+    cell_resistance_24:
+      name: "${name} cell resistance 24"
+    total_voltage:
+      name: "${name} total voltage"
+    temperature_sensor_1:
+      name: "${name} temperature sensor 1"
+    temperature_sensor_2:
+      name: "${name} temperature sensor 2"
+    total_runtime:
+      name: "${name} total runtime"
+    balancing_current:
+      name: "${name} balancing current"
+    # Not implemented
+    # errors_bitmask:
+    #   name: "${name} errors bitmask"
+    cell_detection_failed_bitmask:
+      name: "${name} cell detection failed bitmask"
+    cell_overvoltage_bitmask:
+      name: "${name} cell overvoltage bitmask"
+    cell_undervoltage_bitmask:
+      name: "${name} cell undervoltage bitmask"
+    cell_polarity_error_bitmask:
+      name: "${name} cell polarity error bitmask"
+    cell_excessive_line_resistance_bitmask:
+      name: "${name} cell excessive line resistance bitmask"
+
+switch:
+  - platform: heltec_balancer_ble
+    balancer:
+      name: "${name} balancer"
+
+text_sensor:
+  - platform: heltec_balancer_ble
+    # Not implemented
+    # errors:
+    #   name: "${name} errors"
+    operation_status:
+      name: "${name} operation status"
+    total_runtime_formatted:
+      name: "${name} total runtime formatted"
+    buzzer_mode:
+      name: "${name} buzzer mode"
+    battery_type:
+      name: "${name} battery type"
+
+interval:
+  - interval: 30min
+    then:
+      - button.press: retrieve_settings_button

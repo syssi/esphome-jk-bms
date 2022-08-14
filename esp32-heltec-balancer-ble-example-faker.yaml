@@ -1,0 +1,9 @@
+<<: !include esp32-heltec-balancer-ble-example.yaml
+
+heltec_balancer_ble:
+  - ble_client_id: client0
+    update_interval: 1s
+    throttle: 2s
+    id: bms0
+    enable_fake_traffic: true
+
