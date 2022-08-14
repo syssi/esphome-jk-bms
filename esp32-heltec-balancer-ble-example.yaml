@@ -1,7 +1,7 @@
 substitutions:
   name: heltec-balancer
   device_description: "Monitor and control a Heltec/NEEY 4A balancer via bluetooth"
-  external_components_source: github://syssi/esphome-jk-bms@add-heltec-balancer-support
+  external_components_source: github://syssi/esphome-jk-bms@main
   mac_address: C8:47:8C:E1:E2:FF
 
 esphome:
