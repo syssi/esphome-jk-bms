@@ -749,7 +749,7 @@ void HeltecBalancerBle::decode_device_info_(const std::vector<uint8_t> &data) {
   // 24    8   0x48 0x57 0x2D 0x32 0x2E 0x38 0x2E 0x30    Hardware version           HW-2.8.0
   ESP_LOGI(TAG, "  Hardware version: %s", std::string(data.begin() + 24, data.begin() + 24 + 8).c_str());
   // 32    8   0x5A 0x48 0x2D 0x31 0x2E 0x32 0x2E 0x33    Software version           ZH-1.2.3
-  ESP_LOGI(TAG, "  Hardware version: %s", std::string(data.begin() + 32, data.begin() + 32 + 8).c_str());
+  ESP_LOGI(TAG, "  Software version: %s", std::string(data.begin() + 32, data.begin() + 32 + 8).c_str());
   // 40    8   0x56 0x31 0x2E 0x30 0x2E 0x30 0x00 0x00    Protocol version           V1.0.0
   ESP_LOGI(TAG, "  Protocol version: %s", std::string(data.begin() + 40, data.begin() + 40 + 8).c_str());
   // 48    8   0x32 0x30 0x32 0x32 0x30 0x35 0x33 0x31    Production date            20220531

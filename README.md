@@ -32,6 +32,11 @@ All JK-BMS models with software version `>=6.0` are using the implemented protoc
 * JK-B2A8S20P,  hw 9.x, sw 9.01M3 (reported by [@EasilyBoredEngineer](https://github.com/syssi/esphome-jk-bms/discussions/110))
 * JK-B2A8S20P, hw 9.x, sw 9.08W (reported by [@vrabi-cv](https://github.com/syssi/esphome-jk-bms/discussions/144#discussioncomment-3285901))
 * JK-B2A8S20P, hw 11.XW, sw 11.17 (reported by [@senfkorn](https://github.com/syssi/esphome-jk-bms/issues/147))
+* GW-24S4EB, W-2.8.0
+[14:47:12][I][heltec_balancer_ble:752]:   Hardware version: ZH-1.2.3
+[14:47:12][I][heltec_balancer_ble:754]:   Protocol version: V1.0.0
+[14:47:12][I][heltec_balancer_ble:756]:   Manufacturing date: 20220531
+
 
 ## Untested devices
 
