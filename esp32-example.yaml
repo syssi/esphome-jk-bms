@@ -18,7 +18,6 @@ esp32:
     type: esp-idf
     version: latest
 
-
 external_components:
   - source: ${external_components_source}
     refresh: 0s
