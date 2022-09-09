@@ -101,6 +101,7 @@ UNIT_AMPERE_HOURS = "Ah"
 UNIT_OHM = "Ω"
 UNIT_SECONDS = "s"
 
+ICON_CURRENT_DC = "mdi:current-dc"
 ICON_CAPACITY = "mdi:battery-medium"
 ICON_MIN_VOLTAGE_CELL = "mdi:battery-minus-outline"
 ICON_MAX_VOLTAGE_CELL = "mdi:battery-plus-outline"
@@ -579,7 +580,7 @@ CONFIG_SCHEMA = cv.Schema(
         ),
         cv.Optional(CONF_CURRENT): sensor.sensor_schema(
             unit_of_measurement=UNIT_AMPERE,
-            icon=ICON_EMPTY,
+            icon=ICON_CURRENT_DC,
             accuracy_decimals=2,
             device_class=DEVICE_CLASS_CURRENT,
             state_class=STATE_CLASS_MEASUREMENT,
@@ -670,7 +671,7 @@ CONFIG_SCHEMA = cv.Schema(
         ),
         cv.Optional(CONF_BALANCING_CURRENT): sensor.sensor_schema(
             unit_of_measurement=UNIT_AMPERE,
-            icon=ICON_EMPTY,
+            icon=ICON_CURRENT_DC,
             accuracy_decimals=2,
             device_class=DEVICE_CLASS_CURRENT,
             state_class=STATE_CLASS_MEASUREMENT,
