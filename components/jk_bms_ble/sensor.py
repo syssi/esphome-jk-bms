@@ -9,7 +9,6 @@ from esphome.const import (
     DEVICE_CLASS_POWER,
     DEVICE_CLASS_TEMPERATURE,
     DEVICE_CLASS_VOLTAGE,
-    ICON_CURRENT_DC,
     ICON_EMPTY,
     ICON_TIMELAPSE,
     STATE_CLASS_MEASUREMENT,
@@ -102,6 +101,7 @@ UNIT_AMPERE_HOURS = "Ah"
 UNIT_OHM = "Ω"
 UNIT_SECONDS = "s"
 
+ICON_CURRENT_DC = "mdi:current-dc"
 ICON_CAPACITY = "mdi:battery-medium"
 ICON_MIN_VOLTAGE_CELL = "mdi:battery-minus-outline"
 ICON_MAX_VOLTAGE_CELL = "mdi:battery-plus-outline"

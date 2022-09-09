@@ -10,7 +10,6 @@ from esphome.const import (
     DEVICE_CLASS_TEMPERATURE,
     DEVICE_CLASS_VOLTAGE,
     ICON_COUNTER,
-    ICON_CURRENT_DC,
     ICON_EMPTY,
     ICON_TIMELAPSE,
     STATE_CLASS_MEASUREMENT,
@@ -131,6 +130,7 @@ CONF_START_CURRENT_CALIBRATION = "start_current_calibration"
 CONF_ACTUAL_BATTERY_CAPACITY = "actual_battery_capacity"
 CONF_PROTOCOL_VERSION = "protocol_version"
 
+ICON_CURRENT_DC = "mdi:current-dc"
 ICON_MIN_VOLTAGE_CELL = "mdi:battery-minus-outline"
 ICON_MAX_VOLTAGE_CELL = "mdi:battery-plus-outline"
 
