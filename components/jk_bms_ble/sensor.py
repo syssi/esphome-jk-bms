@@ -9,6 +9,7 @@ from esphome.const import (
     DEVICE_CLASS_POWER,
     DEVICE_CLASS_TEMPERATURE,
     DEVICE_CLASS_VOLTAGE,
+    ICON_CURRENT_DC,
     ICON_EMPTY,
     ICON_TIMELAPSE,
     STATE_CLASS_MEASUREMENT,
@@ -579,7 +580,7 @@ CONFIG_SCHEMA = cv.Schema(
         ),
         cv.Optional(CONF_CURRENT): sensor.sensor_schema(
             unit_of_measurement=UNIT_AMPERE,
-            icon=ICON_EMPTY,
+            icon=ICON_CURRENT_DC,
             accuracy_decimals=2,
             device_class=DEVICE_CLASS_CURRENT,
             state_class=STATE_CLASS_MEASUREMENT,
@@ -670,7 +671,7 @@ CONFIG_SCHEMA = cv.Schema(
         ),
         cv.Optional(CONF_BALANCING_CURRENT): sensor.sensor_schema(
             unit_of_measurement=UNIT_AMPERE,
-            icon=ICON_EMPTY,
+            icon=ICON_CURRENT_DC,
             accuracy_decimals=2,
             device_class=DEVICE_CLASS_CURRENT,
             state_class=STATE_CLASS_MEASUREMENT,
