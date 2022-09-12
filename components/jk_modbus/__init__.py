@@ -11,10 +11,16 @@ JkModbusDevice = jk_modbus_ns.class_("JkModbusDevice")
 MULTI_CONF = True
 
 CONF_JK_MODBUS_ID = "jk_modbus_id"
+
+CONF_RX_TIMEOUT = "rx_timeout"
+
 CONFIG_SCHEMA = (
     cv.Schema(
         {
             cv.GenerateID(): cv.declare_id(JkModbus),
+            cv.Optional(
+                CONF_RX_TIMEOUT, default="50ms"
+            ): cv.positive_time_period_milliseconds,
         }
     )
     .extend(cv.COMPONENT_SCHEMA)
@@ -28,6 +34,8 @@ async def to_code(config):
     await cg.register_component(var, config)
 
     await uart.register_uart_device(var, config)
+
+    cg.add(var.set_rx_timeout(config[CONF_RX_TIMEOUT]))
 
 
 def jk_modbus_device_schema(default_address):

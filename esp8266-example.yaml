@@ -43,6 +43,7 @@ uart:
 jk_modbus:
   id: modbus0
   uart_id: uart0
+  rx_timeout: 50ms
 
 jk_bms:
   id: bms0
