@@ -552,8 +552,8 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // 150   4   0x00 0x00 0x00 0x00    Cycle_Count          1.0
   this->publish_state_(this->charging_cycles_sensor_, (float) jk_get_32bit(150 + offset));
 
-  // 154   4   0x3D 0x04 0x00 0x00    Cycle_Capacity       1.0
-  this->publish_state_(this->total_charging_cycle_capacity_sensor_, (float) jk_get_32bit(154 + offset));
+  // 154   4   0x3D 0x04 0x00 0x00    Cycle_Capacity       0.001         Ah
+  this->publish_state_(this->total_charging_cycle_capacity_sensor_, (float) jk_get_32bit(154 + offset) * 0.001f);
 
   // 158   2   0x64 0x00              Unknown158
   ESP_LOGD(TAG, "Unknown158: %02X %02X (always 0x64 0x00?)", data[158 + offset], data[159 + offset]);
