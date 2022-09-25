@@ -212,6 +212,9 @@ void JkBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gat
       break;
     }
     case ESP_GATTC_NOTIFY_EVT: {
+      if (param->notify.handle != this->notify_handle_)
+        break;
+
       ESP_LOGD(TAG, "Notification received: %s",
                format_hex_pretty(param->notify.value, param->notify.value_len).c_str());
 
