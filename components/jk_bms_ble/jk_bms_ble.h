@@ -228,6 +228,7 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   bool status_notification_received_ = false;
   bool enable_fake_traffic_;
   uint16_t char_handle_;
+  uint16_t notify_handle_;
   uint32_t last_cell_info_{0};
   uint16_t throttle_;
 

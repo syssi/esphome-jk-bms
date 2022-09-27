@@ -147,10 +147,57 @@ void JkBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gat
                  this->parent_->address_str().c_str());
         break;
       }
+
+      // Services and characteristic of the old BLE module (C8:47:8C:XX:XX:XX)
+      //
+      // Found device at MAC address [C8:47:8C:F2:7E:03]
+      // Attempting BLE connection to c8:47:8c:f2:7e:03
+      // Service UUID: 0x1800
+      //   start_handle: 0x1  end_handle: 0x9
+      //  characteristic 0x2A00, handle 0x3, properties 0xa
+      //  characteristic 0x2A01, handle 0x5, properties 0xa
+      //  characteristic 0x2A02, handle 0x7, properties 0x2
+      //  characteristic 0x2A04, handle 0x9, properties 0x2
+      // Service UUID: 0x1801
+      //   start_handle: 0xa  end_handle: 0xd
+      //  characteristic 0x2A05, handle 0xc, properties 0x22
+      // Service UUID: 0xFFE0
+      //   start_handle: 0xe  end_handle: 0x13
+      //  characteristic 0xFFE2, handle 0x10, properties 0x4
+      //  characteristic 0xFFE1, handle 0x12, properties 0x1c
+      // Service UUID: 0x180A
+      //   start_handle: 0x14  end_handle: 0x26
+      //  characteristic 0x2A29, handle 0x16, properties 0x2
+      //  characteristic 0x2A24, handle 0x18, properties 0x2
+      //  characteristic 0x2A25, handle 0x1a, properties 0x2
+      //  characteristic 0x2A27, handle 0x1c, properties 0x2
+      //  characteristic 0x2A26, handle 0x1e, properties 0x2
+      //  characteristic 0x2A28, handle 0x20, properties 0x2
+      //  characteristic 0x2A23, handle 0x22, properties 0x2
+      //  characteristic 0x2A2A, handle 0x24, properties 0x2
+      //  characteristic 0x2A50, handle 0x26, properties 0x2
+      // Service UUID: 0x180F
+      //   start_handle: 0x27  end_handle: 0x2a
+      //  characteristic 0x2A19, handle 0x29, properties 0x12
+      // Service UUID: F000FFC0-0451-4000-B000-000000000000
+      //   start_handle: 0x2b  end_handle: 0x33
+      //  characteristic F000FFC1-0451-4000-B000-000000000000, handle 0x2d, properties 0x1c
+      //  characteristic F000FFC2-0451-4000-B000-000000000000, handle 0x31, properties 0x1c
+
+      // Services and characteristic of the new BLE module (20:21:11:XX:XX:XX)
+      //
+      // Found device at MAC address [20:21:11:28:18:DD]
+      // Attempting BLE connection to 20:21:11:28:18:dd
+      // Service UUID: 0xFFE0
+      //   start_handle: 0x1  end_handle: 0xffff
+      //  characteristic 0xFFE1, handle 0x3, properties 0xc
+      //  characteristic 0xFFE1, handle 0x5, properties 0x12
+      //    descriptor 0x2902, handle 0x6
       this->char_handle_ = chr->handle;
+      this->notify_handle_ = (chr->handle == 0x03) ? 0x05 : chr->handle;
 
       auto status =
-          esp_ble_gattc_register_for_notify(this->parent()->gattc_if, this->parent()->remote_bda, chr->handle);
+          esp_ble_gattc_register_for_notify(this->parent()->gattc_if, this->parent()->remote_bda, this->notify_handle_);
       if (status) {
         ESP_LOGW(TAG, "esp_ble_gattc_register_for_notify failed, status=%d", status);
       }
@@ -166,8 +213,11 @@ void JkBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gat
       break;
     }
     case ESP_GATTC_NOTIFY_EVT: {
-      if (param->notify.handle != this->char_handle_)
+      if (param->notify.handle != this->notify_handle_)
         break;
+
+      ESP_LOGD(TAG, "Notification received: %s",
+               format_hex_pretty(param->notify.value, param->notify.value_len).c_str());
 
       this->assemble_(param->notify.value, param->notify.value_len);
 
