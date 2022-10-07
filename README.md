@@ -11,8 +11,8 @@ This fork supports CAN bus commuinaction with inverters supporting the CANBUS Pr
 It communicates with the JK-BMS using the RS485 port which is in fact not RS485, it is 3.3V TTL so it can be directly connected to the ESP32.
 The ESP32 then sends the required CAN bus data to the inverter.
 
-I have been testing using the Goodwe SECU-A*3 batteries selected in the inverter.<br>
-Each SECA-A battery has 5.4kWh of storage, so select the number that is the closest match to your battery's total capacity.<br>
+I have been testing using the Goodwe SECU-A5.4L battery profile selected in the inverter.<br>
+Each SECA-A5.4 battery profile has 5.4kWh of storage, so select the number that is the closest match to your battery's total capacity.<br>
 **Note:- CAN bus support is still in development and testing!!!**
 
 Thanks go to syssi for help and making the original RS485 code! Buy him a coffee here https://www.buymeacoffee.com/syssi)
