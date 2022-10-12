@@ -13,6 +13,8 @@ The ESP32 then sends the required CAN bus data to the inverter.
 
 I have been testing using the Goodwe SECU-A5.4L battery profile selected in the inverter.<br>
 Each SECA-A5.4 battery profile has 5.4kWh of storage, so select the number that is the closest match to your battery's total capacity.<br>
+
+V1.01 12/10/22 Now being used with live inverter. Updates to add more inverter control when turning on/off charging and discharging
 **Note:- CAN bus support is still in development and testing!!!**
 
 Thanks go to syssi for help and making the original RS485 code! Buy him a coffee here https://www.buymeacoffee.com/syssi)
