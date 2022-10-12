@@ -1,10 +1,13 @@
+# Versions:
+# V1.01 12/10/22 Now being used with live inverter. Updates to add more inverter control when turning on/off charging and discharging
+# V1.00 23/5/22 first test release
 substitutions:
 # name that will appear in esphome and homeassistant.
   name: jk-bms-can
 # Number of Battery modules max 8 
   batt_modules: "3"
 # This is voltage you want the inverter to change battery with 55.2 eg 3.45v/cell for 16 cells 48V battery. 
-  charge_v: "57.6" 
+  charge_v: "55.2" 
 # This is the percentage state of health new would be 100 as battery gets older reduce. 
   soh: "100"
 # GPIO pins your CAN bus transceiver(TJA1050) is connected to the ESP, note! TX->TX and RX->RX. 
@@ -106,7 +109,7 @@ canbus:
 
 
 interval:
-  - interval: 950ms
+  - interval: 1000ms
     then:
       - canbus.send: # Warn Alarm
           can_id: 0x359
@@ -134,17 +137,30 @@ interval:
             return {can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5], can_mesg[6], can_mesg[7]};
       - delay: 10ms
 
-      - canbus.send: # BMS limts
+      - canbus.send: # BMS instructs inverter: Charge Volts, Charge Amps, Discharge Amps, Min voltage
           can_id: 0x351
           data: !lambda |-
             int chg_v = ${charge_v} * 10;
             uint8_t can_mesg[7];
             can_mesg[0] = chg_v & 0xff;
             can_mesg[1] = chg_v >> 8 & 0xff;
-            can_mesg[2] = int16_t(id(charging_overcurrent_protection).state * 10) & 0xff;
-            can_mesg[3] = int16_t(id(charging_overcurrent_protection).state * 10) >> 8 & 0xff;
-            can_mesg[4] = int16_t(id(discharging_overcurrent_protection).state * 10) & 0xff;
-            can_mesg[5] = int16_t(id(discharging_overcurrent_protection).state * 10) >> 8 & 0xff;
+            if (uint16_t(id(capacity_remaining).state) > 99) {
+               can_mesg[2] = (20) & 0xff;
+               can_mesg[3] = (20) >> 8 & 0xff;
+            } else if (!id(charging_switch).state) {
+               can_mesg[2] = 0;
+               can_mesg[3] = 0;
+            } else {
+               can_mesg[2] = int16_t(id(charging_overcurrent_protection).state * 10) & 0xff;
+               can_mesg[3] = int16_t(id(charging_overcurrent_protection).state * 10) >> 8 & 0xff;
+            }
+            if (!id(discharging_switch).state) {
+               can_mesg[4] = 0;
+               can_mesg[5] = 0;
+            } else {
+              can_mesg[4] = int16_t(id(discharging_overcurrent_protection).state * 10) & 0xff;
+              can_mesg[5] = int16_t(id(discharging_overcurrent_protection).state * 10) >> 8 & 0xff;
+            }
             can_mesg[6] = uint16_t(id(total_voltage_undervoltage_protection).state * 10) & 0xff;
             can_mesg[7] = uint16_t(id(total_voltage_undervoltage_protection).state * 10) >> 8 & 0xff;
             ESP_LOGI("main", "send can id: 0x351 hex: %x %x %x %x %x %x %x %x", can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5], can_mesg[6], can_mesg[7]);
@@ -155,13 +171,8 @@ interval:
           can_id: 0x355
           data: !lambda |-
             uint8_t can_mesg[3];
-            if (id(discharging_switch).state) {
-               can_mesg[0] = uint16_t(id(capacity_remaining).state) & 0xff;
-               can_mesg[1] = uint16_t(id(capacity_remaining).state) >> 8 & 0xff;
-            } else {
-               can_mesg[0] = 0x00;
-               can_mesg[1] = 0x00;
-            }             
+            can_mesg[0] = uint16_t(id(capacity_remaining).state) & 0xff;
+            can_mesg[1] = uint16_t(id(capacity_remaining).state) >> 8 & 0xff;        
             can_mesg[2] = ${soh} & 0xff;
             can_mesg[3] = ${soh} >> 8 & 0xff;
             ESP_LOGI("main", "send can id: 0x355 hex: %x %x %x %x", can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3]);
@@ -170,12 +181,9 @@ interval:
 
       - canbus.send: # Volts,Amps, Temp
           can_id: 0x356
-          # data: [0x00, 0x00, 0x00, 0x00, 0xFA, 0x00]
           data: !lambda |-
-            int chg_v = ${charge_v} * 10;
             uint8_t can_mesg[5];
-            if (id(discharging_switch).state) can_mesg[0] = 0x00;
-            else can_mesg[0] = uint16_t(id(total_voltage).state * 100) & 0xff;
+            can_mesg[0] = uint16_t(id(total_voltage).state * 100) & 0xff; 
             can_mesg[1] = uint16_t(id(total_voltage).state * 100) >> 8 & 0xff;
             can_mesg[2] = int16_t(id(current).state * 10) & 0xff;
             can_mesg[3] = int16_t(id(current).state * 10) >> 8 & 0xff; 
@@ -185,11 +193,12 @@ interval:
             return {can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5]};
       - delay: 10ms
 
-      - canbus.send: # Request flag
+      - canbus.send: # Request flag to Enable/Disable: Charge, Discharge
           can_id: 0x35C
           data: !lambda |-
             uint8_t can_mesg[1];
-            if (id(charging_switch).state) {
+            if (uint16_t(id(capacity_remaining).state) == 100) can_mesg[0] = 0x00;
+            else if (id(charging_switch).state) {
                can_mesg[0] = 0x80;
             } else {
                can_mesg[0] = 0x00;
