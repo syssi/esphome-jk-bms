@@ -1,4 +1,5 @@
 # Versions:
+# V1.02 13/10/22 Added Control switches for Homeassistant to notify the inverter to disable charging and discharge. Control the inverter from anywhere!
 # V1.01 12/10/22 Now being used with live inverter. Updates to add more inverter control when turning on/off charging and discharging
 # V1.00 23/5/22 first test release
 substitutions:
@@ -18,7 +19,6 @@ substitutions:
   rx_pin: GPIO16
 #### Don't make changes below this ####
   external_components_source: github://uksa007/esphome-jk-bms-can@main
-#  external_components_source: github://syssi/esphome-jk-bms@main
 
 esphome:
   name: ${name}
@@ -144,22 +144,31 @@ interval:
             uint8_t can_mesg[7];
             can_mesg[0] = chg_v & 0xff;
             can_mesg[1] = chg_v >> 8 & 0xff;
-            if (uint16_t(id(capacity_remaining).state) > 99) {
-               can_mesg[2] = (20) & 0xff;
-               can_mesg[3] = (20) >> 8 & 0xff;
-            } else if (!id(charging_switch).state) {
-               can_mesg[2] = 0;
-               can_mesg[3] = 0;
-            } else {
+            if (id(charging_switch).state) {
                can_mesg[2] = int16_t(id(charging_overcurrent_protection).state * 10) & 0xff;
                can_mesg[3] = int16_t(id(charging_overcurrent_protection).state * 10) >> 8 & 0xff;
+            } else {            
+               can_mesg[2] = 0x00;
+               can_mesg[3] = 0x00;
             }
-            if (!id(discharging_switch).state) {
-               can_mesg[4] = 0;
-               can_mesg[5] = 0;
-            } else {
+            if (uint16_t(id(capacity_remaining).state) > 99) {
+               can_mesg[2] = (2)*10 & 0xff;
+               can_mesg[3] = (2)*10 >> 8 & 0xff;
+            }
+            if (id(inverter_charging).state) {
+               can_mesg[2] = 0x00;
+               can_mesg[3] = 0x00;
+            }
+            if (id(discharging_switch).state) {
               can_mesg[4] = int16_t(id(discharging_overcurrent_protection).state * 10) & 0xff;
               can_mesg[5] = int16_t(id(discharging_overcurrent_protection).state * 10) >> 8 & 0xff;
+            } else {
+               can_mesg[4] = 0x00;
+               can_mesg[5] = 0x00;
+            }
+            if (id(inverter_discharging).state) {
+               can_mesg[4] = 0x00;
+               can_mesg[5] = 0x00;
             }
             can_mesg[6] = uint16_t(id(total_voltage_undervoltage_protection).state * 10) & 0xff;
             can_mesg[7] = uint16_t(id(total_voltage_undervoltage_protection).state * 10) >> 8 & 0xff;
@@ -197,16 +206,23 @@ interval:
           can_id: 0x35C
           data: !lambda |-
             uint8_t can_mesg[1];
-            if (uint16_t(id(capacity_remaining).state) == 100) can_mesg[0] = 0x00;
-            else if (id(charging_switch).state) {
+            if (id(charging_switch).state) {
                can_mesg[0] = 0x80;
             } else {
                can_mesg[0] = 0x00;
-              }
-            if (id(discharging_switch).state) {
+            }
+            if (uint16_t(id(capacity_remaining).state) == 100) {
+               can_mesg[0] = 0x00;
+            }
+            if (id(inverter_charging).state) {
+               can_mesg[0] = 0x00;
+            }
+            if (id(inverter_discharging).state) {
+               can_mesg[0] = can_mesg[0];
+            } else if (id(discharging_switch).state) {
                can_mesg[0] = can_mesg[0] | 0x40;
             }
-               can_mesg[1] = 0x00;
+            can_mesg[1] = 0x00;
             ESP_LOGI("main", "send can id: 0x35C hex: %x %x", can_mesg[0], can_mesg[1]);
             return {can_mesg[0], can_mesg[1]};
       - delay: 10ms
@@ -458,8 +474,19 @@ text_sensor:
       name: "${name} manufacturer"
     total_runtime_formatted:
       name: "${name} total runtime formatted"
+
 # Uptime Sensor
   - platform: template
     name: ${name} Uptime Human Readable
     id: uptime_human
     icon: mdi:clock-start
+    
+    switch:
+  - platform: template
+    name: ${name} Disable Inverter Charging
+    id: inverter_charging
+    optimistic: true
+  - platform: template
+    name: ${name} Disable Inverter Discharge
+    id: inverter_discharging
+    optimistic: true
