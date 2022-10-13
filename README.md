@@ -28,18 +28,8 @@ Thanks go to syssi for help and making the original RS485 code! Buy him a coffee
   So a Diode between GPIO5, GPIO4 diode cathode to GPIO5 at both ESP32
   Then tie the CAN-RX lines together with a pull-up resistor to 3.3V I used 10K pullup.
   
- Sample CAN messages sent:<br>
-
-    can id: 0x359 hex: 0x00, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x22
-    can id: 0x351 hex: 0x28, 0x02, 0xE8, 0x03, 0xE8, 0x03, 0xF7, 0x01
-    can id: 0x355 hex: 0x1A, 0x00, 0x64, 0x00
-    can id: 0x356 hex: 0x00, 0x00, 0x00, 0x00, 0xFA, 0x00
-    can id: 0x35C hex: 0xC0
-    can id: 0x35E hex: 0x45, 0x6E, 0x65, 0x72, 0x67, 0x79
-
- 
-
-![Lovelace entities card](lovelace-entities-card.png "Lovelace entities card")
+ ## Home Assistant intergration
+![Lovelace entities card](images/Homeassistantbatery_s.jpg "Lovelace entities card")
 
 ## Supported devices
 
