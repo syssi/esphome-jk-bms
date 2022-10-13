@@ -14,8 +14,8 @@ The ESP32 then sends the required CAN bus data to the inverter.
 I have been testing using the Goodwe SECU-A5.4L battery profile selected in the inverter.<br>
 Each SECA-A5.4 battery profile has 5.4kWh of storage, so select the number that is the closest match to your battery's total capacity.<br>
 
-V1.01 12/10/22 Now being used with live inverter. Updates to add more inverter control when turning on/off charging and discharging
-**Note:- CAN bus support is still in development and testing!!!**
+**Note:- I'm using this with my Goodwe GW5000S-BP inverter however CAN bus support is still in development and testing!!!**
+Further deatils in the discussion tab https://github.com/Uksa007/esphome-jk-bms-can/discussions
 
 Thanks go to syssi for help and making the original RS485 code! Buy him a coffee here https://www.buymeacoffee.com/syssi)
 
@@ -106,32 +106,29 @@ The RS485-TTL jack of the BMS can be attached to any UART pins of the ESP. A har
 You can install this component with [ESPHome external components feature](https://esphome.io/components/external_components.html) like this:
 ```yaml
 external_components:
-  - source: github://syssi/esphome-jk-bms@main
+  - source: github://syssi/esphome-jk-bms-can@main
 ```
 
-or just use the `esp32-example.yaml` as proof of concept:
+or just use the `esp32-example-can.yaml` as proof of concept:
 
 ```bash
 # Install esphome
 pip3 install esphome
 
 # Clone this external component
-git clone https://github.com/syssi/esphome-jk-bms.git
-cd esphome-jk-bms
+git clone https://github.com/uksa007/esphome-jk-bms-can.git
+cd esphome-jk-bms-can
 
 # Create a secrets.yaml containing some setup specific secrets
 cat > secrets.yaml <<EOF
 wifi_ssid: MY_WIFI_SSID
 wifi_password: MY_WIFI_PASSWORD
 
-mqtt_host: MY_MQTT_HOST
-mqtt_username: MY_MQTT_USERNAME
-mqtt_password: MY_MQTT_PASSWORD
-EOF
-
 # Validate the configuration, create a binary, upload it, and start logs
-# If you use a esp8266 run the esp8266-examle.yaml
-esphome run esp32-example.yaml
+esphome run esp32-example-can.yaml
+
+# Optional add to Home Assistant
+In Home Assistant under settings->Intergration "Add Intergration" select ESPHome add device jk-bms-can if found or supply ip address of ESP32
 
 ```
 
