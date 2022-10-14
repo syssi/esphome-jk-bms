@@ -9,21 +9,21 @@ ESPHome component to monitor a Jikong Battery Management System (JK-BMS) via RS4
 ## This fork supports CAN bus commuinaction with inverters supporting the CANBUS Protocol compatible with Pylontech V1.3 and Goodwe V1.5.
 
 It communicates with the JK-BMS using the RS485 port which is in fact not RS485, it is 3.3V TTL so it can be directly connected to the ESP32.
-The ESP32 then sends the required CAN bus data to the inverter.
+The ESP32 then sends the required CAN bus data to the inverter via a TJA1050 CAN bus transceiver.
 
 I have been testing using the Goodwe SECU-A5.4L battery profile selected in the inverter.<br>
 Each SECA-A5.4 battery profile has 5.4kWh of storage, so select the number that is the closest match to your battery's total capacity.<br>
 
-**Note:- I'm using this with my Goodwe GW5000S-BP inverter however CAN bus support is still in development and testing!!!**
+**Note:- I'm using this with my Goodwe GW5000S-BP inverter however CAN bus support is still in development and testing!!!**<br>
 Further deatils in the discussion tab https://github.com/Uksa007/esphome-jk-bms-can/discussions
 
 Thanks go to syssi for help and making the original RS485 code! Buy him a coffee here https://www.buymeacoffee.com/syssi)
 
 
-* Connect a TJA1050 to an ESP32 as per https://esphome.io/components/canbus.html?highlight=can#wiring-options
+* Connect a TJA1050 to an ESP32 (default GPIO 17 TX, 16 RX) as per https://esphome.io/components/canbus.html?highlight=can#wiring-options
 * Use this code in esphome https://github.com/Uksa007/esphome-jk-bms-can/blob/main/esp32-example-can.yaml
-* A second ESP32 and TJA1050 make a test CAN bus/receiver https://github.com/Uksa007/esphome-jk-bms-can/blob/main/test-esp32-receiver-can.yaml
-* If you don't yet have TJA1050 you can still test with two ESP32 by making a makeshif CAN bus DO NOT CONNECT TO A REAL CAN BUS!
+* (optional) A second ESP32 and TJA1050 make a test CAN bus/receiver https://github.com/Uksa007/esphome-jk-bms-can/blob/main/test-esp32-receiver-can.yaml
+  If you don't yet have TJA1050 you can still test with two ESP32 by making a makeshif CAN bus DO NOT CONNECT TO A REAL CAN BUS!
   Add a blocking diode between the CAN-TX and CAN-RX pins (cathode towards the CAN-TX pin) at both ESP32s!
   So a Diode between GPIO5, GPIO4 diode cathode to GPIO5 at both ESP32
   Then tie the CAN-RX lines together with a pull-up resistor to 3.3V I used 10K pullup.
@@ -58,7 +58,7 @@ All JK-BMS models with software version `>=6.0` are using the implemented protoc
 ## Requirements
 
 * [ESPHome 1.18.0 or higher](https://github.com/esphome/esphome/releases).
-* Generic ESP32 or ESP8266 board
+* Generic ESP8266 or ESP32(required for CAN) board
 
 ## Schematics
 
