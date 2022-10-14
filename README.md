@@ -6,7 +6,7 @@
 
 ESPHome component to monitor a Jikong Battery Management System (JK-BMS) via RS485 or BLE
 
-This fork supports CAN bus commuinaction with inverters supporting the CANBUS Protocol compatible with Pylontech V1.3 and Goodwe V1.5.
+## This fork supports CAN bus commuinaction with inverters supporting the CANBUS Protocol compatible with Pylontech V1.3 and Goodwe V1.5.
 
 It communicates with the JK-BMS using the RS485 port which is in fact not RS485, it is 3.3V TTL so it can be directly connected to the ESP32.
 The ESP32 then sends the required CAN bus data to the inverter.
@@ -62,8 +62,8 @@ All JK-BMS models with software version `>=6.0` are using the implemented protoc
 
 ## Schematics
 
-<a href="https://raw.githubusercontent.com/syssi/esphome-jk-bms/main/images/circuit.jpg" target="_blank">
-<img src="https://raw.githubusercontent.com/syssi/esphome-jk-bms/main/images/circuit_thumbnail.jpg" width="50%">
+<a href="https://raw.githubusercontent.com/uksa007/esphome-jk-bms-cam/main/images/esp32.jpg" target="_blank">
+<img src="https://raw.githubusercontent.com/uksa007/esphome-jk-bms-can/main/images/esp32.jpg" width="50%">
 </a>
 
 
@@ -96,7 +96,7 @@ The RS485-TTL jack of the BMS can be attached to any UART pins of the ESP. A har
 You can install this component with [ESPHome external components feature](https://esphome.io/components/external_components.html) like this:
 ```yaml
 external_components:
-  - source: github://syssi/esphome-jk-bms-can@main
+  - source: github://uksa007/esphome-jk-bms-can@main
 ```
 
 or just use the `esp32-example-can.yaml` as proof of concept:
