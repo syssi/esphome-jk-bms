@@ -1,5 +1,5 @@
 # Versions:
-# V1.02 13/10/22 Added Control switches for Homeassistant to notify the inverter to disable charging and discharge. Control the inverter from anywhere!
+# V1.02 13/10/22 Added Control switches for Homeassistant to notify the inverter to disable charing and discharge. Control the inverter from anywhere!
 # V1.01 12/10/22 Now being used with live inverter. Updates to add more inverter control when turning on/off charging and discharging
 # V1.00 23/5/22 first test release
 substitutions:
@@ -7,8 +7,10 @@ substitutions:
   name: jk-bms-can
 # Number of Battery modules max 8 
   batt_modules: "3"
-# This is voltage you want the inverter to change battery with 55.2 eg 3.45v/cell for 16 cells 48V battery. 
-  charge_v: "55.2" 
+# Battery Charging setting
+  charge_v: "55.2" # This is voltage you want the inverter to change battery with 55.2 eg 3.45v/cell for 16 cells 48V battery (57.6). 
+  max_soc: "90" # Max SOC to charge upto in %, charging will stop at this SOC.
+  rebulk_soc: "80" # Charging renabled if battey SOC falls below this SOC in %.
 # This is the percentage state of health new would be 100 as battery gets older reduce. 
   soh: "100"
 # GPIO pins your CAN bus transceiver(TJA1050) is connected to the ESP, note! TX->TX and RX->RX. 
@@ -35,6 +37,10 @@ external_components:
 
 globals:
   - id: can_305_rx
+    type: int
+    restore_value: no
+    initial_value: '0'
+  - id: max_soc_obtained
     type: int
     restore_value: no
     initial_value: '0'
@@ -144,17 +150,24 @@ interval:
             uint8_t can_mesg[7];
             can_mesg[0] = chg_v & 0xff;
             can_mesg[1] = chg_v >> 8 & 0xff;
-            if (id(charging_switch).state) {
+            if ((id(charging_switch).state) and ((uint16_t(id(capacity_remaining).state) <= ${rebulk_soc}) or (id(max_soc_obtained) == 0))) {
                can_mesg[2] = int16_t(id(charging_overcurrent_protection).state * 10) & 0xff;
                can_mesg[3] = int16_t(id(charging_overcurrent_protection).state * 10) >> 8 & 0xff;
+               id(max_soc_obtained) = 0;
             } else {            
                can_mesg[2] = 0x00;
                can_mesg[3] = 0x00;
             }
-            if (uint16_t(id(capacity_remaining).state) > 99) {
-               can_mesg[2] = (2)*10 & 0xff;
-               can_mesg[3] = (2)*10 >> 8 & 0xff;
+            if (uint16_t(id(capacity_remaining).state) >= ${max_soc}) {
+               can_mesg[2] = 0x00;
+               can_mesg[3] = 0x00;
+               id(max_soc_obtained) = 1;
             }
+            if (id(inverter_chg_on).state) {
+               can_mesg[2] = int16_t(id(charging_overcurrent_protection).state * 10) & 0xff;
+               can_mesg[3] = int16_t(id(charging_overcurrent_protection).state * 10) >> 8 & 0xff;
+            }
+
             if (id(inverter_charging).state) {
                can_mesg[2] = 0x00;
                can_mesg[3] = 0x00;
@@ -480,8 +493,8 @@ text_sensor:
     name: ${name} Uptime Human Readable
     id: uptime_human
     icon: mdi:clock-start
-    
-    switch:
+
+switch:
   - platform: template
     name: ${name} Disable Inverter Charging
     id: inverter_charging
@@ -489,4 +502,8 @@ text_sensor:
   - platform: template
     name: ${name} Disable Inverter Discharge
     id: inverter_discharging
+    optimistic: true
+  - platform: template
+    name: ${name} Inverter Charger ON Overide
+    id: inverter_chg_on
     optimistic: true
