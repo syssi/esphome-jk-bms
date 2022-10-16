@@ -62,7 +62,7 @@ All JK-BMS models with software version `>=6.0` are using the implemented protoc
 
 ## Schematics
 
-<a href="https://raw.githubusercontent.com/uksa007/esphome-jk-bms-cam/main/images/esp32.jpg" target="_blank">
+<a href="https://raw.githubusercontent.com/uksa007/esphome-jk-bms-can/main/images/esp32.jpg" target="_blank">
 <img src="https://raw.githubusercontent.com/uksa007/esphome-jk-bms-can/main/images/esp32.jpg" width="50%">
 </a>
 
