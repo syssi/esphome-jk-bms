@@ -504,6 +504,6 @@ switch:
     id: inverter_discharging
     optimistic: true
   - platform: template
-    name: ${name} Inverter Charger ON Overide
+    name: ${name} Inverter Charger ON (top bal)
     id: inverter_chg_on
     optimistic: true
