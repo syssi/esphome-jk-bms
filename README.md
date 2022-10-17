@@ -3,6 +3,7 @@
 ![GitHub stars](https://img.shields.io/github/stars/Uksa007/esphome-jk-bms-can)
 ![GitHub forks](https://img.shields.io/github/forks/Uksa007/esphome-jk-bms-can)
 ![GitHub watchers](https://img.shields.io/github/watchers/Uksa007/esphome-jk-bms-can)
+[!["Buy Me A Beer"](https://img.shields.io/badge/buy%20me%20a%20beer-donate-yellow.svg)](https://www.paypal.com/donate/?hosted_button_id=D2AULK7N5D242)
 
 ESPHome component to monitor a Jikong Battery Management System (JK-BMS) via RS485 or BLE
 
@@ -17,7 +18,8 @@ Each SECA-A5.4 battery profile has 5.4kWh of storage, so select the number that 
 **Note:- I'm using this with my Goodwe GW5000S-BP inverter however CAN bus support is still in development and testing!!!**<br>
 Further deatils in the discussion tab https://github.com/Uksa007/esphome-jk-bms-can/discussions
 
-Thanks go to syssi for help and making the original RS485 code! Buy him a coffee here https://www.buymeacoffee.com/syssi)
+If you find this useful and would like to <a href="https://www.paypal.com/donate/?hosted_button_id=D2AULK7N5D242" target="_blank">buy me a beer here</a> thanks!
+
 
 
 * Connect a TJA1050 to an ESP32 (default GPIO 17 TX, 16 RX) as per https://esphome.io/components/canbus.html?highlight=can#wiring-options
@@ -68,13 +70,13 @@ All JK-BMS models with software version `>=6.0` are using the implemented protoc
 
 
 ```
-                RS485-TTL
-┌──────────┐                ┌─────────┐
-│          │<----- RX ----->│         │
-│  JK-BMS  │<----- TX ----->│ ESP32/  │
-│          │<----- GND ---->│ ESP8266 │<-- 3.3V
-│          │                │         │<-- GND
-└──────────┘                └─────────┘
+                RS485-TTL                   RS232-TTL                CAN BUS
+┌──────────┐                ┌─────────┐                ┌─────────┐              ┌──────────┐
+│          │<----- RX ----->│         │<----- TX ----->|         |              |          |
+│  JK-BMS  │<----- TX ----->│  ESP32  │<----- RX -4K7->| TJA1050 |<---CAN H --->| Inverter |
+│          │<----- GND ---->│         │<----- GND ---->|   CAN   |<---CAN L --->|          |
+│          │      3.3V ---->│         │<----- 5V ----->|         |              |          |
+└──────────┘                └─────────┘                └─────────┘              └──────────┘
 
 # RS485-TTL jack (4 Pin, JST 1.25mm pitch)
 ┌─── ─────── ────┐
@@ -223,7 +225,7 @@ uart:
 ```
 
 ## References
-
+* Thanks go to syssi for help and making the original RS485 code!
 * https://secondlifestorage.com/index.php?threads/jk-b1a24s-jk-b2a24s-active-balancer.9591/
 * https://github.com/jblance/jkbms
 * https://github.com/jblance/mpp-solar/issues/112
