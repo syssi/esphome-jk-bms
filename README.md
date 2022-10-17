@@ -66,9 +66,12 @@ All JK-BMS models with software version `>=6.0` are using the implemented protoc
 ## Requirements
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 * [ESPHome 1.18.0 or higher](https://github.com/esphome/esphome/releases).
 * Generic ESP8266 or ESP32(required for CAN) board
 =======
+=======
+>>>>>>> 070860d6e39affc8027b1a2ef0344818f700f69b
 * [ESPHome 2022.9.3 or higher](https://github.com/esphome/esphome/releases).
 * Generic ESP32 or ESP8266 board
 >>>>>>> 070860d6e39affc8027b1a2ef0344818f700f69b
