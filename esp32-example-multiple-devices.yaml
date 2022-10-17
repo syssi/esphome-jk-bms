@@ -1,0 +1,143 @@
+substitutions:
+  name: jk-bms
+  bms0: "${name} bms0"
+  bms1: "${name} bms1"
+  device_description: "Monitor and control a JK-BMS via UART-TTL"
+  external_components_source: github://syssi/esphome-jk-bms@main
+  tx_pin_uart0: GPIO16
+  rx_pin_uart0: GPIO17
+  tx_pin_uart1: GPIO14
+  rx_pin_uart1: GPIO4
+
+esphome:
+  name: ${name}
+  comment: ${device_description}
+  project:
+    name: "syssi.esphome-jk-bms"
+    version: 1.3.0
+
+esp32:
+  board: wemos_d1_mini32
+  framework:
+    type: esp-idf
+    version: latest
+
+external_components:
+  - source: ${external_components_source}
+    refresh: 0s
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+ota:
+logger:
+
+# Please use the native `api` component instead of the `mqtt` section
+# if you use Home Assistant. The native API is more lightweight.
+#
+# api:
+mqtt:
+  broker: !secret mqtt_host
+  username: !secret mqtt_username
+  password: !secret mqtt_password
+  id: mqtt_client
+
+uart:
+  - id: uart0
+    baud_rate: 115200
+    rx_buffer_size: 384
+    tx_pin: ${tx_pin_uart0}
+    rx_pin: ${rx_pin_uart0}
+  - id: uart1
+    baud_rate: 115200
+    rx_buffer_size: 384
+    tx_pin: ${tx_pin_uart1}
+    rx_pin: ${rx_pin_uart1}
+
+jk_modbus:
+  - id: modbus0
+    uart_id: uart0
+  - id: modbus1
+    uart_id: uart1
+
+jk_bms:
+  - id: bms0
+    jk_modbus_id: modbus0
+  - id: bms1
+    jk_modbus_id: modbus1
+
+binary_sensor:
+  - platform: jk_bms
+    jk_bms_id: bms0
+    balancing:
+      name: "${bms0} balancing"
+    charging:
+      name: "${bms0} charging"
+    discharging:
+      name: "${bms0} discharging"
+    # ...
+
+  - platform: jk_bms
+    jk_bms_id: bms1
+    balancing:
+      name: "${bms1} balancing"
+    charging:
+      name: "${bms1} charging"
+    discharging:
+      name: "${bms1} discharging"
+    # ...
+
+sensor:
+  - platform: jk_bms
+    jk_bms_id: bms0
+    delta_cell_voltage:
+      name: "${bms0} delta cell voltage"
+    average_cell_voltage:
+      name: "${bms0} average cell voltage"
+    power_tube_temperature:
+      name: "${bms0} power tube temperature"
+    total_voltage:
+      name: "${bms0} total voltage"
+    current:
+      name: "${bms0} current"
+    power:
+      name: "${bms0} power"
+    # ...
+
+  - platform: jk_bms
+    jk_bms_id: bms1
+    delta_cell_voltage:
+      name: "${bms1} delta cell voltage"
+    average_cell_voltage:
+      name: "${bms1} average cell voltage"
+    power_tube_temperature:
+      name: "${bms1} power tube temperature"
+    total_voltage:
+      name: "${bms1} total voltage"
+    current:
+      name: "${bms1} current"
+    power:
+      name: "${bms1} power"
+    # ...
+
+text_sensor:
+  - platform: jk_bms
+    jk_bms_id: bms0
+    errors:
+      name: "${bms0} errors"
+    operation_mode:
+      name: "${bms0} operation mode"
+    total_runtime_formatted:
+      name: "${bms0} total runtime formatted"
+    # ...
+
+  - platform: jk_bms
+    jk_bms_id: bms1
+    errors:
+      name: "${bms1} errors"
+    operation_mode:
+      name: "${bms1} operation mode"
+    total_runtime_formatted:
+      name: "${bms1} total runtime formatted"
+    # ...

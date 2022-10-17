@@ -7,34 +7,24 @@ AUTO_LOAD = ["binary_sensor", "button", "number", "sensor", "switch", "text_sens
 CODEOWNERS = ["@syssi"]
 MULTI_CONF = True
 
-CONF_JK_BMS_BLE_ID = "jk_bms_ble_id"
-CONF_PROTOCOL_VERSION = "protocol_version"
+CONF_HELTEC_BALANCER_BLE_ID = "heltec_balancer_ble_id"
 CONF_ENABLE_FAKE_TRAFFIC = "enable_fake_traffic"
 
-jk_bms_ble_ns = cg.esphome_ns.namespace("jk_bms_ble")
-JkBmsBle = jk_bms_ble_ns.class_(
-    "JkBmsBle", ble_client.BLEClientNode, cg.PollingComponent
+heltec_balancer_ble_ns = cg.esphome_ns.namespace("heltec_balancer_ble")
+HeltecBalancerBle = heltec_balancer_ble_ns.class_(
+    "HeltecBalancerBle", ble_client.BLEClientNode, cg.PollingComponent
 )
 
-ProtocolVersion = jk_bms_ble_ns.enum("ProtocolVersion")
-PROTOCOL_VERSION_OPTIONS = {
-    "JK02": ProtocolVersion.PROTOCOL_VERSION_JK02,
-    "JK04": ProtocolVersion.PROTOCOL_VERSION_JK04,
-}
-
-JK_BMS_BLE_COMPONENT_SCHEMA = cv.Schema(
+HELTEC_BALANCER_BLE_COMPONENT_SCHEMA = cv.Schema(
     {
-        cv.GenerateID(CONF_JK_BMS_BLE_ID): cv.use_id(JkBmsBle),
+        cv.GenerateID(CONF_HELTEC_BALANCER_BLE_ID): cv.use_id(HeltecBalancerBle),
     }
 )
 
 CONFIG_SCHEMA = (
     cv.Schema(
         {
-            cv.GenerateID(): cv.declare_id(JkBmsBle),
-            cv.Optional(CONF_PROTOCOL_VERSION, default="JK02"): cv.enum(
-                PROTOCOL_VERSION_OPTIONS, upper=True
-            ),
+            cv.GenerateID(): cv.declare_id(HeltecBalancerBle),
             cv.Optional(
                 CONF_THROTTLE, default="2s"
             ): cv.positive_time_period_milliseconds,
@@ -53,4 +43,3 @@ async def to_code(config):
 
     cg.add(var.set_enable_fake_traffic(config[CONF_ENABLE_FAKE_TRAFFIC]))
     cg.add(var.set_throttle(config[CONF_THROTTLE]))
-    cg.add(var.set_protocol_version(config[CONF_PROTOCOL_VERSION]))

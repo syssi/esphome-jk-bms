@@ -1,0 +1,197 @@
+substitutions:
+  name: jk-bms
+  bms0: "${name} bms0"
+  bms1: "${name} bms1"
+  device_description: "Monitor and control a JK-BMS via bluetooth"
+  external_components_source: github://syssi/esphome-jk-bms@main
+  bms0_mac_address: C8:47:8C:E1:E2:E1
+  bms1_mac_address: C8:47:8C:E1:E2:E2
+  # Defaults to "JK02". Please use "JK04" if you have some old JK-BMS version (f.e. JK-B2A16S hw 3.0, sw. 3.3.0)
+  bms0_protocol_version: JK02
+  bms1_protocol_version: JK02
+
+esphome:
+  name: ${name}
+  comment: ${device_description}
+  project:
+    name: "syssi.esphome-jk-bms"
+    version: 1.3.0
+
+esp32:
+  board: wemos_d1_mini32
+  framework:
+#  The arduino platform crashs
+#    type: arduino
+#    version: latest
+    type: esp-idf
+    version: latest
+
+external_components:
+  - source: ${external_components_source}
+    refresh: 0s
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+ota:
+logger:
+
+# If you don't use Home Assistant please remove this `api` section and uncomment the `mqtt` component!
+api:
+
+# The MQTT component is ESP-IDF compatible since ESPHome version 2022.4.0. If
+# ESPHome suggests to use the arduino framework instead because of missing ESP-IDF
+# framework support you should update your setup.
+# mqtt:
+#   broker: !secret mqtt_host
+#   username: !secret mqtt_username
+#   password: !secret mqtt_password
+#   id: mqtt_client
+
+esp32_ble_tracker:
+
+ble_client:
+  - mac_address: ${bms0_mac_address}
+    id: client0
+  - mac_address: ${bms1_mac_address}
+    id: client1
+
+jk_bms_ble:
+  - ble_client_id: client0
+    protocol_version: ${bms0_protocol_version}
+    throttle: 5s
+    id: bms0
+  - ble_client_id: client1
+    protocol_version: ${bms1_protocol_version}
+    throttle: 5s
+    id: bms1
+
+binary_sensor:
+  - platform: jk_bms_ble
+    jk_bms_ble_id: bms0
+    balancing:
+      name: "${bms0} balancing"
+    charging:
+      name: "${bms0} charging"
+    discharging:
+      name: "${bms0} discharging"
+
+  - platform: jk_bms_ble
+    jk_bms_ble_id: bms1
+    balancing:
+      name: "${bms1} balancing"
+    charging:
+      name: "${bms1} charging"
+    discharging:
+      name: "${bms1} discharging"
+
+button:
+  - platform: jk_bms_ble
+    jk_bms_ble_id: bms0
+    retrieve_settings:
+      name: "${bms0} retrieve settings"
+    retrieve_device_info:
+      name: "${bms0} retrieve device info"
+
+  - platform: jk_bms_ble
+    jk_bms_ble_id: bms1
+    retrieve_settings:
+      name: "${bms1} retrieve settings"
+    retrieve_device_info:
+      name: "${bms1} retrieve device info"
+
+number:
+  - platform: jk_bms_ble
+    jk_bms_ble_id: bms0
+    balance_trigger_voltage:
+      name: "${bms0} balance trigger voltage"
+    balance_starting_voltage:
+      name: "${bms0} balance starting voltage"
+    power_off_voltage:
+      name: "${bms0} power off voltage"
+    # ...
+
+  - platform: jk_bms_ble
+    jk_bms_ble_id: bms1
+    balance_trigger_voltage:
+      name: "${bms1} balance trigger voltage"
+    balance_starting_voltage:
+      name: "${bms1} balance starting voltage"
+    power_off_voltage:
+      name: "${bms1} power off voltage"
+    # ...
+
+sensor:
+  - platform: jk_bms_ble
+    jk_bms_ble_id: bms0
+    delta_cell_voltage:
+      name: "${bms0} delta cell voltage"
+    average_cell_voltage:
+      name: "${bms0} average cell voltage"
+    total_voltage:
+      name: "${bms0} total voltage"
+    current:
+      name: "${bms0} current"
+    power:
+      name: "${bms0} power"
+    power_tube_temperature:
+      name: "${bms0} power tube temperature"
+    # ...
+
+  - platform: jk_bms_ble
+    jk_bms_ble_id: bms1
+    delta_cell_voltage:
+      name: "${bms1} delta cell voltage"
+    average_cell_voltage:
+      name: "${bms1} average cell voltage"
+    total_voltage:
+      name: "${bms1} total voltage"
+    current:
+      name: "${bms1} current"
+    power:
+      name: "${bms1} power"
+    power_tube_temperature:
+      name: "${bms1} power tube temperature"
+    # ...
+
+switch:
+  - platform: jk_bms_ble
+    jk_bms_ble_id: bms0
+    charging:
+      name: "${bms0} charging"
+    discharging:
+      name: "${bms0} discharging"
+    balancer:
+      name: "${bms0} balancer"
+
+  - platform: jk_bms_ble
+    jk_bms_ble_id: bms1
+    charging:
+      name: "${bms1} charging"
+    discharging:
+      name: "${bms1} discharging"
+    balancer:
+      name: "${bms1} balancer"
+
+  - platform: ble_client
+    ble_client_id: client0
+    name: "${bms0} enable bluetooth connection"
+  - platform: ble_client
+    ble_client_id: client1
+    name: "${bms1} enable bluetooth connection"
+
+text_sensor:
+  - platform: jk_bms_ble
+    jk_bms_ble_id: bms0
+    errors:
+      name: "${bms0} errors"
+    total_runtime_formatted:
+      name: "${bms0} total runtime formatted"
+
+  - platform: jk_bms_ble
+    jk_bms_ble_id: bms1
+    errors:
+      name: "${bms1} errors"
+    total_runtime_formatted:
+      name: "${bms1} total runtime formatted"

@@ -8,7 +8,7 @@ static const char *const TAG = "jk_modbus";
 
 void JkModbus::loop() {
   const uint32_t now = millis();
-  if (now - this->last_jk_modbus_byte_ > 50) {
+  if (now - this->last_jk_modbus_byte_ > this->rx_timeout_) {
     this->rx_buffer_.clear();
     this->last_jk_modbus_byte_ = now;
   }
@@ -93,7 +93,10 @@ bool JkModbus::parse_jk_modbus_byte_(uint8_t byte) {
   return false;
 }
 
-void JkModbus::dump_config() { ESP_LOGCONFIG(TAG, "JkModbus:"); }
+void JkModbus::dump_config() {
+  ESP_LOGCONFIG(TAG, "JkModbus:");
+  ESP_LOGCONFIG(TAG, " RX timeout: %d ms", this->rx_timeout_);
+}
 float JkModbus::get_setup_priority() const {
   // After UART bus
   return setup_priority::BUS - 1.0f;

@@ -106,14 +106,14 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.8'
+          python-version: '3.9'
       - name: Cache pip modules
         uses: actions/cache@v1
         with:
           path: ~/.cache/pip
-          key: esphome-pip-3.8-${{ hashFiles('setup.py') }}
+          key: esphome-pip-3.9-${{ hashFiles('setup.py') }}
           restore-keys: |
-            esphome-pip-3.8-
+            esphome-pip-3.9-
 
       - name: 💣Clone esphome project
         run: git clone https://github.com/esphome/esphome.git
@@ -148,10 +148,10 @@ jobs:
     steps:
       - name: ⤵️ Check out configuration from GitHub
         uses: actions/checkout@v2
-      - name: Setup Python 3.8
+      - name: Setup Python 3.9
         uses: actions/setup-python@v1
         with:
-          python-version: 3.8
+          python-version: 3.9
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip setuptools wheel
@@ -162,6 +162,8 @@ jobs:
         shell: bash
         run: 'echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password" > secrets.yaml'
       - run: |
+          esphome -s external_components_source components config esp32-heltec-balancer-ble-example.yaml
+      - run: |
           esphome -s external_components_source components config esp8266-example.yaml
           esphome -s external_components_source components config esp8266-example-debug.yaml
           esphome -s external_components_source components config esp8266-example-faker.yaml
@@ -169,11 +171,13 @@ jobs:
           esphome -s external_components_source components config esp32-example.yaml
           esphome -s external_components_source components config esp32-example-debug.yaml
           esphome -s external_components_source components config esp32-example-faker.yaml
+          esphome -s external_components_source components config esp32-example-multiple-devices.yaml
       - run: |
           esphome -s external_components_source components config esp32-ble-example.yaml
           esphome -s external_components_source components config esp32-ble-example-debug.yaml
           esphome -s external_components_source components config esp32-ble-example-faker.yaml
           esphome -s external_components_source components config esp32-ble-jk04-example.yaml
+          esphome -s external_components_source components config esp32-ble-example-multiple-devices.yaml
 
   esphome-compile:
     runs-on: ubuntu-latest
@@ -193,10 +197,10 @@ jobs:
           path: .pioenvs
           key: esphome-compile-pioenvs-${{ hashFiles('*.yaml') }}
           restore-keys: esphome-compile-pioenvs-
-      - name: Set up Python 3.8
+      - name: Set up Python 3.9
         uses: actions/setup-python@v1
         with:
-          python-version: 3.8
+          python-version: 3.9
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip setuptools wheel
@@ -210,6 +214,8 @@ jobs:
       - name: Write secrets.yaml
         shell: bash
         run: 'echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password" > secrets.yaml'
+      - run: |
+          esphome -s external_components_source components compile esp32-heltec-balancer-ble-example.yaml
       - run: |
           esphome -s external_components_source components compile esp8266-example-faker.yaml
       - run: |

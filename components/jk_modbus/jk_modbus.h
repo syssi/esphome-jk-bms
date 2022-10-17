@@ -22,11 +22,13 @@ class JkModbus : public uart::UARTDevice, public Component {
 
   void send(uint8_t function, uint8_t address, uint8_t value);
   void read_registers(uint8_t function, uint8_t address);
+  void set_rx_timeout(uint16_t rx_timeout) { rx_timeout_ = rx_timeout; }
 
  protected:
   bool parse_jk_modbus_byte_(uint8_t byte);
 
   std::vector<uint8_t> rx_buffer_;
+  uint16_t rx_timeout_{50};
   uint32_t last_jk_modbus_byte_{0};
   std::vector<JkModbusDevice *> devices_;
 };

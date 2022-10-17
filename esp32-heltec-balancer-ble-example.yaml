@@ -1,10 +1,8 @@
 substitutions:
-  name: jk-bms
-  device_description: "Monitor and control a JK-BMS via bluetooth"
+  name: heltec-balancer
+  device_description: "Monitor and control a Heltec/NEEY 4A balancer via bluetooth"
   external_components_source: github://syssi/esphome-jk-bms@main
-  mac_address: C8:47:8C:E1:E2:E1
-  # Defaults to "JK02". Please use "JK04" if you have some old JK-BMS version (f.e. JK-B2A16S hw 3.0, sw. 3.3.0)
-  protocol_version: JK02
+  mac_address: C8:47:8C:E1:E2:FF
 
 esphome:
   name: ${name}
@@ -33,12 +31,11 @@ wifi:
 ota:
 logger:
 
-# If you don't use Home Assistant please remove this `api` section and uncomment the `mqtt` component!
 api:
 
-# The MQTT component is ESP-IDF compatible since ESPHome version 2022.4.0. If
-# ESPHome suggests to use the arduino framework instead because of missing ESP-IDF
-# framework support you should update your setup.
+# This feature is only available with frameworks ['arduino'] <= 2022.3.1
+# https://github.com/esphome/esphome/pull/2930: Add mqtt for idf >= 2022.4.0
+#
 # mqtt:
 #   broker: !secret mqtt_host
 #   username: !secret mqtt_username
@@ -51,63 +48,43 @@ ble_client:
   - mac_address: ${mac_address}
     id: client0
 
-jk_bms_ble:
+heltec_balancer_ble:
   - ble_client_id: client0
-    protocol_version: ${protocol_version}
     throttle: 5s
     id: bms0
 
 binary_sensor:
-  - platform: jk_bms_ble
+  - platform: heltec_balancer_ble
     balancing:
       name: "${name} balancing"
-    charging:
-      name: "${name} charging"
-    discharging:
-      name: "${name} discharging"
 
 button:
-  - platform: jk_bms_ble
+  - platform: heltec_balancer_ble
     retrieve_settings:
       name: "${name} retrieve settings"
+      id: retrieve_settings_button
     retrieve_device_info:
       name: "${name} retrieve device info"
+    retrieve_factory_defaults:
+      name: "${name} retrieve factory defaults"
 
 number:
-  - platform: jk_bms_ble
-    jk_bms_ble_id: bms0
-    balance_trigger_voltage:
-      name: "${name} balance trigger voltage"
+  - platform: heltec_balancer_ble
     cell_count:
       name: "${name} cell count"
-    total_battery_capacity:
-      name: "${name} total battery capacity"
-    cell_voltage_overvoltage_protection:
-      name: "${name} cell voltage overvoltage protection"
-    cell_voltage_overvoltage_recovery:
-      name: "${name} cell voltage overvoltage recovery"
-    cell_voltage_undervoltage_protection:
-      name: "${name} cell voltage undervoltage protection"
-    cell_voltage_undervoltage_recovery:
-      name: "${name} cell voltage undervoltage recovery"
-    balance_starting_voltage:
-      name: "${name} balance starting voltage"
-    voltage_calibration:
-      name: "${name} voltage calibration"
-    current_calibration:
-      name: "${name} current calibration"
-    power_off_voltage:
-      name: "${name} power off voltage"
+    balance_trigger_voltage:
+      name: "${name} balance trigger voltage"
     max_balance_current:
       name: "${name} max balance current"
-    max_charge_current:
-      name: "${name} max charge current"
-    max_discharge_current:
-      name: "${name} max discharge current"
+    balance_sleep_voltage:
+      name: "${name} balance sleep voltage"
+    balance_start_voltage:
+      name: "${name} balance start voltage"
+    nominal_battery_capacity:
+      name: "${name} nominal battery capacity"
 
 sensor:
-  - platform: jk_bms_ble
-    jk_bms_ble_id: bms0
+  - platform: heltec_balancer_ble
     min_cell_voltage:
       name: "${name} min cell voltage"
     max_cell_voltage:
@@ -218,53 +195,48 @@ sensor:
       name: "${name} cell resistance 24"
     total_voltage:
       name: "${name} total voltage"
-    current:
-      name: "${name} current"
-    power:
-      name: "${name} power"
-    charging_power:
-      name: "${name} charging power"
-    discharging_power:
-      name: "${name} discharging power"
     temperature_sensor_1:
       name: "${name} temperature sensor 1"
     temperature_sensor_2:
       name: "${name} temperature sensor 2"
-    power_tube_temperature:
-      name: "${name} power tube temperature"
-    state_of_charge:
-      name: "${name} state of charge"
-    capacity_remaining:
-      name: "${name} capacity remaining"
-    total_battery_capacity_setting:
-      name: "${name} total battery capacity setting"
-    charging_cycles:
-      name: "${name} charging cycles"
-    total_charging_cycle_capacity:
-      name: "${name} total charging cycle capacity"
     total_runtime:
       name: "${name} total runtime"
     balancing_current:
       name: "${name} balancing current"
-    errors_bitmask:
-      name: "${name} errors bitmask"
+    # Not implemented
+    # errors_bitmask:
+    #   name: "${name} errors bitmask"
+    cell_detection_failed_bitmask:
+      name: "${name} cell detection failed bitmask"
+    cell_overvoltage_bitmask:
+      name: "${name} cell overvoltage bitmask"
+    cell_undervoltage_bitmask:
+      name: "${name} cell undervoltage bitmask"
+    cell_polarity_error_bitmask:
+      name: "${name} cell polarity error bitmask"
+    cell_excessive_line_resistance_bitmask:
+      name: "${name} cell excessive line resistance bitmask"
 
 switch:
-  - platform: jk_bms_ble
-    charging:
-      name: "${name} charging"
-    discharging:
-      name: "${name} discharging"
+  - platform: heltec_balancer_ble
     balancer:
       name: "${name} balancer"
 
-  - platform: ble_client
-    ble_client_id: client0
-    name: "${name} enable bluetooth connection"
-
 text_sensor:
-  - platform: jk_bms_ble
-    errors:
-      name: "${name} errors"
+  - platform: heltec_balancer_ble
+    # Not implemented
+    # errors:
+    #   name: "${name} errors"
+    operation_status:
+      name: "${name} operation status"
     total_runtime_formatted:
       name: "${name} total runtime formatted"
+    buzzer_mode:
+      name: "${name} buzzer mode"
+    battery_type:
+      name: "${name} battery type"
+
+interval:
+  - interval: 30min
+    then:
+      - button.press: retrieve_settings_button

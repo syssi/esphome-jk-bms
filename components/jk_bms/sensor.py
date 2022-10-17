@@ -130,6 +130,7 @@ CONF_START_CURRENT_CALIBRATION = "start_current_calibration"
 CONF_ACTUAL_BATTERY_CAPACITY = "actual_battery_capacity"
 CONF_PROTOCOL_VERSION = "protocol_version"
 
+ICON_CURRENT_DC = "mdi:current-dc"
 ICON_MIN_VOLTAGE_CELL = "mdi:battery-minus-outline"
 ICON_MAX_VOLTAGE_CELL = "mdi:battery-plus-outline"
 
@@ -481,7 +482,7 @@ CONFIG_SCHEMA = cv.Schema(
         ),
         cv.Optional(CONF_CURRENT): sensor.sensor_schema(
             unit_of_measurement=UNIT_AMPERE,
-            icon=ICON_EMPTY,
+            icon=ICON_CURRENT_DC,
             accuracy_decimals=2,
             device_class=DEVICE_CLASS_CURRENT,
             state_class=STATE_CLASS_MEASUREMENT,
@@ -628,7 +629,7 @@ CONFIG_SCHEMA = cv.Schema(
         ),
         cv.Optional(CONF_DISCHARGING_OVERCURRENT_PROTECTION): sensor.sensor_schema(
             unit_of_measurement=UNIT_AMPERE,
-            icon=ICON_EMPTY,
+            icon=ICON_CURRENT_DC,
             accuracy_decimals=0,
             device_class=DEVICE_CLASS_CURRENT,
             state_class=STATE_CLASS_MEASUREMENT,
@@ -642,7 +643,7 @@ CONFIG_SCHEMA = cv.Schema(
         ),
         cv.Optional(CONF_CHARGING_OVERCURRENT_PROTECTION): sensor.sensor_schema(
             unit_of_measurement=UNIT_AMPERE,
-            icon=ICON_EMPTY,
+            icon=ICON_CURRENT_DC,
             accuracy_decimals=0,
             device_class=DEVICE_CLASS_CURRENT,
             state_class=STATE_CLASS_MEASUREMENT,
@@ -758,7 +759,7 @@ CONFIG_SCHEMA = cv.Schema(
         ),
         cv.Optional(CONF_CURRENT_CALIBRATION): sensor.sensor_schema(
             unit_of_measurement=UNIT_AMPERE,
-            icon=ICON_EMPTY,
+            icon=ICON_CURRENT_DC,
             accuracy_decimals=3,
             device_class=DEVICE_CLASS_CURRENT,
             state_class=STATE_CLASS_MEASUREMENT,

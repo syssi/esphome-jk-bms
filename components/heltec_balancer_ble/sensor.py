@@ -3,13 +3,10 @@ from esphome.components import sensor
 import esphome.config_validation as cv
 from esphome.const import (
     CONF_CURRENT,
-    CONF_POWER,
     DEVICE_CLASS_CURRENT,
     DEVICE_CLASS_EMPTY,
-    DEVICE_CLASS_POWER,
     DEVICE_CLASS_TEMPERATURE,
     DEVICE_CLASS_VOLTAGE,
-    ICON_COUNTER,
     ICON_EMPTY,
     ICON_TIMELAPSE,
     STATE_CLASS_MEASUREMENT,
@@ -17,12 +14,10 @@ from esphome.const import (
     UNIT_AMPERE,
     UNIT_CELSIUS,
     UNIT_EMPTY,
-    UNIT_PERCENT,
     UNIT_VOLT,
-    UNIT_WATT,
 )
 
-from . import CONF_JK_BMS_BLE_ID, JkBmsBle
+from . import CONF_HELTEC_BALANCER_BLE_ID, HeltecBalancerBle
 
 CODEOWNERS = ["@syssi"]
 
@@ -84,32 +79,22 @@ CONF_CELL_RESISTANCE_23 = "cell_resistance_23"
 CONF_CELL_RESISTANCE_24 = "cell_resistance_24"
 
 CONF_TOTAL_VOLTAGE = "total_voltage"
-CONF_CHARGING_POWER = "charging_power"
-CONF_DISCHARGING_POWER = "discharging_power"
 CONF_TEMPERATURE_SENSOR_1 = "temperature_sensor_1"
 CONF_TEMPERATURE_SENSOR_2 = "temperature_sensor_2"
-CONF_POWER_TUBE_TEMPERATURE = "power_tube_temperature"
-CONF_STATE_OF_CHARGE = "state_of_charge"
-CONF_CAPACITY_REMAINING = "capacity_remaining"
-CONF_TOTAL_BATTERY_CAPACITY_SETTING = "total_battery_capacity_setting"
-CONF_CHARGING_CYCLES = "charging_cycles"
-CONF_TOTAL_CHARGING_CYCLE_CAPACITY = "total_charging_cycle_capacity"
 CONF_TOTAL_RUNTIME = "total_runtime"
 CONF_BALANCING_CURRENT = "balancing_current"
 CONF_ERRORS_BITMASK = "errors_bitmask"
+CONF_CELL_DETECTION_FAILED_BITMASK = "cell_detection_failed_bitmask"
+CONF_CELL_OVERVOLTAGE_BITMASK = "cell_overvoltage_bitmask"
+CONF_CELL_UNDERVOLTAGE_BITMASK = "cell_undervoltage_bitmask"
+CONF_CELL_POLARITY_ERROR_BITMASK = "cell_polarity_error_bitmask"
+CONF_CELL_EXCESSIVE_LINE_RESISTANCE_BITMASK = "cell_excessive_line_resistance_bitmask"
 
 UNIT_AMPERE_HOURS = "Ah"
 UNIT_OHM = "Ω"
 UNIT_SECONDS = "s"
 
 ICON_CURRENT_DC = "mdi:current-dc"
-ICON_CAPACITY = "mdi:battery-medium"
-ICON_MIN_VOLTAGE_CELL = "mdi:battery-minus-outline"
-ICON_MAX_VOLTAGE_CELL = "mdi:battery-plus-outline"
-ICON_STATE_OF_CHARGE = "mdi:battery-50"
-ICON_CAPACITY_REMAINING = "mdi:battery-50"
-ICON_CHARGING_CYCLES = "mdi:battery-sync"
-ICON_ERRORS_BITMASK = "mdi:alert-circle-outline"
 
 CELL_VOLTAGES = [
     CONF_CELL_VOLTAGE_1,
@@ -174,26 +159,22 @@ SENSORS = [
     CONF_AVERAGE_CELL_VOLTAGE,
     CONF_TOTAL_VOLTAGE,
     CONF_CURRENT,
-    CONF_POWER,
-    CONF_CHARGING_POWER,
-    CONF_DISCHARGING_POWER,
     CONF_TEMPERATURE_SENSOR_1,
     CONF_TEMPERATURE_SENSOR_2,
-    CONF_POWER_TUBE_TEMPERATURE,
-    CONF_STATE_OF_CHARGE,
-    CONF_CAPACITY_REMAINING,
-    CONF_TOTAL_BATTERY_CAPACITY_SETTING,
-    CONF_CHARGING_CYCLES,
-    CONF_TOTAL_CHARGING_CYCLE_CAPACITY,
     CONF_TOTAL_RUNTIME,
     CONF_BALANCING_CURRENT,
     CONF_ERRORS_BITMASK,
+    CONF_CELL_DETECTION_FAILED_BITMASK,
+    CONF_CELL_OVERVOLTAGE_BITMASK,
+    CONF_CELL_UNDERVOLTAGE_BITMASK,
+    CONF_CELL_POLARITY_ERROR_BITMASK,
+    CONF_CELL_EXCESSIVE_LINE_RESISTANCE_BITMASK,
 ]
 
 # pylint: disable=too-many-function-args
 CONFIG_SCHEMA = cv.Schema(
     {
-        cv.GenerateID(CONF_JK_BMS_BLE_ID): cv.use_id(JkBmsBle),
+        cv.GenerateID(CONF_HELTEC_BALANCER_BLE_ID): cv.use_id(HeltecBalancerBle),
         cv.Optional(CONF_MIN_CELL_VOLTAGE): sensor.sensor_schema(
             unit_of_measurement=UNIT_VOLT,
             icon=ICON_EMPTY,
@@ -210,14 +191,14 @@ CONFIG_SCHEMA = cv.Schema(
         ),
         cv.Optional(CONF_MIN_VOLTAGE_CELL): sensor.sensor_schema(
             unit_of_measurement=UNIT_EMPTY,
-            icon=ICON_MIN_VOLTAGE_CELL,
+            icon="mdi:battery-minus-outline",
             accuracy_decimals=0,
             device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
         cv.Optional(CONF_MAX_VOLTAGE_CELL): sensor.sensor_schema(
             unit_of_measurement=UNIT_EMPTY,
-            icon=ICON_MAX_VOLTAGE_CELL,
+            icon="mdi:battery-plus-outline",
             accuracy_decimals=0,
             device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
@@ -586,81 +567,18 @@ CONFIG_SCHEMA = cv.Schema(
             device_class=DEVICE_CLASS_CURRENT,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_POWER): sensor.sensor_schema(
-            unit_of_measurement=UNIT_WATT,
-            icon=ICON_EMPTY,
-            accuracy_decimals=2,
-            device_class=DEVICE_CLASS_POWER,
-            state_class=STATE_CLASS_MEASUREMENT,
-        ),
-        cv.Optional(CONF_CHARGING_POWER): sensor.sensor_schema(
-            unit_of_measurement=UNIT_WATT,
-            icon=ICON_EMPTY,
-            accuracy_decimals=2,
-            device_class=DEVICE_CLASS_POWER,
-            state_class=STATE_CLASS_MEASUREMENT,
-        ),
-        cv.Optional(CONF_DISCHARGING_POWER): sensor.sensor_schema(
-            unit_of_measurement=UNIT_WATT,
-            icon=ICON_EMPTY,
-            accuracy_decimals=2,
-            device_class=DEVICE_CLASS_POWER,
-            state_class=STATE_CLASS_MEASUREMENT,
-        ),
         cv.Optional(CONF_TEMPERATURE_SENSOR_1): sensor.sensor_schema(
             unit_of_measurement=UNIT_CELSIUS,
             icon=ICON_EMPTY,
-            accuracy_decimals=0,
+            accuracy_decimals=2,
             device_class=DEVICE_CLASS_TEMPERATURE,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
         cv.Optional(CONF_TEMPERATURE_SENSOR_2): sensor.sensor_schema(
             unit_of_measurement=UNIT_CELSIUS,
             icon=ICON_EMPTY,
-            accuracy_decimals=0,
+            accuracy_decimals=2,
             device_class=DEVICE_CLASS_TEMPERATURE,
-            state_class=STATE_CLASS_MEASUREMENT,
-        ),
-        cv.Optional(CONF_POWER_TUBE_TEMPERATURE): sensor.sensor_schema(
-            unit_of_measurement=UNIT_CELSIUS,
-            icon=ICON_EMPTY,
-            accuracy_decimals=0,
-            device_class=DEVICE_CLASS_TEMPERATURE,
-            state_class=STATE_CLASS_MEASUREMENT,
-        ),
-        cv.Optional(CONF_STATE_OF_CHARGE): sensor.sensor_schema(
-            unit_of_measurement=UNIT_PERCENT,
-            icon=ICON_STATE_OF_CHARGE,
-            accuracy_decimals=0,
-            device_class=DEVICE_CLASS_EMPTY,
-            state_class=STATE_CLASS_MEASUREMENT,
-        ),
-        cv.Optional(CONF_CAPACITY_REMAINING): sensor.sensor_schema(
-            unit_of_measurement=UNIT_AMPERE_HOURS,
-            icon=ICON_CAPACITY_REMAINING,
-            accuracy_decimals=0,
-            device_class=DEVICE_CLASS_EMPTY,
-            state_class=STATE_CLASS_MEASUREMENT,
-        ),
-        cv.Optional(CONF_TOTAL_BATTERY_CAPACITY_SETTING): sensor.sensor_schema(
-            unit_of_measurement=UNIT_AMPERE_HOURS,
-            icon=ICON_EMPTY,
-            accuracy_decimals=0,
-            device_class=DEVICE_CLASS_EMPTY,
-            state_class=STATE_CLASS_MEASUREMENT,
-        ),
-        cv.Optional(CONF_CHARGING_CYCLES): sensor.sensor_schema(
-            unit_of_measurement=UNIT_EMPTY,
-            icon=ICON_CHARGING_CYCLES,
-            accuracy_decimals=0,
-            device_class=DEVICE_CLASS_EMPTY,
-            state_class=STATE_CLASS_MEASUREMENT,
-        ),
-        cv.Optional(CONF_TOTAL_CHARGING_CYCLE_CAPACITY): sensor.sensor_schema(
-            unit_of_measurement=UNIT_AMPERE_HOURS,
-            icon=ICON_COUNTER,
-            accuracy_decimals=3,
-            device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
         cv.Optional(CONF_TOTAL_RUNTIME): sensor.sensor_schema(
@@ -679,7 +597,42 @@ CONFIG_SCHEMA = cv.Schema(
         ),
         cv.Optional(CONF_ERRORS_BITMASK): sensor.sensor_schema(
             unit_of_measurement=UNIT_EMPTY,
-            icon=ICON_ERRORS_BITMASK,
+            icon="mdi:alert-circle-outline",
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_CELL_DETECTION_FAILED_BITMASK): sensor.sensor_schema(
+            unit_of_measurement=UNIT_EMPTY,
+            icon="mdi:alert-circle-outline",
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_CELL_OVERVOLTAGE_BITMASK): sensor.sensor_schema(
+            unit_of_measurement=UNIT_EMPTY,
+            icon="mdi:alert-circle-outline",
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_CELL_UNDERVOLTAGE_BITMASK): sensor.sensor_schema(
+            unit_of_measurement=UNIT_EMPTY,
+            icon="mdi:alert-circle-outline",
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_CELL_POLARITY_ERROR_BITMASK): sensor.sensor_schema(
+            unit_of_measurement=UNIT_EMPTY,
+            icon="mdi:alert-circle-outline",
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_CELL_EXCESSIVE_LINE_RESISTANCE_BITMASK): sensor.sensor_schema(
+            unit_of_measurement=UNIT_EMPTY,
+            icon="mdi:alert-circle-outline",
             accuracy_decimals=0,
             device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
@@ -689,7 +642,7 @@ CONFIG_SCHEMA = cv.Schema(
 
 
 async def to_code(config):
-    hub = await cg.get_variable(config[CONF_JK_BMS_BLE_ID])
+    hub = await cg.get_variable(config[CONF_HELTEC_BALANCER_BLE_ID])
     for i, key in enumerate(CELL_VOLTAGES):
         if key in config:
             conf = config[key]
