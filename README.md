@@ -12,25 +12,25 @@ ESPHome component to monitor a Jikong Battery Management System (JK-BMS) via RS4
 It communicates with the JK-BMS using the RS485 port which is in fact not RS485, it is 3.3V TTL so it can be directly connected to the ESP32.
 The ESP32 then sends the required CAN bus data to the inverter via a TJA1050 CAN bus transceiver.
 
- Sends over CAN bus to inverter:
-  - Battery Volatage
-  - Battery Current (+charge, -discharge) 
+Sends over CAN bus to inverter:
+  - Battery Voltage
+  - Battery Current (+charge, -discharge)
   - State of Charge (SOC)
   - State of health (SOH)
-  - Temperatue
+  - BMS Temperature
   - Charging Voltage
-  - Chargeing Amps
-  - Discharge min Volatage
+  - Charging Amps
+  - Discharge min Voltage
   - Battery name
-  - Alarms: Cell over/under voltage, Charge/discharge over current,  High/low Temp, BMS fault
-  - Charging logic: Chargers to user definded max SOC(90%), turns off charge, will restart charging if SOC drops below user defined rebulk SOC(80%).
+  - Alarms: Cell over/under voltage, Charge/discharge over current, High/low Temp, BMS fault
+  - Charging logic: Chargers to user defined max SOC(90%), turns off charge, will restart charging if SOC drops below user defined rebulk SOC(80%).
 
-Home Assistant native intergration: 
-  - Inverter control to manage inverter remotely
-    - Disable inverter charging 
-    - Disable inverter discharging
-    - Enable inverter charging (top balancing)
-  - All BMS sensor vaules listed below
+Home Assistant native integration via ESPHome:
+- Inverter control switches to manage inverter remotely
+  - Disable inverter charging
+  - Disable inverter discharging
+  - Enable inverter charging (top balancing)
+- All BMS sensor vaules listed below
 
 I have been testing using the Goodwe SECU-A5.4L battery profile selected in the inverter.<br>
 Each SECA-A5.4 battery profile has 5.4kWh of storage, so select the number that is the closest match to your battery's total capacity.<br>
