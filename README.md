@@ -33,6 +33,7 @@ If you find this useful and would like to <a href="https://www.paypal.com/donate
  ## Home Assistant intergration
 ![Lovelace entities card](images/Homeassistantbatery_s.jpg "Lovelace entities card")
 
+
 ## Supported devices
 
 All JK-BMS models with software version `>=6.0` are using the implemented protocol and should be supported.
@@ -65,16 +66,8 @@ All JK-BMS models with software version `>=6.0` are using the implemented protoc
 
 ## Requirements
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-* [ESPHome 1.18.0 or higher](https://github.com/esphome/esphome/releases).
-* Generic ESP8266 or ESP32(required for CAN) board
-=======
-=======
->>>>>>> 070860d6e39affc8027b1a2ef0344818f700f69b
 * [ESPHome 2022.9.3 or higher](https://github.com/esphome/esphome/releases).
 * Generic ESP32 or ESP8266 board
->>>>>>> 070860d6e39affc8027b1a2ef0344818f700f69b
 
 ## Schematics
 
@@ -270,7 +263,7 @@ uart:
 ```
 
 ## References
-* Thanks go to syssi for help and making the original RS485 code!
+* https://github.com/syssi/esphome-jk-bms Thanks go to syssi for help and making the original RS485 code!
 * https://secondlifestorage.com/index.php?threads/jk-b1a24s-jk-b2a24s-active-balancer.9591/
 * https://github.com/jblance/jkbms
 * https://github.com/jblance/mpp-solar/issues/112
