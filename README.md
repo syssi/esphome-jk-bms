@@ -7,7 +7,7 @@
 
 ESPHome component to monitor a Jikong Battery Management System (JK-BMS) via RS485 or BLE
 
-## This fork supports CAN bus commuinaction with inverters supporting the CANBUS Protocol compatible with Pylontech V1.3 and Goodwe V1.5.
+## This fork supports CAN bus communication with inverters supporting the CANBUS Protocol compatible with Pylontech V1.3 and Goodwe V1.5.
 
 It communicates with the JK-BMS using the RS485 port which is in fact not RS485, it is 3.3V TTL so it can be directly connected to the ESP32.
 The ESP32 then sends the required CAN bus data to the inverter via a TJA1050 CAN bus transceiver.
@@ -123,79 +123,107 @@ esphome run esp32-example-can.yaml
 In Home Assistant under settings->Intergration "Add Intergration" select ESPHome add device jk-bms-can if found or supply ip address of ESP32
 
 ```
+## Example CAN messages
+
+```
+[main:141]: send can id: 0x359 hex: 0 0 0 0 3 0 0 0
+[canbus:033]: send extended id=0x359 rtr=FALSE size=8
+[main:187]: send can id: 0x351 hex: 28 2 e8 3 e8 3 a0 1
+[canbus:033]: send extended id=0x351 rtr=FALSE size=8
+[main:199]: send can id: 0x355 hex: 4f 0 64 0
+[canbus:033]: send extended id=0x355 rtr=FALSE size=4
+[main:213]: send can id: 0x356 hex: 63 14 62 fc 86 1
+[canbus:033]: send extended id=0x356 rtr=FALSE size=6
+[canbus:070]: received can message (#1) std can_id=0x305 size=8
+[light:035]: 'Builtin LED' Setting:
+[light:046]:   State: OFF
+[main:238]: send can id: 0x35C hex: c0 0
+[canbus:033]: send extended id=0x35c rtr=FALSE size=2
+[canbus:033]: send extended id=0x35e rtr=FALSE size=8
+```
 
 ## Example response all sensors enabled
 
 ```
-[sensor:127]: 'jk-bms cell voltage 1': Sending state 4.12500 V with 3 decimals of accuracy
-[sensor:127]: 'jk-bms cell voltage 2': Sending state 4.12500 V with 3 decimals of accuracy
-[sensor:127]: 'jk-bms cell voltage 3': Sending state 4.12800 V with 3 decimals of accuracy
-[sensor:127]: 'jk-bms cell voltage 4': Sending state 4.12400 V with 3 decimals of accuracy
-[sensor:127]: 'jk-bms cell voltage 5': Sending state 4.12500 V with 3 decimals of accuracy
-[sensor:127]: 'jk-bms cell voltage 6': Sending state 4.12800 V with 3 decimals of accuracy
-[sensor:127]: 'jk-bms cell voltage 7': Sending state 4.12400 V with 3 decimals of accuracy
-[sensor:127]: 'jk-bms cell voltage 8': Sending state 4.12300 V with 3 decimals of accuracy
-[sensor:127]: 'jk-bms cell voltage 9': Sending state 4.12800 V with 3 decimals of accuracy
-[sensor:127]: 'jk-bms cell voltage 10': Sending state 4.12800 V with 3 decimals of accuracy
-[sensor:127]: 'jk-bms cell voltage 11': Sending state 4.12800 V with 3 decimals of accuracy
-[sensor:127]: 'jk-bms cell voltage 12': Sending state 4.13100 V with 3 decimals of accuracy
-[sensor:127]: 'jk-bms cell voltage 13': Sending state 4.12400 V with 3 decimals of accuracy
-[sensor:127]: 'jk-bms power tube temperature': Sending state 24.00000 °C with 0 decimals of accuracy
-[sensor:127]: 'jk-bms temperature sensor 1': Sending state 22.00000 °C with 0 decimals of accuracy
-[sensor:127]: 'jk-bms temperature sensor 2': Sending state 22.00000 °C with 0 decimals of accuracy
-[sensor:127]: 'jk-bms total voltage': Sending state 53.64000 V with 2 decimals of accuracy
-[sensor:127]: 'jk-bms current': Sending state -0.00000 A with 2 decimals of accuracy
-[sensor:127]: 'jk-bms capacity remaining': Sending state 99.00000 % with 0 decimals of accuracy
-[sensor:127]: 'jk-bms temperature sensors': Sending state 2.00000  with 0 decimals of accuracy
-[sensor:127]: 'jk-bms charging cycles': Sending state 0.00000  with 0 decimals of accuracy
-[sensor:127]: 'jk-bms total charging cycle capacity': Sending state 0.00000  with 0 decimals of accuracy
-[sensor:127]: 'jk-bms battery strings': Sending state 13.00000  with 0 decimals of accuracy
-[sensor:127]: 'jk-bms errors bitmask': Sending state 0.00000  with 0 decimals of accuracy
-[text_sensor:015]: 'jk-bms errors': Sending state ''
-[sensor:127]: 'jk-bms operation mode bitmask': Sending state 0.00000  with 0 decimals of accuracy
-[text_sensor:015]: 'jk-bms operation mode': Sending state ''
-[sensor:127]: 'jk-bms total voltage overvoltage protection': Sending state 5.46000 V with 3 decimals of accuracy
-[sensor:127]: 'jk-bms total voltage undervoltage protection': Sending state 3.77000 V with 3 decimals of accuracy
-[sensor:127]: 'jk-bms cell voltage overvoltage protection': Sending state 4.20000 V with 3 decimals of accuracy
-[sensor:127]: 'jk-bms cell voltage overvoltage recovery': Sending state 4.10000 V with 3 decimals of accuracy
-[sensor:127]: 'jk-bms cell voltage overvoltage delay': Sending state 5.00000 s with 0 decimals of accuracy
-[sensor:127]: 'jk-bms cell voltage undervoltage protection': Sending state 2.90000 V with 3 decimals of accuracy
-[sensor:127]: 'jk-bms cell voltage undervoltage recovery': Sending state 3.20000 V with 3 decimals of accuracy
-[sensor:127]: 'jk-bms cell voltage undervoltage delay': Sending state 5.00000 s with 0 decimals of accuracy
-[sensor:127]: 'jk-bms cell pressure difference protection': Sending state 0.30000 V with 3 decimals of accuracy
-[sensor:127]: 'jk-bms discharging overcurrent protection': Sending state 60.00000 A with 0 decimals of accuracy
-[sensor:127]: 'jk-bms discharging overcurrent delay': Sending state 300.00000 s with 0 decimals of accuracy
-[sensor:127]: 'jk-bms charging overcurrent protection': Sending state 25.00000 A with 0 decimals of accuracy
-[sensor:127]: 'jk-bms charging overcurrent delay': Sending state 30.00000 s with 0 decimals of accuracy
-[sensor:127]: 'jk-bms balance starting voltage': Sending state 3.30000 V with 3 decimals of accuracy
-[sensor:127]: 'jk-bms balance opening pressure difference': Sending state 0.01000 V with 3 decimals of accuracy
-[switch:045]: 'jk-bms balancing': Sending state ON
-[sensor:127]: 'jk-bms power tube temperature protection': Sending state 90.00000 °C with 0 decimals of accuracy
-[sensor:127]: 'jk-bms power tube temperature recovery': Sending state 70.00000 °C with 0 decimals of accuracy
-[sensor:127]: 'jk-bms temperature sensor temperature protection': Sending state 100.00000 °C with 0 decimals of accuracy
-[sensor:127]: 'jk-bms temperature sensor temperature recovery': Sending state 100.00000 °C with 0 decimals of accuracy
-[sensor:127]: 'jk-bms temperature sensor temperature difference protection': Sending state 20.00000 °C with 0 decimals of accuracy
-[sensor:127]: 'jk-bms charging high temperature protection': Sending state 70.00000 °C with 0 decimals of accuracy
-[sensor:127]: 'jk-bms discharging high temperature protection': Sending state 70.00000 °C with 0 decimals of accuracy
-[sensor:127]: 'jk-bms charging low temperature protection': Sending state -20.00000 °C with 0 decimals of accuracy
-[sensor:127]: 'jk-bms charging low temperature recovery': Sending state -10.00000 °C with 0 decimals of accuracy
-[sensor:127]: 'jk-bms discharging low temperature protection': Sending state -20.00000 °C with 0 decimals of accuracy
-[sensor:127]: 'jk-bms discharging low temperature recovery': Sending state -10.00000 °C with 0 decimals of accuracy
-[switch:045]: 'jk-bms charging': Sending state OFF
-[switch:045]: 'jk-bms discharging': Sending state OFF
-[sensor:127]: 'jk-bms current calibration': Sending state 0.72500 A with 3 decimals of accuracy
-[sensor:127]: 'jk-bms device address': Sending state 1.00000  with 0 decimals of accuracy
-[text_sensor:015]: 'jk-bms battery type': Sending state 'Ternary Lithium'
-[sensor:127]: 'jk-bms sleep wait time': Sending state 10.00000 s with 0 decimals of accuracy
-[sensor:127]: 'jk-bms alarm low volume': Sending state 20.00000  with 0 decimals of accuracy
-[text_sensor:015]: 'jk-bms password': Sending state '123456'
-[switch:045]: 'jk-bms dedicated charger': Sending state OFF
-[text_sensor:015]: 'jk-bms device type': Sending state 'Input Us'
-[sensor:127]: 'jk-bms total runtime': Sending state 0.00000 h with 0 decimals of accuracy
-[text_sensor:015]: 'jk-bms software version': Sending state 'H7.X__S7.1.0H__'
-[sensor:127]: 'jk-bms actual_battery_capacity': Sending state 186.00000 Ah with 0 decimals of accuracy
-[text_sensor:015]: 'jk-bms manufacturer': Sending state 'BT3072020120000200521001'
-[sensor:127]: 'jk-bms protocol version': Sending state 1.00000  with 0 decimals of accuracy
+[sensor:125]: 'jk-bms-can cell voltage 1': Sending state 3.27200 V with 3 decimals of accuracy
+[sensor:125]: 'jk-bms-can cell voltage 2': Sending state 3.26900 V with 3 decimals of accuracy
+[sensor:125]: 'jk-bms-can cell voltage 3': Sending state 3.26800 V with 3 decimals of accuracy
+[sensor:125]: 'jk-bms-can cell voltage 4': Sending state 3.26700 V with 3 decimals of accuracy
+[sensor:125]: 'jk-bms-can cell voltage 5': Sending state 3.25000 V with 3 decimals of accuracy
+[sensor:125]: 'jk-bms-can cell voltage 6': Sending state 3.26600 V with 3 decimals of accuracy
+[sensor:125]: 'jk-bms-can cell voltage 7': Sending state 3.25600 V with 3 decimals of accuracy
+[sensor:125]: 'jk-bms-can cell voltage 8': Sending state 3.26800 V with 3 decimals of accuracy
+[sensor:125]: 'jk-bms-can cell voltage 9': Sending state 3.25800 V with 3 decimals of accuracy
+[sensor:125]: 'jk-bms-can cell voltage 10': Sending state 3.26000 V with 3 decimals of accuracy
+[sensor:125]: 'jk-bms-can cell voltage 11': Sending state 3.26200 V with 3 decimals of accuracy
+[sensor:125]: 'jk-bms-can cell voltage 12': Sending state 3.25700 V with 3 decimals of accuracy
+[sensor:125]: 'jk-bms-can cell voltage 13': Sending state 3.25700 V with 3 decimals of accuracy
+[sensor:125]: 'jk-bms-can cell voltage 14': Sending state 3.26000 V with 3 decimals of accuracy
+[sensor:125]: 'jk-bms-can cell voltage 15': Sending state 3.26500 V with 3 decimals of accuracy
+[sensor:125]: 'jk-bms-can cell voltage 16': Sending state 3.26800 V with 3 decimals of accuracy
+[sensor:125]: 'jk-bms-can min cell voltage': Sending state 3.25000 V with 3 decimals of accuracy
+[sensor:125]: 'jk-bms-can max cell voltage': Sending state 3.27200 V with 3 decimals of accuracy
+[sensor:125]: 'jk-bms-can max voltage cell': Sending state 1.00000  with 0 decimals of accuracy
+[sensor:125]: 'jk-bms-can min voltage cell': Sending state 5.00000  with 0 decimals of accuracy
+[sensor:125]: 'jk-bms-can delta cell voltage': Sending state 0.02200 V with 3 decimals of accuracy
+[sensor:125]: 'jk-bms-can average cell voltage': Sending state 3.26269 V with 3 decimals of accuracy
+[sensor:125]: 'jk-bms-can power tube temperature': Sending state 39.00000 °C with 0 decimals of accuracy
+[sensor:125]: 'jk-bms-can temperature sensor 1': Sending state 26.00000 °C with 0 decimals of accuracy
+[sensor:125]: 'jk-bms-can temperature sensor 2': Sending state 26.00000 °C with 0 decimals of accuracy
+[sensor:125]: 'jk-bms-can total voltage': Sending state 52.20000 V with 2 decimals of accuracy
+[sensor:125]: 'jk-bms-can current': Sending state -92.64000 A with 2 decimals of accuracy
+[sensor:125]: 'jk-bms-can power': Sending state -4835.80762 W with 2 decimals of accuracy
+[sensor:125]: 'jk-bms-can charging power': Sending state 0.00000 W with 2 decimals of accuracy
+[sensor:125]: 'jk-bms-can discharging power': Sending state 4835.80762 W with 2 decimals of accuracy
+[sensor:125]: 'jk-bms-can capacity remaining': Sending state 79.00000 % with 0 decimals of accuracy
+[sensor:125]: 'jk-bms-can temperature sensors': Sending state 2.00000  with 0 decimals of accuracy
+[sensor:125]: 'jk-bms-can charging cycles': Sending state 4.00000  with 0 decimals of accuracy
+[sensor:125]: 'jk-bms-can total charging cycle capacity': Sending state 1280.00000 Ah with 0 decimals of accuracy
+[sensor:125]: 'jk-bms-can battery strings': Sending state 16.00000  with 0 decimals of accuracy
+[sensor:125]: 'jk-bms-can errors bitmask': Sending state 0.00000  with 0 decimals of accuracy
+[text_sensor:067]: 'jk-bms-can errors': Sending state ''
+[sensor:125]: 'jk-bms-can operation mode bitmask': Sending state 3.00000  with 0 decimals of accuracy
+[text_sensor:067]: 'jk-bms-can operation mode': Sending state 'Charging enabled;Discharging enabled'
+[sensor:125]: 'jk-bms-can total voltage overvoltage protection': Sending state 57.60000 V with 2 decimals of accuracy
+[sensor:125]: 'jk-bms-can total voltage undervoltage protection': Sending state 41.60000 V with 2 decimals of accuracy
+[sensor:125]: 'jk-bms-can cell voltage overvoltage protection': Sending state 3.60000 V with 3 decimals of accuracy
+[sensor:125]: 'jk-bms-can cell voltage overvoltage recovery': Sending state 3.55000 V with 3 decimals of accuracy
+[sensor:125]: 'jk-bms-can cell voltage overvoltage delay': Sending state 5.00000 s with 0 decimals of accuracy
+[sensor:125]: 'jk-bms-can cell voltage undervoltage protection': Sending state 2.60000 V with 3 decimals of accuracy
+[sensor:125]: 'jk-bms-can cell voltage undervoltage recovery': Sending state 2.65000 V with 3 decimals of accuracy
+[sensor:125]: 'jk-bms-can cell voltage undervoltage delay': Sending state 5.00000 s with 0 decimals of accuracy
+[sensor:125]: 'jk-bms-can cell pressure difference protection': Sending state 0.30000 V with 3 decimals of accuracy
+[sensor:125]: 'jk-bms-can discharging overcurrent protection': Sending state 100.00000 A with 0 decimals of accuracy
+[sensor:125]: 'jk-bms-can discharging overcurrent delay': Sending state 300.00000 s with 0 decimals of accuracy
+[sensor:125]: 'jk-bms-can charging overcurrent protection': Sending state 100.00000 A with 0 decimals of accuracy
+[sensor:125]: 'jk-bms-can charging overcurrent delay': Sending state 30.00000 s with 0 decimals of accuracy
+[sensor:125]: 'jk-bms-can balance starting voltage': Sending state 3.40000 V with 3 decimals of accuracy
+[sensor:125]: 'jk-bms-can balance opening pressure difference': Sending state 0.00500 V with 3 decimals of accuracy
+[sensor:125]: 'jk-bms-can power tube temperature protection': Sending state 90.00000 °C with 0 decimals of accuracy
+[sensor:125]: 'jk-bms-can power tube temperature recovery': Sending state 70.00000 °C with 0 decimals of accuracy
+[sensor:125]: 'jk-bms-can temperature sensor temperature protection': Sending state 100.00000 °C with 0 decimals of accuracy
+[sensor:125]: 'jk-bms-can temperature sensor temperature recovery': Sending state 100.00000 °C with 0 decimals of accuracy
+[sensor:125]: 'jk-bms-can temperature sensor temperature difference protection': Sending state 20.00000 °C with 0 decimals of accuracy
+[sensor:125]: 'jk-bms-can charging high temperature protection': Sending state 70.00000 °C with 0 decimals of accuracy
+[sensor:125]: 'jk-bms-can discharging high temperature protection': Sending state 70.00000 °C with 0 decimals of accuracy
+[sensor:125]: 'jk-bms-can charging low temperature protection': Sending state -20.00000 °C with 0 decimals of accuracy
+[sensor:125]: 'jk-bms-can charging low temperature recovery': Sending state -10.00000 °C with 0 decimals of accuracy
+[sensor:125]: 'jk-bms-can discharging low temperature protection': Sending state -20.00000 °C with 0 decimals of accuracy
+[sensor:125]: 'jk-bms-can discharging low temperature recovery': Sending state -10.00000 °C with 0 decimals of accuracy
+[sensor:125]: 'jk-bms-can total battery capacity setting': Sending state 280.00000 Ah with 0 decimals of accuracy
+[sensor:125]: 'jk-bms-can capacity remaining derived': Sending state 221.19998 Ah with 0 decimals of accuracy
+[sensor:125]: 'jk-bms-can current calibration': Sending state 1.04800 A with 3 decimals of accuracy
+[sensor:125]: 'jk-bms-can device address': Sending state 1.00000  with 0 decimals of accuracy
+[text_sensor:067]: 'jk-bms-can battery type': Sending state 'Ternary Lithium'
+[sensor:125]: 'jk-bms-can sleep wait time': Sending state 10.00000 s with 0 decimals of accuracy
+[sensor:125]: 'jk-bms-can alarm low volume': Sending state 20.00000 % with 0 decimals of accuracy
+[text_sensor:067]: 'jk-bms-can password': Sending state '123456'
+[text_sensor:067]: 'jk-bms-can device type': Sending state 'Input Us'
+[sensor:125]: 'jk-bms-can total runtime': Sending state 226.13333 h with 0 decimals of accuracy
+[text_sensor:067]: 'jk-bms-can total runtime formatted': Sending state '9d 10h'
+[text_sensor:067]: 'jk-bms-can software version': Sending state '10.XG_S10.07___'
+[sensor:125]: 'jk-bms-can actual battery capacity': Sending state 256.00000 Ah with 0 decimals of accuracy
+[text_sensor:067]: 'jk-bms-can manufacturer': Sending state 'Input UserdaJK-B2A24S15P'
 ```
 
 ## Known issues
