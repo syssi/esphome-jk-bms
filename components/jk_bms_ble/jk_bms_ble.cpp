@@ -37,7 +37,7 @@ static const char *const ERRORS[ERRORS_SIZE] = {
     "Error 0x08 0x00",                      // 0000 1000 0000 0000
     "Cell Overvoltage",                     // 0001 0000 0000 0000
     "Error 0x20 0x00",                      // 0010 0000 0000 0000
-    "Error 0x40 0x00",                      // 0100 0000 0000 0000
+    "Charge overcurrent protection",        // 0100 0000 0000 0000
     "Error 0x80 0x00",                      // 1000 0000 0000 0000
 };
 
