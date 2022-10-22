@@ -1,7 +1,6 @@
-# Versions:
-# V1.02 13/10/22 Added Control switches for Homeassistant to notify the inverter to disable charing and discharge. Control the inverter from anywhere!
-# V1.01 12/10/22 Now being used with live inverter. Updates to add more inverter control when turning on/off charging and discharging
-# V1.00 23/5/22 first test release
+# Version info, for full change log:- https://github.com/Uksa007/esphome-jk-bms-can/discussions/2
+# V1.04 20/10/22 Added logic for calculating SOH, is now based on number of cycles/max_cycles, Added CAN messages 0x70, x071 cell temp and voltage info
+
 substitutions:
 # name that will appear in esphome and homeassistant.
   name: jk-bms-can
@@ -11,8 +10,8 @@ substitutions:
   charge_v: "55.2" # This is voltage you want the inverter to change battery with 55.2 eg 3.45v/cell for 16 cells 48V battery (57.6). 
   max_soc: "90" # Max SOC to charge upto in %, charging will stop at this SOC.
   rebulk_soc: "80" # Charging renabled if battey SOC falls below this SOC in %.
-# This is the percentage state of health new would be 100 as battery gets older reduce. 
-  soh: "100"
+# Maximum charging cycles is used to calculate the battey SOH, LF280K=6000.0 LF280=3000.0 (decimal is required)
+  max_cycles: "6000.0"
 # GPIO pins your CAN bus transceiver(TJA1050) is connected to the ESP, note! TX->TX and RX->RX. 
   can_tx_pin: GPIO23
   can_rx_pin: GPIO22
@@ -138,7 +137,7 @@ interval:
             can_mesg[4] = batt_mods; ///Module in parallel
             can_mesg[5] = 0x00;
             can_mesg[6] = 0x00;
-            can_mesg[7] = 0x22; ///DIP switches
+            can_mesg[7] = 0x00; ///DIP switches 1,3 10000100 0x84
             ESP_LOGI("main", "send can id: 0x359 hex: %x %x %x %x %x %x %x %x", can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5], can_mesg[6], can_mesg[7]);
             return {can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5], can_mesg[6], can_mesg[7]};
       - delay: 10ms
@@ -167,14 +166,13 @@ interval:
                can_mesg[2] = int16_t(id(charging_overcurrent_protection).state * 10) & 0xff;
                can_mesg[3] = int16_t(id(charging_overcurrent_protection).state * 10) >> 8 & 0xff;
             }
-
             if (id(inverter_charging).state) {
                can_mesg[2] = 0x00;
                can_mesg[3] = 0x00;
             }
             if (id(discharging_switch).state) {
-              can_mesg[4] = int16_t(id(discharging_overcurrent_protection).state * 10) & 0xff;
-              can_mesg[5] = int16_t(id(discharging_overcurrent_protection).state * 10) >> 8 & 0xff;
+              can_mesg[4] = (int16_t(id(discharging_overcurrent_protection).state - 10) * 10) & 0xff;
+              can_mesg[5] = (int16_t(id(discharging_overcurrent_protection).state - 10) * 10) >> 8 & 0xff;
             } else {
                can_mesg[4] = 0x00;
                can_mesg[5] = 0x00;
@@ -183,8 +181,8 @@ interval:
                can_mesg[4] = 0x00;
                can_mesg[5] = 0x00;
             }
-            can_mesg[6] = uint16_t(id(total_voltage_undervoltage_protection).state * 10) & 0xff;
-            can_mesg[7] = uint16_t(id(total_voltage_undervoltage_protection).state * 10) >> 8 & 0xff;
+            can_mesg[6] = 0x01e0 & 0xff; /// uint16_t(id(total_voltage_undervoltage_protection).state * 10) & 0xff;
+            can_mesg[7] = 0x01e0 >> 8 & 0xff; ///uint16_t(id(total_voltage_undervoltage_protection).state * 10) >> 8 & 0xff;
             ESP_LOGI("main", "send can id: 0x351 hex: %x %x %x %x %x %x %x %x", can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5], can_mesg[6], can_mesg[7]);
             return {can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5], can_mesg[6], can_mesg[7]};
       - delay: 10ms
@@ -192,16 +190,17 @@ interval:
       - canbus.send: # SOC, SOH
           can_id: 0x355
           data: !lambda |-
+            int soh = round(((id(charging_cycles).state/${max_cycles})-1)*-100);
             uint8_t can_mesg[3];
             can_mesg[0] = uint16_t(id(capacity_remaining).state) & 0xff;
-            can_mesg[1] = uint16_t(id(capacity_remaining).state) >> 8 & 0xff;        
-            can_mesg[2] = ${soh} & 0xff;
-            can_mesg[3] = ${soh} >> 8 & 0xff;
+            can_mesg[1] = uint16_t(id(capacity_remaining).state) >> 8 & 0xff;
+            can_mesg[2] = soh & 0xff;
+            can_mesg[3] = soh >> 8 & 0xff;
             ESP_LOGI("main", "send can id: 0x355 hex: %x %x %x %x", can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3]);
-            return {can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3]};      
+            return {can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3]};
       - delay: 10ms
 
-      - canbus.send: # Volts,Amps, Temp
+      - canbus.send: # Volts,Amps,Temp
           can_id: 0x356
           data: !lambda |-
             uint8_t can_mesg[5];
@@ -240,9 +239,46 @@ interval:
             return {can_mesg[0], can_mesg[1]};
       - delay: 10ms
 
+      - canbus.send: # Max Cell Temp, Min Cell Temp, Max Cell V, Min Cell V
+          can_id: 0x70
+          # data: [0x04, 0x01, 0xF9, 0x00, 0x48, 0x01, 0x47, 0x01]
+          data: !lambda |-
+            int max_cell_voltage_i = id(max_cell_voltage).state * 100.0;
+            int min_cell_voltage_i = id(min_cell_voltage).state * 100.0;
+            uint8_t can_mesg[7];
+            can_mesg[0] = int16_t(max(id(temperature_sensor_1).state, id(temperature_sensor_2).state)* 10) & 0xff;
+            can_mesg[1] = int16_t(max(id(temperature_sensor_1).state, id(temperature_sensor_2).state)* 10) >> 8 & 0xff;
+            can_mesg[2] = int16_t(min(id(temperature_sensor_1).state, id(temperature_sensor_2).state)* 10) & 0xff;
+            can_mesg[3] = int16_t(min(id(temperature_sensor_1).state, id(temperature_sensor_2).state)* 10) >> 8 & 0xff;
+            can_mesg[4] = max_cell_voltage_i & 0xff;
+            can_mesg[5] = max_cell_voltage_i >> 8 & 0xff;
+            can_mesg[6] = min_cell_voltage_i & 0xff;
+            can_mesg[7] = min_cell_voltage_i >> 8 & 0xff;
+            ESP_LOGI("main", "send can id: 0x70 hex: %x %x %x %x %x %x %x %x", can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5], can_mesg[6], can_mesg[7]);
+            return {can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5], can_mesg[6], can_mesg[7]};
+      - delay: 10ms
+
+      - canbus.send: # Max Cell Temp ID, Min Cell Temp ID, Max Cell V ID, Min Cell ID
+          can_id: 0x371
+          # data: [0x05, 0x00, 0x09, 0x00, 0x04, 0x00, 0x0A, 0x00]
+          data: !lambda |-
+            uint8_t can_mesg[7];
+            can_mesg[0] = 0x01;
+            can_mesg[1] = 0x00;
+            can_mesg[2] = 0x02;
+            can_mesg[3] = 0x00;
+            can_mesg[4] = uint16_t(id(max_voltage_cell).state) & 0xff;
+            can_mesg[5] = uint16_t(id(max_voltage_cell).state) >> 8 & 0xff;
+            can_mesg[6] = uint16_t(id(min_voltage_cell).state) & 0xff;
+            can_mesg[7] = uint16_t(id(min_voltage_cell).state) >> 8 & 0xff;
+            ESP_LOGI("main", "send can id: 0x371 hex: %x %x %x %x %x %x %x %x", can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5], can_mesg[6], can_mesg[7]);
+            return {can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5], can_mesg[6], can_mesg[7]};
+      - delay: 10ms
+
       - canbus.send: # GOODWE
           can_id: 0x35E
           data: [0x47, 0x4F, 0x4F, 0x44, 0x57, 0x45, 0x20, 0x20]
+      - delay: 10ms
 
       - lambda: |-
            if (id(can_305_rx) > 30) {
@@ -274,12 +310,16 @@ binary_sensor:
 sensor:
   - platform: jk_bms
     min_cell_voltage:
+      id: min_cell_voltage
       name: "${name} min cell voltage"
     max_cell_voltage:
+      id: max_cell_voltage
       name: "${name} max cell voltage"
     min_voltage_cell:
+      id: min_voltage_cell
       name: "${name} min voltage cell"
     max_voltage_cell:
+      id: max_voltage_cell
       name: "${name} max voltage cell"
     delta_cell_voltage:
       name: "${name} delta cell voltage"
@@ -337,8 +377,10 @@ sensor:
       id: power_tube_temperature
       name: "${name} power tube temperature"
     temperature_sensor_1:
+      id: temperature_sensor_1
       name: "${name} temperature sensor 1"
     temperature_sensor_2:
+      id: temperature_sensor_2
       name: "${name} temperature sensor 2"
     total_voltage:
       id: total_voltage
@@ -361,6 +403,7 @@ sensor:
       name: "${name} temperature sensors"
     charging_cycles:
       name: "${name} charging cycles"
+      id: charging_cycles
     total_charging_cycle_capacity:
       name: "${name} total charging cycle capacity"
     battery_strings:
@@ -487,7 +530,6 @@ text_sensor:
       name: "${name} manufacturer"
     total_runtime_formatted:
       name: "${name} total runtime formatted"
-
 # Uptime Sensor
   - platform: template
     name: ${name} Uptime Human Readable
