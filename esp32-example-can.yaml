@@ -1,5 +1,5 @@
 # Version info, for full change log:- https://github.com/Uksa007/esphome-jk-bms-can/discussions/2
-# V1.04 20/10/22 Added logic for calculating SOH, is now based on number of cycles/max_cycles, Added CAN messages 0x70, x071 cell temp and voltage info
+# V1.05 30/10/22 Fixed alarms
 
 substitutions:
 # name that will appear in esphome and homeassistant.
@@ -116,23 +116,43 @@ canbus:
 interval:
   - interval: 1000ms
     then:
+interval:
+  - interval: 1000ms
+    then:
       - canbus.send: # Warn Alarm
           can_id: 0x359
           data: !lambda |-
-            uint8_t can_mesg[7];
-            uint16_t jk_errormask = uint16_t(id(errors_bitmask).state);
+            uint8_t can_mesg[] = {0, 0};
+            uint16_t jk_errormask = id(errors_bitmask).state;
             int batt_mods = ${batt_modules};
             /// Alarms
-            can_mesg[0] = (jk_errormask & 0x04 >> 1) | (jk_errormask & 0x80 >> 6) | (jk_errormask & 0x400 >> 9); /// H.V.A Jk bit 2,7,10
-            can_mesg[0] = can_mesg[0] | (jk_errormask & 0x08 >> 1) | (jk_errormask & 0x800 >> 9); ///L.V.A Jk bit 3,11
-            can_mesg[0] = can_mesg[0] | (jk_errormask & 0x02 << 2) | (jk_errormask & 0x10 >> 1) | (jk_errormask & 0x100 >> 5); //H.T.A bit 1,4,8
-            can_mesg[0] = can_mesg[0] | (jk_errormask & 0x200 >> 5); ///L.T.A Jk bit 9
-            can_mesg[0] = can_mesg[0] | (jk_errormask & 0x40 << 1); ///D.O.C Jk bit 6
-            can_mesg[1] = (jk_errormask & 0x20 >> 5); ///C.O.C Jk bit 5
-            can_mesg[1] = can_mesg[1] | (jk_errormask & 0x1000 >> 9) | (jk_errormask & 0x2000 >> 10); /// BMS Internal Jk bit 12,13
+            if ((jk_errormask & 0x04) | (jk_errormask & 0x80) | (jk_errormask & 0x400)) { /// Hight.Voltage.Alarm JK bit 2,7,10 
+               can_mesg[0] = 0x02; /// bit 1
+            }
+            if ((jk_errormask & 0x08) | (jk_errormask & 0x800)) { ///Low.Voltage.Alarm JK bit 3,11 
+               can_mesg[0] = can_mesg[0] | 0x04; /// bit 2
+            }
+            if ((jk_errormask & 0x02) | (jk_errormask & 0x10) | (jk_errormask & 0x100)) { //Hight.Temp.Alarm JK bit 1,4,8
+               can_mesg[0] = can_mesg[0] | 0x08; /// bit 3
+            }
+            if (jk_errormask & 0x200) { ///Low.Temp.Alarm JK bit 9
+               can_mesg[0] = can_mesg[0] | 0x10; /// bit 4
+            }
+            if (jk_errormask & 0x40) { ///Discharge.Over.Current JK bit 6
+               can_mesg[0] = can_mesg[0] | 0x80; /// bit 7
+            }
+            if (jk_errormask & 0x20) { ///Charge.Over.Current JK bit 5
+               can_mesg[1] = 0x01; /// bit 0
+            }
+            if ((jk_errormask & 0x1000) | (jk_errormask & 0x2000)) { /// BMS Internal JK bit 12,13
+               can_mesg[1] = can_mesg[1] | 0x08; /// bit 3
+            }
+            if (jk_errormask & 0x80) { /// Cell Imbalance JK bit 7
+               can_mesg[1] = can_mesg[1] | 0x10; /// bit 4 
+            }
             /// Warnings
             can_mesg[2] = 0x00;
-            can_mesg[3] = 0x00;
+            can_mesg[3] = 0x00; /// test
             /// Flags
             can_mesg[4] = batt_mods; ///Module in parallel
             can_mesg[5] = 0x00;
