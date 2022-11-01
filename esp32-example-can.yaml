@@ -116,9 +116,6 @@ canbus:
 interval:
   - interval: 1000ms
     then:
-interval:
-  - interval: 1000ms
-    then:
       - canbus.send: # Warn Alarm
           can_id: 0x359
           data: !lambda |-
