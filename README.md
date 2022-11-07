@@ -42,7 +42,7 @@ If you find this useful and would like to <a href="https://www.paypal.com/donate
 
 
 
-* Connect a TJA1050 to an ESP32 (default GPIO 17 TX, 16 RX) as per https://esphome.io/components/canbus.html?highlight=can#wiring-options
+* Connect a TJA1050 to an ESP32 (default GPIO 23 TX, 22 RX) as per https://esphome.io/components/canbus.html?highlight=can#wiring-options
 * Use this code in esphome https://github.com/Uksa007/esphome-jk-bms-can/blob/main/esp32-example-can.yaml
 * (optional) A second ESP32 and TJA1050 make a test CAN bus/receiver https://github.com/Uksa007/esphome-jk-bms-can/blob/main/test-esp32-receiver-can.yaml
   If you don't yet have TJA1050 you can still test with two ESP32 by making a makeshif CAN bus DO NOT CONNECT TO A REAL CAN BUS!
