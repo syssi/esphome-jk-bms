@@ -34,8 +34,8 @@ Home Assistant native integration via ESPHome:
   - Enable inverter charging (top balancing)
 - All BMS sensor vaules listed below
 
-I have been testing using the Goodwe SECU-A5.4L battery profile selected in the inverter.<br>
-Each SECA-A5.4 battery profile has 5.4kWh of storage, so select the number that is the closest match to your battery's total capacity.<br>
+I have been testing using the Goodwe LX U5.4-L battery profile selected in the inverter.<br>
+Each LX U5.4-L battery has 5.4kWh of storage, so select the number that is the closest match to your battery's total capacity.<br>
 
 **Note:- I'm using this with my Goodwe GW5000S-BP inverter however CAN bus support is still in development and testing!!!**<br>
 Further deatils in the discussion tab https://github.com/Uksa007/esphome-jk-bms-can/discussions
@@ -89,7 +89,7 @@ All JK-BMS models with software version `>=6.0` are using the implemented protoc
 ## Requirements
 
 * [ESPHome 2022.9.3 or higher](https://github.com/esphome/esphome/releases).
-* Generic ESP32 or ESP8266 board
+* Generic ESP32
 
 ## Schematics
 
