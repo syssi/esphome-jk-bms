@@ -37,7 +37,7 @@ static const char *const ERRORS[ERRORS_SIZE] = {
     "Error 0x08 0x00",                      // 0000 1000 0000 0000
     "Cell Overvoltage",                     // 0001 0000 0000 0000
     "Error 0x20 0x00",                      // 0010 0000 0000 0000
-    "Error 0x40 0x00",                      // 0100 0000 0000 0000
+    "Charge overcurrent protection",        // 0100 0000 0000 0000
     "Error 0x80 0x00",                      // 1000 0000 0000 0000
 };
 
@@ -216,8 +216,8 @@ void JkBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gat
       if (param->notify.handle != this->notify_handle_)
         break;
 
-      ESP_LOGD(TAG, "Notification received: %s",
-               format_hex_pretty(param->notify.value, param->notify.value_len).c_str());
+      ESP_LOGVV(TAG, "Notification received: %s",
+                format_hex_pretty(param->notify.value, param->notify.value_len).c_str());
 
       this->assemble_(param->notify.value, param->notify.value_len);
 
@@ -1207,8 +1207,9 @@ bool JkBmsBle::write_register(uint8_t address, uint32_t value, uint8_t length) {
       esp_ble_gattc_write_char(this->parent_->get_gattc_if(), this->parent_->get_conn_id(), this->char_handle_,
                                sizeof(frame), frame, ESP_GATT_WRITE_TYPE_NO_RSP, ESP_GATT_AUTH_REQ_NONE);
 
-  if (status)
+  if (status) {
     ESP_LOGW(TAG, "[%s] esp_ble_gattc_write_char failed, status=%d", this->parent_->address_str().c_str(), status);
+  }
 
   return (status == 0);
 }
