@@ -91,7 +91,8 @@ All JK-BMS models with software version `>=6.0` are using the implemented protoc
 ## Requirements
 
 * [ESPHome 2022.11.0 or higher](https://github.com/esphome/esphome/releases).
-* Generic ESP32
+* Generic ESP32, I use the esp32doit-devkit-v1
+* NOTE ESP32-S2 currently has issues with CAN BUS and does not work!
 
 ## Schematics
 
