@@ -53,7 +53,7 @@ If you find this useful and would like to <a href="https://www.paypal.com/donate
   Then tie the CAN-RX lines together with a pull-up resistor to 3.3V I used 10K pullup.
   
  ## Home Assistant intergration
-![Lovelace entities card](images/Homeassistantbatery_s.jpg "Lovelace entities card")
+![Lovelace entities card](images/Homeassistantbatery_s_new.jpg "Lovelace entities card")
 
 
 ## Supported devices
