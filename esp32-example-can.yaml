@@ -1,28 +1,50 @@
 # Version info, for full change log:- https://github.com/Uksa007/esphome-jk-bms-can/discussions/2
-# V1.05 30/10/22 Fixed alarms
-
+# V1.11 Major update: Charging logic now has absorption, sliders for Charge Volts and Amps.
 substitutions:
+# --------------------------
 # name that will appear in esphome and homeassistant.
   name: jk-bms-can
-# Number of Battery modules max 8 
+# --------------------------
+# Number of Battery modules max 8. Each LX U5.4-L battery is 5.4kWh, select the number closest to your capactiy eg 3.2V * 280Ah * 16 = 14.3kWh
   batt_modules: "3"
-# Battery Charging setting
-  charge_v: "55.2" # This is voltage you want the inverter to change battery with 55.2 eg 3.45v/cell for 16 cells 48V battery (57.6). 
-  max_soc: "90" # Max SOC to charge upto in %, charging will stop at this SOC.
-  rebulk_soc: "80" # Charging renabled if battey SOC falls below this SOC in %.
+# --------------------------------------
+# Battery Charging setting:
+# This is max charging amps eg 50A, for Bulk - Constant Current charging(CC), should be at least 10A less than BMS change current protection, 0.5C max 
+  charge_a: "50"
+# Absorption Voltage for Constant Voltage charging(CV). This is Absorption voltage you want the inverter to change with 55.2 eg 3.45v/cell for 16 cells 48V battery. 
+  absorption_v: "55.2"
+# Absorption time in minutes to hold charge voltage after charge voltage is reached eg 30
+  absorption_time: "30"
+# Rebulk offset, x Volts below absorption volatge battery will request rebulk, eg 55.2-3 = 52.5v, roughly 90% SOC.
+  rebulk_offset: "3"
+# --------------------------------------
+# Battery Discharge setting:
+# Max discharge amps eg 100, should be at least 10A less than BMS over dischange current protection, 0.5C max
+  discharge_a: "100"
+# Minimum discharge voltage eg 48v/16 = 3V per cell
+  min_dischange_v: "48"
+# --------------------------------------
+# Battery State of Health (SOH) setting:
 # Maximum charging cycles is used to calculate the battey SOH, LF280K=6000.0 LF280=3000.0 (decimal is required)
   max_cycles: "6000.0"
+# --------------------------------------
+# ESP32 CAN/Serail port pins:
 # GPIO pins your CAN bus transceiver(TJA1050) is connected to the ESP, note! TX->TX and RX->RX. 
   can_tx_pin: GPIO23
   can_rx_pin: GPIO22
 # GPIO pins your JK-BMS RS485(TTL) is connected to the ESP TX->RX and RX->TX. 
   tx_pin: GPIO17
   rx_pin: GPIO16
+# --------------------------------------
 #### Don't make changes below this ####
   external_components_source: github://uksa007/esphome-jk-bms-can@main
 
 esphome:
   name: ${name}
+  on_boot:
+    then:
+      - switch.turn_on: inverter_charging
+      - switch.turn_on: inverter_discharging
 
 esp32:
   board: esp32doit-devkit-v1
@@ -39,10 +61,10 @@ globals:
     type: int
     restore_value: no
     initial_value: '0'
-  - id: max_soc_obtained
-    type: int
+  - id: charge_status
+    type: std::string
     restore_value: no
-    initial_value: '0'
+    initial_value: '"Startup"'
 
 button:
   - platform: restart
@@ -53,15 +75,16 @@ button:
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
+  domain: !secret domain
 
 ota:
 logger:
 
 # Please use the native `api` component instead of the `mqtt` section
 # if you use Home Assistant. The native API is more lightweight.
-#
 api:
-#mqtt:
+
+# mqtt:
 #  broker: !secret mqtt_host
 #  username: !secret mqtt_username
 #  password: !secret mqtt_password
@@ -79,7 +102,6 @@ light:
     id: led_buitin
     name: "Builtin LED"
     internal: true
-#    restore_mode: ALWAYS_ON # what you need
 
 uart:
   id: uart0
@@ -116,7 +138,7 @@ canbus:
 interval:
   - interval: 1000ms
     then:
-      - canbus.send: # Warn Alarm
+      - canbus.send: # Warning, Alarms
           can_id: 0x359
           data: !lambda |-
             uint8_t can_mesg[] = {0, 0};
@@ -162,62 +184,76 @@ interval:
       - canbus.send: # BMS instructs inverter: Charge Volts, Charge Amps, Discharge Amps, Min voltage
           can_id: 0x351
           data: !lambda |-
-            int chg_v = ${charge_v} * 10;
             uint8_t can_mesg[7];
-            can_mesg[0] = chg_v & 0xff;
-            can_mesg[1] = chg_v >> 8 & 0xff;
-            if ((id(charging_switch).state) and ((uint16_t(id(capacity_remaining).state) <= ${rebulk_soc}) or (id(max_soc_obtained) == 0))) {
-               can_mesg[2] = int16_t(id(charging_overcurrent_protection).state * 10) & 0xff;
-               can_mesg[3] = int16_t(id(charging_overcurrent_protection).state * 10) >> 8 & 0xff;
-               id(max_soc_obtained) = 0;
-            } else {            
-               can_mesg[2] = 0x00;
-               can_mesg[3] = 0x00;
+            if ((!id(charging_switch).state) | (!id(inverter_charging).state)) {
+               id(charge_status) = "Disabled";
+            } else if (id(inverter_chg_on).state) {
+                id(charge_status) = "Bulk Manually";
+            } else if ((id(charging_switch).state) & (id(inverter_charging).state) & (id(charge_status) == "Disabled")) {
+               id(charge_status) = "Wait";
+            } else if ((!id(inverter_chg_on).state) & (id(charge_status) == "Bulk Manually")) {
+               id(charge_status) = "Wait";
+            } else if (id(total_voltage).state <= (id(charging_voltage).state - ${rebulk_offset})) { ///Bulk Charge eg 53.6v 10% 
+                if (id(absorption_script).is_running()) id(absorption_script).stop();
+                id(charge_status) = "Bulk";
+            } else if ((id(total_voltage).state > (id(charging_voltage).state - ${rebulk_offset})) & (id(total_voltage).state < (id(charging_voltage).state - 0.05))) { ///If in startup rebulk
+                     if (id(charge_status) == "Startup") {
+                        id(charge_status) = "Bulk"; /// If in startup, 10% low rebulk
+                     }
+            } else if (id(total_voltage).state >= (id(charging_voltage).state  - 0.05)) { ///10 % from top start absorption timer
+                     if (id(charge_status) == "Bulk") {
+                        id(charge_status) = "Absorption";
+                        if (!id(absorption_script).is_running()) id(absorption_script).execute();
+                     }
+            } else {
+                id(charge_status) = "Wait";
             }
-            if (uint16_t(id(capacity_remaining).state) >= ${max_soc}) {
-               can_mesg[2] = 0x00;
-               can_mesg[3] = 0x00;
-               id(max_soc_obtained) = 1;
+            if ((id(charge_status) == "Bulk") | (id(charge_status) == "Absorption") | (id(inverter_chg_on).state)) {
+               can_mesg[0] = uint16_t(id(charging_voltage).state * 10) & 0xff;
+               can_mesg[1] = uint16_t(id(charging_voltage).state * 10) >> 8 & 0xff;
+               can_mesg[2] = uint16_t(id(charging_current).state * 10) & 0xff;
+               can_mesg[3] = uint16_t(id(charging_current).state * 10) >> 8 & 0xff;
+            } else {
+               can_mesg[0] = 0;
+               can_mesg[1] = 0;
+               can_mesg[2] = 0;
+               can_mesg[3] = 0;
             }
-            if (id(inverter_chg_on).state) {
-               can_mesg[2] = int16_t(id(charging_overcurrent_protection).state * 10) & 0xff;
-               can_mesg[3] = int16_t(id(charging_overcurrent_protection).state * 10) >> 8 & 0xff;
+            if ((!id(charging_switch).state) | (!id(inverter_charging).state)) { /// Overides to disable charging
+               can_mesg[0] = 0;
+               can_mesg[1] = 0;
+               can_mesg[2] = 0;
+               can_mesg[3] = 0;
             }
-            if (id(inverter_charging).state) {
-               can_mesg[2] = 0x00;
-               can_mesg[3] = 0x00;
-            }
-            if (id(discharging_switch).state) {
+            if ((id(discharging_switch).state) & (id(inverter_discharging).state)) {
               can_mesg[4] = (int16_t(id(discharging_overcurrent_protection).state - 10) * 10) & 0xff;
               can_mesg[5] = (int16_t(id(discharging_overcurrent_protection).state - 10) * 10) >> 8 & 0xff;
             } else {
                can_mesg[4] = 0x00;
                can_mesg[5] = 0x00;
             }
-            if (id(inverter_discharging).state) {
-               can_mesg[4] = 0x00;
-               can_mesg[5] = 0x00;
-            }
-            can_mesg[6] = 0x01e0 & 0xff; /// uint16_t(id(total_voltage_undervoltage_protection).state * 10) & 0xff;
-            can_mesg[7] = 0x01e0 >> 8 & 0xff; ///uint16_t(id(total_voltage_undervoltage_protection).state * 10) >> 8 & 0xff;
+            can_mesg[6] = uint16_t(${min_dischange_v} * 10) & 0xff;
+            can_mesg[7] = uint16_t(${min_dischange_v} * 10) >> 8 & 0xff;
+            id(charging_status).publish_state(id(charge_status));
             ESP_LOGI("main", "send can id: 0x351 hex: %x %x %x %x %x %x %x %x", can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5], can_mesg[6], can_mesg[7]);
+            ESP_LOGI("main", "send can id: Charge Status %s", id(charge_status).c_str());
             return {can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5], can_mesg[6], can_mesg[7]};
       - delay: 10ms
 
-      - canbus.send: # SOC, SOH
+      - canbus.send: # Actual SOC, SOH
           can_id: 0x355
           data: !lambda |-
             int soh = round(((id(charging_cycles).state/${max_cycles})-1)*-100);
             uint8_t can_mesg[3];
-            can_mesg[0] = uint16_t(id(capacity_remaining).state) & 0xff;
-            can_mesg[1] = uint16_t(id(capacity_remaining).state) >> 8 & 0xff;
+            can_mesg[0] = uint16_t(id(capacity_remaining).state) & 0xff; /// 15 & 0xff; 
+            can_mesg[1] = uint16_t(id(capacity_remaining).state) >> 8 & 0xff; /// 15 >> 8 & 0xff; 
             can_mesg[2] = soh & 0xff;
             can_mesg[3] = soh >> 8 & 0xff;
             ESP_LOGI("main", "send can id: 0x355 hex: %x %x %x %x", can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3]);
             return {can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3]};
       - delay: 10ms
 
-      - canbus.send: # Volts,Amps,Temp
+      - canbus.send: # Actual Volts, Amps, Temp
           can_id: 0x356
           data: !lambda |-
             uint8_t can_mesg[5];
@@ -235,20 +271,12 @@ interval:
           can_id: 0x35C
           data: !lambda |-
             uint8_t can_mesg[1];
-            if (id(charging_switch).state) {
+            if ((id(charging_switch).state) & (id(inverter_charging).state)) {
                can_mesg[0] = 0x80;
             } else {
                can_mesg[0] = 0x00;
             }
-            if (uint16_t(id(capacity_remaining).state) == 100) {
-               can_mesg[0] = 0x00;
-            }
-            if (id(inverter_charging).state) {
-               can_mesg[0] = 0x00;
-            }
-            if (id(inverter_discharging).state) {
-               can_mesg[0] = can_mesg[0];
-            } else if (id(discharging_switch).state) {
+            if ((id(discharging_switch).state) & (id(inverter_discharging).state)) {
                can_mesg[0] = can_mesg[0] | 0x40;
             }
             can_mesg[1] = 0x00;
@@ -256,9 +284,8 @@ interval:
             return {can_mesg[0], can_mesg[1]};
       - delay: 10ms
 
-      - canbus.send: # Max Cell Temp, Min Cell Temp, Max Cell V, Min Cell V
+      - canbus.send: # Actual Max Cell Temp, Min Cell Temp, Max Cell V, Min Cell V
           can_id: 0x70
-          # data: [0x04, 0x01, 0xF9, 0x00, 0x48, 0x01, 0x47, 0x01]
           data: !lambda |-
             int max_cell_voltage_i = id(max_cell_voltage).state * 100.0;
             int min_cell_voltage_i = id(min_cell_voltage).state * 100.0;
@@ -275,9 +302,8 @@ interval:
             return {can_mesg[0], can_mesg[1], can_mesg[2], can_mesg[3], can_mesg[4], can_mesg[5], can_mesg[6], can_mesg[7]};
       - delay: 10ms
 
-      - canbus.send: # Max Cell Temp ID, Min Cell Temp ID, Max Cell V ID, Min Cell ID
+      - canbus.send: # Actual Max Cell Temp ID, Min Cell Temp ID, Max Cell V ID, Min Cell ID
           can_id: 0x371
-          # data: [0x05, 0x00, 0x09, 0x00, 0x04, 0x00, 0x0A, 0x00]
           data: !lambda |-
             uint8_t can_mesg[7];
             can_mesg[0] = 0x01;
@@ -297,9 +323,9 @@ interval:
           data: [0x47, 0x4F, 0x4F, 0x44, 0x57, 0x45, 0x20, 0x20]
       - delay: 10ms
 
-      - lambda: |-
+      - lambda: |- # Detect no CAN reply
            if (id(can_305_rx) > 30) {
-             ESP_LOGI("main", "No rx can 0x305. Rebooting...");
+             ESP_LOGI("main", "No rx can 0x305 reply. Rebooting...");
              id(restart_button).press();
            } else {
              id(can_305_rx) ++;
@@ -547,22 +573,57 @@ text_sensor:
       name: "${name} manufacturer"
     total_runtime_formatted:
       name: "${name} total runtime formatted"
-# Uptime Sensor
+# Template text sensors
   - platform: template
     name: ${name} Uptime Human Readable
     id: uptime_human
     icon: mdi:clock-start
+  - platform: template
+    name: "${name} Charging Status"
+    id: charging_status
+
+# Slider
+number:
+  - platform: template
+    name: "${name} Absorption voltage"
+    id: "charging_voltage"
+    step: 0.1
+    min_value: 52.8
+    max_value: 57.6
+    mode: slider
+    initial_value: "${absorption_v}"
+    unit_of_measurement: V
+    icon: mdi:battery-charging
+    optimistic: true
+  - platform: template
+    name: "${name} Charging current max"
+    id: "charging_current"
+    step: 1
+    min_value: 2
+    max_value: 100
+    mode: slider
+    initial_value: "${charge_a}"
+    unit_of_measurement: A
+    icon: mdi:current-dc
+    optimistic: true
+
+script:
+  - id: absorption_script
+    then:
+      - lambda: id(charge_status) = "Absorption";
+      - delay: ${absorption_time}min
+      - lambda: id(charge_status) = "Wait";
 
 switch:
   - platform: template
-    name: ${name} Disable Inverter Charging
+    name: ${name} Charging enabled
     id: inverter_charging
     optimistic: true
   - platform: template
-    name: ${name} Disable Inverter Discharge
+    name: ${name} Discharge enabled
     id: inverter_discharging
     optimistic: true
   - platform: template
-    name: ${name} Inverter Charger ON (top bal)
+    name: ${name} Charging manually (top bal)
     id: inverter_chg_on
     optimistic: true
