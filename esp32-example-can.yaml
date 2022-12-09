@@ -1,5 +1,5 @@
 # Version info, for full change log:- https://github.com/Uksa007/esphome-jk-bms-can/discussions/2
-# V1.11 Major update: Charging logic now has absorption, sliders for Charge Volts and Amps.
+# V1.12 fix discharge current
 substitutions:
 # --------------------------
 # name that will appear in esphome and homeassistant.
@@ -226,8 +226,8 @@ interval:
                can_mesg[3] = 0;
             }
             if ((id(discharging_switch).state) & (id(inverter_discharging).state)) {
-              can_mesg[4] = (int16_t(id(discharging_overcurrent_protection).state - 10) * 10) & 0xff;
-              can_mesg[5] = (int16_t(id(discharging_overcurrent_protection).state - 10) * 10) >> 8 & 0xff;
+              can_mesg[4] = uint16_t(${discharge_a} * 10) & 0xff;
+              can_mesg[5] = uint16_t(${discharge_a} * 10) >> 8 & 0xff;
             } else {
                can_mesg[4] = 0x00;
                can_mesg[5] = 0x00;
