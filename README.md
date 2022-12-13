@@ -25,7 +25,9 @@ Sends over CAN bus to inverter:
   - Discharge min Voltage
   - Battery name
   - Alarms: Cell over/under voltage, Charge/discharge over current, High/low Temp, BMS fault
-  - Charging logic: Chargers to user defined max SOC(90%), turns off charge, will restart charging if SOC drops below user defined rebulk SOC(80%).
+  - Charging logic: Complete rework of the charging logic, now charges with constant current(CC) to the absorption voltage, then has an absorption timer (Constant Voltage, user configurable time), with rebulk feature (user configurable offset from absorption voltage).
+  
+Note:- Support for only one BMS CAN connection per inverter, see here for more info on creating [larger capacity packs](https://github.com/Uksa007/esphome-jk-bms-can/discussions/1#discussioncomment-4359340)
 
 Home Assistant native integration via ESPHome:
 - Inverter control switches to manage inverter remotely
