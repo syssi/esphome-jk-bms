@@ -355,6 +355,8 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
 
   // 0xB8 0x00: Whether to start current calibration
   // 0xB9 0x00 0x00 0x00 0x00: Actual battery capacity
+  //   Firmware version >= 10.10 required
+  //   See https://github.com/syssi/esphome-jk-bms/issues/212 for details
   this->publish_state_(this->actual_battery_capacity_sensor_, (float) jk_get_32bit(offset + 54 + 3 * 45));
 
   // 0xBA 0x42 0x54 0x33 0x30 0x37 0x32 0x30 0x32 0x30 0x31 0x32 0x30
