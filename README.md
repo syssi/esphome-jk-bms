@@ -94,8 +94,9 @@ All JK-BMS models with software version `>=6.0` are using the implemented protoc
 ## Requirements
 
 * [ESPHome 2022.11.0 or higher](https://github.com/esphome/esphome/releases).
-* Generic ESP32, I use the esp32doit-devkit-v1
-* NOTE ESP32-S2 currently has issues with CAN BUS and does not work!
+* Generic ESP32, I use the esp32doit-devkit-v1   NOTE: ESP32-S2 currently has issues with CAN BUS and does not work!
+* TJA1050 CAN controller interface module and 4.7K resistor for 5v to 3.3v level shifing.
+* Optional: JK RS485 Adaptor and RS484 to TTL3.3v Adaptor (see optional schematic below)
 
 ## Schematics
 
