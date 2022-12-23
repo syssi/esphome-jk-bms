@@ -106,13 +106,27 @@ All JK-BMS models with software version `>=6.0` are using the implemented protoc
 ```
                 RS485-TTL                   RS232-TTL                CAN BUS
 ┌──────────┐                ┌─────────┐                ┌─────────┐              ┌──────────┐
-│          │<----- RX ----->│         │<----- TX ----->|         |              |          |
-│  JK-BMS  │<----- TX ----->│  ESP32  │<----- RX -4K7->| TJA1050 |<---CAN H --->| Inverter |
+│          │<----- TX ----->│         │<----- TX ----->|         |              |          |
+│  JK-BMS  │<----- RX ----->│  ESP32  │<-4K7- RX ----->| TJA1050 |<---CAN H --->| Inverter |
 │          │<----- GND ---->│         │<----- GND ---->|   CAN   |<---CAN L --->|          |
 │          │      3.3V ---->│         │<----- 5V ----->|         |              |          |
 └──────────┘                └─────────┘                └─────────┘              └──────────┘
 
-# RS485-TTL jack (4 Pin, JST 1.25mm pitch)
+
+
+Optional, as seen in pic above: RS485 between JK-BMS and ESP32, uses JK RS485 adaptor and RS485 to TTL3.3v adaptor.
+
+              RS485-TTL                RS485                RS485-TTL                RS232-TTL                 CAN BUS
+┌──────────┐            ┌─────────┐            ┌─────────┐            ┌─────────┐              ┌─────────┐              ┌──────────┐
+│          │<--- TX --->│    JK   │<--- TX --->│         │<--- TX --->│         │<----- TX --->|         |              |          |
+│  JK-BMS  │<--- RX --->│  RS485  │<--- RX --->│  RS485  │<--- RX --->│  ESP32  │<-4K7- RX --->| TJA1050 |<---CAN H --->| Inverter |
+│          │<--- GND -->│ Adaptor │<--- GND -->│ To 3.3V │<--- GND -->|   CAN   |<----- GND -->|   CAN   |<---CAN L --->|          |
+│          │<--Bat V -->│         │            │         │<--- 3.3V-->|         |<----- 5V --->|         |              |          |
+└──────────┘            └─────────┘            └─────────┘            └─────────┘              └─────────┘              └──────────┘
+
+
+
+# RS485-TTL jack on JK-BMS (4 Pin, JST 1.25mm pitch)
 ┌─── ─────── ────┐
 │                │
 │ O   O   O   O  │
