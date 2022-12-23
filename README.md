@@ -8,7 +8,8 @@
 ESPHome component to monitor a Jikong Battery Management System (JK-BMS) via RS485 or BLE
 
 ## This fork supports CAN bus communication with inverters supporting the CANBUS Protocol compatible with Pylontech V1.3 and Goodwe V1.5.
-Note Pylontech uses 15s/48v Goodwe uses 16s/51.2v @3.2v/cell nominal. 
+Note Pylontech uses 15s/48v Goodwe uses 16s/51.2v @3.2v/cell nominal.
+Other battery profiles that utilise the pylonton/goodwe protocol with differnt cell counts may also work, eg Alpha Ess Smile, BYD Battery-Box LV Flex Lite 
 Select the correct battery profile in the inverter to match your battery pack!
 
 The ESP32 communicates with the JK-BMS using the RS485 port(GPS) which is in fact not RS485, it is 3.3V TTL so it can be directly connected to the ESP32.
@@ -120,7 +121,7 @@ Optional, as seen in pic above: RS485 between JK-BMS and ESP32, uses JK RS485 ad
 ┌──────────┐            ┌─────────┐            ┌─────────┐            ┌─────────┐              ┌─────────┐              ┌──────────┐
 │          │<--- TX --->│    JK   │<--- TX --->│         │<--- TX --->│         │<----- TX --->|         |              |          |
 │  JK-BMS  │<--- RX --->│  RS485  │<--- RX --->│  RS485  │<--- RX --->│  ESP32  │<-4K7- RX --->| TJA1050 |<---CAN H --->| Inverter |
-│          │<--- GND -->│ Adaptor │<--- GND -->│ To 3.3V │<--- GND -->|   CAN   |<----- GND -->|   CAN   |<---CAN L --->|          |
+│          │<--- GND -->│ Adaptor │<--- GND -->│ To 3.3V │<--- GND -->|         |<----- GND -->|   CAN   |<---CAN L --->|          |
 │          │<--Bat V -->│         │            │         │<--- 3.3V-->|         |<----- 5V --->|         |              |          |
 └──────────┘            └─────────┘            └─────────┘            └─────────┘              └─────────┘              └──────────┘
 
