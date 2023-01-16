@@ -34,7 +34,7 @@ static const char *const ERRORS[ERRORS_SIZE] = {
     "Error 0x01 0x00",                      // 0000 0001 0000 0000
     "Error 0x02 0x00",                      // 0000 0010 0000 0000
     "Cell count is not equal to settings",  // 0000 0100 0000 0000
-    "Error 0x08 0x00",                      // 0000 1000 0000 0000
+    "Current sensor anomaly",               // 0000 1000 0000 0000
     "Cell Overvoltage",                     // 0001 0000 0000 0000
     "Error 0x20 0x00",                      // 0010 0000 0000 0000
     "Charge overcurrent protection",        // 0100 0000 0000 0000
@@ -587,7 +587,7 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   //           0x01 0x00                                                     0000 0001 0000 0000
   //           0x02 0x00                                                     0000 0010 0000 0000
   //           0x04 0x00                Cell count is not equal to settings  0000 0100 0000 0000
-  //           0x08 0x00                                                     0000 1000 0000 0000
+  //           0x08 0x00                Current sensor anomaly               0000 1000 0000 0000
   //           0x10 0x00                Cell Over Voltage                    0001 0000 0000 0000
   //           0x20 0x00                                                     0010 0000 0000 0000
   //           0x40 0x00                                                     0100 0000 0000 0000
