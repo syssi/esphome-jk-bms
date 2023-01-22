@@ -1,0 +1,40 @@
+substitutions:
+  name: ble-scanner
+  device_description: "Search for BLE devices"
+  external_components_source: github://syssi/esphome-jk-bms@main
+
+esphome:
+  name: ${name}
+  comment: ${device_description}
+  project:
+    name: "syssi.esphome-jk-bms"
+    version: 1.3.0
+
+esp32:
+  board: wemos_d1_mini32
+  framework:
+    type: esp-idf
+    version: latest
+
+external_components:
+  - source: ${external_components_source}
+    refresh: 0s
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+ota:
+
+logger:
+  level: DEBUG
+  logs:
+    wifi: WARN
+
+api:
+
+esp32_ble_tracker:
+
+text_sensor:
+  - platform: ble_scanner
+    name: "BLE Devices Scanner"
