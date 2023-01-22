@@ -1,7 +1,6 @@
 substitutions:
   name: ble-scanner
   device_description: "Search for BLE devices"
-  external_components_source: github://syssi/esphome-jk-bms@main
 
 esphome:
   name: ${name}
@@ -15,10 +14,6 @@ esp32:
   framework:
     type: esp-idf
     version: latest
-
-external_components:
-  - source: ${external_components_source}
-    refresh: 0s
 
 wifi:
   ssid: !secret wifi_ssid
