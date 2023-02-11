@@ -1,5 +1,5 @@
 # Version info, for full change log:- https://github.com/Uksa007/esphome-jk-bms-can/discussions/2
-# V1.12 fix discharge current
+# V1.13 fix array too small 
 substitutions:
 # --------------------------
 # name that will appear in esphome and homeassistant.
@@ -141,7 +141,7 @@ interval:
       - canbus.send: # Warning, Alarms
           can_id: 0x359
           data: !lambda |-
-            uint8_t can_mesg[] = {0, 0};
+            uint8_t can_mesg[] = {0, 0, 0, 0, 0, 0, 0, 0};
             uint16_t jk_errormask = id(errors_bitmask).state;
             int batt_mods = ${batt_modules};
             /// Alarms
