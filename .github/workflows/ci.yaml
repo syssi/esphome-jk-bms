@@ -163,6 +163,8 @@ jobs:
         run: 'echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password" > secrets.yaml'
       - run: |
           esphome -s external_components_source components config esp32-heltec-balancer-ble-example.yaml
+          esphome -s external_components_source components config esp32-heltec-balancer-ble-example-debug.yaml
+          esphome -s external_components_source components config esp32-heltec-balancer-ble-example-faker.yaml
       - run: |
           esphome -s external_components_source components config esp8266-example.yaml
           esphome -s external_components_source components config esp8266-example-debug.yaml
@@ -215,7 +217,7 @@ jobs:
         shell: bash
         run: 'echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password" > secrets.yaml'
       - run: |
-          esphome -s external_components_source components compile esp32-heltec-balancer-ble-example.yaml
+          esphome -s external_components_source components compile esp32-heltec-balancer-ble-example-faker.yaml
       - run: |
           esphome -s external_components_source components compile esp8266-example-faker.yaml
       - run: |

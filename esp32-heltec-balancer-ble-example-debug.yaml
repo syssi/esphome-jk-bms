@@ -1,10 +1,10 @@
-<<: !include esp32-ble-jk04-example.yaml
+<<: !include esp32-heltec-balancer-ble-example.yaml
 
 logger:
   level: VERY_VERBOSE
   logs:
     esp32_ble_tracker: VERY_VERBOSE
-    jk_bms_ble: VERY_VERBOSE
+    heltec_balancer_ble: VERY_VERBOSE
     scheduler: DEBUG
     component: DEBUG
     sensor: DEBUG
