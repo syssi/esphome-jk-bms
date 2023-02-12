@@ -3,7 +3,7 @@
 ![GitHub stars](https://img.shields.io/github/stars/Uksa007/esphome-jk-bms-can)
 ![GitHub forks](https://img.shields.io/github/forks/Uksa007/esphome-jk-bms-can)
 ![GitHub watchers](https://img.shields.io/github/watchers/Uksa007/esphome-jk-bms-can)
-[!["Buy Me A Beer"](https://img.shields.io/badge/buy%20me%20a%20beer-donate-yellow.svg)](https://www.paypal.com/donate/?hosted_button_id=D2AULK7N5D242)
+[!["Support development"](https://raw.githubusercontent.com/Uksa007/esphome-jk-bms-can/main/images/become_a_patron_button.png)](https://www.patreon.com/Uksa007Codedevelopment)
 
 ESPHome component to monitor a Jikong Battery Management System (JK-BMS) via RS485 or BLE
 
@@ -43,7 +43,7 @@ Each LX U5.4-L battery has 5.4kWh of storage, so select the number that is the c
 **Note:- I'm using this with my Goodwe GW5000S-BP inverter however CAN bus support is still in development and testing!!!**<br>
 Further deatils in the discussion tab https://github.com/Uksa007/esphome-jk-bms-can/discussions
 
-If you find this useful and would like to <a href="https://www.paypal.com/donate/?hosted_button_id=D2AULK7N5D242" target="_blank">buy me a beer here</a> thanks!
+If you find this useful and would like to suppport my work [!["Support development"](https://raw.githubusercontent.com/Uksa007/esphome-jk-bms-can/main/images/become_a_patron_button.png)](https://www.patreon.com/Uksa007Codedevelopment) here</a> thanks!
 
 
 
