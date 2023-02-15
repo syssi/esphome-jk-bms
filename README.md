@@ -46,6 +46,11 @@ Further deatils in the discussion tab https://github.com/Uksa007/esphome-jk-bms-
 If you find this useful and would like to suppport my work [!["Support development"](https://raw.githubusercontent.com/Uksa007/esphome-jk-bms-can/main/images/become_a_patron_button.png)](https://www.patreon.com/Uksa007Codedevelopment) here</a> thanks!
 
 
+<br>**NOTE: ESP32 has a bug that causes WDT reboot if no other devices on CAN bus to ACK the packets.<br>
+If you try to run without inverter to CAN bus it will NOT work as it will constantly WDT reboot!<br>
+There is an [early access beta version available](https://www.patreon.com/posts/beta-tester-code-78524976) that works around no inverter(CAN bus requires 2 devices to work).<br>
+If you would like to test without inverter connected, only the [beta version will work!](https://www.patreon.com/posts/beta-tester-code-78524976)**<br><br>
+
 
 * Connect a TJA1050 to an ESP32 (default GPIO 23 TX, 22 RX) as per https://esphome.io/components/canbus.html?highlight=can#wiring-options
 * Use this code in esphome https://github.com/Uksa007/esphome-jk-bms-can/blob/main/esp32-example-can.yaml
