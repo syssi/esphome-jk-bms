@@ -137,12 +137,12 @@ Optional, as seen in pic above: RS485 between JK-BMS and ESP32, uses JK RS485 ad
 ┌─── ─────── ────┐
 │                │
 │ O   O   O   O  │
-│GND  RX  TX VBAT│
+│GND  RX  TX VBAT│ 
 └────────────────┘
-  │   │   │
-  │   │   └─── GPIO17 (`rx_pin`)
-  │   └─────── GPIO16 (`tx_pin`)
-  └─────────── GND
+  │   │   │   | VBAT is full battery volatge eg 51.2V (No connect)
+  │   │   └──── GPIO16 (`rx_pin`)
+  │   └──────── GPIO17 (`tx_pin`)
+  └──────────── GND
 ```
 
 
