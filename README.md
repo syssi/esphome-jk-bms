@@ -3,7 +3,7 @@
 ![GitHub stars](https://img.shields.io/github/stars/Uksa007/esphome-jk-bms-can)
 ![GitHub forks](https://img.shields.io/github/forks/Uksa007/esphome-jk-bms-can)
 ![GitHub watchers](https://img.shields.io/github/watchers/Uksa007/esphome-jk-bms-can)
-[!["Support development"](https://raw.githubusercontent.com/Uksa007/esphome-jk-bms-can/main/images/become_a_patron_button.png)](https://www.patreon.com/Uksa007Codedevelopment)
+[!["Support development"](https://img.shields.io/badge/support%20development-donate-yellow.svg)](https://www.patreon.com/Uksa007Codedevelopment)
 
 ESPHome component to monitor a Jikong Battery Management System (JK-BMS) via RS485 or BLE
 
@@ -28,7 +28,13 @@ Sends over CAN bus to inverter:
   - Alarms: Cell over/under voltage, Charge/discharge over current, High/low Temp, BMS fault
   - Charging logic: Complete rework of the charging logic, now charges with constant current(CC) to the absorption voltage, then has an absorption timer (Constant Voltage, user configurable time), with rebulk feature (user configurable offset from absorption voltage).
   
-Note:- Support for only one BMS CAN connection per inverter, see here for more info on creating [larger capacity packs](https://github.com/Uksa007/esphome-jk-bms-can/discussions/1#discussioncomment-4359340)
+Note:- Support for only one BMS CAN connection per inverter, see here for more info on creating [larger capacity packs](https://github.com/Uksa007/esphome-jk-bms-can/discussions/1#discussioncomment-4359340)<br>
+Early stages are under way to support multiple BMS, but need funding to purchase additional hardware, please consider supporting me if you would like to see this functionally, early access code with be made available in the Alpha testers membership once funding goals are reached: https://www.patreon.com/Uksa007Codedevelopment
+
+NOTE: ESP32 has a bug that causes WDT reboot if no other devices on CAN bus to ACK the packets.
+If you try to run without inverter it will not work as it will constantly WDT reboot!
+There is an early access beta version available that works around no inverter(CAN bus requires 2 devices to work)
+
 
 Home Assistant native integration via ESPHome:
 - Inverter control switches to manage inverter remotely
@@ -42,6 +48,7 @@ Each LX U5.4-L battery has 5.4kWh of storage, so select the number that is the c
 
 **Note:- I'm using this with my Goodwe GW5000S-BP inverter however CAN bus support is still in development and testing!!!**<br>
 Further deatils in the discussion tab https://github.com/Uksa007/esphome-jk-bms-can/discussions
+
 
 If you find this useful and would like to suppport my work [!["Support development"](https://raw.githubusercontent.com/Uksa007/esphome-jk-bms-can/main/images/become_a_patron_button.png)](https://www.patreon.com/Uksa007Codedevelopment) here</a> thanks!
 
