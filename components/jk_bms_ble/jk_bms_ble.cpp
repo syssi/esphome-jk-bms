@@ -512,7 +512,7 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   //           0xFF 0xFF 0x00 0x00    16 cells enabled
   //           0xFF 0xFF 0xFF 0x00    24 cells enabled
   //           0xFF 0xFF 0xFF 0xFF    32 cells enabled
-  ESP_LOGI(TAG, "Enabled cells: %02X %02X %02X %02X", data[54 + offset], data[55 + offset], data[56 + offset],
+  ESP_LOGV(TAG, "Enabled cells bitmask: %02X %02X %02X %02X", data[54 + offset], data[55 + offset], data[56 + offset],
            data[57 + offset]);
 
   // 58    2   0x00 0x0D              Average Cell Voltage  0.001        V
@@ -540,8 +540,8 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
     ESP_LOGD(TAG, "Unknown112: %02X %02X", data[112 + offset], data[113 + offset]);
   }
 
-  // 114   4   0x00 0x00 0x00 0x00    Warning wire resistance too high?
-  ESP_LOGI(TAG, "Wire resistance warning: %02X %02X %02X %02X", data[114 + offset], data[115 + offset],
+  // 114   4   0x00 0x00 0x00 0x00    Wire resistance warning bitmask (each bit indicates a warning per cell / wire)
+  ESP_LOGD(TAG, "Wire resistance warning bitmask: %02X %02X %02X %02X", data[114 + offset], data[115 + offset],
            data[116 + offset], data[117 + offset]);
 
   // 118   4   0x03 0xD0 0x00 0x00    Battery voltage       0.001        V
