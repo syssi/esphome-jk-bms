@@ -192,6 +192,13 @@ jobs:
         run: |
           esphome -s external_components_source ../components config yaml-snippets/esp32-ble-energy-dashboard.yaml
 
+      - name: Write tests/secrets.yaml
+        shell: bash
+        run: 'echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password" > tests/secrets.yaml'
+      - name: Validate test configurations
+        run: |
+          esphome -s external_components_source ../components config tests/esp8266-fake-bms.yaml
+
   esphome-compile:
     runs-on: ubuntu-latest
     needs: [esphome-config]
