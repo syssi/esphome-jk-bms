@@ -2,7 +2,7 @@ substitutions:
   name: jk-bms
   bms0: "${name} bms0"
   bms1: "${name} bms1"
-  device_description: "Monitor and control a JK-BMS via UART-TTL"
+  device_description: "Monitor two JK-BMS via UART-TTL"
   external_components_source: github://syssi/esphome-jk-bms@main
   tx_pin_uart0: GPIO16
   rx_pin_uart0: GPIO17
