@@ -26,6 +26,7 @@ All JK-BMS models with software version `>=6.0` are using the implemented protoc
 * JK-B2A24S15P, hw 8.x, sw 8.21W (reported by [@mariusvaida](https://github.com/syssi/esphome-jk-bms/issues/120))
 * JK-B2A24S15P, hw 10.xw, sw 10.07
 * JK-B2A24S15P, hw 10.xw, sw 10.08 (reported by [@meccip](https://github.com/syssi/esphome-jk-bms/discussions/175#discussioncomment-3687287))
+* JK-B2A24S150P, hw 10.xw, sw 10.10 (reported by [@nayias](https://github.com/syssi/esphome-jk-bms/discussions/257#discussioncomment-5062807))
 * JK-B2A24S20P, hw 8.x, sw 8.1.2H (reported by [@KlausLi](https://github.com/syssi/esphome-jk-bms/issues/15#issuecomment-961447064))
 * JK-B2A24S20P, hw 8.x, sw 8.20G (reported by [@rob-oravec](https://github.com/syssi/esphome-jk-bms/discussions/46))
 * JK-B2A24S20P, hw 10.X-W, sw 10.02 (reported by [@SeByDocKy](https://github.com/syssi/esphome-jk-bms/issues/37#issuecomment-1040569576))
