@@ -27,6 +27,9 @@ ota:
 logger:
   baud_rate: 0
 
+# If you use Home Assistant please remove this `mqtt` section and uncomment the native `api` component!
+# api:
+
 mqtt:
   broker: !secret mqtt_host
   username: !secret mqtt_username

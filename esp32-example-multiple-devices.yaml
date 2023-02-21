@@ -33,10 +33,9 @@ wifi:
 ota:
 logger:
 
-# Please use the native `api` component instead of the `mqtt` section
-# if you use Home Assistant. The native API is more lightweight.
-#
+# If you use Home Assistant please remove this `mqtt` section and uncomment the native `api` component!
 # api:
+
 mqtt:
   broker: !secret mqtt_host
   username: !secret mqtt_username
