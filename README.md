@@ -6,7 +6,7 @@
 ![GitHub watchers](https://img.shields.io/github/watchers/syssi/esphome-jk-bms)
 [!["Buy Me A Coffee"](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg)](https://www.buymeacoffee.com/syssi)
 
-ESPHome component to monitor a Jikong Battery Management System (JK-BMS) via RS485 or BLE
+ESPHome component to monitor a Jikong Battery Management System (JK-BMS) via UART-TTL or BLE
 
 ![Lovelace entities card](lovelace-entities-card.png "Lovelace entities card")
 
@@ -58,7 +58,7 @@ All JK-BMS models with software version `>=6.0` are using the implemented protoc
 
 
 ```
-                RS485-TTL
+                UART-TTL
 ┌──────────┐                ┌─────────┐
 │          │<----- RX ----->│         │
 │  JK-BMS  │<----- TX ----->│ ESP32/  │
@@ -66,7 +66,7 @@ All JK-BMS models with software version `>=6.0` are using the implemented protoc
 │          │                │         │<-- GND
 └──────────┘                └─────────┘
 
-# RS485-TTL jack (4 Pin, JST 1.25mm pitch)
+# UART-TTL socket (4 Pin, JST 1.25mm pitch)
 ┌─── ─────── ────┐
 │                │
 │ O   O   O   O  │
@@ -79,7 +79,7 @@ All JK-BMS models with software version `>=6.0` are using the implemented protoc
 ```
 
 
-The RS485-TTL jack of the BMS can be attached to any UART pins of the ESP. A hardware UART should be preferred because of the high baudrate (115200 baud). The connector is called 4 Pin JST with 1.25mm pitch.
+The UART-TTL (labeled as `RS485`) socket of the BMS can be attached to any UART pins of the ESP. A hardware UART should be preferred because of the high baudrate (115200 baud). The connector is called 4 Pin JST with 1.25mm pitch.
 
 ## Installation
 
