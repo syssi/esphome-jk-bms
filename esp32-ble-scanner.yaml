@@ -27,6 +27,7 @@ logger:
     wifi: WARN
 
 api:
+  reboot_timeout: 0s
 
 esp32_ble_tracker:
 

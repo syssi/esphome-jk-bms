@@ -14,9 +14,6 @@ esphome:
 esp32:
   board: wemos_d1_mini32
   framework:
-#  The arduino platform crashs
-#    type: arduino
-#    version: latest
     type: esp-idf
     version: latest
 
@@ -31,11 +28,9 @@ wifi:
 ota:
 logger:
 
+# If you don't use Home Assistant please remove this `api` section and uncomment the `mqtt` component!
 api:
 
-# This feature is only available with frameworks ['arduino'] <= 2022.3.1
-# https://github.com/esphome/esphome/pull/2930: Add mqtt for idf >= 2022.4.0
-#
 # mqtt:
 #   broker: !secret mqtt_host
 #   username: !secret mqtt_username

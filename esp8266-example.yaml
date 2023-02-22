@@ -1,6 +1,6 @@
 substitutions:
   name: jk-bms
-  device_description: "Monitor and control a JK-BMS via UART-TTL"
+  device_description: "Monitor a JK-BMS via UART-TTL"
   external_components_source: github://syssi/esphome-jk-bms@main
   tx_pin: GPIO1
   rx_pin: GPIO3
@@ -26,6 +26,9 @@ wifi:
 ota:
 logger:
   baud_rate: 0
+
+# If you use Home Assistant please remove this `mqtt` section and uncomment the native `api` component!
+# api:
 
 mqtt:
   broker: !secret mqtt_host
