@@ -198,6 +198,12 @@ esphome run esp32-example.yaml
 [i9]: https://github.com/syssi/esphome-jk-bms/issues/9
 [i63]: https://github.com/syssi/esphome-jk-bms/issues/63
 
+## Goodies
+
+A user of this project ([@dr3amr](https://github.com/dr3amr)) shared some [Home Assistant Lovelace UI cards for a beautiful dashboard here](https://github.com/syssi/esphome-jk-bms/discussions/230).
+
+![Custom Lovelace UI cards](images/lovelace-cards-contribution.jpg "Home Assistant Lovelace UI cards")
+
 ## Debugging
 
 If this component doesn't work out of the box for your device please update your configuration to enable the debug output of the UART component and increase the log level to the see outgoing and incoming serial traffic:
