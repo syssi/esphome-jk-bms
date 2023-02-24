@@ -1,6 +1,6 @@
 substitutions:
   name: jk-bms
-  device_description: "Monitor and control a JK-BMS via UART-TTL"
+  device_description: "Monitor a JK-BMS via UART-TTL and control via BLE"
   external_components_source: github://syssi/esphome-jk-bms@main
 
   # BLE settings
