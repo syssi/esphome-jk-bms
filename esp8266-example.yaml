@@ -37,20 +37,21 @@ mqtt:
   id: mqtt_client
 
 uart:
-  id: uart0
-  baud_rate: 115200
-  rx_buffer_size: 384
-  tx_pin: ${tx_pin}
-  rx_pin: ${rx_pin}
+  - id: uart0
+    baud_rate: 115200
+    rx_buffer_size: 384
+    tx_pin: ${tx_pin}
+    rx_pin: ${rx_pin}
 
 jk_modbus:
-  id: modbus0
-  uart_id: uart0
-  rx_timeout: 50ms
+  - id: modbus0
+    uart_id: uart0
+    rx_timeout: 50ms
 
 jk_bms:
-  id: bms0
-  jk_modbus_id: modbus0
+  - id: bms0
+    jk_modbus_id: modbus0
+    update_interval: 5s
 
 binary_sensor:
   - platform: jk_bms

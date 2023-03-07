@@ -63,8 +63,10 @@ jk_modbus:
 jk_bms:
   - id: bms0
     jk_modbus_id: modbus0
+    update_interval: 5s
   - id: bms1
     jk_modbus_id: modbus1
+    update_interval: 5s
 
 binary_sensor:
   - platform: jk_bms
