@@ -441,8 +441,8 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   this->last_cell_info_ = now;
 
   uint8_t offset = 0;
-  // Assumption: The value of data[189] (JK02) or data[189+32] (JK02_32S) is 0x01, 0x02 or 0x03
-  uint8_t frame_version = (data[189] == 0x00 && data[189 + 32] > 0) ? FRAME_VERSION_JK02_32S : FRAME_VERSION_JK02;
+
+  uint8_t frame_version = FRAME_VERSION_JK02_32S;
   if (frame_version == FRAME_VERSION_JK02_32S) {
     offset = 16;
   }
