@@ -1,6 +1,6 @@
 substitutions:
   name: jk-bms
-  device_description: "Monitor and control a JK-BMS via bluetooth"
+  device_description: "Monitor and control a JK-BMS via bluetooth incl. web interface"
   external_components_source: github://syssi/esphome-jk-bms@main
   mac_address: C8:47:8C:E1:E2:E1
   # Defaults to "JK02". Please use "JK04" if you have some old JK-BMS version (f.e. JK-B2A16S hw 3.0, sw. 3.3.0)
@@ -22,6 +22,18 @@ esp32:
 external_components:
   - source: ${external_components_source}
     refresh: 0s
+  - source: github://spali/esphome@pr3500
+    components:
+      - web_server
+      - web_server_idf
+      - web_server_base
+      - captive_portal
+    refresh: 0s
+
+web_server:
+  local: true
+
+captive_portal:
 
 wifi:
   ssid: !secret wifi_ssid
@@ -32,6 +44,7 @@ logger:
 
 # If you don't use Home Assistant please remove this `api` section and uncomment the `mqtt` component!
 api:
+  reboot_timeout: 0s
 
 # mqtt:
 #   broker: !secret mqtt_host
