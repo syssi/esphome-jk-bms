@@ -32,7 +32,7 @@ external_components:
     refresh: 0s
 
 web_server:
-  local: true
+  local: false
 
 captive_portal:
 
