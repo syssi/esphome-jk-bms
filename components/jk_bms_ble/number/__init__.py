@@ -25,6 +25,8 @@ CODEOWNERS = ["@syssi"]
 
 DEFAULT_STEP = 1
 
+# JK02
+#
 # 06 04 03000000  Set balance trig voltage to 0.003
 # 1c 04 10000000  Set cell count to 16
 # 20 04 f0ba0400  Set battery cap to 310
@@ -76,24 +78,57 @@ CONF_MAX_DISCHARGE_CURRENT = "max_discharge_current"
 #
 # https://github.com/jblance/mpp-solar/issues/170#issuecomment-1050503970
 
+# JK02_32S
+#
+# 02 04 ac0d0000  UVP                              3.5 V (3500)
+# 03 04 100e0000  UVPR                             3.6 V (3600)
+# 04 04 68100000  OVP                              4.2 V (4200)
+# 05 04 a00f0000  OVPR                             4.0 V (4000)
+# 06 04 64000000  Set balance trigger voltage    0.100 V (100)
+# 0b 04 480d0000  Power Off Vol.                  3.40 V (3400)
+# 0c 04 b80b0000  Continued Charge Current         3.0 A (3000)
+# 0d 04 28000000  Charge OCP Delay                  40 S (40)
+# 0e 04 46000000  Charge OCPR Time                  70 S (70)
+# 0f 04 e8030000  Continued Discharge Current       10 A (1000)
+# 10 04 2c010000  Discharge OCP Delay              300 S (300)
+# 11 04 46000000  Discharge OCPR Time               70 S (70)
+# 12 04 46000000  SCPR Time                         70 S (70)
+# 13 04 2c010000  Max Balance Current              0.3 A (300)
+# 14 04 94020000  Charge OTP                     66.0 °C (660)
+# 15 04 62020000  Charge OTPR                    61.0 °C (610)
+# 16 04 02030000  Discharge OTP                  77.0 °C (770)
+# 17 04 8a020000  Discharge OTPR                 65.0 °C (650)
+# 18 04 24ffffff  Charge UTP                    -22.0 °C (-220)
+# 19 04 a6ffffff  Charge UTPR                    -9.0 °C (-90)
+# 1a 04 de030000  MOS OTP                        99.0 °C (990)
+# 1b 04 0c030000  MOS OTPR                       78.0 °C (780)
+# 1c 04 06000000  Set cell count to                    6 (6)
+# 20 04 b0360000  Set battery capacity             14 Ah (14)
+# 21 04 d0070000  SCP Delay                      2000 uS (2000)
+# 22 04 04100000  Start Balance voltage            4.1 V (4100)
+# 64 04 983a0000  Set calibration voltage        15.00 V (15000)
+# 67 04 c8000000  Set calibration current          2.0 A (200)
+#
+# https://github.com/syssi/esphome-jk-bms/issues/276#issuecomment-1468145528
+
 UNIT_AMPERE_HOUR = "Ah"
 
 NUMBERS = {
-    # JK02 register, JK04 register, factor
-    CONF_BALANCE_TRIGGER_VOLTAGE: [0x06, 0x00, 1000.0],
-    CONF_CELL_COUNT: [0x1C, 0x00, 1.0],
-    CONF_TOTAL_BATTERY_CAPACITY: [0x20, 0x00, 1000.0],
-    CONF_CELL_VOLTAGE_OVERVOLTAGE_PROTECTION: [0x04, 0x00, 1000.0],
-    CONF_CELL_VOLTAGE_OVERVOLTAGE_RECOVERY: [0x05, 0x00, 1000.0],
-    CONF_CELL_VOLTAGE_UNDERVOLTAGE_PROTECTION: [0x02, 0x00, 1000.0],
-    CONF_CELL_VOLTAGE_UNDERVOLTAGE_RECOVERY: [0x03, 0x00, 1000.0],
-    CONF_BALANCE_STARTING_VOLTAGE: [0x26, 0x00, 1000.0],
-    CONF_VOLTAGE_CALIBRATION: [0x21, 0x00, 1000.0],
-    CONF_CURRENT_CALIBRATION: [0x24, 0x00, 1000.0],
-    CONF_POWER_OFF_VOLTAGE: [0x0B, 0x00, 1000.0],
-    CONF_MAX_BALANCE_CURRENT: [0x13, 0x00, 1000.0],
-    CONF_MAX_CHARGE_CURRENT: [0x0C, 0x00, 1000.0],
-    CONF_MAX_DISCHARGE_CURRENT: [0x0F, 0x00, 1000.0],
+    # JK04, JK02, JK02_32S, factor
+    CONF_BALANCE_TRIGGER_VOLTAGE: [0x00, 0x06, 0x06, 1000.0],
+    CONF_CELL_COUNT: [0x00, 0x1C, 0x1C, 1.0],
+    CONF_TOTAL_BATTERY_CAPACITY: [0x00, 0x20, 0x20, 1000.0],
+    CONF_CELL_VOLTAGE_OVERVOLTAGE_PROTECTION: [0x00, 0x04, 0x04, 1000.0],
+    CONF_CELL_VOLTAGE_OVERVOLTAGE_RECOVERY: [0x00, 0x05, 0x05, 1000.0],
+    CONF_CELL_VOLTAGE_UNDERVOLTAGE_PROTECTION: [0x00, 0x02, 0x02, 1000.0],
+    CONF_CELL_VOLTAGE_UNDERVOLTAGE_RECOVERY: [0x00, 0x03, 0x03, 1000.0],
+    CONF_BALANCE_STARTING_VOLTAGE: [0x00, 0x26, 0x22, 1000.0],
+    CONF_VOLTAGE_CALIBRATION: [0x00, 0x21, 0x64, 1000.0],
+    CONF_CURRENT_CALIBRATION: [0x00, 0x24, 0x67, 1000.0],
+    CONF_POWER_OFF_VOLTAGE: [0x00, 0x0B, 0x0B, 1000.0],
+    CONF_MAX_BALANCE_CURRENT: [0x00, 0x13, 0x13, 1000.0],
+    CONF_MAX_CHARGE_CURRENT: [0x00, 0x0C, 0x0C, 1000.0],
+    CONF_MAX_DISCHARGE_CURRENT: [0x00, 0x0F, 0x0F, 1000.0],
 }
 
 JkNumber = jk_bms_ble_ns.class_("JkNumber", number.Number, cg.Component)
@@ -252,6 +287,7 @@ async def to_code(config):
             )
             cg.add(getattr(hub, f"set_{key}_number")(var))
             cg.add(var.set_parent(hub))
-            cg.add(var.set_jk02_holding_register(address[0]))
-            cg.add(var.set_jk04_holding_register(address[1]))
-            cg.add(var.set_factor(address[2]))
+            cg.add(var.set_jk04_holding_register(address[0]))
+            cg.add(var.set_jk02_holding_register(address[1]))
+            cg.add(var.set_jk02_32s_holding_register(address[2]))
+            cg.add(var.set_factor(address[3]))
