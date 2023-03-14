@@ -25,6 +25,8 @@ CODEOWNERS = ["@syssi"]
 
 DEFAULT_STEP = 1
 
+# JK02
+#
 # 06 04 03000000  Set balance trig voltage to 0.003
 # 1c 04 10000000  Set cell count to 16
 # 20 04 f0ba0400  Set battery cap to 310
@@ -75,6 +77,37 @@ CONF_MAX_DISCHARGE_CURRENT = "max_discharge_current"
 # 3e 04 00000000  Set Con. Wire Res.24 to 0.00
 #
 # https://github.com/jblance/mpp-solar/issues/170#issuecomment-1050503970
+
+# JK02_32S
+#
+# 02 04 ac0d0000  UVP                              3.5 V (3500)
+# 03 04 100e0000  UVPR                             3.6 V (3600)
+# 04 04 68100000  OVP                              4.2 V (4200)
+# 05 04 a00f0000  OVPR                             4.0 V (4000)
+# 06 04 64000000  Set balance trigger voltage    0.100 V (100)
+# 0b 04 480d0000  Power Off Vol.                  3.40 V (3400)
+# 0c 04 b80b0000  Continued Charge Current         3.0 A (3000)
+# 0d 04 28000000  Charge OCP Delay                  40 S (40)
+# 0e 04 46000000  Charge OCPR Time                  70 S (70)
+# 0f 04 e8030000  Continued Discharge Current       10 A (1000)
+# 10 04 2c010000  Discharge OCP Delay              300 S (300)
+# 11 04 46000000  Discharge OCPR Time               70 S (70)
+# 12 04 46000000  SCPR Time                         70 S (70)
+# 13 04 2c010000  Max Balance Current              0.3 A (300)
+# 14 04 94020000  Charge OTP                     66.0 °C (660)
+# 15 04 62020000  Charge OTPR                    61.0 °C (610)
+# 16 04 02030000  Discharge OTP                  77.0 °C (770)
+# 17 04 8a020000  Discharge OTPR                 65.0 °C (650)
+# 18 04 24ffffff  Charge UTP                    -22.0 °C (-220)
+# 19 04 a6ffffff  Charge UTPR                    -9.0 °C (-90)
+# 1a 04 de030000  MOS OTP                        99.0 °C (990)
+# 1b 04 0c030000  MOS OTPR                       78.0 °C (780)
+# 1c 04 06000000  Set cell count to                    6 (6)
+# 20 04 b0360000  Set battery capacity             14 Ah (14)
+# 21 04 d0070000  SCP Delay                      2000 uS (2000)
+# 22 04 04100000  Start Balance voltage            4.1 V (4100)
+# 64 04 983a0000  Set calibration voltage        15.00 V (15000)
+# 67 04 c8000000  Set calibration current          2.0 A (200)
 
 UNIT_AMPERE_HOUR = "Ah"
 
