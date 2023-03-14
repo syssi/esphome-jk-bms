@@ -114,21 +114,21 @@ CONF_MAX_DISCHARGE_CURRENT = "max_discharge_current"
 UNIT_AMPERE_HOUR = "Ah"
 
 NUMBERS = {
-    # JK02 register, JK04 register, factor
-    CONF_BALANCE_TRIGGER_VOLTAGE: [0x06, 0x00, 1000.0],
-    CONF_CELL_COUNT: [0x1C, 0x00, 1.0],
-    CONF_TOTAL_BATTERY_CAPACITY: [0x20, 0x00, 1000.0],
-    CONF_CELL_VOLTAGE_OVERVOLTAGE_PROTECTION: [0x04, 0x00, 1000.0],
-    CONF_CELL_VOLTAGE_OVERVOLTAGE_RECOVERY: [0x05, 0x00, 1000.0],
-    CONF_CELL_VOLTAGE_UNDERVOLTAGE_PROTECTION: [0x02, 0x00, 1000.0],
-    CONF_CELL_VOLTAGE_UNDERVOLTAGE_RECOVERY: [0x03, 0x00, 1000.0],
-    CONF_BALANCE_STARTING_VOLTAGE: [0x26, 0x00, 1000.0],
-    CONF_VOLTAGE_CALIBRATION: [0x21, 0x00, 1000.0],
-    CONF_CURRENT_CALIBRATION: [0x24, 0x00, 1000.0],
-    CONF_POWER_OFF_VOLTAGE: [0x0B, 0x00, 1000.0],
-    CONF_MAX_BALANCE_CURRENT: [0x13, 0x00, 1000.0],
-    CONF_MAX_CHARGE_CURRENT: [0x0C, 0x00, 1000.0],
-    CONF_MAX_DISCHARGE_CURRENT: [0x0F, 0x00, 1000.0],
+    # JK04, JK02, JK02_32S, factor
+    CONF_BALANCE_TRIGGER_VOLTAGE: [0x00, 0x06, 0x06, 1000.0],
+    CONF_CELL_COUNT: [0x00, 0x1C, 0x1C, 1.0],
+    CONF_TOTAL_BATTERY_CAPACITY: [0x00, 0x20, 0x20, 1000.0],
+    CONF_CELL_VOLTAGE_OVERVOLTAGE_PROTECTION: [0x00, 0x04, 0x04, 1000.0],
+    CONF_CELL_VOLTAGE_OVERVOLTAGE_RECOVERY: [0x00, 0x05, 0x05, 1000.0],
+    CONF_CELL_VOLTAGE_UNDERVOLTAGE_PROTECTION: [0x00, 0x02, 0x02, 1000.0],
+    CONF_CELL_VOLTAGE_UNDERVOLTAGE_RECOVERY: [0x00, 0x03, 0x03, 1000.0],
+    CONF_BALANCE_STARTING_VOLTAGE: [0x00, 0x26, 0x22, 1000.0],
+    CONF_VOLTAGE_CALIBRATION: [0x00, 0x21, 0x64, 1000.0],
+    CONF_CURRENT_CALIBRATION: [0x00, 0x24, 0x67, 1000.0],
+    CONF_POWER_OFF_VOLTAGE: [0x00, 0x0B, 0x0B, 1000.0],
+    CONF_MAX_BALANCE_CURRENT: [0x00, 0x13, 0x13, 1000.0],
+    CONF_MAX_CHARGE_CURRENT: [0x00, 0x0C, 0x0C, 1000.0],
+    CONF_MAX_DISCHARGE_CURRENT: [0x00, 0x0F, 0x0F, 1000.0],
 }
 
 JkNumber = jk_bms_ble_ns.class_("JkNumber", number.Number, cg.Component)
@@ -287,6 +287,7 @@ async def to_code(config):
             )
             cg.add(getattr(hub, f"set_{key}_number")(var))
             cg.add(var.set_parent(hub))
-            cg.add(var.set_jk02_holding_register(address[0]))
-            cg.add(var.set_jk04_holding_register(address[1]))
-            cg.add(var.set_factor(address[2]))
+            cg.add(var.set_jk04_holding_register(address[0]))
+            cg.add(var.set_jk02_holding_register(address[1]))
+            cg.add(var.set_jk02_32s_holding_register(address[2]))
+            cg.add(var.set_factor(address[3]))
