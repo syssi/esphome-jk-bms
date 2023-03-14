@@ -1,18 +1,12 @@
 substitutions:
   name: jk-bms
-  device_description: "Monitor a JK-BMS via UART-TTL and control via BLE"
+  device_description: "Monitor and control a JK-BMS via bluetooth"
   external_components_source: github://syssi/esphome-jk-bms@main
-
-  # BLE settings
   mac_address: C8:47:8C:E1:E2:E1
   # Defaults to "JK02"
   # Please use "JK02_32S" if you own a JK-B2A8S20P >= hardware version 11+ (f.e. JK-B2A8S20P hw 11.XW, sw 11.26)
   # Please use "JK04" if you have some old JK-BMS <= hardware version 3 (f.e. JK-B2A16S hw 3.0, sw. 3.3.0)
-  protocol_version: JK02
-
-  # UART settings
-  tx_pin: GPIO16
-  rx_pin: GPIO17
+  protocol_version: JK02_32S
 
 esphome:
   name: ${name}
@@ -38,15 +32,14 @@ wifi:
 ota:
 logger:
 
-# Please use the native `api` component instead of the `mqtt` section
-# if you use Home Assistant. The native API is more lightweight.
-#
-# api:
-mqtt:
-  broker: !secret mqtt_host
-  username: !secret mqtt_username
-  password: !secret mqtt_password
-  id: mqtt_client
+# If you don't use Home Assistant please remove this `api` section and uncomment the `mqtt` component!
+api:
+
+# mqtt:
+#   broker: !secret mqtt_host
+#   username: !secret mqtt_username
+#   password: !secret mqtt_password
+#   id: mqtt_client
 
 esp32_ble_tracker:
   on_ble_advertise:
@@ -69,47 +62,20 @@ ble_client:
 jk_bms_ble:
   - ble_client_id: client0
     protocol_version: ${protocol_version}
-    throttle: 10s
-    id: bmsble0
-
-uart:
-  - id: uart0
-    baud_rate: 115200
-    rx_buffer_size: 384
-    tx_pin: ${tx_pin}
-    rx_pin: ${rx_pin}
-
-jk_modbus:
-  - id: modbus0
-    uart_id: uart0
-    rx_timeout: 50ms
-
-jk_bms:
-  - id: bms0
-    jk_modbus_id: modbus0
-    update_interval: 5s
+    throttle: 5s
+    id: bms0
 
 binary_sensor:
-  - platform: jk_bms
-    jk_bms_id: bms0
+  - platform: jk_bms_ble
     balancing:
       name: "${name} balancing"
-    balancing_switch:
-      name: "${name} balancing switch"
     charging:
       name: "${name} charging"
-    charging_switch:
-      name: "${name} charging switch"
     discharging:
       name: "${name} discharging"
-    discharging_switch:
-      name: "${name} discharging switch"
-    dedicated_charger_switch:
-      name: "${name} dedicated charger switch"
 
 button:
   - platform: jk_bms_ble
-    jk_bms_ble_id: bmsble0
     retrieve_settings:
       name: "${name} retrieve settings"
     retrieve_device_info:
@@ -117,19 +83,39 @@ button:
 
 number:
   - platform: jk_bms_ble
-    jk_bms_ble_id: bmsble0
+    jk_bms_ble_id: bms0
     balance_trigger_voltage:
       name: "${name} balance trigger voltage"
+    cell_count:
+      name: "${name} cell count"
+    total_battery_capacity:
+      name: "${name} total battery capacity"
+    cell_voltage_overvoltage_protection:
+      name: "${name} cell voltage overvoltage protection"
+    cell_voltage_overvoltage_recovery:
+      name: "${name} cell voltage overvoltage recovery"
+    cell_voltage_undervoltage_protection:
+      name: "${name} cell voltage undervoltage protection"
+    cell_voltage_undervoltage_recovery:
+      name: "${name} cell voltage undervoltage recovery"
     balance_starting_voltage:
       name: "${name} balance starting voltage"
+    voltage_calibration:
+      name: "${name} voltage calibration"
+    current_calibration:
+      name: "${name} current calibration"
     power_off_voltage:
       name: "${name} power off voltage"
     max_balance_current:
       name: "${name} max balance current"
+    max_charge_current:
+      name: "${name} max charge current"
+    max_discharge_current:
+      name: "${name} max discharge current"
 
 sensor:
-  - platform: jk_bms
-    jk_bms_id: bms0
+  - platform: jk_bms_ble
+    jk_bms_ble_id: bms0
     min_cell_voltage:
       name: "${name} min cell voltage"
     max_cell_voltage:
@@ -174,12 +160,70 @@ sensor:
       name: "${name} cell voltage 15"
     cell_voltage_16:
       name: "${name} cell voltage 16"
-    power_tube_temperature:
-      name: "${name} power tube temperature"
-    temperature_sensor_1:
-      name: "${name} temperature sensor 1"
-    temperature_sensor_2:
-      name: "${name} temperature sensor 2"
+    cell_voltage_17:
+      name: "${name} cell voltage 17"
+    cell_voltage_18:
+      name: "${name} cell voltage 18"
+    cell_voltage_19:
+      name: "${name} cell voltage 19"
+    cell_voltage_20:
+      name: "${name} cell voltage 20"
+    cell_voltage_21:
+      name: "${name} cell voltage 21"
+    cell_voltage_22:
+      name: "${name} cell voltage 22"
+    cell_voltage_23:
+      name: "${name} cell voltage 23"
+    cell_voltage_24:
+      name: "${name} cell voltage 24"
+    cell_resistance_1:
+      name: "${name} cell resistance 1"
+    cell_resistance_2:
+      name: "${name} cell resistance 2"
+    cell_resistance_3:
+      name: "${name} cell resistance 3"
+    cell_resistance_4:
+      name: "${name} cell resistance 4"
+    cell_resistance_5:
+      name: "${name} cell resistance 5"
+    cell_resistance_6:
+      name: "${name} cell resistance 6"
+    cell_resistance_7:
+      name: "${name} cell resistance 7"
+    cell_resistance_8:
+      name: "${name} cell resistance 8"
+    cell_resistance_9:
+      name: "${name} cell resistance 9"
+    cell_resistance_10:
+      name: "${name} cell resistance 10"
+    cell_resistance_11:
+      name: "${name} cell resistance 11"
+    cell_resistance_12:
+      name: "${name} cell resistance 12"
+    cell_resistance_13:
+      name: "${name} cell resistance 13"
+    cell_resistance_14:
+      name: "${name} cell resistance 14"
+    cell_resistance_15:
+      name: "${name} cell resistance 15"
+    cell_resistance_16:
+      name: "${name} cell resistance 16"
+    cell_resistance_17:
+      name: "${name} cell resistance 17"
+    cell_resistance_18:
+      name: "${name} cell resistance 18"
+    cell_resistance_19:
+      name: "${name} cell resistance 19"
+    cell_resistance_20:
+      name: "${name} cell resistance 20"
+    cell_resistance_21:
+      name: "${name} cell resistance 21"
+    cell_resistance_22:
+      name: "${name} cell resistance 22"
+    cell_resistance_23:
+      name: "${name} cell resistance 23"
+    cell_resistance_24:
+      name: "${name} cell resistance 24"
     total_voltage:
       name: "${name} total voltage"
     current:
@@ -190,20 +234,31 @@ sensor:
       name: "${name} charging power"
     discharging_power:
       name: "${name} discharging power"
+    temperature_sensor_1:
+      name: "${name} temperature sensor 1"
+    temperature_sensor_2:
+      name: "${name} temperature sensor 2"
+    power_tube_temperature:
+      name: "${name} power tube temperature"
+    state_of_charge:
+      name: "${name} state of charge"
     capacity_remaining:
       name: "${name} capacity remaining"
-    capacity_remaining_derived:
-      name: "${name} capacity remaining derived"
-    errors_bitmask:
-      name: "${name} errors bitmask"
-    operation_mode_bitmask:
-      name: "${name} operation mode bitmask"
+    total_battery_capacity_setting:
+      name: "${name} total battery capacity setting"
+    charging_cycles:
+      name: "${name} charging cycles"
+    total_charging_cycle_capacity:
+      name: "${name} total charging cycle capacity"
     total_runtime:
       name: "${name} total runtime"
+    balancing_current:
+      name: "${name} balancing current"
+    errors_bitmask:
+      name: "${name} errors bitmask"
 
 switch:
   - platform: jk_bms_ble
-    jk_bms_ble_id: bmsble0
     charging:
       name: "${name} charging"
     discharging:
@@ -216,11 +271,8 @@ switch:
     name: "${name} enable bluetooth connection"
 
 text_sensor:
-  - platform: jk_bms
-    jk_bms_id: bms0
+  - platform: jk_bms_ble
     errors:
       name: "${name} errors"
-    operation_mode:
-      name: "${name} operation mode"
     total_runtime_formatted:
       name: "${name} total runtime formatted"
