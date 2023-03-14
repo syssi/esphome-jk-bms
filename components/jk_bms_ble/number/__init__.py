@@ -108,6 +108,8 @@ CONF_MAX_DISCHARGE_CURRENT = "max_discharge_current"
 # 22 04 04100000  Start Balance voltage            4.1 V (4100)
 # 64 04 983a0000  Set calibration voltage        15.00 V (15000)
 # 67 04 c8000000  Set calibration current          2.0 A (200)
+#
+# https://github.com/syssi/esphome-jk-bms/issues/276#issuecomment-1468145528
 
 UNIT_AMPERE_HOUR = "Ah"
 
