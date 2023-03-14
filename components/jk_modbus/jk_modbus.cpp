@@ -72,7 +72,7 @@ bool JkModbus::parse_jk_modbus_byte_(uint8_t byte) {
   uint16_t computed_crc = chksum(raw, data_len);
   uint16_t remote_crc = uint16_t(raw[data_len]) << 8 | (uint16_t(raw[data_len + 1]) << 0);
   if (computed_crc != remote_crc) {
-    ESP_LOGW(TAG, "JkModbus CRC Check failed! %02X!=%02X", computed_crc, remote_crc);
+    ESP_LOGW(TAG, "CRC check failed! 0x%04X != 0x%04X", computed_crc, remote_crc);
     return false;
   }
 

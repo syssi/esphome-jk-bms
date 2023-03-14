@@ -391,7 +391,7 @@ void JkBmsBle::assemble_(const uint8_t *data, uint16_t length) {
     uint8_t computed_crc = crc(raw, frame_size - 1);
     uint8_t remote_crc = raw[frame_size - 1];
     if (computed_crc != remote_crc) {
-      ESP_LOGW(TAG, "JkBmsBle CRC Check failed! %02X!=%02X", computed_crc, remote_crc);
+      ESP_LOGW(TAG, "CRC check failed! 0x%02X != 0x%02X", computed_crc, remote_crc);
       this->frame_buffer_.clear();
       return;
     }
@@ -424,7 +424,7 @@ void JkBmsBle::decode_(const std::vector<uint8_t> &data) {
       this->decode_device_info_(data);
       break;
     default:
-      ESP_LOGW(TAG, "Unsupported message type (%02X)", data[4]);
+      ESP_LOGW(TAG, "Unsupported message type (0x%02X)", data[4]);
   }
 }
 
@@ -512,8 +512,8 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   //           0xFF 0xFF 0x00 0x00    16 cells enabled
   //           0xFF 0xFF 0xFF 0x00    24 cells enabled
   //           0xFF 0xFF 0xFF 0xFF    32 cells enabled
-  ESP_LOGV(TAG, "Enabled cells bitmask: %02X %02X %02X %02X", data[54 + offset], data[55 + offset], data[56 + offset],
-           data[57 + offset]);
+  ESP_LOGV(TAG, "Enabled cells bitmask: 0x%02X 0x%02X 0x%02X 0x%02X", data[54 + offset], data[55 + offset],
+           data[56 + offset], data[57 + offset]);
 
   // 58    2   0x00 0x0D              Average Cell Voltage  0.001        V
   this->publish_state_(this->average_cell_voltage_sensor_, (float) jk_get_16bit(58 + offset) * 0.001f);
@@ -537,11 +537,11 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   if (frame_version == FRAME_VERSION_JK02_32S) {
     this->publish_state_(this->power_tube_temperature_sensor_, (float) ((int16_t) jk_get_16bit(112 + offset)) * 0.1f);
   } else {
-    ESP_LOGD(TAG, "Unknown112: %02X %02X", data[112 + offset], data[113 + offset]);
+    ESP_LOGD(TAG, "Unknown112: 0x%02X 0x%02X", data[112 + offset], data[113 + offset]);
   }
 
   // 114   4   0x00 0x00 0x00 0x00    Wire resistance warning bitmask (each bit indicates a warning per cell / wire)
-  ESP_LOGD(TAG, "Wire resistance warning bitmask: %02X %02X %02X %02X", data[114 + offset], data[115 + offset],
+  ESP_LOGD(TAG, "Wire resistance warning bitmask: 0x%02X 0x%02X 0x%02X 0x%02X", data[114 + offset], data[115 + offset],
            data[116 + offset], data[117 + offset]);
 
   // 118   4   0x03 0xD0 0x00 0x00    Battery voltage       0.001        V
@@ -627,10 +627,10 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->total_charging_cycle_capacity_sensor_, (float) jk_get_32bit(154 + offset) * 0.001f);
 
   // 158   2   0x64 0x00              Unknown158
-  ESP_LOGD(TAG, "Unknown158: %02X %02X (always 0x64 0x00?)", data[158 + offset], data[159 + offset]);
+  ESP_LOGD(TAG, "Unknown158: 0x%02X 0x%02X (always 0x64 0x00?)", data[158 + offset], data[159 + offset]);
 
   // 160   2   0x79 0x04              Unknown160 (Cycle capacity?)
-  ESP_LOGD(TAG, "Unknown160: %02X %02X (always 0xC5 0x09?)", data[160 + offset], data[161 + offset]);
+  ESP_LOGD(TAG, "Unknown160: 0x%02X 0x%02X (always 0xC5 0x09?)", data[160 + offset], data[161 + offset]);
 
   // 162   4   0xCA 0x03 0x10 0x00    Total runtime in seconds           s
   this->publish_state_(this->total_runtime_sensor_, (float) jk_get_32bit(162 + offset));
@@ -657,15 +657,15 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // 185   2   0x00 0x00              Unknown185
   // 187   2   0x00 0xD5              Unknown187
   // 189   2   0x02 0x00              Unknown189
-  ESP_LOGD(TAG, "Unknown189: %02X %02X", data[189], data[190]);
+  ESP_LOGD(TAG, "Unknown189: 0x%02X 0x%02X", data[189], data[190]);
   // 190   1   0x00                   Unknown190
   // 191   1   0x00                   Balancer status (working: 0x01, idle: 0x00)
   // 192   1   0x00                   Unknown192
-  ESP_LOGD(TAG, "Unknown192: %02X", data[192 + offset]);
+  ESP_LOGD(TAG, "Unknown192: 0x%02X", data[192 + offset]);
   // 193   2   0x00 0xAE              Unknown193
-  ESP_LOGD(TAG, "Unknown193: %02X %02X (0x00 0x8D)", data[193 + offset], data[194 + offset]);
+  ESP_LOGD(TAG, "Unknown193: 0x%02X 0x%02X (0x00 0x8D)", data[193 + offset], data[194 + offset]);
   // 195   2   0xD6 0x3B              Unknown195
-  ESP_LOGD(TAG, "Unknown195: %02X %02X (0x21 0x40)", data[195 + offset], data[196 + offset]);
+  ESP_LOGD(TAG, "Unknown195: 0x%02X 0x%02X (0x21 0x40)", data[195 + offset], data[196 + offset]);
   // 197   10  0x40 0x00 0x00 0x00 0x00 0x58 0xAA 0xFD 0xFF 0x00
   // 207   7   0x00 0x00 0x01 0x00 0x02 0x00 0x00
   // 214   4   0xEC 0xE6 0x4F 0x00    Uptime 100ms
@@ -804,17 +804,18 @@ void JkBmsBle::decode_jk04_cell_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->delta_cell_voltage_sensor_, (float) ieee_float_(jk_get_32bit(206)));
 
   // 210   4   0x00 0x00 0x00 0x00    Unknown210
-  ESP_LOGD(TAG, "Unknown210: %02X %02X %02X %02X (always 0x00 0x00 0x00 0x00)", data[210], data[211], data[212],
+  ESP_LOGD(TAG, "Unknown210: 0x%02X 0x%02X 0x%02X 0x%02X (always 0x00 0x00 0x00 0x00)", data[210], data[211], data[212],
            data[213]);
 
   // 214   4   0xFF 0xFF 0x00 0x00    Unknown214
-  ESP_LOGD(TAG, "Unknown214: %02X %02X %02X %02X (0xFF 0xFF: 24 cells?)", data[214], data[215], data[216], data[217]);
+  ESP_LOGD(TAG, "Unknown214: 0x%02X 0x%02X 0x%02X 0x%02X (0xFF 0xFF: 24 cells?)", data[214], data[215], data[216],
+           data[217]);
 
   // 218   1   0x01                   Unknown218
-  ESP_LOGD(TAG, "Unknown218: %02X", data[218]);
+  ESP_LOGD(TAG, "Unknown218: 0x%02X", data[218]);
 
   // 219   1   0x00                   Unknown219
-  ESP_LOGD(TAG, "Unknown219: %02X", data[219]);
+  ESP_LOGD(TAG, "Unknown219: 0x%02X", data[219]);
 
   // 220   1   0x00                  Blink cells (0x00: Off, 0x01: Charging balancer, 0x02: Discharging balancer)
   bool balancing = (bool) (data[220] != 0x00);
@@ -822,22 +823,22 @@ void JkBmsBle::decode_jk04_cell_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->operation_status_text_sensor_, (balancing) ? "Balancing" : "Idle");
 
   // 221   1   0x01                  Unknown221
-  ESP_LOGD(TAG, "Unknown221: %02X", data[221]);
+  ESP_LOGD(TAG, "Unknown221: 0x%02X", data[221]);
 
   // 222   4   0x00 0x00 0x00 0x00    Balancing current
   this->publish_state_(this->balancing_current_sensor_, (float) ieee_float_(jk_get_32bit(222)));
 
   // 226   7   0x00 0x00 0x00 0x00 0x00 0x00 0x00    Unknown226
-  ESP_LOGD(TAG, "Unknown226: %02X %02X %02X %02X %02X %02X %02X (always 0x00...0x00?)", data[226], data[227], data[228],
-           data[229], data[230], data[231], data[232]);
+  ESP_LOGD(TAG, "Unknown226: 0x%02X 0x%02X 0x%02X 0x%02X 0x%02X 0x%02X 0x%02X (always 0x00...0x00?)", data[226],
+           data[227], data[228], data[229], data[230], data[231], data[232]);
 
   // 233   4   0x66 0xA0 0xD2 0x4A    Unknown233
-  ESP_LOGD(TAG, "Unknown233: %02X %02X %02X %02X (%f)", data[233], data[234], data[235], data[236],
+  ESP_LOGD(TAG, "Unknown233: 0x%02X 0x%02X 0x%02X 0x%02X (%f)", data[233], data[234], data[235], data[236],
            ieee_float_(jk_get_32bit(233)));
 
   // 237   4   0x40 0x00 0x00 0x00    Unknown237
-  ESP_LOGD(TAG, "Unknown237: %02X %02X %02X %02X (always 0x40 0x00 0x00 0x00?)", data[237], data[238], data[239],
-           data[240]);
+  ESP_LOGD(TAG, "Unknown237: 0x%02X 0x%02X 0x%02X 0x%02X (always 0x40 0x00 0x00 0x00?)", data[237], data[238],
+           data[239], data[240]);
 
   // 241   45  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
   //           0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
@@ -850,14 +851,14 @@ void JkBmsBle::decode_jk04_cell_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->total_runtime_formatted_text_sensor_, format_total_runtime_(jk_get_32bit(286)));
 
   // 290   4   0x00 0x00 0x00 0x00    Unknown290
-  ESP_LOGD(TAG, "Unknown290: %02X %02X %02X %02X (always 0x00 0x00 0x00 0x00?)", data[290], data[291], data[292],
-           data[293]);
+  ESP_LOGD(TAG, "Unknown290: 0x%02X 0x%02X 0x%02X 0x%02X (always 0x00 0x00 0x00 0x00?)", data[290], data[291],
+           data[292], data[293]);
 
   // 294   4   0x00 0x48 0x22 0x40    Unknown294
-  ESP_LOGD(TAG, "Unknown294: %02X %02X %02X %02X", data[294], data[295], data[296], data[297]);
+  ESP_LOGD(TAG, "Unknown294: 0x%02X 0x%02X 0x%02X 0x%02X", data[294], data[295], data[296], data[297]);
 
   // 298   1   0x00                   Unknown298
-  ESP_LOGD(TAG, "Unknown298: %02X", data[298]);
+  ESP_LOGD(TAG, "Unknown298: 0x%02X", data[298]);
 
   // 299   1   0x13                   Checksm
 
@@ -1068,7 +1069,7 @@ void JkBmsBle::decode_jk04_settings_(const std::vector<uint8_t> &data) {
   // 4     1   0x01                   Frame type
   // 5     1   0x50                   Frame counter
   // 6     4   0x00 0x00 0x80 0x3F
-  ESP_LOGD(TAG, "  Unknown6: %02X %02X %02X %02X (%f)", data[6], data[7], data[8], data[9],
+  ESP_LOGD(TAG, "  Unknown6: 0x%02X 0x%02X 0x%02X 0x%02X (%f)", data[6], data[7], data[8], data[9],
            (float) ieee_float_(jk_get_32bit(6)));
 
   // 10    4   0x00 0x00 0x00 0x00
