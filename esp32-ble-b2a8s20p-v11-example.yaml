@@ -264,6 +264,12 @@ switch:
       name: "${name} discharging"
     balancer:
       name: "${name} balancer"
+    emergency:
+      name: "${name} emergency"
+    disable_temperature_sensors:
+      name: "${name} disable temperature sensors"
+    display_always_on:
+      name: "${name} display always on"
 
   - platform: ble_client
     ble_client_id: client0

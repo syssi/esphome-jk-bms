@@ -12,15 +12,25 @@ CODEOWNERS = ["@syssi"]
 CONF_CHARGING = "charging"
 CONF_DISCHARGING = "discharging"
 CONF_BALANCER = "balancer"
+CONF_EMERGENCY = "emergency"
+CONF_DISABLE_TEMPERATURE_SENSORS = "disable_temperature_sensors"
+CONF_DISPLAY_ALWAYS_ON = "display_always_on"
 
 ICON_CHARGING = "mdi:battery-charging-50"
 ICON_DISCHARGING = "mdi:battery-charging-50"
 ICON_BALANCER = "mdi:seesaw"
+ICON_EMERGENCY = "mdi:exit-run"
+ICON_DISABLE_TEMPERATURE_SENSORS = "mdi:thermometer-off"
+ICON_DISPLAY_ALWAYS_ON = "mdi:led-on"
 
 SWITCHES = {
-    CONF_CHARGING: [0x1D, 0x00],
-    CONF_DISCHARGING: [0x1E, 0x00],
-    CONF_BALANCER: [0x1F, 0x6C],
+    # JK04, JK02, JK02_32S
+    CONF_CHARGING: [0x00, 0x1D, 0x1D],
+    CONF_DISCHARGING: [0x00, 0x1E, 0x1E],
+    CONF_BALANCER: [0x6C, 0x1F, 0x1F],
+    CONF_EMERGENCY: [0x00, 0x00, 0x6B],
+    CONF_DISABLE_TEMPERATURE_SENSORS: [0x00, 0x00, 0x28],
+    CONF_DISPLAY_ALWAYS_ON: [0x00, 0x00, 0x2B],
 }
 
 JkSwitch = jk_bms_ble_ns.class_("JkSwitch", switch.Switch, cg.Component)
@@ -45,6 +55,26 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
                 cv.Optional(CONF_ICON, default=ICON_BALANCER): cv.icon,
             }
         ).extend(cv.COMPONENT_SCHEMA),
+        cv.Optional(CONF_EMERGENCY): switch.SWITCH_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(JkSwitch),
+                cv.Optional(CONF_ICON, default=ICON_EMERGENCY): cv.icon,
+            }
+        ).extend(cv.COMPONENT_SCHEMA),
+        cv.Optional(CONF_DISABLE_TEMPERATURE_SENSORS): switch.SWITCH_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(JkSwitch),
+                cv.Optional(
+                    CONF_ICON, default=ICON_DISABLE_TEMPERATURE_SENSORS
+                ): cv.icon,
+            }
+        ).extend(cv.COMPONENT_SCHEMA),
+        cv.Optional(CONF_DISPLAY_ALWAYS_ON): switch.SWITCH_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(JkSwitch),
+                cv.Optional(CONF_ICON, default=ICON_DISPLAY_ALWAYS_ON): cv.icon,
+            }
+        ).extend(cv.COMPONENT_SCHEMA),
     }
 )
 
@@ -59,5 +89,6 @@ async def to_code(config):
             await switch.register_switch(var, conf)
             cg.add(getattr(hub, f"set_{key}_switch")(var))
             cg.add(var.set_parent(hub))
-            cg.add(var.set_jk02_holding_register(address[0]))
-            cg.add(var.set_jk04_holding_register(address[1]))
+            cg.add(var.set_jk04_holding_register(address[0]))
+            cg.add(var.set_jk02_holding_register(address[1]))
+            cg.add(var.set_jk02_32s_holding_register(address[2]))
