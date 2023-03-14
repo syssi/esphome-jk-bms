@@ -18,8 +18,9 @@ JkBmsBle = jk_bms_ble_ns.class_(
 
 ProtocolVersion = jk_bms_ble_ns.enum("ProtocolVersion")
 PROTOCOL_VERSION_OPTIONS = {
-    "JK02": ProtocolVersion.PROTOCOL_VERSION_JK02,
     "JK04": ProtocolVersion.PROTOCOL_VERSION_JK04,
+    "JK02": ProtocolVersion.PROTOCOL_VERSION_JK02,
+    "JK02_32S": ProtocolVersion.PROTOCOL_VERSION_JK02_32S,
 }
 
 JK_BMS_BLE_COMPONENT_SCHEMA = cv.Schema(

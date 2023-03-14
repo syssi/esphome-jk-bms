@@ -20,8 +20,9 @@ namespace jk_bms_ble {
 namespace espbt = esphome::esp32_ble_tracker;
 
 enum ProtocolVersion {
-  PROTOCOL_VERSION_JK02,
   PROTOCOL_VERSION_JK04,
+  PROTOCOL_VERSION_JK02,
+  PROTOCOL_VERSION_JK02_32S,
 };
 
 class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingComponent {
@@ -163,7 +164,7 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
 
   void set_enable_fake_traffic(bool enable_fake_traffic) { enable_fake_traffic_ = enable_fake_traffic; }
   void set_protocol_version(ProtocolVersion protocol_version) { protocol_version_ = protocol_version; }
-  bool get_protocol_version() { return protocol_version_; }
+  ProtocolVersion get_protocol_version() { return protocol_version_; }
   bool write_register(uint8_t address, uint32_t value, uint8_t length);
 
   struct Cell {

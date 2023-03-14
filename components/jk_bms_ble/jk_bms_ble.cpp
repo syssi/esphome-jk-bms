@@ -333,7 +333,9 @@ void JkBmsBle::update() {
           0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
           0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x66};
       this->assemble_(cell_info_jk02_negative_temperatures, 300);
+    }
 
+    if (this->protocol_version_ == PROTOCOL_VERSION_JK02_32S) {
       const uint8_t cell_info_jk02_32s[300] = {
           0x55, 0xAA, 0xEB, 0x90, 0x02, 0x2F, 0x8F, 0x0C, 0xD4, 0x0C, 0x9D, 0x0C, 0xE0, 0x0C, 0xE0, 0x0C, 0x8D, 0x0C,
           0x8D, 0x0C, 0xDF, 0x0C, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -441,13 +443,25 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   this->last_cell_info_ = now;
 
   uint8_t offset = 0;
-  // Assumption: The value of data[189] (JK02) or data[189+32] (JK02_32S) is 0x01, 0x02 or 0x03
-  uint8_t frame_version = (data[189] == 0x00 && data[189 + 32] > 0) ? FRAME_VERSION_JK02_32S : FRAME_VERSION_JK02;
-  if (frame_version == FRAME_VERSION_JK02_32S) {
+  uint8_t frame_version = FRAME_VERSION_JK02;
+  if (this->protocol_version_ == PROTOCOL_VERSION_JK02) {
+    // Weak assumption: The value of data[189] (JK02) or data[189+32] (JK02_32S) is 0x01, 0x02 or 0x03
+    if (data[189] == 0x00 && data[189 + 32] > 0) {
+      frame_version = FRAME_VERSION_JK02_32S;
+      offset = 16;
+      ESP_LOGW(TAG,
+               "You hit the unstable auto detection of the protocol version. This feature will be removed in future!"
+               "Please update your configuration to protocol version JK02_32S if you are using a JK-B2A8S20P v11+");
+    }
+  }
+
+  // Override unstable auto detection
+  if (this->protocol_version_ == PROTOCOL_VERSION_JK02_32S) {
+    frame_version = FRAME_VERSION_JK02_32S;
     offset = 16;
   }
 
-  ESP_LOGVV(TAG, "Cell info frame (version %d, %d bytes):", frame_version, data.size());
+  ESP_LOGI(TAG, "Cell info frame (version %d, %d bytes) received", frame_version, data.size());
   ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front(), 150).c_str());
   ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front() + 150, data.size() - 150).c_str());
 
@@ -696,7 +710,7 @@ void JkBmsBle::decode_jk04_cell_info_(const std::vector<uint8_t> &data) {
   }
   this->last_cell_info_ = now;
 
-  ESP_LOGVV(TAG, "Cell info frame (%d bytes):", data.size());
+  ESP_LOGI(TAG, "Cell info frame (%d bytes) received", data.size());
   ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front(), 150).c_str());
   ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front() + 150, data.size() - 150).c_str());
 
@@ -871,7 +885,7 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
     return (uint32_t(jk_get_16bit(i + 2)) << 16) | (uint32_t(jk_get_16bit(i + 0)) << 0);
   };
 
-  ESP_LOGI(TAG, "Settings frame (%d bytes):", data.size());
+  ESP_LOGI(TAG, "Settings frame (%d bytes) received", data.size());
   ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front(), 160).c_str());
   ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front() + 160, data.size() - 160).c_str());
 
@@ -1043,7 +1057,7 @@ void JkBmsBle::decode_jk04_settings_(const std::vector<uint8_t> &data) {
     return (uint32_t(jk_get_16bit(i + 2)) << 16) | (uint32_t(jk_get_16bit(i + 0)) << 0);
   };
 
-  ESP_LOGI(TAG, "Settings frame (%d bytes):", data.size());
+  ESP_LOGI(TAG, "Settings frame (%d bytes) received", data.size());
   ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front(), 160).c_str());
   ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front() + 160, data.size() - 160).c_str());
 
@@ -1134,7 +1148,7 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
     return (uint32_t(jk_get_16bit(i + 2)) << 16) | (uint32_t(jk_get_16bit(i + 0)) << 0);
   };
 
-  ESP_LOGI(TAG, "Device info frame (%d bytes):", data.size());
+  ESP_LOGI(TAG, "Device info frame (%d bytes) received", data.size());
   ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front(), 160).c_str());
   ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front() + 160, data.size() - 160).c_str());
 
