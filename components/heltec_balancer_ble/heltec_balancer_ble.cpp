@@ -322,7 +322,7 @@ void HeltecBalancerBle::assemble_(const uint8_t *data, uint16_t length) {
     uint8_t computed_crc = crc(raw, frame_size - 2);
     uint8_t remote_crc = raw[frame_size - 2];
     if (computed_crc != remote_crc) {
-      ESP_LOGW(TAG, "HeltecBalancerBle CRC Check failed! %02X!=%02X", computed_crc, remote_crc);
+      ESP_LOGW(TAG, "CRC check failed! 0x%02X != 0x%02X", computed_crc, remote_crc);
       this->frame_buffer_.clear();
       return;
     }
@@ -353,7 +353,7 @@ void HeltecBalancerBle::decode_(const std::vector<uint8_t> &data) {
       ESP_LOGD(TAG, "Write register response received: %s", format_hex_pretty(data.data(), data.size()).c_str());
       break;
     default:
-      ESP_LOGW(TAG, "Unsupported message type (%02X)", data[4]);
+      ESP_LOGW(TAG, "Unsupported message type (0x%02X)", data[4]);
   }
 }
 
