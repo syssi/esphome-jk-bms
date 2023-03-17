@@ -21,7 +21,6 @@ esp32:
   board: wemos_d1_mini32
   framework:
     type: esp-idf
-    version: latest
 
 external_components:
   - source: ${external_components_source}

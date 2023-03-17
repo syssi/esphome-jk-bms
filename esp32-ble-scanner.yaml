@@ -13,7 +13,6 @@ esp32:
   board: wemos_d1_mini32
   framework:
     type: esp-idf
-    version: latest
 
 wifi:
   ssid: !secret wifi_ssid
