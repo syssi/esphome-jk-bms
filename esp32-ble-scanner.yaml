@@ -7,7 +7,7 @@ esphome:
   comment: ${device_description}
   project:
     name: "syssi.esphome-jk-bms"
-    version: 1.3.0
+    version: 1.4.0
 
 esp32:
   board: wemos_d1_mini32
