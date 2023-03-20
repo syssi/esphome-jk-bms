@@ -83,6 +83,9 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   void set_discharging_binary_sensor(binary_sensor::BinarySensor *discharging_binary_sensor) {
     discharging_binary_sensor_ = discharging_binary_sensor;
   }
+  void set_online_status_binary_sensor(binary_sensor::BinarySensor *online_status_binary_sensor) {
+    online_status_binary_sensor_ = online_status_binary_sensor;
+  }
 
   void set_throttle(uint16_t throttle) { this->throttle_ = throttle; }
   void set_min_cell_voltage_sensor(sensor::Sensor *min_cell_voltage_sensor) {
@@ -185,6 +188,7 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   binary_sensor::BinarySensor *balancing_binary_sensor_;
   binary_sensor::BinarySensor *charging_binary_sensor_;
   binary_sensor::BinarySensor *discharging_binary_sensor_;
+  binary_sensor::BinarySensor *online_status_binary_sensor_;
 
   number::Number *balance_trigger_voltage_number_;
   number::Number *cell_count_number_;
@@ -238,6 +242,7 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   std::vector<uint8_t> frame_buffer_;
   bool status_notification_received_ = false;
   bool enable_fake_traffic_;
+  uint8_t no_response_count_{0};
   uint16_t char_handle_;
   uint16_t notify_handle_;
   uint32_t last_cell_info_{0};
@@ -255,6 +260,9 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   void publish_state_(sensor::Sensor *sensor, float value);
   void publish_state_(switch_::Switch *obj, const bool &state);
   void publish_state_(text_sensor::TextSensor *text_sensor, const std::string &state);
+  void publish_device_unavailable_();
+  void reset_online_status_tracker_();
+  void track_online_status_();
   std::string error_bits_to_string_(uint16_t bitmask);
 
   std::string format_total_runtime_(const uint32_t value) {

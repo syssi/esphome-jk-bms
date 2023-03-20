@@ -68,6 +68,8 @@ binary_sensor:
   - platform: jk_bms_ble
     balancing:
       name: "${name} balancing"
+    online_status:
+      name: "${name} online status"
 
 sensor:
   - platform: jk_bms_ble

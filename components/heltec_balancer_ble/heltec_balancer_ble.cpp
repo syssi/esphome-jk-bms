@@ -8,6 +8,8 @@ namespace heltec_balancer_ble {
 
 static const char *const TAG = "heltec_balancer_ble";
 
+static const uint8_t MAX_NO_RESPONSE_COUNT = 10;
+
 static const uint16_t HELTEC_BALANCER_SERVICE_UUID = 0xFFE0;
 static const uint16_t HELTEC_BALANCER_CHARACTERISTIC_UUID = 0xFFE1;
 
@@ -163,8 +165,6 @@ void HeltecBalancerBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt
     case ESP_GATTC_DISCONNECT_EVT: {
       this->node_state = espbt::ClientState::IDLE;
       this->status_notification_received_ = false;
-
-      // this->publish_state_(this->voltage_sensor_, NAN);
       break;
     }
     case ESP_GATTC_SEARCH_CMPL_EVT: {
@@ -290,6 +290,7 @@ void HeltecBalancerBle::update() {
     return;
   }
 
+  this->track_online_status_();
   if (this->node_state != espbt::ClientState::ESTABLISHED) {
     ESP_LOGW(TAG, "[%s] Not connected", this->parent_->address_str().c_str());
     return;
@@ -335,6 +336,8 @@ void HeltecBalancerBle::assemble_(const uint8_t *data, uint16_t length) {
 }
 
 void HeltecBalancerBle::decode_(const std::vector<uint8_t> &data) {
+  this->reset_online_status_tracker_();
+
   uint8_t frame_type = data[4];
   switch (frame_type) {
     case COMMAND_DEVICE_INFO:
@@ -820,6 +823,48 @@ bool HeltecBalancerBle::send_command(uint8_t function, uint8_t command, uint8_t 
     ESP_LOGW(TAG, "[%s] esp_ble_gattc_write_char failed, status=%d", this->parent_->address_str().c_str(), status);
 
   return (status == 0);
+}
+
+void HeltecBalancerBle::track_online_status_() {
+  if (this->no_response_count_ < MAX_NO_RESPONSE_COUNT) {
+    this->no_response_count_++;
+  }
+  if (this->no_response_count_ == MAX_NO_RESPONSE_COUNT) {
+    this->publish_device_unavailable_();
+    this->no_response_count_++;
+  }
+}
+
+void HeltecBalancerBle::reset_online_status_tracker_() {
+  this->no_response_count_ = 0;
+  this->publish_state_(this->online_status_binary_sensor_, true);
+}
+
+void HeltecBalancerBle::publish_device_unavailable_() {
+  this->publish_state_(this->online_status_binary_sensor_, false);
+  this->publish_state_(this->operation_status_text_sensor_, "Offline");
+
+  this->publish_state_(min_cell_voltage_sensor_, NAN);
+  this->publish_state_(max_cell_voltage_sensor_, NAN);
+  this->publish_state_(min_voltage_cell_sensor_, NAN);
+  this->publish_state_(max_voltage_cell_sensor_, NAN);
+  this->publish_state_(delta_cell_voltage_sensor_, NAN);
+  this->publish_state_(average_cell_voltage_sensor_, NAN);
+  this->publish_state_(total_voltage_sensor_, NAN);
+  this->publish_state_(temperature_sensor_1_sensor_, NAN);
+  this->publish_state_(temperature_sensor_2_sensor_, NAN);
+  this->publish_state_(total_runtime_sensor_, NAN);
+  this->publish_state_(balancing_current_sensor_, NAN);
+  this->publish_state_(errors_bitmask_sensor_, NAN);
+  this->publish_state_(cell_detection_failed_bitmask_sensor_, NAN);
+  this->publish_state_(cell_overvoltage_bitmask_sensor_, NAN);
+  this->publish_state_(cell_undervoltage_bitmask_sensor_, NAN);
+  this->publish_state_(cell_polarity_error_bitmask_sensor_, NAN);
+  this->publish_state_(cell_excessive_line_resistance_bitmask_sensor_, NAN);
+
+  for (auto &cell : this->cells_) {
+    this->publish_state_(cell.cell_voltage_sensor_, NAN);
+  }
 }
 
 void HeltecBalancerBle::publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state) {

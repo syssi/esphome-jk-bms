@@ -8,6 +8,8 @@ namespace jk_bms_ble {
 
 static const char *const TAG = "jk_bms_ble";
 
+static const uint8_t MAX_NO_RESPONSE_COUNT = 10;
+
 static const uint8_t FRAME_VERSION_JK04 = 0x01;
 static const uint8_t FRAME_VERSION_JK02 = 0x02;
 static const uint8_t FRAME_VERSION_JK02_32S = 0x03;
@@ -136,8 +138,6 @@ void JkBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gat
     case ESP_GATTC_DISCONNECT_EVT: {
       this->node_state = espbt::ClientState::IDLE;
       this->status_notification_received_ = false;
-
-      // this->publish_state_(this->voltage_sensor_, NAN);
       break;
     }
     case ESP_GATTC_SEARCH_CMPL_EVT: {
@@ -360,6 +360,7 @@ void JkBmsBle::update() {
     return;
   }
 
+  this->track_online_status_();
   if (this->node_state != espbt::ClientState::ESTABLISHED) {
     ESP_LOGW(TAG, "[%s] Not connected", this->parent_->address_str().c_str());
     return;
@@ -406,6 +407,8 @@ void JkBmsBle::assemble_(const uint8_t *data, uint16_t length) {
 }
 
 void JkBmsBle::decode_(const std::vector<uint8_t> &data) {
+  this->reset_online_status_tracker_();
+
   uint8_t frame_type = data[4];
   switch (frame_type) {
     case 0x01:
@@ -1251,6 +1254,54 @@ bool JkBmsBle::write_register(uint8_t address, uint32_t value, uint8_t length) {
   }
 
   return (status == 0);
+}
+
+void JkBmsBle::track_online_status_() {
+  if (this->no_response_count_ < MAX_NO_RESPONSE_COUNT) {
+    this->no_response_count_++;
+  }
+  if (this->no_response_count_ == MAX_NO_RESPONSE_COUNT) {
+    this->publish_device_unavailable_();
+    this->no_response_count_++;
+  }
+}
+
+void JkBmsBle::reset_online_status_tracker_() {
+  this->no_response_count_ = 0;
+  this->publish_state_(this->online_status_binary_sensor_, true);
+}
+
+void JkBmsBle::publish_device_unavailable_() {
+  this->publish_state_(this->online_status_binary_sensor_, false);
+  this->publish_state_(this->errors_text_sensor_, "Offline");
+
+  this->publish_state_(min_cell_voltage_sensor_, NAN);
+  this->publish_state_(max_cell_voltage_sensor_, NAN);
+  this->publish_state_(min_voltage_cell_sensor_, NAN);
+  this->publish_state_(max_voltage_cell_sensor_, NAN);
+  this->publish_state_(delta_cell_voltage_sensor_, NAN);
+  this->publish_state_(average_cell_voltage_sensor_, NAN);
+  this->publish_state_(total_voltage_sensor_, NAN);
+  this->publish_state_(current_sensor_, NAN);
+  this->publish_state_(power_sensor_, NAN);
+  this->publish_state_(charging_power_sensor_, NAN);
+  this->publish_state_(discharging_power_sensor_, NAN);
+  this->publish_state_(temperature_sensor_1_sensor_, NAN);
+  this->publish_state_(temperature_sensor_2_sensor_, NAN);
+  this->publish_state_(power_tube_temperature_sensor_, NAN);
+  this->publish_state_(state_of_charge_sensor_, NAN);
+  this->publish_state_(capacity_remaining_sensor_, NAN);
+  this->publish_state_(total_battery_capacity_setting_sensor_, NAN);
+  this->publish_state_(charging_cycles_sensor_, NAN);
+  this->publish_state_(total_charging_cycle_capacity_sensor_, NAN);
+  this->publish_state_(total_runtime_sensor_, NAN);
+  this->publish_state_(balancing_current_sensor_, NAN);
+  this->publish_state_(errors_bitmask_sensor_, NAN);
+
+  for (auto &cell : this->cells_) {
+    this->publish_state_(cell.cell_voltage_sensor_, NAN);
+    this->publish_state_(cell.cell_resistance_sensor_, NAN);
+  }
 }
 
 void JkBmsBle::publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state) {

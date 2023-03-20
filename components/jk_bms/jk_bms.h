@@ -32,6 +32,9 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
   void set_dedicated_charger_switch_binary_sensor(binary_sensor::BinarySensor *dedicated_charger_switch_binary_sensor) {
     dedicated_charger_switch_binary_sensor_ = dedicated_charger_switch_binary_sensor;
   }
+  void set_online_status_binary_sensor(binary_sensor::BinarySensor *online_status_binary_sensor) {
+    online_status_binary_sensor_ = online_status_binary_sensor;
+  }
 
   void set_min_cell_voltage_sensor(sensor::Sensor *min_cell_voltage_sensor) {
     min_cell_voltage_sensor_ = min_cell_voltage_sensor;
@@ -310,6 +313,7 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
   binary_sensor::BinarySensor *discharging_binary_sensor_;
   binary_sensor::BinarySensor *discharging_switch_binary_sensor_;
   binary_sensor::BinarySensor *dedicated_charger_switch_binary_sensor_;
+  binary_sensor::BinarySensor *online_status_binary_sensor_;
 
   text_sensor::TextSensor *errors_text_sensor_;
   text_sensor::TextSensor *operation_mode_text_sensor_;
@@ -325,11 +329,15 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
   } cells_[24];
 
   bool enable_fake_traffic_;
+  uint8_t no_response_count_{0};
 
   void on_status_data_(const std::vector<uint8_t> &data);
   void publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state);
   void publish_state_(sensor::Sensor *sensor, float value);
   void publish_state_(text_sensor::TextSensor *text_sensor, const std::string &state);
+  void publish_device_unavailable_();
+  void reset_online_status_tracker_();
+  void track_online_status_();
 
   std::string error_bits_to_string_(uint16_t bitmask);
   std::string mode_bits_to_string_(uint16_t bitmask);

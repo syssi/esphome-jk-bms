@@ -70,6 +70,8 @@ binary_sensor:
       name: "${name} discharging switch"
     dedicated_charger_switch:
       name: "${name} dedicated charger switch"
+    online_status:
+      name: "${name} online status"
 
 sensor:
   - platform: jk_bms

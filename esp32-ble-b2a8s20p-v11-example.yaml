@@ -72,6 +72,8 @@ binary_sensor:
       name: "${name} charging"
     discharging:
       name: "${name} discharging"
+    online_status:
+      name: "${name} online status"
 
 button:
   - platform: jk_bms_ble
