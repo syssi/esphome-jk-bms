@@ -63,6 +63,8 @@ binary_sensor:
   - platform: heltec_balancer_ble
     balancing:
       name: "${name} balancing"
+    online_status:
+      name: "${name} online status"
 
 button:
   - platform: heltec_balancer_ble

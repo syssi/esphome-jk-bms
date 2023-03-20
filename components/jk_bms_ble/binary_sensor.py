@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 from esphome.components import binary_sensor
 import esphome.config_validation as cv
-from esphome.const import CONF_ICON, CONF_ID
+from esphome.const import CONF_ID, DEVICE_CLASS_CONNECTIVITY, ENTITY_CATEGORY_DIAGNOSTIC
 
 from . import CONF_JK_BMS_BLE_ID, JkBmsBle
 
@@ -12,6 +12,7 @@ CODEOWNERS = ["@syssi"]
 CONF_CHARGING = "charging"
 CONF_DISCHARGING = "discharging"
 CONF_BALANCING = "balancing"
+CONF_ONLINE_STATUS = "online_status"
 
 ICON_CHARGING = "mdi:battery-charging"
 ICON_DISCHARGING = "mdi:power-plug"
@@ -21,28 +22,24 @@ BINARY_SENSORS = [
     CONF_CHARGING,
     CONF_DISCHARGING,
     CONF_BALANCING,
+    CONF_ONLINE_STATUS,
 ]
 
 CONFIG_SCHEMA = cv.Schema(
     {
         cv.GenerateID(CONF_JK_BMS_BLE_ID): cv.use_id(JkBmsBle),
-        cv.Optional(CONF_CHARGING): binary_sensor.BINARY_SENSOR_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(binary_sensor.BinarySensor),
-                cv.Optional(CONF_ICON, default=ICON_CHARGING): cv.icon,
-            }
+        cv.Optional(CONF_CHARGING): binary_sensor.binary_sensor_schema(
+            icon=ICON_CHARGING
         ),
-        cv.Optional(CONF_DISCHARGING): binary_sensor.BINARY_SENSOR_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(binary_sensor.BinarySensor),
-                cv.Optional(CONF_ICON, default=ICON_DISCHARGING): cv.icon,
-            }
+        cv.Optional(CONF_DISCHARGING): binary_sensor.binary_sensor_schema(
+            icon=ICON_DISCHARGING
         ),
-        cv.Optional(CONF_BALANCING): binary_sensor.BINARY_SENSOR_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(binary_sensor.BinarySensor),
-                cv.Optional(CONF_ICON, default=ICON_BALANCING): cv.icon,
-            }
+        cv.Optional(CONF_BALANCING): binary_sensor.binary_sensor_schema(
+            icon=ICON_BALANCING
+        ),
+        cv.Optional(CONF_ONLINE_STATUS): binary_sensor.binary_sensor_schema(
+            device_class=DEVICE_CLASS_CONNECTIVITY,
+            entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
         ),
     }
 )

@@ -7,6 +7,8 @@ namespace jk_bms {
 
 static const char *const TAG = "jk_bms";
 
+static const uint8_t MAX_NO_RESPONSE_COUNT = 5;
+
 static const uint8_t FUNCTION_READ_ALL = 0x06;
 static const uint8_t ADDRESS_READ_ALL = 0x00;
 static const uint8_t WRITE_REGISTER = 0x02;
@@ -45,6 +47,8 @@ static const char *const BATTERY_TYPES[BATTERY_TYPES_SIZE] = {
 };
 
 void JkBms::on_jk_modbus_data(const uint8_t &function, const std::vector<uint8_t> &data) {
+  this->reset_online_status_tracker_();
+
   if (function == FUNCTION_READ_ALL) {
     this->on_status_data_(data);
     return;
@@ -371,6 +375,7 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
 }
 
 void JkBms::update() {
+  this->track_online_status_();
   this->read_registers(FUNCTION_READ_ALL, ADDRESS_READ_ALL);
 
   if (this->enable_fake_traffic_) {
@@ -419,6 +424,92 @@ void JkBms::update() {
         });
     */
     // End: 0x00 0x00 0x00 0x00 0x68 0x00 0x00 0x47 0x28
+  }
+}
+
+void JkBms::track_online_status_() {
+  if (this->no_response_count_ < MAX_NO_RESPONSE_COUNT) {
+    this->no_response_count_++;
+  }
+  if (this->no_response_count_ == MAX_NO_RESPONSE_COUNT) {
+    this->publish_device_unavailable_();
+    this->no_response_count_++;
+  }
+}
+
+void JkBms::reset_online_status_tracker_() {
+  this->no_response_count_ = 0;
+  this->publish_state_(this->online_status_binary_sensor_, true);
+}
+
+void JkBms::publish_device_unavailable_() {
+  this->publish_state_(this->online_status_binary_sensor_, false);
+  this->publish_state_(this->errors_text_sensor_, "Offline");
+
+  this->publish_state_(min_cell_voltage_sensor_, NAN);
+  this->publish_state_(max_cell_voltage_sensor_, NAN);
+  this->publish_state_(min_voltage_cell_sensor_, NAN);
+  this->publish_state_(max_voltage_cell_sensor_, NAN);
+  this->publish_state_(delta_cell_voltage_sensor_, NAN);
+  this->publish_state_(average_cell_voltage_sensor_, NAN);
+  this->publish_state_(power_tube_temperature_sensor_, NAN);
+  this->publish_state_(temperature_sensor_1_sensor_, NAN);
+  this->publish_state_(temperature_sensor_2_sensor_, NAN);
+  this->publish_state_(total_voltage_sensor_, NAN);
+  this->publish_state_(current_sensor_, NAN);
+  this->publish_state_(power_sensor_, NAN);
+  this->publish_state_(charging_power_sensor_, NAN);
+  this->publish_state_(discharging_power_sensor_, NAN);
+  this->publish_state_(capacity_remaining_sensor_, NAN);
+  this->publish_state_(capacity_remaining_derived_sensor_, NAN);
+  this->publish_state_(temperature_sensors_sensor_, NAN);
+  this->publish_state_(charging_cycles_sensor_, NAN);
+  this->publish_state_(total_charging_cycle_capacity_sensor_, NAN);
+  this->publish_state_(battery_strings_sensor_, NAN);
+  this->publish_state_(errors_bitmask_sensor_, NAN);
+  this->publish_state_(operation_mode_bitmask_sensor_, NAN);
+  this->publish_state_(total_voltage_overvoltage_protection_sensor_, NAN);
+  this->publish_state_(total_voltage_undervoltage_protection_sensor_, NAN);
+  this->publish_state_(cell_voltage_overvoltage_protection_sensor_, NAN);
+  this->publish_state_(cell_voltage_overvoltage_recovery_sensor_, NAN);
+  this->publish_state_(cell_voltage_overvoltage_delay_sensor_, NAN);
+  this->publish_state_(cell_voltage_undervoltage_protection_sensor_, NAN);
+  this->publish_state_(cell_voltage_undervoltage_recovery_sensor_, NAN);
+  this->publish_state_(cell_voltage_undervoltage_delay_sensor_, NAN);
+  this->publish_state_(cell_pressure_difference_protection_sensor_, NAN);
+  this->publish_state_(discharging_overcurrent_protection_sensor_, NAN);
+  this->publish_state_(discharging_overcurrent_delay_sensor_, NAN);
+  this->publish_state_(charging_overcurrent_protection_sensor_, NAN);
+  this->publish_state_(charging_overcurrent_delay_sensor_, NAN);
+  this->publish_state_(balance_starting_voltage_sensor_, NAN);
+  this->publish_state_(balance_opening_pressure_difference_sensor_, NAN);
+  this->publish_state_(power_tube_temperature_protection_sensor_, NAN);
+  this->publish_state_(power_tube_temperature_recovery_sensor_, NAN);
+  this->publish_state_(temperature_sensor_temperature_protection_sensor_, NAN);
+  this->publish_state_(temperature_sensor_temperature_recovery_sensor_, NAN);
+  this->publish_state_(temperature_sensor_temperature_difference_protection_sensor_, NAN);
+  this->publish_state_(charging_high_temperature_protection_sensor_, NAN);
+  this->publish_state_(discharging_high_temperature_protection_sensor_, NAN);
+  this->publish_state_(charging_low_temperature_protection_sensor_, NAN);
+  this->publish_state_(charging_low_temperature_recovery_sensor_, NAN);
+  this->publish_state_(discharging_low_temperature_protection_sensor_, NAN);
+  this->publish_state_(discharging_low_temperature_recovery_sensor_, NAN);
+  this->publish_state_(total_battery_capacity_setting_sensor_, NAN);
+  this->publish_state_(charging_sensor_, NAN);
+  this->publish_state_(discharging_sensor_, NAN);
+  this->publish_state_(current_calibration_sensor_, NAN);
+  this->publish_state_(device_address_sensor_, NAN);
+  this->publish_state_(sleep_wait_time_sensor_, NAN);
+  this->publish_state_(alarm_low_volume_sensor_, NAN);
+  this->publish_state_(password_sensor_, NAN);
+  this->publish_state_(manufacturing_date_sensor_, NAN);
+  this->publish_state_(total_runtime_sensor_, NAN);
+  this->publish_state_(start_current_calibration_sensor_, NAN);
+  this->publish_state_(actual_battery_capacity_sensor_, NAN);
+  this->publish_state_(protocol_version_sensor_, NAN);
+
+  for (auto &cell : this->cells_) {
+    this->publish_state_(cell.cell_voltage_sensor_, NAN);
   }
 }
 

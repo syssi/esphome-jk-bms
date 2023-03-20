@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 from esphome.components import binary_sensor
 import esphome.config_validation as cv
-from esphome.const import CONF_ICON, CONF_ID
+from esphome.const import CONF_ID, DEVICE_CLASS_CONNECTIVITY, ENTITY_CATEGORY_DIAGNOSTIC
 
 from . import CONF_HELTEC_BALANCER_BLE_ID, HeltecBalancerBle
 
@@ -13,42 +13,34 @@ CONF_BALANCING = "balancing"
 CONF_ERROR_CHARGING = "error_charging"
 CONF_ERROR_DISCHARGING = "error_discharging"
 CONF_ERROR_SYSTEM_OVERHEATING = "error_system_overheating"
+CONF_ONLINE_STATUS = "online_status"
 
 BINARY_SENSORS = [
     CONF_BALANCING,
     CONF_ERROR_CHARGING,
     CONF_ERROR_DISCHARGING,
     CONF_ERROR_SYSTEM_OVERHEATING,
+    CONF_ONLINE_STATUS,
 ]
 
 CONFIG_SCHEMA = cv.Schema(
     {
         cv.GenerateID(CONF_HELTEC_BALANCER_BLE_ID): cv.use_id(HeltecBalancerBle),
-        cv.Optional(CONF_BALANCING): binary_sensor.BINARY_SENSOR_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(binary_sensor.BinarySensor),
-                cv.Optional(CONF_ICON, default="mdi:battery-heart-variant"): cv.icon,
-            }
+        cv.Optional(CONF_BALANCING): binary_sensor.binary_sensor_schema(
+            icon="mdi:battery-heart-variant"
         ),
-        cv.Optional(CONF_ERROR_CHARGING): binary_sensor.BINARY_SENSOR_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(binary_sensor.BinarySensor),
-                cv.Optional(CONF_ICON, default="mdi:alert-circle-outline"): cv.icon,
-            }
+        cv.Optional(CONF_ERROR_CHARGING): binary_sensor.binary_sensor_schema(
+            icon="mdi:alert-circle-outline"
         ),
-        cv.Optional(CONF_ERROR_DISCHARGING): binary_sensor.BINARY_SENSOR_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(binary_sensor.BinarySensor),
-                cv.Optional(CONF_ICON, default="mdi:alert-circle-outline"): cv.icon,
-            }
+        cv.Optional(CONF_ERROR_DISCHARGING): binary_sensor.binary_sensor_schema(
+            icon="mdi:alert-circle-outline"
         ),
-        cv.Optional(
-            CONF_ERROR_SYSTEM_OVERHEATING
-        ): binary_sensor.BINARY_SENSOR_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(binary_sensor.BinarySensor),
-                cv.Optional(CONF_ICON, default="mdi:alert-circle-outline"): cv.icon,
-            }
+        cv.Optional(CONF_ERROR_SYSTEM_OVERHEATING): binary_sensor.binary_sensor_schema(
+            icon="mdi:alert-circle-outline"
+        ),
+        cv.Optional(CONF_ONLINE_STATUS): binary_sensor.binary_sensor_schema(
+            device_class=DEVICE_CLASS_CONNECTIVITY,
+            entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
         ),
     }
 )
