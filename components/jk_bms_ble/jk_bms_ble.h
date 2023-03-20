@@ -189,7 +189,6 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   binary_sensor::BinarySensor *charging_binary_sensor_;
   binary_sensor::BinarySensor *discharging_binary_sensor_;
   binary_sensor::BinarySensor *online_status_binary_sensor_;
-  binary_sensor::BinarySensor *online_status_binary_sensor_;
 
   number::Number *balance_trigger_voltage_number_;
   number::Number *cell_count_number_;
