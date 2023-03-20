@@ -329,6 +329,7 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
   } cells_[24];
 
   bool enable_fake_traffic_;
+  uint8_t no_response_count_{0};
 
   void on_status_data_(const std::vector<uint8_t> &data);
   void publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state);

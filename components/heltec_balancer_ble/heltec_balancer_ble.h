@@ -183,6 +183,7 @@ class HeltecBalancerBle : public esphome::ble_client::BLEClientNode, public Poll
   std::vector<uint8_t> frame_buffer_;
   bool status_notification_received_ = false;
   bool enable_fake_traffic_;
+  uint8_t no_response_count_{0};
   uint16_t char_handle_;
   uint32_t last_cell_info_{0};
   uint16_t throttle_;
