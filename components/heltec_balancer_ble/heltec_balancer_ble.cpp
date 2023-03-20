@@ -336,6 +336,8 @@ void HeltecBalancerBle::assemble_(const uint8_t *data, uint16_t length) {
 }
 
 void HeltecBalancerBle::decode_(const std::vector<uint8_t> &data) {
+  this->reset_online_status_tracker_();
+
   uint8_t frame_type = data[4];
   switch (frame_type) {
     case COMMAND_DEVICE_INFO:
@@ -356,8 +358,6 @@ void HeltecBalancerBle::decode_(const std::vector<uint8_t> &data) {
     default:
       ESP_LOGW(TAG, "Unsupported message type (0x%02X)", data[4]);
   }
-
-  this->reset_online_status_tracker_();
 }
 
 void HeltecBalancerBle::decode_cell_info_(const std::vector<uint8_t> &data) {

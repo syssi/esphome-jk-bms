@@ -407,6 +407,8 @@ void JkBmsBle::assemble_(const uint8_t *data, uint16_t length) {
 }
 
 void JkBmsBle::decode_(const std::vector<uint8_t> &data) {
+  this->reset_online_status_tracker_();
+
   uint8_t frame_type = data[4];
   switch (frame_type) {
     case 0x01:
