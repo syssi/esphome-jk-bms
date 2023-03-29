@@ -4,14 +4,13 @@ from esphome.components import uart
 from esphome.const import CONF_ADDRESS, CONF_ID
 
 DEPENDENCIES = ["uart"]
+MULTI_CONF = True
 
 jk_modbus_ns = cg.esphome_ns.namespace("jk_modbus")
 JkModbus = jk_modbus_ns.class_("JkModbus", cg.Component, uart.UARTDevice)
 JkModbusDevice = jk_modbus_ns.class_("JkModbusDevice")
-MULTI_CONF = True
 
 CONF_JK_MODBUS_ID = "jk_modbus_id"
-
 CONF_RX_TIMEOUT = "rx_timeout"
 
 CONFIG_SCHEMA = (
