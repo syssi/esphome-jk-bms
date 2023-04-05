@@ -127,7 +127,7 @@ jobs:
         working-directory: ${{ env.esphome_directory }}
 
       - name: Set up python environment
-        run: script/setup
+        run: VIRTUAL_ENV=false script/setup
         working-directory: ${{ env.esphome_directory }}
 
       - name: Register problem matchers
