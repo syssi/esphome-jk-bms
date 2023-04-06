@@ -95,7 +95,7 @@ bool JkModbus::parse_jk_modbus_byte_(uint8_t byte) {
 
 void JkModbus::dump_config() {
   ESP_LOGCONFIG(TAG, "JkModbus:");
-  ESP_LOGCONFIG(TAG, " RX timeout: %d ms", this->rx_timeout_);
+  ESP_LOGCONFIG(TAG, "  RX timeout: %d ms", this->rx_timeout_);
 }
 float JkModbus::get_setup_priority() const {
   // After UART bus
