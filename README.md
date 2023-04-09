@@ -73,7 +73,15 @@ If you would like to test without inverter connected, only the [beta version wil
 
 ## Supported devices
 
-All JK-BMS models with software version `>=6.0` are using the implemented protocol and should be supported.
+Inverters supporting CAN Pylon/Goodwe Low Voltage protocol should work, check your inverter manual to confirm.
+
+The following are confirmed and known to work:
+* Deye 5k-sg03lp1-eu [@vdiex](https://github.com/Uksa007/esphome-jk-bms-can/discussions/1#discussioncomment-4481364))
+* Goodwe GW5000S-BP (reported by @Uksa007 using the "Goodwe LX U5.4-L * 3" battery profile)
+* Sofar solar me3000sp (reported by [@starman](https://diysolarforum.com/threads/jk-bms-can-bus-comms-now-possible-for-inverters-that-support-goodwe-and-pylontech-batteries.48963/post-755539))
+* Turbo energy (reported by [@ibikku](https://github.com/Uksa007/esphome-jk-bms-can/discussions/13#discussion-4823950))
+
+<br>All JK-BMS models with software version `>=6.0` are using the implemented protocol and should be supported.
 
 * JK-BD6A17S6P, hw 7.2, sw 7.1.0H
 * JK-BD6A17S8P, hw 9.x, sw 9.01G (reported by [@jonadis](https://github.com/syssi/esphome-jk-bms/issues/35#issuecomment-1035312712))
