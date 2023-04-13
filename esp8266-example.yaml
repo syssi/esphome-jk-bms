@@ -24,17 +24,20 @@ wifi:
   password: !secret wifi_password
 
 ota:
+
 logger:
   baud_rate: 0
+  level: DEBUG
 
-# If you use Home Assistant please remove this `mqtt` section and uncomment the native `api` component!
-# api:
-
+# If you use Home Assistant please remove this `mqtt` section and uncomment the `api` component!
+# The native API has many advantages over MQTT: https://esphome.io/components/api.html#advantages-over-mqtt
 mqtt:
   broker: !secret mqtt_host
   username: !secret mqtt_username
   password: !secret mqtt_password
   id: mqtt_client
+
+# api:
 
 uart:
   - id: uart0

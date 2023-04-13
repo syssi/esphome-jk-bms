@@ -29,7 +29,9 @@ wifi:
   password: !secret wifi_password
 
 ota:
+
 logger:
+  level: DEBUG
 
 # If you don't use Home Assistant please remove this `api` section and uncomment the `mqtt` component!
 api:

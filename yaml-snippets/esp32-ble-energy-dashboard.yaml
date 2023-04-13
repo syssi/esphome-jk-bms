@@ -27,14 +27,13 @@ wifi:
   password: !secret wifi_password
 
 ota:
+
 logger:
+  level: DEBUG
 
 # If you don't use Home Assistant please remove this `api` section and uncomment the `mqtt` component!
 api:
 
-# The MQTT component is ESP-IDF compatible since ESPHome version 2022.4.0. If
-# ESPHome suggests to use the arduino framework instead because of missing ESP-IDF
-# framework support you should update your setup.
 # mqtt:
 #   broker: !secret mqtt_host
 #   username: !secret mqtt_username
