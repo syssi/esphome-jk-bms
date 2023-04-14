@@ -1,0 +1,46 @@
+substitutions:
+  name: jk-bms
+  device_description: "Occupy the BLE module of the BMS to prevent advertising and block connections from foreign devices"
+  mac_address: C8:47:8C:E1:E2:E1
+
+esphome:
+  name: ${name}
+  comment: ${device_description}
+  project:
+    name: "syssi.esphome-jk-bms"
+    version: 1.4.0
+
+esp32:
+  board: wemos_d1_mini32
+  framework:
+    type: esp-idf
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+ota:
+logger:
+
+# If you don't use Home Assistant please remove this `api` section and uncomment the `mqtt` component!
+api:
+
+# The MQTT component is ESP-IDF compatible since ESPHome version 2022.4.0. If
+# ESPHome suggests to use the arduino framework instead because of missing ESP-IDF
+# framework support you should update your setup.
+# mqtt:
+#   broker: !secret mqtt_host
+#   username: !secret mqtt_username
+#   password: !secret mqtt_password
+#   id: mqtt_client
+
+esp32_ble_tracker:
+
+ble_client:
+  - mac_address: ${mac_address}
+    id: client0
+
+switch:
+  - platform: ble_client
+    ble_client_id: client0
+    name: "${name} enable bluetooth connection"

@@ -193,6 +193,7 @@ jobs:
       - name: Validate YAML snippets
         run: |
           esphome -s external_components_source ../components config yaml-snippets/esp32-ble-energy-dashboard.yaml
+          esphome -s external_components_source ../components config yaml-snippets/esp32-ble-block-traffic.yaml
 
       - name: Write tests/secrets.yaml
         shell: bash
