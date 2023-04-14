@@ -40,6 +40,7 @@ All JK-BMS models with software version `>=6.0` are using the implemented protoc
 * JK-B2A20S20P, hw 11.XW, sw 11.24H (reported by [@austin202220](https://github.com/syssi/esphome-jk-bms/discussions/232))
 * JK-B2A20S20P, hw 11.XW, sw 11.25H (reported by [@iovcharyk](https://github.com/syssi/esphome-jk-bms/issues/249))
 * JK-B5A24S, hw 8.x, sw 8.0.3M, using `JK04` (reported by [@JSladen](https://github.com/syssi/esphome-jk-bms/issues/213))
+* JK-B2A16S, hw 3.0, sw 3.3.0, using `JK04` (reported by [@magnetus26](https://github.com/syssi/esphome-jk-bms/discussions/48))
 * GW-24S4EB (NEEY/Heltec 4A Smart Active Balancer), hw HW-2.8.0, sw ZH-1.2.3 (reported by [@cristi2005](https://github.com/syssi/esphome-jk-bms/issues/109))
 
 ## Untested devices
