@@ -126,6 +126,8 @@ jobs:
           git commit -a -m "Add external component"
         working-directory: ${{ env.esphome_directory }}
 
+      - name: Add missing requirements
+        run: pip3 install setuptools wheel
       - name: Set up python environment
         run: VIRTUAL_ENV=false script/setup
         working-directory: ${{ env.esphome_directory }}

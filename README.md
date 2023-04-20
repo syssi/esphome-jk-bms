@@ -220,7 +220,7 @@ logger:
   level: DEBUG
 
 uart:
-  id: uart0
+  id: uart_0
   baud_rate: 115200
   rx_buffer_size: 384
   tx_pin: GPIO14

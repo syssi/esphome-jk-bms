@@ -4,10 +4,10 @@ substitutions:
   bms1: "${name} bms1"
   device_description: "Monitor two JK-BMS via UART-TTL"
   external_components_source: github://syssi/esphome-jk-bms@main
-  tx_pin_uart0: GPIO16
-  rx_pin_uart0: GPIO17
-  tx_pin_uart1: GPIO14
-  rx_pin_uart1: GPIO4
+  tx_pin_uart_0: GPIO16
+  rx_pin_uart_0: GPIO17
+  tx_pin_uart_1: GPIO14
+  rx_pin_uart_1: GPIO4
 
 esphome:
   name: ${name}
@@ -45,22 +45,22 @@ mqtt:
 # api:
 
 uart:
-  - id: uart0
+  - id: uart_0
     baud_rate: 115200
     rx_buffer_size: 384
-    tx_pin: ${tx_pin_uart0}
-    rx_pin: ${rx_pin_uart0}
-  - id: uart1
+    tx_pin: ${tx_pin_uart_0}
+    rx_pin: ${rx_pin_uart_0}
+  - id: uart_1
     baud_rate: 115200
     rx_buffer_size: 384
-    tx_pin: ${tx_pin_uart1}
-    rx_pin: ${rx_pin_uart1}
+    tx_pin: ${tx_pin_uart_1}
+    rx_pin: ${rx_pin_uart_1}
 
 jk_modbus:
   - id: modbus0
-    uart_id: uart0
+    uart_id: uart_0
   - id: modbus1
-    uart_id: uart1
+    uart_id: uart_1
 
 jk_bms:
   - id: bms0
