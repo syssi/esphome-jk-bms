@@ -203,7 +203,7 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->discharging_binary_sensor_, check_bit_(raw_modes_bitmask, 2));
   this->publish_state_(this->balancing_binary_sensor_, check_bit_(raw_modes_bitmask, 4));
   ESP_LOGI(TAG, "Operation modes bitmask: %d", raw_modes_bitmask);
-  ESP_LOGI(TAG, "Operation modes: %s", this->mode_bits_to_string_(raw_modes_bitmask));
+  ESP_LOGI(TAG, "Operation modes: %s", this->mode_bits_to_string_(raw_modes_bitmask).c_str());
   ESP_LOGI(TAG, "Charging: %s", YESNO(check_bit_(raw_modes_bitmask, 1)));
   ESP_LOGI(TAG, "Discharging: %s", YESNO(check_bit_(raw_modes_bitmask, 2)));
   ESP_LOGI(TAG, "Balancing: %s", YESNO(check_bit_(raw_modes_bitmask, 4)));
