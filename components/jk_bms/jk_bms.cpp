@@ -196,17 +196,12 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
   // Bit 4...15: Reserved
 
   // Example: 0000 0000 0000 0111 -> Charging + Discharging + Balancer enabled
-  uint16_t raw_modes_bitmask = 3;  // jk_get_16bit(offset + 6 + 3 * 9);
+  uint16_t raw_modes_bitmask = jk_get_16bit(offset + 6 + 3 * 9);
   this->publish_state_(this->operation_mode_bitmask_sensor_, (float) raw_modes_bitmask);
   this->publish_state_(this->operation_mode_text_sensor_, this->mode_bits_to_string_(raw_modes_bitmask));
   this->publish_state_(this->charging_binary_sensor_, check_bit_(raw_modes_bitmask, 1));
   this->publish_state_(this->discharging_binary_sensor_, check_bit_(raw_modes_bitmask, 2));
   this->publish_state_(this->balancing_binary_sensor_, check_bit_(raw_modes_bitmask, 4));
-  ESP_LOGI(TAG, "  Operation modes bitmask: %d", raw_modes_bitmask);
-  ESP_LOGI(TAG, "  Operation modes: %s", this->mode_bits_to_string_(raw_modes_bitmask).c_str());
-  ESP_LOGI(TAG, "  Charging mosfet enabled: %s", YESNO(check_bit_(raw_modes_bitmask, 1)));
-  ESP_LOGI(TAG, "  Discharging mosfet enabled: %s", YESNO(check_bit_(raw_modes_bitmask, 2)));
-  ESP_LOGI(TAG, "  Balancing active: %s", YESNO(check_bit_(raw_modes_bitmask, 4)));
 
   // 0x8E 0x16 0x26: Total voltage overvoltage protection        5670 * 0.01 = 56.70V     0.01 V
   this->publish_state_(this->total_voltage_overvoltage_protection_sensor_,
