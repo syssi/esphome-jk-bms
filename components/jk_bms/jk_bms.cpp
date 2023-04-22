@@ -196,7 +196,7 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
   // Bit 4...15: Reserved
 
   // Example: 0000 0000 0000 0111 -> Charging + Discharging + Balancer enabled
-  uint16_t raw_modes_bitmask = jk_get_16bit(offset + 6 + 3 * 9);
+  uint16_t raw_modes_bitmask = 3;  // jk_get_16bit(offset + 6 + 3 * 9);
   this->publish_state_(this->operation_mode_bitmask_sensor_, (float) raw_modes_bitmask);
   this->publish_state_(this->operation_mode_text_sensor_, this->mode_bits_to_string_(raw_modes_bitmask));
   this->publish_state_(this->charging_binary_sensor_, check_bit_(raw_modes_bitmask, 1));
