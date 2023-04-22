@@ -505,7 +505,7 @@ void HeltecBalancerBle::decode_cell_info_(const std::vector<uint8_t> &data) {
   //                                              0x0B: Temperature too high - balancing stopped
   //                                              0x0C: Self-test completed
   uint8_t raw_operation_status = data[216];
-  this->publish_state_(this->balancing_binary_sensor_, (bool) (raw_operation_status == 0x05));
+  this->publish_state_(this->balancing_binary_sensor_, (raw_operation_status == 0x05));
   if (raw_operation_status < OPERATION_STATUS_SIZE) {
     this->publish_state_(this->operation_status_text_sensor_, OPERATION_STATUS[raw_operation_status]);
   } else {

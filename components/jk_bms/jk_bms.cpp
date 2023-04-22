@@ -199,9 +199,9 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
   uint16_t raw_modes_bitmask = jk_get_16bit(offset + 6 + 3 * 9);
   this->publish_state_(this->operation_mode_bitmask_sensor_, (float) raw_modes_bitmask);
   this->publish_state_(this->operation_mode_text_sensor_, this->mode_bits_to_string_(raw_modes_bitmask));
-  this->publish_state_(this->balancing_binary_sensor_, (4 & raw_modes_bitmask) == 4);
-  this->publish_state_(this->charging_binary_sensor_, (0 & raw_modes_bitmask) == 0);
-  this->publish_state_(this->discharging_binary_sensor_, (1 & raw_modes_bitmask) == 1);
+  this->publish_state_(this->charging_binary_sensor_, check_bit_(raw_modes_bitmask, 1));
+  this->publish_state_(this->discharging_binary_sensor_, check_bit_(raw_modes_bitmask, 2));
+  this->publish_state_(this->balancing_binary_sensor_, check_bit_(raw_modes_bitmask, 4));
 
   // 0x8E 0x16 0x26: Total voltage overvoltage protection        5670 * 0.01 = 56.70V     0.01 V
   this->publish_state_(this->total_voltage_overvoltage_protection_sensor_,

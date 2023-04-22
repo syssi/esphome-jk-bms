@@ -626,7 +626,7 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // 140   1   0x00                   Balancing action                   0x00: Off
   //                                                                     0x01: Charging balancer
   //                                                                     0x02: Discharging balancer
-  this->publish_state_(this->balancing_binary_sensor_, (bool) (data[140 + offset] != 0x00));
+  this->publish_state_(this->balancing_binary_sensor_, (data[140 + offset] != 0x00));
 
   // 141   1   0x54                   State of charge in   1.0           %
   this->publish_state_(this->state_of_charge_sensor_, (float) data[141 + offset]);
@@ -835,7 +835,7 @@ void JkBmsBle::decode_jk04_cell_info_(const std::vector<uint8_t> &data) {
   ESP_LOGD(TAG, "Unknown219: 0x%02X", data[219]);
 
   // 220   1   0x00                  Blink cells (0x00: Off, 0x01: Charging balancer, 0x02: Discharging balancer)
-  bool balancing = (bool) (data[220] != 0x00);
+  bool balancing = (data[220] != 0x00);
   this->publish_state_(this->balancing_binary_sensor_, balancing);
   this->publish_state_(this->operation_status_text_sensor_, (balancing) ? "Balancing" : "Idle");
 
@@ -1047,8 +1047,8 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   // 274   4   0x00 0x00 0x00 0x00
   // 278   4   0x00 0x00 0x00 0x00
   // 282   1   0x00                   New controls bitmask
-  this->publish_state_(this->disable_temperature_sensors_switch_, (bool) check_bit_(data[282], 2));
-  this->publish_state_(this->display_always_on_switch_, (bool) check_bit_(data[282], 16));
+  this->publish_state_(this->disable_temperature_sensors_switch_, check_bit_(data[282], 2));
+  this->publish_state_(this->display_always_on_switch_, check_bit_(data[282], 16));
 
   // 283   3   0x00 0x00 0x00
   // 286   4   0x00 0x00 0x00 0x00
