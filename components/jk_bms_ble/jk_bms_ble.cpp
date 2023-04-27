@@ -659,6 +659,9 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // 167   1   0x01                   Discharging switch enabled                   0x00: off, 0x01: on
   this->publish_state_(this->discharging_binary_sensor_, (bool) data[167 + offset]);
 
+  ESP_LOGI(TAG, "  Charging mosfet or switch enabled: %s", YESNO((bool) data[166 + offset]));
+  ESP_LOGI(TAG, "  Discharging mosfet or switch enabled: %s", YESNO((bool) data[167 + offset]));
+
   ESP_LOGD(TAG, "Unknown168: %s",
            format_hex_pretty(&data.front() + 168 + offset, data.size() - (168 + offset) - 4 - 81 - 1).c_str());
 
