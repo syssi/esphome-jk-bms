@@ -373,7 +373,7 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
            (hours ? to_string(hours) + "h" : "");
   }
 
-  bool check_bit_(uint8_t mask, uint8_t flag) { return (mask & flag) == flag; }
+  bool check_bit_(uint16_t mask, uint16_t flag) { return (mask & flag) == flag; }
 };
 
 }  // namespace jk_bms

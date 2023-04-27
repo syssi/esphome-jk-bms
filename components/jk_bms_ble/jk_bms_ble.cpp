@@ -653,10 +653,10 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->total_runtime_sensor_, (float) jk_get_32bit(162 + offset));
   this->publish_state_(this->total_runtime_formatted_text_sensor_, format_total_runtime_(jk_get_32bit(162 + offset)));
 
-  // 166   1   0x01                   Charging switch enabled                      0x00: off, 0x01: on
+  // 166   1   0x01                   Charging mosfet enabled                      0x00: off, 0x01: on
   this->publish_state_(this->charging_binary_sensor_, (bool) data[166 + offset]);
 
-  // 167   1   0x01                   Discharging switch enabled                   0x00: off, 0x01: on
+  // 167   1   0x01                   Discharging mosfet enabled                   0x00: off, 0x01: on
   this->publish_state_(this->discharging_binary_sensor_, (bool) data[167 + offset]);
 
   ESP_LOGD(TAG, "Unknown168: %s",
