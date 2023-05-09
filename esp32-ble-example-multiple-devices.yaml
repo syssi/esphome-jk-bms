@@ -6,7 +6,9 @@ substitutions:
   external_components_source: github://syssi/esphome-jk-bms@main
   bms0_mac_address: C8:47:8C:E1:E2:E1
   bms1_mac_address: C8:47:8C:E1:E2:E2
-  # Defaults to "JK02". Please use "JK04" if you have some old JK-BMS version (f.e. JK-B2A16S hw 3.0, sw. 3.3.0)
+  # Defaults to "JK02" (hardware version >= 6.0 and < 11.0)
+  # Please use "JK02_32S" if you own a new JK-BMS >= hardware version 11.0 (f.e. JK-B2A8S20P hw 11.XW, sw 11.26)
+  # Please use "JK04" if you have some old JK-BMS <= hardware version 3.0 (f.e. JK-B2A16S hw 3.0, sw. 3.3.0)
   bms0_protocol_version: JK02
   bms1_protocol_version: JK02
 

@@ -187,7 +187,7 @@ jobs:
           esphome -s external_components_source components config esp32-ble-jk04-example.yaml
           esphome -s external_components_source components config esp32-ble-example-multiple-devices.yaml
           esphome -s external_components_source components config esp32-ble-uart-hybrid-example.yaml
-          esphome -s external_components_source components config esp32-ble-b2a8s20p-v11-example.yaml
+          esphome -s external_components_source components config esp32-ble-v11-example.yaml
 
       - name: Write yaml-snippets/secrets.yaml
         shell: bash
@@ -251,4 +251,4 @@ jobs:
       - name: Compile esp32 (jk_bms_ble) example configurations
         run: |
           esphome -s external_components_source components compile esp32-ble-example-faker.yaml
-          esphome -s external_components_source components compile esp32-ble-b2a8s20p-v11-example.yaml
+          esphome -s external_components_source components compile esp32-ble-v11-example.yaml
