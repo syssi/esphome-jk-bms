@@ -87,7 +87,7 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
     online_status_binary_sensor_ = online_status_binary_sensor;
   }
 
-  void set_throttle(uint16_t throttle) { this->throttle_ = throttle; }
+  void set_throttle(uint32_t throttle) { this->throttle_ = throttle; }
   void set_min_cell_voltage_sensor(sensor::Sensor *min_cell_voltage_sensor) {
     min_cell_voltage_sensor_ = min_cell_voltage_sensor;
   }
@@ -246,7 +246,7 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   uint16_t char_handle_;
   uint16_t notify_handle_;
   uint32_t last_cell_info_{0};
-  uint16_t throttle_;
+  uint32_t throttle_;
 
   void assemble_(const uint8_t *data, uint16_t length);
   void decode_(const std::vector<uint8_t> &data);
