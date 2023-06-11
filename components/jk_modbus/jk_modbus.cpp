@@ -9,6 +9,8 @@ static const char *const TAG = "jk_modbus";
 void JkModbus::loop() {
   const uint32_t now = millis();
   if (now - this->last_jk_modbus_byte_ > this->rx_timeout_) {
+    ESP_LOGW(TAG, "Buffer cleared due to timeout: %s",
+             format_hex_pretty(&this->rx_buffer_.front(), this->rx_buffer_.size()).c_str());
     this->rx_buffer_.clear();
     this->last_jk_modbus_byte_ = now;
   }
@@ -19,6 +21,8 @@ void JkModbus::loop() {
     if (this->parse_jk_modbus_byte_(byte)) {
       this->last_jk_modbus_byte_ = now;
     } else {
+      ESP_LOGW(TAG, "Buffer cleared due to reset: %s",
+               format_hex_pretty(&this->rx_buffer_.front(), this->rx_buffer_.size()).c_str());
       this->rx_buffer_.clear();
     }
   }
@@ -47,7 +51,7 @@ bool JkModbus::parse_jk_modbus_byte_(uint8_t byte) {
     return true;
 
   if (raw[0] != 0x4E || raw[1] != 0x57) {
-    ESP_LOGW(TAG, "Invalid header");
+    ESP_LOGW(TAG, "Invalid header: 0x%02X 0x%02X", raw[0], raw[1]);
 
     // return false to reset buffer
     return false;
