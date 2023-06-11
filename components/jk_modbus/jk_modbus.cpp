@@ -1,5 +1,6 @@
 #include "jk_modbus.h"
 #include "esphome/core/log.h"
+#include "esphome/core/helpers.h"
 
 namespace esphome {
 namespace jk_modbus {
