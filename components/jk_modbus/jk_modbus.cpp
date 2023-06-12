@@ -48,14 +48,15 @@ bool JkModbus::parse_jk_modbus_byte_(uint8_t byte) {
   uint8_t address = raw[0];
 
   // Byte 1: Start sequence (0x57)
-  if (at == 1)
+  if (at == 1) {
+    if (raw[0] != 0x4E || raw[1] != 0x57) {
+      ESP_LOGW(TAG, "Invalid header: 0x%02X 0x%02X", raw[0], raw[1]);
+
+      // return false to reset buffer
+      return false;
+    }
+
     return true;
-
-  if (raw[0] != 0x4E || raw[1] != 0x57) {
-    ESP_LOGW(TAG, "Invalid header: 0x%02X 0x%02X", raw[0], raw[1]);
-
-    // return false to reset buffer
-    return false;
   }
 
   // Byte 2: Size (low byte)
