@@ -10,7 +10,7 @@ static const char *const TAG = "jk_modbus";
 void JkModbus::loop() {
   const uint32_t now = millis();
   if (now - this->last_jk_modbus_byte_ > this->rx_timeout_) {
-    ESP_LOGW(TAG, "Buffer cleared due to timeout: %s",
+    ESP_LOGVV(TAG, "Buffer cleared due to timeout: %s",
              format_hex_pretty(&this->rx_buffer_.front(), this->rx_buffer_.size()).c_str());
     this->rx_buffer_.clear();
     this->last_jk_modbus_byte_ = now;
@@ -22,7 +22,7 @@ void JkModbus::loop() {
     if (this->parse_jk_modbus_byte_(byte)) {
       this->last_jk_modbus_byte_ = now;
     } else {
-      ESP_LOGW(TAG, "Buffer cleared due to reset: %s",
+      ESP_LOGVV(TAG, "Buffer cleared due to reset: %s",
                format_hex_pretty(&this->rx_buffer_.front(), this->rx_buffer_.size()).c_str());
       this->rx_buffer_.clear();
     }
