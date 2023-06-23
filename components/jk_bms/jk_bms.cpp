@@ -8,8 +8,6 @@ namespace jk_bms {
 static const char *const TAG = "jk_bms";
 
 static const uint8_t FUNCTION_READ_ALL = 0x06;
-static const uint8_t ADDRESS_READ_ALL = 0x00;
-static const uint8_t WRITE_REGISTER = 0x02;
 
 static const uint8_t ERRORS_SIZE = 14;
 static const char *const ERRORS[ERRORS_SIZE] = {
@@ -352,7 +350,7 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
 }
 
 void JkBms::update() {
-  this->read_registers(FUNCTION_READ_ALL, ADDRESS_READ_ALL);
+  this->read_registers();
 
   if (this->enable_fake_traffic_) {
     // Start: 0x4E, 0x57, 0x01, 0x1B, 0x00, 0x00, 0x00, 0x00, 0x06, 0x00, 0x01
