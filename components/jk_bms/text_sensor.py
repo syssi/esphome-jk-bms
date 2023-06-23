@@ -3,7 +3,7 @@ from esphome.components import text_sensor
 import esphome.config_validation as cv
 from esphome.const import CONF_ICON, CONF_ID, CONF_PASSWORD, ICON_EMPTY, ICON_TIMELAPSE
 
-from . import CONF_JK_BMS_ID, JkBms
+from . import CONF_JK_BMS_ID, JK_BMS_COMPONENT_SCHEMA
 
 DEPENDENCIES = ["jk_bms"]
 
@@ -33,9 +33,8 @@ TEXT_SENSORS = [
     CONF_TOTAL_RUNTIME_FORMATTED,
 ]
 
-CONFIG_SCHEMA = cv.Schema(
+CONFIG_SCHEMA = JK_BMS_COMPONENT_SCHEMA.extend(
     {
-        cv.GenerateID(CONF_JK_BMS_ID): cv.use_id(JkBms),
         cv.Optional(CONF_OPERATION_MODE): text_sensor.TEXT_SENSOR_SCHEMA.extend(
             {
                 cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),

@@ -99,12 +99,8 @@ binary_sensor:
       name: "${name} balancing switch"
     charging:
       name: "${name} charging"
-    charging_switch:
-      name: "${name} charging switch"
     discharging:
       name: "${name} discharging"
-    discharging_switch:
-      name: "${name} discharging switch"
     dedicated_charger_switch:
       name: "${name} dedicated charger switch"
 

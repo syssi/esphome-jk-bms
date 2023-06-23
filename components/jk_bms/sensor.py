@@ -22,7 +22,7 @@ from esphome.const import (
     UNIT_WATT,
 )
 
-from . import CONF_JK_BMS_ID, JkBms
+from . import CONF_JK_BMS_ID, JK_BMS_COMPONENT_SCHEMA
 
 DEPENDENCIES = ["jk_bms"]
 
@@ -239,9 +239,8 @@ SENSORS = [
 ]
 
 # pylint: disable=too-many-function-args
-CONFIG_SCHEMA = cv.Schema(
+CONFIG_SCHEMA = JK_BMS_COMPONENT_SCHEMA.extend(
     {
-        cv.GenerateID(CONF_JK_BMS_ID): cv.use_id(JkBms),
         cv.Optional(CONF_MIN_CELL_VOLTAGE): sensor.sensor_schema(
             unit_of_measurement=UNIT_VOLT,
             icon=ICON_EMPTY,

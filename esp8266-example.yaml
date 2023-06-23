@@ -64,12 +64,8 @@ binary_sensor:
       name: "${name} balancing switch"
     charging:
       name: "${name} charging"
-    charging_switch:
-      name: "${name} charging switch"
     discharging:
       name: "${name} discharging"
-    discharging_switch:
-      name: "${name} discharging switch"
     dedicated_charger_switch:
       name: "${name} dedicated charger switch"
     online_status:
@@ -241,6 +237,13 @@ sensor:
       name: "${name} actual battery capacity"
 #    protocol_version:
 #      name: "${name} protocol version"
+
+switch:
+  - platform: jk_bms
+    charging:
+      name: "${name} charging"
+    discharging:
+      name: "${name} discharging"
 
 text_sensor:
   - platform: jk_bms
