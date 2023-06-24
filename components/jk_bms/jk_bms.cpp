@@ -10,7 +10,7 @@ static const char *const TAG = "jk_bms";
 static const uint8_t MAX_NO_RESPONSE_COUNT = 5;
 
 static const uint8_t FUNCTION_READ_ALL = 0x06;
-static const uint8_t WRITE_REGISTER = 0x02;
+static const uint8_t FUNCTION_WRITE_REGISTER = 0x02;
 
 static const uint8_t ERRORS_SIZE = 14;
 static const char *const ERRORS[ERRORS_SIZE] = {
@@ -50,6 +50,11 @@ void JkBms::on_jk_modbus_data(const uint8_t &function, const std::vector<uint8_t
 
   if (function == FUNCTION_READ_ALL) {
     this->on_status_data_(data);
+    return;
+  }
+
+  if (function == FUNCTION_WRITE_REGISTER) {
+    ESP_LOGI(TAG, "Register 0x%02X updated", data[0]);
     return;
   }
 
