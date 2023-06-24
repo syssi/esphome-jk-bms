@@ -10,8 +10,12 @@ DEPENDENCIES = ["jk_bms"]
 
 CODEOWNERS = ["@syssi"]
 
-CONF_CHARGING_SWITCH = "charging_switch" # @DEPRECATED and superseded by switch.charging
-CONF_DISCHARGING_SWITCH = "discharging_switch" # @DEPRECATED and superseded by switch.discharging
+CONF_CHARGING_SWITCH = (
+    "charging_switch"  # @DEPRECATED and superseded by switch.charging
+)
+CONF_DISCHARGING_SWITCH = (
+    "discharging_switch"  # @DEPRECATED and superseded by switch.discharging
+)
 CONF_BALANCING = "balancing"
 CONF_BALANCING_SWITCH = "balancing_switch"
 CONF_DEDICATED_CHARGER_SWITCH = "dedicated_charger_switch"
