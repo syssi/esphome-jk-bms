@@ -1,22 +1,21 @@
 import esphome.codegen as cg
 from esphome.components import binary_sensor
 import esphome.config_validation as cv
-from esphome.const import (
-    CONF_ID,
-    DEVICE_CLASS_CONNECTIVITY,
-    ENTITY_CATEGORY_DIAGNOSTIC,
-)
+from esphome.const import CONF_ID, DEVICE_CLASS_CONNECTIVITY, ENTITY_CATEGORY_DIAGNOSTIC
 
-from . import CONF_JK_BMS_ID, JkBms
+from . import CONF_JK_BMS_ID, JK_BMS_COMPONENT_SCHEMA
+from .const import CONF_CHARGING, CONF_DISCHARGING
 
 DEPENDENCIES = ["jk_bms"]
 
 CODEOWNERS = ["@syssi"]
 
-CONF_CHARGING = "charging"
-CONF_CHARGING_SWITCH = "charging_switch"
-CONF_DISCHARGING = "discharging"
-CONF_DISCHARGING_SWITCH = "discharging_switch"
+CONF_CHARGING_SWITCH = (
+    "charging_switch"  # @DEPRECATED and superseded by switch.charging
+)
+CONF_DISCHARGING_SWITCH = (
+    "discharging_switch"  # @DEPRECATED and superseded by switch.discharging
+)
 CONF_BALANCING = "balancing"
 CONF_BALANCING_SWITCH = "balancing_switch"
 CONF_DEDICATED_CHARGER_SWITCH = "dedicated_charger_switch"
@@ -41,9 +40,8 @@ BINARY_SENSORS = [
     CONF_ONLINE_STATUS,
 ]
 
-CONFIG_SCHEMA = cv.Schema(
+CONFIG_SCHEMA = JK_BMS_COMPONENT_SCHEMA.extend(
     {
-        cv.GenerateID(CONF_JK_BMS_ID): cv.use_id(JkBms),
         cv.Optional(CONF_CHARGING): binary_sensor.binary_sensor_schema(
             icon=ICON_CHARGING
         ),

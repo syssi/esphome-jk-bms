@@ -3,7 +3,7 @@ from esphome.components import jk_modbus
 import esphome.config_validation as cv
 from esphome.const import CONF_ID
 
-AUTO_LOAD = ["jk_modbus", "binary_sensor", "sensor", "text_sensor"]
+AUTO_LOAD = ["jk_modbus", "binary_sensor", "sensor", "switch", "text_sensor"]
 CODEOWNERS = ["@syssi"]
 MULTI_CONF = True
 
@@ -22,6 +22,12 @@ CONFIG_SCHEMA = (
     )
     .extend(cv.polling_component_schema("5s"))
     .extend(jk_modbus.jk_modbus_device_schema(0x4E))
+)
+
+JK_BMS_COMPONENT_SCHEMA = cv.Schema(
+    {
+        cv.GenerateID(CONF_JK_BMS_ID): cv.use_id(JkBms),
+    }
 )
 
 

@@ -10,8 +10,7 @@ static const char *const TAG = "jk_bms";
 static const uint8_t MAX_NO_RESPONSE_COUNT = 5;
 
 static const uint8_t FUNCTION_READ_ALL = 0x06;
-static const uint8_t ADDRESS_READ_ALL = 0x00;
-static const uint8_t WRITE_REGISTER = 0x02;
+static const uint8_t FUNCTION_WRITE_REGISTER = 0x02;
 
 static const uint8_t ERRORS_SIZE = 14;
 static const char *const ERRORS[ERRORS_SIZE] = {
@@ -54,7 +53,13 @@ void JkBms::on_jk_modbus_data(const uint8_t &function, const std::vector<uint8_t
     return;
   }
 
-  ESP_LOGW(TAG, "Invalid size (%zu) for JK BMS frame!", data.size());
+  if (function == FUNCTION_WRITE_REGISTER) {
+    ESP_LOGI(TAG, "Register 0x%02X updated", data[0]);
+    return;
+  }
+
+  ESP_LOGW(TAG, "Unhandled response (%zu bytes) received: %s", data.size(),
+           format_hex_pretty(&data.front(), data.size()).c_str());
 }
 
 void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
@@ -258,6 +263,7 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
 
   // 0x9D 0x01: Active balance switch                              1 (on)                     Bool     0 (off), 1 (on)
   this->publish_state_(this->balancing_switch_binary_sensor_, (bool) data[offset + 6 + 3 * 25]);
+  this->publish_state_(this->balancer_switch_, (bool) data[offset + 6 + 3 * 25]);
 
   // 0x9E 0x00 0x5A: Power tube temperature protection value                90°C            1.0 °C     0-100°C
   this->publish_state_(this->power_tube_temperature_protection_sensor_, (float) jk_get_16bit(offset + 8 + 3 * 25));
@@ -310,9 +316,11 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
 
   // 0xAB 0x01: Charging MOS tube switch                                     1 (on)         Bool       0 (off), 1 (on)
   this->publish_state_(this->charging_switch_binary_sensor_, (bool) data[offset + 15 + 3 * 36]);
+  this->publish_state_(this->charging_switch_, (bool) data[offset + 15 + 3 * 36]);
 
   // 0xAC 0x01: Discharge MOS tube switch                                    1 (on)         Bool       0 (off), 1 (on)
   this->publish_state_(this->discharging_switch_binary_sensor_, (bool) data[offset + 17 + 3 * 36]);
+  this->publish_state_(this->discharging_switch_, (bool) data[offset + 17 + 3 * 36]);
 
   // 0xAD 0x04 0x11: Current calibration                       1041mA * 0.001 = 1.041A     0.001 A     0.1-2.0A
   this->publish_state_(this->current_calibration_sensor_, (float) jk_get_16bit(offset + 19 + 3 * 36) * 0.001f);
@@ -376,7 +384,7 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
 
 void JkBms::update() {
   this->track_online_status_();
-  this->read_registers(FUNCTION_READ_ALL, ADDRESS_READ_ALL);
+  this->read_registers();
 
   if (this->enable_fake_traffic_) {
     // Start: 0x4E, 0x57, 0x01, 0x1B, 0x00, 0x00, 0x00, 0x00, 0x06, 0x00, 0x01
@@ -525,6 +533,13 @@ void JkBms::publish_state_(sensor::Sensor *sensor, float value) {
     return;
 
   sensor->publish_state(value);
+}
+
+void JkBms::publish_state_(switch_::Switch *obj, const bool &state) {
+  if (obj == nullptr)
+    return;
+
+  obj->publish_state(state);
 }
 
 void JkBms::publish_state_(text_sensor::TextSensor *text_sensor, const std::string &state) {

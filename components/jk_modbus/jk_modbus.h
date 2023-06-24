@@ -21,10 +21,12 @@ class JkModbus : public uart::UARTDevice, public Component {
   float get_setup_priority() const override;
 
   void send(uint8_t function, uint8_t address, uint8_t value);
-  void read_registers(uint8_t function, uint8_t address);
+  void write_register(uint8_t address, uint8_t value);
+  void read_registers();
   void set_rx_timeout(uint16_t rx_timeout) { rx_timeout_ = rx_timeout; }
 
  protected:
+  void authenticate_();
   bool parse_jk_modbus_byte_(uint8_t byte);
 
   std::vector<uint8_t> rx_buffer_;
@@ -40,7 +42,8 @@ class JkModbusDevice {
   virtual void on_jk_modbus_data(const uint8_t &function, const std::vector<uint8_t> &data) = 0;
 
   void send(int8_t function, uint8_t address, uint8_t value) { this->parent_->send(function, address, value); }
-  void read_registers(uint8_t function, uint8_t address) { this->parent_->read_registers(function, address); }
+  void write_register(uint8_t address, uint8_t value) { this->parent_->write_register(address, value); }
+  void read_registers() { this->parent_->read_registers(); }
 
  protected:
   friend JkModbus;
