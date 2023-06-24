@@ -152,7 +152,7 @@ void JkModbus::authenticate_() { this->send(FUNCTION_PASSWORD, 0x00, 0x00); }
 
 void JkModbus::write_register(uint8_t address, uint8_t value) {
   this->authenticate_();
-  delay(100);  // NOLINT
+  delay(200);  // NOLINT
   this->send(FUNCTION_WRITE_REGISTER, address, value);
 }
 
