@@ -53,7 +53,8 @@ void JkBms::on_jk_modbus_data(const uint8_t &function, const std::vector<uint8_t
     return;
   }
 
-  ESP_LOGW(TAG, "Invalid size (%zu) for JK BMS frame!", data.size());
+  ESP_LOGW(TAG, "Unhandled response (%zu bytes) received: %s", data.size(),
+           format_hex_pretty(&data.front(), data.size()).c_str());
 }
 
 void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
