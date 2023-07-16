@@ -157,7 +157,7 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
         ),
         cv.Optional(CONF_CELL_COUNT): JK_NUMBER_SCHEMA.extend(
             {
-                cv.Optional(CONF_MIN_VALUE, default=4): cv.float_,
+                cv.Optional(CONF_MIN_VALUE, default=3): cv.float_,
                 cv.Optional(CONF_MAX_VALUE, default=24): cv.float_,
                 cv.Optional(CONF_STEP, default=1.0): cv.float_,
                 cv.Optional(
