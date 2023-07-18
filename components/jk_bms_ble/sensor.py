@@ -107,7 +107,6 @@ ICON_CURRENT_DC = "mdi:current-dc"
 ICON_CAPACITY = "mdi:battery-medium"
 ICON_MIN_VOLTAGE_CELL = "mdi:battery-minus-outline"
 ICON_MAX_VOLTAGE_CELL = "mdi:battery-plus-outline"
-ICON_STATE_OF_CHARGE = "mdi:battery-50"
 ICON_CAPACITY_REMAINING = "mdi:battery-50"
 ICON_CHARGING_CYCLES = "mdi:battery-sync"
 ICON_ERRORS_BITMASK = "mdi:alert-circle-outline"
@@ -632,7 +631,6 @@ CONFIG_SCHEMA = cv.Schema(
         ),
         cv.Optional(CONF_STATE_OF_CHARGE): sensor.sensor_schema(
             unit_of_measurement=UNIT_PERCENT,
-            icon=ICON_STATE_OF_CHARGE,
             accuracy_decimals=0,
             device_class=DEVICE_CLASS_BATTERY,
             state_class=STATE_CLASS_MEASUREMENT,

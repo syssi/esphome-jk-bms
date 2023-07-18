@@ -136,7 +136,6 @@ ICON_MIN_VOLTAGE_CELL = "mdi:battery-minus-outline"
 ICON_MAX_VOLTAGE_CELL = "mdi:battery-plus-outline"
 
 ICON_BATTERY_STRINGS = "mdi:car-battery"
-ICON_CAPACITY_REMAINING = "mdi:battery-50"
 ICON_CAPACITY_REMAINING_DERIVED = "mdi:battery-50"
 ICON_ACTUAL_BATTERY_CAPACITY = "mdi:battery-50"
 ICON_TOTAL_BATTERY_CAPACITY_SETTING = "mdi:battery-sync"
@@ -510,7 +509,6 @@ CONFIG_SCHEMA = JK_BMS_COMPONENT_SCHEMA.extend(
         ),
         cv.Optional(CONF_CAPACITY_REMAINING): sensor.sensor_schema(
             unit_of_measurement=UNIT_PERCENT,
-            icon=ICON_CAPACITY_REMAINING,
             accuracy_decimals=0,
             device_class=DEVICE_CLASS_BATTERY,
             state_class=STATE_CLASS_MEASUREMENT,
