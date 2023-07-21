@@ -22,13 +22,6 @@ esp32:
 external_components:
   - source: ${external_components_source}
     refresh: 0s
-  - source: github://spali/esphome@pr3500
-    components:
-      - web_server
-      - web_server_idf
-      - web_server_base
-      - captive_portal
-    refresh: 0s
 
 web_server:
   local: false
