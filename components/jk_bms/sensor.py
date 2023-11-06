@@ -516,7 +516,7 @@ CONFIG_SCHEMA = JK_BMS_COMPONENT_SCHEMA.extend(
         cv.Optional(CONF_CAPACITY_REMAINING_DERIVED): sensor.sensor_schema(
             unit_of_measurement=UNIT_AMPERE_HOURS,
             icon=ICON_CAPACITY_REMAINING_DERIVED,
-            accuracy_decimals=0,
+            accuracy_decimals=1,
             device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
