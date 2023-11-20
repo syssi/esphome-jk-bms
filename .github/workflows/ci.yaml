@@ -85,9 +85,6 @@ jobs:
         run: |
           echo "::add-matcher::.github/workflows/matchers/clang-tidy.json"
           echo "::add-matcher::.github/workflows/matchers/gcc.json"
-      # Can be removed as soon as esphome-lint container is fixed
-      - name: Add missing pexpect
-        run: pip install pexpect
       - name: Run lint-cpp
         run: script/lint-cpp -c
         working-directory: ${{ env.esphome_directory }}
