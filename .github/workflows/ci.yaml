@@ -58,15 +58,23 @@ jobs:
     env:
       esphome_directory: esphome
     runs-on: ubuntu-latest
-    # cpp lint job runs with esphome-lint docker image so that clang-format-*
-    # doesn't have to be installed
-    container: esphome/esphome-lint:latest
     steps:
       - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - name: Cache pip modules
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache/pip
+          key: esphome-pip-3.9-${{ hashFiles('setup.py') }}
+          restore-keys: |
+            esphome-pip-3.9-
 
-      - name: 💣 Clone esphome project
+      - name: 💣Clone esphome project
         run: git clone https://github.com/esphome/esphome.git
-      - name: 💣 Copy component into the esphome project
+      - name: 💣Copy component into the esphome project
         run: |
           cp -r ../components/* esphome/components/
           git config user.name "ci"
