@@ -89,6 +89,8 @@ CONF_CHARGING_POWER = "charging_power"
 CONF_DISCHARGING_POWER = "discharging_power"
 CONF_TEMPERATURE_SENSOR_1 = "temperature_sensor_1"
 CONF_TEMPERATURE_SENSOR_2 = "temperature_sensor_2"
+CONF_TEMPERATURE_SENSOR_3 = "temperature_sensor_3"
+CONF_TEMPERATURE_SENSOR_4 = "temperature_sensor_4"
 CONF_POWER_TUBE_TEMPERATURE = "power_tube_temperature"
 CONF_STATE_OF_CHARGE = "state_of_charge"
 CONF_CAPACITY_REMAINING = "capacity_remaining"
@@ -166,6 +168,13 @@ CELL_RESISTANCES = [
     CONF_CELL_RESISTANCE_24,
 ]
 
+TEMPERATURES = [
+    CONF_TEMPERATURE_SENSOR_1,
+    CONF_TEMPERATURE_SENSOR_2,
+    CONF_TEMPERATURE_SENSOR_3,
+    CONF_TEMPERATURE_SENSOR_4,
+]
+
 SENSORS = [
     CONF_MIN_CELL_VOLTAGE,
     CONF_MAX_CELL_VOLTAGE,
@@ -178,8 +187,6 @@ SENSORS = [
     CONF_POWER,
     CONF_CHARGING_POWER,
     CONF_DISCHARGING_POWER,
-    CONF_TEMPERATURE_SENSOR_1,
-    CONF_TEMPERATURE_SENSOR_2,
     CONF_POWER_TUBE_TEMPERATURE,
     CONF_STATE_OF_CHARGE,
     CONF_CAPACITY_REMAINING,
@@ -622,6 +629,20 @@ CONFIG_SCHEMA = cv.Schema(
             device_class=DEVICE_CLASS_TEMPERATURE,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
+        cv.Optional(CONF_TEMPERATURE_SENSOR_3): sensor.sensor_schema(
+            unit_of_measurement=UNIT_CELSIUS,
+            icon=ICON_EMPTY,
+            accuracy_decimals=1,
+            device_class=DEVICE_CLASS_TEMPERATURE,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_TEMPERATURE_SENSOR_4): sensor.sensor_schema(
+            unit_of_measurement=UNIT_CELSIUS,
+            icon=ICON_EMPTY,
+            accuracy_decimals=1,
+            device_class=DEVICE_CLASS_TEMPERATURE,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
         cv.Optional(CONF_POWER_TUBE_TEMPERATURE): sensor.sensor_schema(
             unit_of_measurement=UNIT_CELSIUS,
             icon=ICON_EMPTY,
@@ -700,6 +721,11 @@ async def to_code(config):
             conf = config[key]
             sens = await sensor.new_sensor(conf)
             cg.add(hub.set_cell_resistance_sensor(i, sens))
+    for i, key in enumerate(TEMPERATURES):
+        if key in config:
+            conf = config[key]
+            sens = await sensor.new_sensor(conf)
+            cg.add(hub.set_temperature_sensor(i, sens))
     for key in SENSORS:
         if key in config:
             conf = config[key]

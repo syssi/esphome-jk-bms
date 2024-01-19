@@ -241,6 +241,10 @@ sensor:
       name: "${name} temperature sensor 1"
     temperature_sensor_2:
       name: "${name} temperature sensor 2"
+    # temperature_sensor_3:
+    #   name: "${name} temperature sensor 3"
+    # temperature_sensor_4:
+    #   name: "${name} temperature sensor 4"
     power_tube_temperature:
       name: "${name} power tube temperature"
     state_of_charge:
