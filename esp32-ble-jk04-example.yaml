@@ -29,7 +29,12 @@ wifi:
   password: !secret wifi_password
 
 ota:
-
+  on_begin:
+    then:
+      - lambda: |-
+          id(bluetooth_enabled_switch).turn_off();
+      - logger.log: "BLE shutdown for flashing"
+      
 logger:
   level: DEBUG
 
@@ -207,4 +212,5 @@ switch:
 
   - platform: ble_client
     ble_client_id: client0
+    id: bluetooth_enabled_switch
     name: "${name} enable bluetooth connection"
