@@ -199,6 +199,9 @@ jobs:
           esphome -s external_components_source components config esp32-ble-example-multiple-devices.yaml
           esphome -s external_components_source components config esp32-ble-uart-hybrid-example.yaml
           esphome -s external_components_source components config esp32-ble-v11-example.yaml
+      - name: Compile esp32 (modbus) example configurations
+        run: |
+          esphome config esp32-jk-pb-modbus-example.yaml
 
       - name: Write yaml-snippets/secrets.yaml
         shell: bash
@@ -263,3 +266,6 @@ jobs:
         run: |
           esphome -s external_components_source components compile esp32-ble-example-faker.yaml
           esphome -s external_components_source components compile esp32-ble-v11-example.yaml
+      - name: Compile esp32 (modbus) example configurations
+        run: |
+          esphome compile esp32-jk-pb-modbus-example.yaml

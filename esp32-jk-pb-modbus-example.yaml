@@ -1,0 +1,173 @@
+substitutions:
+  name: jk-bms
+  device_description: "Monitor a JK-BMS (JK-PB series) via Modbus"
+  external_components_source: github://syssi/esphome-jk-bms@main
+  tx_pin: GPIO16
+  rx_pin: GPIO17
+
+esphome:
+  name: ${name}
+  comment: ${device_description}
+  project:
+    name: "syssi.esphome-jk-bms"
+    version: 1.5.0
+
+esp32:
+  board: wemos_d1_mini32
+  framework:
+    type: esp-idf
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+ota:
+
+logger:
+  level: DEBUG
+
+# If you use Home Assistant please remove this `mqtt` section and uncomment the `api` component!
+# The native API has many advantages over MQTT: https://esphome.io/components/api.html#advantages-over-mqtt
+mqtt:
+  broker: !secret mqtt_host
+  username: !secret mqtt_username
+  password: !secret mqtt_password
+  id: mqtt_client
+
+# api:
+
+uart:
+  - id: uart_0
+    baud_rate: 115200
+    rx_buffer_size: 384
+    tx_pin: ${tx_pin}
+    rx_pin: ${rx_pin}
+
+modbus:
+  id: modbus0
+
+modbus_controller:
+  - id: bms0
+    # Address of the Modbus slave device on the bus
+    address: 0x01
+    modbus_id: modbus0
+    setup_priority: -10
+    update_interval: 5s
+    command_throttle: 50ms
+
+sensor:
+  # 0x1200 index 0x90 Battery Voltage
+  - platform: modbus_controller
+    modbus_controller_id: bms0
+    name: "${name} total voltage"
+    address: 0x1290
+    register_type: holding
+    value_type: U_DWORD_R
+    unit_of_measurement: "V"
+    device_class: voltage
+    state_class: measurement
+    accuracy_decimals: 3
+    filters:
+      - multiply: 0.001
+
+  # 0x0000    0    UINT16    2    R    CellVol0    mV
+  # 0x0002    2    UINT16    2    R    CellVol1    mV
+  # 0x0004    4    UINT16    2    R    CellVol2    mV
+  # 0x0006    6    UINT16    2    R    CellVol3    mV
+  # 0x0008    8    UINT16    2    R    CellVol4    mV
+  # 0x000A   10    UINT16    2    R    CellVol5    mV
+  # 0x000C   12    UINT16    2    R    CellVol6    mV
+  # 0x000E   14    UINT16    2    R    CellVol7    mV
+  # 0x0010   16    UINT16    2    R    CellVol8    mV
+  # 0x0012   18    UINT16    2    R    CellVol9    mV
+  # 0x0014   20    UINT16    2    R    CellVol10   mV
+  # 0x0016   22    UINT16    2    R    CellVol11   mV
+  # 0x0018   24    UINT16    2    R    CellVol12   mV
+  # 0x001A   26    UINT16    2    R    CellVol13   mV
+  # 0x001C   28    UINT16    2    R    CellVol14   mV
+  # 0x001E   30    UINT16    2    R    CellVol15   mV
+  # 0x0020   32    UINT16    2    R    CellVol16   mV
+  # 0x0022   34    UINT16    2    R    CellVol17   mV
+  # 0x0024   36    UINT16    2    R    CellVol18   mV
+  # 0x0026   38    UINT16    2    R    CellVol19   mV
+  # 0x0028   40    UINT16    2    R    CellVol20   mV
+  # 0x002A   42    UINT16    2    R    CellVol21   mV
+  # 0x002C   44    UINT16    2    R    CellVol22   mV
+  # 0x002E   46    UINT16    2    R    CellVol23   mV
+  #
+  # 0x0030   48    UINT16    2    R    CellVol24   mV
+  # 0x0032   50    UINT16    2    R    CellVol25   mV
+  # 0x0034   52    UINT16    2    R    CellVol26   mV
+  # 0x0036   54    UINT16    2    R    CellVol27   mV
+  # 0x0038   56    UINT16    2    R    CellVol28   mV
+  # 0x003A   58    UINT16    2    R    CellVol29   mV
+  # 0x003C   60    UINT16    2    R    CellVol30   mV
+  # 0x003E   62    UINT16    2    R    CellVol31   mV
+  # 0x0040   64    UINT32    4    R    CellStatus    (each bit indicates a attached cell)
+  # 0x0044   68    UINT16    2    R    CellVolAverage    mV
+  # 0x0046   70    UINT16    2    R    CellVoltageDifferenceMax    mV
+  # 0x0048   72    UINT8/UINT8 2  R    MaxVolCellNbr / MinVolCellNbr
+  # 0x004A   74    UINT16    2    R    CellWireRes0    mΩ
+  # 0x004C   76    UINT16    2    R    CellWireRes1    mΩ
+  # 0x004E   78    UINT16    2    R    CellWireRes2    mΩ
+  # 0x0050   80    UINT16    2    R    CellWireRes3    mΩ
+  # 0x0052   82    UINT16    2    R    CellWireRes4    mΩ
+  # 0x0054   84    UINT16    2    R    CellWireRes5    mΩ
+  # 0x0056   86    UINT16    2    R    CellWireRes6    mΩ
+  # 0x0058   88    UINT16    2    R    CellWireRes7    mΩ
+  # 0x005A   90    UINT16    2    R    CellWireRes8    mΩ
+  # 0x005C   92    UINT16    2    R    CellWireRes9    mΩ
+  # 0x005E   94    UINT16    2    R    CellWireRes10   mΩ
+  # 0x0060   96    UINT16    2    R    CellWireRes11   mΩ
+  # 0x0062   98    UINT16    2    R    CellWireRes12   mΩ
+  # 0x0064   100   UINT16    2    R    CellWireRes13   mΩ
+  # 0x0066   102   UINT16    2    R    CellWireRes14   mΩ
+  # 0x0068   104   UINT16    2    R    CellWireRes15   mΩ
+  # 0x006A   106   UINT16    2    R    CellWireRes16   mΩ
+  # 0x006C   108   UINT16    2    R    CellWireRes17   mΩ
+  # 0x006E   110   UINT16    2    R    CellWireRes18   mΩ
+  # 0x0070   112   UINT16    2    R    CellWireRes19   mΩ
+  # 0x0072   114   UINT16    2    R    CellWireRes20   mΩ
+  # 0x0074   116   UINT16    2    R    CellWireRes21   mΩ
+  # 0x0074   116   UINT16    2    R    CellWireRes21   mΩ
+  # 0x0076   118   UINT16    2    R    CellWireRes22   mΩ
+  # 0x0078   120   UINT16    2    R    CellWireRes23   mΩ
+  # 0x007A   122   UINT16    2    R    CellWireRes24   mΩ
+  # 0x007C   124   UINT16    2    R    CellWireRes25   mΩ
+  # 0x007E   126   UINT16    2    R    CellWireRes26   mΩ
+  # 0x0080   128   UINT16    2    R    CellWireRes27   mΩ
+  # 0x0082   130   UINT16    2    R    CellWireRes28   mΩ
+  # 0x0084   132   UINT16    2    R    CellWireRes29   mΩ
+  # 0x0086   134   UINT16    2    R    CellWireRes30   mΩ
+  # 0x0088   136   UINT16    2    R    CellWireRes31   mΩ
+  # 0x008A   138    INT16    2    R    TempMos         0.1 °C
+  # 0x008C   140   UINT32    4    R    CellWireResSta  Bit per Cell
+  # 0x0090   144   UINT32    4    R    BatVol          mV
+  # 0x0094   148   UINT32    4    R    BatWatt         mW
+  # 0x0098   152    INT32    4    R    BatCurrent      mA
+  # 0x009C   156    INT16    2    R    TempBat 1       0.1 °C
+  # 0x009E   158    INT16    2    R    TempBat 2       0.1 °C
+  # 0x00A0   160   UINT32    4    R    AlarmBitmask
+  # 0x00A4   164    INT16    2    R    BalanCurrent    mA
+  # 0x00A6   166 UINT8+UINT8 2    R    BalanStatatus (2:放电; 1:充电 ; 0:关闭) / SOCStateOfcharge %
+  # 0x00A8   168    INT32    2    R    SOCCapRemain    mAH
+  # 0x00AC   172   UINT32    4    R    SOCFullChargeCap    mAH
+  # 0x00B0   176   UINT32    4    R    SOCCycleCount   次
+  # 0x00B4   180   UINT32    4    R    SOCCycleCap     mAH
+  # 0x00B8   184 UINT8+UINT8 2    R    StateOfHealth % / Precharge stats (1:打开 ; 0:关闭)
+  # 0x00BA   186   UINT16    2    R    UserAlarm
+  # 0x00BC   188   UINT32    4    R    RunTime         S
+  # 0x00C0   192 UINT8+UINT8 Charge (1:打开 ; 0:关闭) / Discharge (1:打开 ; 0:关闭)
+  # 0x00C2   194   UINT16    2    R    UserAlarm2
+  # 0x00C4   196   UINT16    2    R    TimeDcOCPR      S
+  # 0x00C6   198   UINT16    2    R    TimeDcSCPR      S
+  # 0x00C8   200   UINT16    2    R    TimeCOCPR       S
+  # 0x00CA   202   UINT16    2    R    TimeCSCPR       S
+  # 0x00CC   204   UINT16    2    R    TimeUVPR        S
+  # 0x00CE   206   UINT16    2    R    TimeOVPR        S
+  # 0x00D0   208 UINT8+UINT8 2    R    AbsentBitmask (Bit0: MOS TempSensorAbsent, Bit1: BATTempSensor1Absent, Bit2: BATTempSensor2Absent, Bit4: BATTempSensor4Absent, Bit5: BATTempSensor5Absent) / Heating
+  # 0x00D2   210   UINT16    2    R    Reserved
+  # 0x00D4   212   UINT16    2    R    TimeEmergency   S
+  # 0x00D6   214   UINT16    2    R    BatCurCorrect
+  # 0x00D8   216   UINT16    2    R    VolChargCur     mV
+  # 0x00DA   218   UINT16    2    R    VolDischargCur  mV
