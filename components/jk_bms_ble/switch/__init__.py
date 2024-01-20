@@ -11,15 +11,25 @@ DEPENDENCIES = ["jk_bms_ble"]
 CODEOWNERS = ["@syssi"]
 
 CONF_EMERGENCY = "emergency"
+CONF_HEATING = "heating"
 CONF_DISABLE_TEMPERATURE_SENSORS = "disable_temperature_sensors"
 CONF_DISPLAY_ALWAYS_ON = "display_always_on"
+CONF_SMART_SLEEP = "smart_sleep"
+CONF_TIMED_STORED_DATA = "timed_stored_data"
+CONF_DISABLE_PCL_MODULE = "disable_pcl_module"
+CONF_CHARGING_FLOAT_MODE = "charging_float_mode"
 
 ICON_CHARGING = "mdi:battery-charging-50"
 ICON_DISCHARGING = "mdi:battery-charging-50"
 ICON_BALANCER = "mdi:seesaw"
 ICON_EMERGENCY = "mdi:exit-run"
+ICON_HEATING = "mdi:radiator"
 ICON_DISABLE_TEMPERATURE_SENSORS = "mdi:thermometer-off"
 ICON_DISPLAY_ALWAYS_ON = "mdi:led-on"
+ICON_SMART_SLEEP = "mdi:sleep"
+ICON_TIMED_STORED_DATA = "mdi:calendar-clock"
+ICON_DISABLE_PCL_MODULE = "mdi:power-plug-off"
+ICON_CHARGING_FLOAT_MODE = "mdi:battery-charging-80"
 
 SWITCHES = {
     # JK04, JK02, JK02_32S
@@ -27,8 +37,13 @@ SWITCHES = {
     CONF_DISCHARGING: [0x00, 0x1E, 0x1E],
     CONF_BALANCER: [0x6C, 0x1F, 0x1F],
     CONF_EMERGENCY: [0x00, 0x00, 0x6B],
+    CONF_HEATING: [0x00, 0x00, 0x27],
     CONF_DISABLE_TEMPERATURE_SENSORS: [0x00, 0x00, 0x28],
     CONF_DISPLAY_ALWAYS_ON: [0x00, 0x00, 0x2B],
+    CONF_SMART_SLEEP: [0x00, 0x00, 0x2D],
+    CONF_DISABLE_PCL_MODULE: [0x00, 0x00, 0x2E],
+    CONF_TIMED_STORED_DATA: [0x00, 0x00, 0x2F],
+    CONF_CHARGING_FLOAT_MODE: [0x00, 0x00, 0x30],
 }
 
 JkSwitch = jk_bms_ble_ns.class_("JkSwitch", switch.Switch, cg.Component)
@@ -59,6 +74,12 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
                 cv.Optional(CONF_ICON, default=ICON_EMERGENCY): cv.icon,
             }
         ).extend(cv.COMPONENT_SCHEMA),
+        cv.Optional(CONF_HEATING): switch.SWITCH_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(JkSwitch),
+                cv.Optional(CONF_ICON, default=ICON_HEATING): cv.icon,
+            }
+        ).extend(cv.COMPONENT_SCHEMA),
         cv.Optional(CONF_DISABLE_TEMPERATURE_SENSORS): switch.SWITCH_SCHEMA.extend(
             {
                 cv.GenerateID(): cv.declare_id(JkSwitch),
@@ -71,6 +92,30 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
             {
                 cv.GenerateID(): cv.declare_id(JkSwitch),
                 cv.Optional(CONF_ICON, default=ICON_DISPLAY_ALWAYS_ON): cv.icon,
+            }
+        ).extend(cv.COMPONENT_SCHEMA),
+        cv.Optional(CONF_SMART_SLEEP): switch.SWITCH_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(JkSwitch),
+                cv.Optional(CONF_ICON, default=ICON_SMART_SLEEP): cv.icon,
+            }
+        ).extend(cv.COMPONENT_SCHEMA),
+        cv.Optional(CONF_DISABLE_PCL_MODULE): switch.SWITCH_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(JkSwitch),
+                cv.Optional(CONF_ICON, default=ICON_DISABLE_PCL_MODULE): cv.icon,
+            }
+        ).extend(cv.COMPONENT_SCHEMA),
+        cv.Optional(CONF_TIMED_STORED_DATA): switch.SWITCH_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(JkSwitch),
+                cv.Optional(CONF_ICON, default=ICON_TIMED_STORED_DATA): cv.icon,
+            }
+        ).extend(cv.COMPONENT_SCHEMA),
+        cv.Optional(CONF_CHARGING_FLOAT_MODE): switch.SWITCH_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(JkSwitch),
+                cv.Optional(CONF_ICON, default=ICON_CHARGING_FLOAT_MODE): cv.icon,
             }
         ).extend(cv.COMPONENT_SCHEMA),
     }
