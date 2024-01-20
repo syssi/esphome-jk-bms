@@ -162,11 +162,22 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   void set_discharging_switch(switch_::Switch *discharging_switch) { discharging_switch_ = discharging_switch; }
   void set_balancer_switch(switch_::Switch *balancer_switch) { balancer_switch_ = balancer_switch; }
   void set_emergency_switch(switch_::Switch *emergency_switch) { emergency_switch_ = emergency_switch; }
+  void set_heating_switch(switch_::Switch *heating_switch) { heating_switch_ = heating_switch; }
   void set_disable_temperature_sensors_switch(switch_::Switch *disable_temperature_sensors_switch) {
     disable_temperature_sensors_switch_ = disable_temperature_sensors_switch;
   }
   void set_display_always_on_switch(switch_::Switch *display_always_on_switch) {
     display_always_on_switch_ = display_always_on_switch;
+  }
+  void set_smart_sleep_switch(switch_::Switch *smart_sleep_switch) { smart_sleep_switch_ = smart_sleep_switch; }
+  void set_timed_stored_data_switch(switch_::Switch *timed_stored_data_switch) {
+    timed_stored_data_switch_ = timed_stored_data_switch;
+  }
+  void set_disable_pcl_module_switch(switch_::Switch *disable_pcl_module_switch) {
+    disable_pcl_module_switch_ = disable_pcl_module_switch;
+  }
+  void set_charging_float_mode_switch(switch_::Switch *charging_float_mode_switch) {
+    charging_float_mode_switch_ = charging_float_mode_switch;
   }
 
   void set_enable_fake_traffic(bool enable_fake_traffic) { enable_fake_traffic_ = enable_fake_traffic; }
@@ -230,8 +241,13 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   switch_::Switch *discharging_switch_;
   switch_::Switch *balancer_switch_;
   switch_::Switch *emergency_switch_;
+  switch_::Switch *heating_switch_;
   switch_::Switch *disable_temperature_sensors_switch_;
   switch_::Switch *display_always_on_switch_;
+  switch_::Switch *smart_sleep_switch_;
+  switch_::Switch *timed_stored_data_switch_;
+  switch_::Switch *disable_pcl_module_switch_;
+  switch_::Switch *charging_float_mode_switch_;
 
   text_sensor::TextSensor *errors_text_sensor_;
   text_sensor::TextSensor *operation_status_text_sensor_;
