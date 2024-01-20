@@ -20,6 +20,11 @@ wifi:
   password: !secret wifi_password
 
 ota:
+  on_begin:
+    then:
+      - switch.turn_off: ble_client_switch0
+      - logger.log: "BLE connection suspended for OTA update"
+
 logger:
 
 # If you don't use Home Assistant please remove this `api` section and uncomment the `mqtt` component!
@@ -43,4 +48,5 @@ ble_client:
 switch:
   - platform: ble_client
     ble_client_id: client0
+    id: ble_client_switch0
     name: "${name} enable bluetooth connection"

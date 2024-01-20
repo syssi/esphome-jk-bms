@@ -29,6 +29,10 @@ wifi:
   password: !secret wifi_password
 
 ota:
+  on_begin:
+    then:
+      - switch.turn_off: ble_client_switch0
+      - logger.log: "BLE connection suspended for OTA update"
 
 logger:
   level: DEBUG
@@ -207,4 +211,5 @@ switch:
 
   - platform: ble_client
     ble_client_id: client0
+    id: ble_client_switch0
     name: "${name} enable bluetooth connection"
