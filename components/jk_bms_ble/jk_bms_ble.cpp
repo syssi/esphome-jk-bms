@@ -114,8 +114,10 @@ void JkBmsBle::dump_config() {  // NOLINT(google-readability-function-size,reada
   LOG_SENSOR("", "Charging Power", this->charging_power_sensor_);
   LOG_SENSOR("", "Discharging Power", this->discharging_power_sensor_);
   LOG_SENSOR("", "Power Tube Temperature", this->power_tube_temperature_sensor_);
-  LOG_SENSOR("", "Temperature Sensor 1", this->temperature_sensor_1_sensor_);
-  LOG_SENSOR("", "Temperature Sensor 2", this->temperature_sensor_2_sensor_);
+  LOG_SENSOR("", "Temperature Sensor 1", this->temperatures_[0].temperature_sensor_);
+  LOG_SENSOR("", "Temperature Sensor 2", this->temperatures_[1].temperature_sensor_);
+  LOG_SENSOR("", "Temperature Sensor 3", this->temperatures_[2].temperature_sensor_);
+  LOG_SENSOR("", "Temperature Sensor 4", this->temperatures_[3].temperature_sensor_);
   LOG_SENSOR("", "State Of Charge", this->state_of_charge_sensor_);
   LOG_SENSOR("", "Capacity Remaining", this->capacity_remaining_sensor_);
   LOG_SENSOR("", "Total Battery Capacity Setting", this->total_battery_capacity_setting_sensor_);
@@ -578,10 +580,12 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->discharging_power_sensor_, std::abs(std::min(0.0f, power)));  // -500W vs 0W -> 500W
 
   // 130   2   0xBE 0x00              Temperature Sensor 1  0.1          °C
-  this->publish_state_(this->temperature_sensor_1_sensor_, (float) ((int16_t) jk_get_16bit(130 + offset)) * 0.1f);
+  this->publish_state_(this->temperatures_[1].temperature_sensor_,
+                       (float) ((int16_t) jk_get_16bit(130 + offset)) * 0.1f);
 
   // 132   2   0xBF 0x00              Temperature Sensor 2  0.1          °C
-  this->publish_state_(this->temperature_sensor_2_sensor_, (float) ((int16_t) jk_get_16bit(132 + offset)) * 0.1f);
+  this->publish_state_(this->temperatures_[0].temperature_sensor_,
+                       (float) ((int16_t) jk_get_16bit(132 + offset)) * 0.1f);
 
   // 134   2   0xD2 0x00              MOS Temperature       0.1          °C
   if (frame_version == FRAME_VERSION_JK02_32S) {
@@ -696,6 +700,13 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   //           0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
   //           0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
   //           0x00
+  if (frame_version == FRAME_VERSION_JK02_32S) {
+    this->publish_state_(this->temperatures_[3].temperature_sensor_,
+                         (float) ((int16_t) jk_get_16bit(224 + offset)) * 0.1f);
+    this->publish_state_(this->temperatures_[2].temperature_sensor_,
+                         (float) ((int16_t) jk_get_16bit(226 + offset)) * 0.1f);
+  }
+
   // 299   1   0xCD                   CRC
 
   this->status_notification_received_ = true;
@@ -1286,8 +1297,6 @@ void JkBmsBle::publish_device_unavailable_() {
   this->publish_state_(power_sensor_, NAN);
   this->publish_state_(charging_power_sensor_, NAN);
   this->publish_state_(discharging_power_sensor_, NAN);
-  this->publish_state_(temperature_sensor_1_sensor_, NAN);
-  this->publish_state_(temperature_sensor_2_sensor_, NAN);
   this->publish_state_(power_tube_temperature_sensor_, NAN);
   this->publish_state_(state_of_charge_sensor_, NAN);
   this->publish_state_(capacity_remaining_sensor_, NAN);
@@ -1301,6 +1310,9 @@ void JkBmsBle::publish_device_unavailable_() {
   for (auto &cell : this->cells_) {
     this->publish_state_(cell.cell_voltage_sensor_, NAN);
     this->publish_state_(cell.cell_resistance_sensor_, NAN);
+  }
+  for (auto &temperature : this->temperatures_) {
+    this->publish_state_(temperature.temperature_sensor_, NAN);
   }
 }
 

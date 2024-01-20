@@ -121,11 +121,8 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   void set_discharging_power_sensor(sensor::Sensor *discharging_power_sensor) {
     discharging_power_sensor_ = discharging_power_sensor;
   }
-  void set_temperature_sensor_1_sensor(sensor::Sensor *temperature_sensor_1_sensor) {
-    temperature_sensor_1_sensor_ = temperature_sensor_1_sensor;
-  }
-  void set_temperature_sensor_2_sensor(sensor::Sensor *temperature_sensor_2_sensor) {
-    temperature_sensor_2_sensor_ = temperature_sensor_2_sensor;
+  void set_temperature_sensor(uint8_t temperature, sensor::Sensor *temperature_sensor) {
+    this->temperatures_[temperature].temperature_sensor_ = temperature_sensor;
   }
   void set_power_tube_temperature_sensor(sensor::Sensor *power_tube_temperature_sensor) {
     power_tube_temperature_sensor_ = power_tube_temperature_sensor;
@@ -181,6 +178,9 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
     sensor::Sensor *cell_voltage_sensor_{nullptr};
     sensor::Sensor *cell_resistance_sensor_{nullptr};
   } cells_[32];
+  struct Temperature {
+    sensor::Sensor *temperature_sensor_{nullptr};
+  } temperatures_[4];
 
  protected:
   ProtocolVersion protocol_version_{PROTOCOL_VERSION_JK02};
@@ -216,8 +216,6 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   sensor::Sensor *power_sensor_;
   sensor::Sensor *charging_power_sensor_;
   sensor::Sensor *discharging_power_sensor_;
-  sensor::Sensor *temperature_sensor_1_sensor_;
-  sensor::Sensor *temperature_sensor_2_sensor_;
   sensor::Sensor *power_tube_temperature_sensor_;
   sensor::Sensor *state_of_charge_sensor_;
   sensor::Sensor *capacity_remaining_sensor_;
