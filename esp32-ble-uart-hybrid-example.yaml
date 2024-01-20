@@ -37,10 +37,9 @@ wifi:
 ota:
   on_begin:
     then:
-      - lambda: |-
-          id(bluetooth_enabled_switch).turn_off();
-      - logger.log: "BLE shutdown for flashing"
-      
+      - switch.turn_off: ble_client_switch0
+      - logger.log: "BLE connection suspended for OTA update"
+
 logger:
   level: DEBUG
 
@@ -215,7 +214,7 @@ switch:
 
   - platform: ble_client
     ble_client_id: client0
-    id: bluetooth_enabled_switch
+    id: ble_client_switch0
     name: "${name} enable bluetooth connection"
 
 text_sensor:
