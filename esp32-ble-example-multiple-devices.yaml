@@ -55,7 +55,7 @@ esp32_ble_tracker:
   on_ble_advertise:
     then:
       - lambda: |-
-          if (x.get_name().rfind("JK-", 0) == 0) {
+          if (x.get_name().rfind("JK-", 0) == 0 || x.get_name().rfind("JK_", 0) == 0) {
             ESP_LOGI("ble_adv", "New JK-BMS found");
             ESP_LOGI("ble_adv", "  Name: %s", x.get_name().c_str());
             ESP_LOGI("ble_adv", "  MAC address: %s", x.address_str().c_str());
