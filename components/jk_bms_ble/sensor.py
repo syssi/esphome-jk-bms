@@ -100,6 +100,7 @@ CONF_TOTAL_CHARGING_CYCLE_CAPACITY = "total_charging_cycle_capacity"
 CONF_TOTAL_RUNTIME = "total_runtime"
 CONF_BALANCING_CURRENT = "balancing_current"
 CONF_ERRORS_BITMASK = "errors_bitmask"
+CONF_EMERGENCY_TIME_COUNTDOWN = "emergency_time_countdown"
 
 UNIT_AMPERE_HOURS = "Ah"
 UNIT_OHM = "Ω"
@@ -196,6 +197,7 @@ SENSORS = [
     CONF_TOTAL_RUNTIME,
     CONF_BALANCING_CURRENT,
     CONF_ERRORS_BITMASK,
+    CONF_EMERGENCY_TIME_COUNTDOWN,
 ]
 
 # pylint: disable=too-many-function-args
@@ -704,6 +706,12 @@ CONFIG_SCHEMA = cv.Schema(
             accuracy_decimals=0,
             device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_EMERGENCY_TIME_COUNTDOWN): sensor.sensor_schema(
+            unit_of_measurement=UNIT_SECONDS,
+            icon=ICON_TIMELAPSE,
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_EMPTY,
         ),
     }
 )
