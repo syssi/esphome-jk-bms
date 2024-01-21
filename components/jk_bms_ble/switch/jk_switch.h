@@ -25,7 +25,6 @@ class JkSwitch : public switch_::Switch, public Component {
   float get_setup_priority() const override { return setup_priority::DATA; }
 
  protected:
-  bool assumed_state() override;
   void write_state(bool state) override;
   JkBmsBle *parent_;
   uint8_t jk04_holding_register_;

@@ -149,6 +149,9 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   void set_errors_bitmask_sensor(sensor::Sensor *errors_bitmask_sensor) {
     errors_bitmask_sensor_ = errors_bitmask_sensor;
   }
+  void set_emergency_time_countdown_sensor(sensor::Sensor *emergency_time_countdown_sensor) {
+    emergency_time_countdown_sensor_ = emergency_time_countdown_sensor;
+  }
 
   void set_errors_text_sensor(text_sensor::TextSensor *errors_text_sensor) { errors_text_sensor_ = errors_text_sensor; }
   void set_operation_status_text_sensor(text_sensor::TextSensor *operation_status_text_sensor) {
@@ -236,6 +239,7 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   sensor::Sensor *total_runtime_sensor_;
   sensor::Sensor *balancing_current_sensor_;
   sensor::Sensor *errors_bitmask_sensor_;
+  sensor::Sensor *emergency_time_countdown_sensor_;
 
   switch_::Switch *charging_switch_;
   switch_::Switch *discharging_switch_;

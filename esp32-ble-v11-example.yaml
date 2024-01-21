@@ -267,6 +267,8 @@ sensor:
       name: "${name} balancing current"
     errors_bitmask:
       name: "${name} errors bitmask"
+    emergency_time_countdown:
+      name: "${name} emergency time countdown"
 
 switch:
   - platform: jk_bms_ble
