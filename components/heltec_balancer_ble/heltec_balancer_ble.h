@@ -131,8 +131,7 @@ class HeltecBalancerBle : public esphome::ble_client::BLEClientNode, public Poll
   }
 
   void set_balancer_switch(switch_::Switch *balancer_switch) { balancer_switch_ = balancer_switch; }
-
-  void set_enable_fake_traffic(bool enable_fake_traffic) { enable_fake_traffic_ = enable_fake_traffic; }
+  void assemble(const uint8_t *data, uint16_t length);
   bool send_command(uint8_t function, uint8_t command, uint8_t register_address = 0x00, uint32_t value = 0x00000000);
 
   struct Cell {
@@ -182,13 +181,11 @@ class HeltecBalancerBle : public esphome::ble_client::BLEClientNode, public Poll
 
   std::vector<uint8_t> frame_buffer_;
   bool status_notification_received_ = false;
-  bool enable_fake_traffic_;
   uint8_t no_response_count_{0};
   uint16_t char_handle_;
   uint32_t last_cell_info_{0};
   uint32_t throttle_;
 
-  void assemble_(const uint8_t *data, uint16_t length);
   void decode_(const std::vector<uint8_t> &data);
   void decode_device_info_(const std::vector<uint8_t> &data);
   void decode_cell_info_(const std::vector<uint8_t> &data);

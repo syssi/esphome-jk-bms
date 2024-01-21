@@ -183,7 +183,7 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
     charging_float_mode_switch_ = charging_float_mode_switch;
   }
 
-  void set_enable_fake_traffic(bool enable_fake_traffic) { enable_fake_traffic_ = enable_fake_traffic; }
+  void assemble(const uint8_t *data, uint16_t length);
   void set_protocol_version(ProtocolVersion protocol_version) { protocol_version_ = protocol_version; }
   ProtocolVersion get_protocol_version() { return protocol_version_; }
   bool write_register(uint8_t address, uint32_t value, uint8_t length);
@@ -259,14 +259,12 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
 
   std::vector<uint8_t> frame_buffer_;
   bool status_notification_received_ = false;
-  bool enable_fake_traffic_;
   uint8_t no_response_count_{0};
   uint16_t char_handle_;
   uint16_t notify_handle_;
   uint32_t last_cell_info_{0};
   uint32_t throttle_;
 
-  void assemble_(const uint8_t *data, uint16_t length);
   void decode_(const std::vector<uint8_t> &data);
   void decode_device_info_(const std::vector<uint8_t> &data);
   void decode_jk02_cell_info_(const std::vector<uint8_t> &data);

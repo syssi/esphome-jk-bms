@@ -9,7 +9,6 @@ AUTO_LOAD = ["binary_sensor", "button", "number", "sensor", "switch", "text_sens
 MULTI_CONF = True
 
 CONF_HELTEC_BALANCER_BLE_ID = "heltec_balancer_ble_id"
-CONF_ENABLE_FAKE_TRAFFIC = "enable_fake_traffic"
 
 heltec_balancer_ble_ns = cg.esphome_ns.namespace("heltec_balancer_ble")
 HeltecBalancerBle = heltec_balancer_ble_ns.class_(
@@ -29,7 +28,6 @@ CONFIG_SCHEMA = (
             cv.Optional(
                 CONF_THROTTLE, default="2s"
             ): cv.positive_time_period_milliseconds,
-            cv.Optional(CONF_ENABLE_FAKE_TRAFFIC, default=False): cv.boolean,
         }
     )
     .extend(ble_client.BLE_CLIENT_SCHEMA)
@@ -42,5 +40,4 @@ async def to_code(config):
     await cg.register_component(var, config)
     await ble_client.register_ble_node(var, config)
 
-    cg.add(var.set_enable_fake_traffic(config[CONF_ENABLE_FAKE_TRAFFIC]))
     cg.add(var.set_throttle(config[CONF_THROTTLE]))
