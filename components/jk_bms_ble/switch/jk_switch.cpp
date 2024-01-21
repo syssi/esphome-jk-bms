@@ -33,7 +33,5 @@ void JkSwitch::write_state(bool state) {
   ESP_LOGE(TAG, "This switch isn't supported by the selected protocol version");
 }
 
-bool JkSwitch::assumed_state() { return (this->jk02_32s_holding_register_ == 0x6B); }
-
 }  // namespace jk_bms_ble
 }  // namespace esphome
