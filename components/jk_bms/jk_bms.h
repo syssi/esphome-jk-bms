@@ -240,8 +240,6 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
     total_runtime_formatted_text_sensor_ = total_runtime_formatted_text_sensor;
   }
 
-  void set_enable_fake_traffic(bool enable_fake_traffic) { enable_fake_traffic_ = enable_fake_traffic; }
-
   void dump_config() override;
 
   void on_jk_modbus_data(const uint8_t &function, const std::vector<uint8_t> &data) override;
@@ -337,7 +335,6 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
     sensor::Sensor *cell_voltage_sensor_{nullptr};
   } cells_[24];
 
-  bool enable_fake_traffic_;
   uint8_t no_response_count_{0};
 
   void on_status_data_(const std::vector<uint8_t> &data);

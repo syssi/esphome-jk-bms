@@ -10,7 +10,6 @@ MULTI_CONF = True
 
 CONF_JK_BMS_BLE_ID = "jk_bms_ble_id"
 CONF_PROTOCOL_VERSION = "protocol_version"
-CONF_ENABLE_FAKE_TRAFFIC = "enable_fake_traffic"
 
 jk_bms_ble_ns = cg.esphome_ns.namespace("jk_bms_ble")
 JkBmsBle = jk_bms_ble_ns.class_(
@@ -40,7 +39,6 @@ CONFIG_SCHEMA = (
             cv.Optional(
                 CONF_THROTTLE, default="2s"
             ): cv.positive_time_period_milliseconds,
-            cv.Optional(CONF_ENABLE_FAKE_TRAFFIC, default=False): cv.boolean,
         }
     )
     .extend(ble_client.BLE_CLIENT_SCHEMA)
@@ -53,6 +51,5 @@ async def to_code(config):
     await cg.register_component(var, config)
     await ble_client.register_ble_node(var, config)
 
-    cg.add(var.set_enable_fake_traffic(config[CONF_ENABLE_FAKE_TRAFFIC]))
     cg.add(var.set_throttle(config[CONF_THROTTLE]))
     cg.add(var.set_protocol_version(config[CONF_PROTOCOL_VERSION]))
