@@ -704,7 +704,7 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
     uint16_t raw_emergency_time_countdown = jk_get_16bit(186 + offset);
     ESP_LOGI(TAG, "  Emergency switch: %s", (raw_emergency_time_countdown > 0) ? "on" : "off");
     this->publish_state_(this->emergency_switch_, raw_emergency_time_countdown > 0);
-    this->publish_state_(this->emergency_time_countdown_sensor_, (float) jk_get_16bit(186 + offset) * 1.0f);
+    this->publish_state_(this->emergency_time_countdown_sensor_, (float) raw_emergency_time_countdown * 1.0f);
 
     this->publish_state_(this->temperatures_[3].temperature_sensor_,
                          (float) ((int16_t) jk_get_16bit(224 + offset)) * 0.1f);
