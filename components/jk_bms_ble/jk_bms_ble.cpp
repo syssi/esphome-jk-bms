@@ -933,6 +933,7 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   // 282   1   0x00                   New controls bitmask
   this->publish_state_(this->disable_temperature_sensors_switch_, check_bit_(data[282], 2));
   this->publish_state_(this->display_always_on_switch_, check_bit_(data[282], 16));
+  ESP_LOGI(TAG, "  Port switch: %s", check_bit_(data[282], 8) ? "RS485" : "CAN");
 
   // 283   3   0x00 0x00 0x00
   // 286   4   0x00 0x00 0x00 0x00
