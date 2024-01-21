@@ -448,11 +448,11 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->discharging_power_sensor_, std::abs(std::min(0.0f, power)));  // -500W vs 0W -> 500W
 
   // 130   2   0xBE 0x00              Temperature Sensor 1  0.1          °C
-  this->publish_state_(this->temperatures_[1].temperature_sensor_,
+  this->publish_state_(this->temperatures_[0].temperature_sensor_,
                        (float) ((int16_t) jk_get_16bit(130 + offset)) * 0.1f);
 
   // 132   2   0xBF 0x00              Temperature Sensor 2  0.1          °C
-  this->publish_state_(this->temperatures_[0].temperature_sensor_,
+  this->publish_state_(this->temperatures_[1].temperature_sensor_,
                        (float) ((int16_t) jk_get_16bit(132 + offset)) * 0.1f);
 
   // 134   2   0xD2 0x00              MOS Temperature       0.1          °C
