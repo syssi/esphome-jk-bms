@@ -149,7 +149,7 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   void set_errors_bitmask_sensor(sensor::Sensor *errors_bitmask_sensor) {
     errors_bitmask_sensor_ = errors_bitmask_sensor;
   }
-  void set_emergency_time_countdown_sensor_sensor(sensor::Sensor *emergency_time_countdown_sensor) {
+  void set_emergency_time_countdown_sensor(sensor::Sensor *emergency_time_countdown_sensor) {
     emergency_time_countdown_sensor_ = emergency_time_countdown_sensor;
   }
 
