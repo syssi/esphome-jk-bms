@@ -248,7 +248,7 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   sensor::Sensor *balancing_current_sensor_;
   sensor::Sensor *errors_bitmask_sensor_;
   sensor::Sensor *emergency_time_countdown_sensor_;
-  sensor::Sensor *heating_current_sensor; 
+  sensor::Sensor *heating_current_sensor_; 
 
   switch_::Switch *charging_switch_;
   switch_::Switch *discharging_switch_;
