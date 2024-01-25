@@ -22,7 +22,7 @@ from esphome.const import (
     UNIT_VOLT,
     UNIT_WATT,
 )
-
+from esphome.const import CONF_HEATING_CURRENT
 from . import CONF_JK_BMS_BLE_ID, JkBmsBle
 
 CODEOWNERS = ["@syssi"]
