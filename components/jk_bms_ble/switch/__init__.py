@@ -4,14 +4,13 @@ import esphome.config_validation as cv
 from esphome.const import CONF_ICON, CONF_ID
 
 from .. import CONF_JK_BMS_BLE_ID, JK_BMS_BLE_COMPONENT_SCHEMA, jk_bms_ble_ns
-from ..const import CONF_BALANCER, CONF_CHARGING, CONF_DISCHARGING
+from ..const import CONF_BALANCER, CONF_CHARGING, CONF_DISCHARGING, CONF_HEATING
 
 DEPENDENCIES = ["jk_bms_ble"]
 
 CODEOWNERS = ["@syssi"]
 
 CONF_EMERGENCY = "emergency"
-CONF_HEATING = "heating"
 CONF_DISABLE_TEMPERATURE_SENSORS = "disable_temperature_sensors"
 CONF_DISPLAY_ALWAYS_ON = "display_always_on"
 CONF_SMART_SLEEP = "smart_sleep"

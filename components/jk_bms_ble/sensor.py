@@ -22,7 +22,6 @@ from esphome.const import (
     UNIT_VOLT,
     UNIT_WATT,
 )
-from .const import CONF_HEATING_CURRENT
 
 from . import CONF_JK_BMS_BLE_ID, JkBmsBle
 
@@ -102,6 +101,8 @@ CONF_TOTAL_RUNTIME = "total_runtime"
 CONF_BALANCING_CURRENT = "balancing_current"
 CONF_ERRORS_BITMASK = "errors_bitmask"
 CONF_EMERGENCY_TIME_COUNTDOWN = "emergency_time_countdown"
+CONF_HEATING_CURRENT = "heating_current"
+
 
 UNIT_AMPERE_HOURS = "Ah"
 UNIT_OHM = "Ω"
