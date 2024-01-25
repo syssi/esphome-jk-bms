@@ -575,7 +575,7 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->heating_binary_sensor_, (bool)raw_heating_status);
 
    // 236   2   0x01 0xFD              Heating current        0.001         A
-  this->publish_state_(this->heating_current_sensor_, (float) jk_get_32bit(236 + offset));
+  this->publish_state_(this->heating_current_sensor_, (float) ((int16_t) jk_get_16bit(236 + offset)) * 0.001f);
 
   if (frame_version == FRAME_VERSION_JK02_32S) {
     uint16_t raw_emergency_time_countdown = jk_get_16bit(186 + offset);
