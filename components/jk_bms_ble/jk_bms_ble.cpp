@@ -570,7 +570,7 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   //           0x00
 
   // 224   1   0x01                   Heating status          0x00: off, 0x01: on 
-  uint16_t raw_heating_status = jk_get_16bit(224 + offset);
+  uint16_t raw_heating_status = (((224 + offset) != 0x00));
   ESP_LOGD(TAG, "  Heating status: %s", (raw_heating_status > 0) ? "on" : "off");
   this->publish_state_(this->heating_binary_sensor_, (bool)raw_heating_status);
 
