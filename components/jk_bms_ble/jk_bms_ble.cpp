@@ -320,6 +320,7 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   uint8_t frame_version = FRAME_VERSION_JK02_24S;
   uint8_t offset = 0;
   if (this->protocol_version_ == PROTOCOL_VERSION_JK02_32S) {
+    frame_version = FRAME_VERSION_JK02_32S;
     offset = 16;
   }
 
