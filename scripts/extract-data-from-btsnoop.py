@@ -37,11 +37,18 @@ def values_to_vertical_string(data):
   matrix = [[0 for _ in range(len(hex_values))] for _ in range(len(hex_values[0]))] 
   
   for i_col, row in enumerate(hex_values):
+
     for i_row, hex_val in enumerate(row):
+      if i_row >= 300:
+        break
+      # print(i_row)
+      # print(i_col)
       matrix[i_row][i_col] = hex_val +" "
 
   for i, col in enumerate(matrix):
     output_string += str(i).zfill(3) + " \t"
+    print("col")
+    print(col)
     for row in col:
       output_string += str(row)
     output_string += "\n"
