@@ -21,7 +21,7 @@ namespace espbt = esphome::esp32_ble_tracker;
 
 enum ProtocolVersion {
   PROTOCOL_VERSION_JK04,
-  PROTOCOL_VERSION_JK02,
+  PROTOCOL_VERSION_JK02_24S,
   PROTOCOL_VERSION_JK02_32S,
 };
 
