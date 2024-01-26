@@ -90,7 +90,6 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
     heating_binary_sensor_ = heating_binary_sensor;
   }
 
-
   void set_throttle(uint32_t throttle) { this->throttle_ = throttle; }
   void set_min_cell_voltage_sensor(sensor::Sensor *min_cell_voltage_sensor) {
     min_cell_voltage_sensor_ = min_cell_voltage_sensor;
