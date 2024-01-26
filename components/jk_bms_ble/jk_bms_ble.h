@@ -197,7 +197,7 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   } temperatures_[4];
 
  protected:
-  ProtocolVersion protocol_version_{PROTOCOL_VERSION_JK02};
+  ProtocolVersion protocol_version_{PROTOCOL_VERSION_JK02_24S};
 
   binary_sensor::BinarySensor *balancing_binary_sensor_;
   binary_sensor::BinarySensor *charging_binary_sensor_;
