@@ -25,7 +25,7 @@ CODEOWNERS = ["@syssi"]
 
 DEFAULT_STEP = 1
 
-# JK02
+# JK02_24S
 #
 # 06 04 03000000  Set balance trig voltage to 0.003
 # 1c 04 10000000  Set cell count to 16
