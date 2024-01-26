@@ -11,7 +11,7 @@ static const char *const TAG = "jk_bms_ble";
 static const uint8_t MAX_NO_RESPONSE_COUNT = 10;
 
 static const uint8_t FRAME_VERSION_JK04 = 0x01;
-static const uint8_t FRAME_VERSION_JK02 = 0x02;
+static const uint8_t FRAME_VERSION_JK02_24S = 0x02;
 static const uint8_t FRAME_VERSION_JK02_32S = 0x03;
 
 static const uint16_t JK_BMS_SERVICE_UUID = 0xFFE0;
@@ -315,20 +315,8 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   }
   this->last_cell_info_ = now;
 
+  uint8_t frame_version = FRAME_VERSION_JK02_24S;
   uint8_t offset = 0;
-  uint8_t frame_version = FRAME_VERSION_JK02;
-  if (this->protocol_version_ == PROTOCOL_VERSION_JK02) {
-    // Weak assumption: The value of data[189] (JK02) or data[189+32] (JK02_32S) is 0x01, 0x02 or 0x03
-    if (data[189] == 0x00 && data[189 + 32] > 0) {
-      frame_version = FRAME_VERSION_JK02_32S;
-      offset = 16;
-      ESP_LOGW(TAG,
-               "You hit the unstable auto detection of the protocol version. This feature will be removed in future!"
-               "Please update your configuration to protocol version JK02_32S if you are using a JK-B2A8S20P v11+");
-    }
-  }
-
-  // Override unstable auto detection
   if (this->protocol_version_ == PROTOCOL_VERSION_JK02_32S) {
     frame_version = FRAME_VERSION_JK02_32S;
     offset = 16;
@@ -776,7 +764,7 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front(), 160).c_str());
   ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front() + 160, data.size() - 160).c_str());
 
-  // JK02 response example:
+  // JK02_24S response example:
   //
   // 0x55 0xAA 0xEB 0x90 0x01 0x4F 0x58 0x02 0x00 0x00 0x54 0x0B 0x00 0x00 0x80 0x0C 0x00 0x00 0xCC 0x10 0x00 0x00 0x68
   // 0x10 0x00 0x00 0x0A 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
@@ -1076,7 +1064,7 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
   //   User data:
   //   Setup passcode:
 
-  // JK02 response example:
+  // JK02_24S response example:
   //
   // 0x55 0xAA 0xEB 0x90 0x03 0x9F 0x4A 0x4B 0x2D 0x42 0x32 0x41 0x32 0x34 0x53 0x31 0x35 0x50 0x00 0x00 0x00 0x00 0x31
   // 0x30 0x2E 0x58 0x57 0x00 0x00 0x00 0x31 0x30 0x2E 0x30 0x37 0x00 0x00 0x00 0x40 0xAF 0x01 0x00 0x06 0x00 0x00 0x00
