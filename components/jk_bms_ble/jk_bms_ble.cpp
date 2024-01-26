@@ -315,20 +315,8 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   }
   this->last_cell_info_ = now;
 
-  uint8_t offset = 0;
   uint8_t frame_version = FRAME_VERSION_JK02;
-  if (this->protocol_version_ == PROTOCOL_VERSION_JK02) {
-    // Weak assumption: The value of data[189] (JK02) or data[189+32] (JK02_32S) is 0x01, 0x02 or 0x03
-    if (data[189] == 0x00 && data[189 + 32] > 0) {
-      frame_version = FRAME_VERSION_JK02_32S;
-      offset = 16;
-      ESP_LOGW(TAG,
-               "You hit the unstable auto detection of the protocol version. This feature will be removed in future!"
-               "Please update your configuration to protocol version JK02_32S if you are using a JK-B2A8S20P v11+");
-    }
-  }
-
-  // Override unstable auto detection
+  uint8_t offset = 0;
   if (this->protocol_version_ == PROTOCOL_VERSION_JK02_32S) {
     frame_version = FRAME_VERSION_JK02_32S;
     offset = 16;
