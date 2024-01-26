@@ -559,10 +559,10 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   //           0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
   //           0x00
 
-  // 224   1   0x01                   Heating status          0x00: off, 0x01: on 
-  this->publish_state_(this->heating_binary_sensor_, (bool)data[224 + offset]);
+  // 224   1   0x01                   Heating status          0x00: off, 0x01: on
+  this->publish_state_(this->heating_binary_sensor_, (bool) data[224 + offset]);
 
-   // 236   2   0x01 0xFD              Heating current        0.001         A
+  // 236   2   0x01 0xFD              Heating current         0.001         A
   this->publish_state_(this->heating_current_sensor_, (float) ((int16_t) jk_get_16bit(236 + offset)) * 0.001f);
 
   if (frame_version == FRAME_VERSION_JK02_32S) {
