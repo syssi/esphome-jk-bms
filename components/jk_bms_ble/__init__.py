@@ -19,7 +19,7 @@ JkBmsBle = jk_bms_ble_ns.class_(
 ProtocolVersion = jk_bms_ble_ns.enum("ProtocolVersion")
 PROTOCOL_VERSION_OPTIONS = {
     "JK04": ProtocolVersion.PROTOCOL_VERSION_JK04,
-    "JK02": ProtocolVersion.PROTOCOL_VERSION_JK02,
+    "JK02_24S": ProtocolVersion.PROTOCOL_VERSION_JK02_24S,
     "JK02_32S": ProtocolVersion.PROTOCOL_VERSION_JK02_32S,
 }
 
@@ -33,7 +33,7 @@ CONFIG_SCHEMA = (
     cv.Schema(
         {
             cv.GenerateID(): cv.declare_id(JkBmsBle),
-            cv.Optional(CONF_PROTOCOL_VERSION, default="JK02"): cv.enum(
+            cv.Required(CONF_PROTOCOL_VERSION): cv.enum(
                 PROTOCOL_VERSION_OPTIONS, upper=True
             ),
             cv.Optional(
