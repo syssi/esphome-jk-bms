@@ -16,6 +16,7 @@ CONF_ONLINE_STATUS = "online_status"
 ICON_CHARGING = "mdi:battery-charging"
 ICON_DISCHARGING = "mdi:power-plug"
 ICON_BALANCING = "mdi:battery-heart-variant"
+ICON_HEATING = "mdi:radiator"
 
 BINARY_SENSORS = [
     CONF_CHARGING,
@@ -38,7 +39,7 @@ CONFIG_SCHEMA = cv.Schema(
             icon=ICON_BALANCING
         ),
         cv.Optional(CONF_HEATING): binary_sensor.binary_sensor_schema(
-            icon=ICON_BALANCING
+            icon=ICON_HEATING
         ),
         cv.Optional(CONF_ONLINE_STATUS): binary_sensor.binary_sensor_schema(
             device_class=DEVICE_CLASS_CONNECTIVITY,
