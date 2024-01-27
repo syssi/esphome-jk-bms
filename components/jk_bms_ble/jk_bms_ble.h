@@ -86,6 +86,9 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   void set_online_status_binary_sensor(binary_sensor::BinarySensor *online_status_binary_sensor) {
     online_status_binary_sensor_ = online_status_binary_sensor;
   }
+  void set_heating_binary_sensor(binary_sensor::BinarySensor *heating_binary_sensor) {
+    heating_binary_sensor_ = heating_binary_sensor;
+  }
 
   void set_throttle(uint32_t throttle) { this->throttle_ = throttle; }
   void set_min_cell_voltage_sensor(sensor::Sensor *min_cell_voltage_sensor) {
@@ -152,6 +155,9 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   void set_emergency_time_countdown_sensor(sensor::Sensor *emergency_time_countdown_sensor) {
     emergency_time_countdown_sensor_ = emergency_time_countdown_sensor;
   }
+  void set_heating_current_sensor(sensor::Sensor *heating_current_sensor) {
+    heating_current_sensor_ = heating_current_sensor;
+  }
 
   void set_errors_text_sensor(text_sensor::TextSensor *errors_text_sensor) { errors_text_sensor_ = errors_text_sensor; }
   void set_operation_status_text_sensor(text_sensor::TextSensor *operation_status_text_sensor) {
@@ -203,6 +209,7 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   binary_sensor::BinarySensor *charging_binary_sensor_;
   binary_sensor::BinarySensor *discharging_binary_sensor_;
   binary_sensor::BinarySensor *online_status_binary_sensor_;
+  binary_sensor::BinarySensor *heating_binary_sensor_;
 
   number::Number *balance_trigger_voltage_number_;
   number::Number *cell_count_number_;
@@ -240,6 +247,7 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   sensor::Sensor *balancing_current_sensor_;
   sensor::Sensor *errors_bitmask_sensor_;
   sensor::Sensor *emergency_time_countdown_sensor_;
+  sensor::Sensor *heating_current_sensor_;
 
   switch_::Switch *charging_switch_;
   switch_::Switch *discharging_switch_;

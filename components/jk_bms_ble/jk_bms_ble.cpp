@@ -123,11 +123,13 @@ void JkBmsBle::dump_config() {  // NOLINT(google-readability-function-size,reada
   LOG_SENSOR("", "Charging Cycles", this->charging_cycles_sensor_);
   LOG_SENSOR("", "Total Charging Cycle Capacity", this->total_charging_cycle_capacity_sensor_);
   LOG_SENSOR("", "Total Runtime", this->total_runtime_sensor_);
+  LOG_SENSOR("", "Heating Current", this->heating_current_sensor_);
   LOG_TEXT_SENSOR("", "Operation Status", this->operation_status_text_sensor_);
   LOG_TEXT_SENSOR("", "Total Runtime Formatted", this->total_runtime_formatted_text_sensor_);
   LOG_BINARY_SENSOR("", "Balancing", this->balancing_binary_sensor_);
   LOG_BINARY_SENSOR("", "Charging", this->charging_binary_sensor_);
   LOG_BINARY_SENSOR("", "Discharging", this->discharging_binary_sensor_);
+  LOG_BINARY_SENSOR("", "Heating", this->heating_binary_sensor_);
 }
 
 void JkBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if,
@@ -556,6 +558,13 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   //           0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
   //           0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
   //           0x00
+
+  // 224   1   0x01                   Heating status          0x00: off, 0x01: on
+  this->publish_state_(this->heating_binary_sensor_, (bool) data[224 + offset]);
+
+  // 236   2   0x01 0xFD              Heating current         0.001         A
+  this->publish_state_(this->heating_current_sensor_, (float) ((int16_t) jk_get_16bit(236 + offset)) * 0.001f);
+
   if (frame_version == FRAME_VERSION_JK02_32S) {
     uint16_t raw_emergency_time_countdown = jk_get_16bit(186 + offset);
     ESP_LOGI(TAG, "  Emergency switch: %s", (raw_emergency_time_countdown > 0) ? "on" : "off");
@@ -920,6 +929,7 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   // 274   4   0x00 0x00 0x00 0x00
   // 278   4   0x00 0x00 0x00 0x00
   // 282   1   0x00                   New controls bitmask
+  this->publish_state_(this->heating_switch_, check_bit_(data[282], 1));
   this->publish_state_(this->disable_temperature_sensors_switch_, check_bit_(data[282], 2));
   this->publish_state_(this->display_always_on_switch_, check_bit_(data[282], 16));
   ESP_LOGI(TAG, "  Port switch: %s", check_bit_(data[282], 8) ? "RS485" : "CAN");
@@ -1169,6 +1179,7 @@ void JkBmsBle::publish_device_unavailable_() {
   this->publish_state_(total_runtime_sensor_, NAN);
   this->publish_state_(balancing_current_sensor_, NAN);
   this->publish_state_(errors_bitmask_sensor_, NAN);
+  this->publish_state_(heating_current_sensor_, NAN);
 
   for (auto &cell : this->cells_) {
     this->publish_state_(cell.cell_voltage_sensor_, NAN);

@@ -78,6 +78,8 @@ binary_sensor:
       name: "${name} charging"
     discharging:
       name: "${name} discharging"
+    heating:
+      name: "${name} heating"
     online_status:
       name: "${name} online status"
 
@@ -235,6 +237,8 @@ sensor:
       name: "${name} total voltage"
     current:
       name: "${name} current"
+    heating_current:
+      name: "${name} heating current"
     power:
       name: "${name} power"
     charging_power:

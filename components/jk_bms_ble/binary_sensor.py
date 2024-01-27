@@ -4,7 +4,7 @@ import esphome.config_validation as cv
 from esphome.const import CONF_ID, DEVICE_CLASS_CONNECTIVITY, ENTITY_CATEGORY_DIAGNOSTIC
 
 from . import CONF_JK_BMS_BLE_ID, JkBmsBle
-from .const import CONF_CHARGING, CONF_DISCHARGING
+from .const import CONF_CHARGING, CONF_DISCHARGING, CONF_HEATING
 
 DEPENDENCIES = ["jk_bms_ble"]
 
@@ -16,12 +16,14 @@ CONF_ONLINE_STATUS = "online_status"
 ICON_CHARGING = "mdi:battery-charging"
 ICON_DISCHARGING = "mdi:power-plug"
 ICON_BALANCING = "mdi:battery-heart-variant"
+ICON_HEATING = "mdi:radiator"
 
 BINARY_SENSORS = [
     CONF_CHARGING,
     CONF_DISCHARGING,
     CONF_BALANCING,
     CONF_ONLINE_STATUS,
+    CONF_HEATING,
 ]
 
 CONFIG_SCHEMA = cv.Schema(
@@ -35,6 +37,9 @@ CONFIG_SCHEMA = cv.Schema(
         ),
         cv.Optional(CONF_BALANCING): binary_sensor.binary_sensor_schema(
             icon=ICON_BALANCING
+        ),
+        cv.Optional(CONF_HEATING): binary_sensor.binary_sensor_schema(
+            icon=ICON_HEATING
         ),
         cv.Optional(CONF_ONLINE_STATUS): binary_sensor.binary_sensor_schema(
             device_class=DEVICE_CLASS_CONNECTIVITY,

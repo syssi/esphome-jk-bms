@@ -101,6 +101,8 @@ CONF_TOTAL_RUNTIME = "total_runtime"
 CONF_BALANCING_CURRENT = "balancing_current"
 CONF_ERRORS_BITMASK = "errors_bitmask"
 CONF_EMERGENCY_TIME_COUNTDOWN = "emergency_time_countdown"
+CONF_HEATING_CURRENT = "heating_current"
+
 
 UNIT_AMPERE_HOURS = "Ah"
 UNIT_OHM = "Ω"
@@ -198,6 +200,7 @@ SENSORS = [
     CONF_BALANCING_CURRENT,
     CONF_ERRORS_BITMASK,
     CONF_EMERGENCY_TIME_COUNTDOWN,
+    CONF_HEATING_CURRENT,
 ]
 
 # pylint: disable=too-many-function-args
@@ -712,6 +715,13 @@ CONFIG_SCHEMA = cv.Schema(
             icon=ICON_TIMELAPSE,
             accuracy_decimals=0,
             device_class=DEVICE_CLASS_EMPTY,
+        ),
+        cv.Optional(CONF_HEATING_CURRENT): sensor.sensor_schema(
+            unit_of_measurement=UNIT_AMPERE,
+            icon=ICON_CURRENT_DC,
+            accuracy_decimals=2,
+            device_class=DEVICE_CLASS_CURRENT,
+            state_class=STATE_CLASS_MEASUREMENT,
         ),
     }
 )
