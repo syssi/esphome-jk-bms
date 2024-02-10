@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 <<: !include esp32-ble-v11-old-style-example.yaml
+=======
+<<: !include esp32-ble-v11-example-debug.yaml
+>>>>>>> main
 
 interval:
   - interval: 20s
