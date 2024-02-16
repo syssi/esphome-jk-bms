@@ -173,10 +173,34 @@ void HeltecBalancerBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt
                  this->parent_->address_str().c_str());
         break;
       }
+
+      // Services and characteristic of a GW-24S4EB, HW-2.8.0, SW-1.1.0, V1.0.0, 20210915 (3C:A5:51:XX:XX:XX)
+      //
+      // Service UUID: 0x1800
+      //  start_handle: 0x1  end_handle: 0x7
+      // Service UUID: 0xFFE0
+      //  start_handle: 0x8  end_handle: 0xffff
+      // Connected
+      //  characteristic 0xFFE1, handle 0xa, properties 0x1c
+      //  characteristic 0xFFE2, handle 0xd, properties 0x1c
+      //  characteristic 0xFFE3, handle 0x10, properties 0xc
+      // cfg_mtu status 0, mtu 244
+
+      // Services and characteristic of a EK-24S4EB, HW-3.2.0, ZH-1.2.9, V1.2.9, 20230608 (3C:A5:51:XX:XX:XX)
+      //
+      // Service UUID: 0x1800
+      //  start_handle: 0x1  end_handle: 0x7
+      // Service UUID: 0xFFE0
+      //  start_handle: 0x8  end_handle: 0xffff
+      // Connected
+      //  characteristic 0xFFE1, handle 0xa, properties 0x1c
+      //  characteristic 0xFFE2, handle 0xd, properties 0x1c
+      //  characteristic 0xFFE3, handle 0x10, properties 0xc
+      // cfg_mtu status 0, mtu 244
       this->char_handle_ = chr->handle;
 
       auto status = esp_ble_gattc_register_for_notify(this->parent()->get_gattc_if(), this->parent()->get_remote_bda(),
-                                                      chr->handle);
+                                                      0x000b);
       if (status) {
         ESP_LOGW(TAG, "esp_ble_gattc_register_for_notify failed, status=%d", status);
       }
@@ -194,6 +218,9 @@ void HeltecBalancerBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt
     case ESP_GATTC_NOTIFY_EVT: {
       if (param->notify.handle != this->char_handle_)
         break;
+
+      ESP_LOGVV(TAG, "Notification received (handle 0x%02X): %s", param->notify.handle,
+                format_hex_pretty(param->notify.value, param->notify.value_len).c_str());
 
       this->assemble(param->notify.value, param->notify.value_len);
 
