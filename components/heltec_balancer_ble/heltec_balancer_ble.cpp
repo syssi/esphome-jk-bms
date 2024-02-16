@@ -199,8 +199,8 @@ void HeltecBalancerBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt
       // cfg_mtu status 0, mtu 244
       this->char_handle_ = chr->handle;
 
-      auto status = esp_ble_gattc_register_for_notify(this->parent()->get_gattc_if(), this->parent()->get_remote_bda(),
-                                                      0x000b);
+      auto status =
+          esp_ble_gattc_register_for_notify(this->parent()->get_gattc_if(), this->parent()->get_remote_bda(), 0x000b);
       if (status) {
         ESP_LOGW(TAG, "esp_ble_gattc_register_for_notify failed, status=%d", status);
       }
