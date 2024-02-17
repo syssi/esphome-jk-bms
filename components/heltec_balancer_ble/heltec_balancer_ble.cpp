@@ -200,7 +200,7 @@ void HeltecBalancerBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt
       this->char_handle_ = chr->handle;
 
       auto status =
-          esp_ble_gattc_register_for_notify(this->parent()->get_gattc_if(), this->parent()->get_remote_bda(), 0x000b);
+          esp_ble_gattc_register_for_notify(this->parent()->get_gattc_if(), this->parent()->get_remote_bda(), chr->handle);
       if (status) {
         ESP_LOGW(TAG, "esp_ble_gattc_register_for_notify failed, status=%d", status);
       }
@@ -732,7 +732,7 @@ bool HeltecBalancerBle::send_command(uint8_t function, uint8_t command, uint8_t 
   //
   // Disable balancer:
   // 0xAA 0x55 0x11 0x00 0x05 0x0D 0x14 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0xF2 0xFF
-  uint16_t length = (command == COMMAND_CELL_INFO) ? 0x1400 : 0x0014;  // Replicate behavior or bug of the android app
+  uint16_t length = 0x0014;
 
   uint8_t frame[20];
   frame[0] = SOF_REQUEST_BYTE1;  // Start sequence
@@ -753,7 +753,7 @@ bool HeltecBalancerBle::send_command(uint8_t function, uint8_t command, uint8_t 
   frame[15] = 0x00;              // Data Byte 8
   frame[16] = 0x00;              // Data Byte 9
   frame[17] = 0x00;              // Data Byte 10
-  frame[18] = checksum_xor(frame, sizeof(frame) - 2);
+  frame[18] = crc(frame, sizeof(frame) - 2);
   frame[19] = END_OF_FRAME;  // End sequence
 
   ESP_LOGD(TAG, "Write register: %s", format_hex_pretty(frame, sizeof(frame)).c_str());
