@@ -82,14 +82,6 @@ uint8_t crc(const uint8_t data[], const uint16_t len) {
   return crc;
 }
 
-uint8_t checksum_xor(const uint8_t data[], const uint16_t len) {
-  uint8_t checksum = 0;
-  for (uint16_t i = 0; i < len; i++) {
-    checksum = checksum ^ data[i];
-  }
-  return checksum;
-}
-
 void HeltecBalancerBle::dump_config() {  // NOLINT(google-readability-function-size,readability-function-size)
   ESP_LOGCONFIG(TAG, "HeltecBalancerBle");
   LOG_SENSOR("", "Minimum Cell Voltage", this->min_cell_voltage_sensor_);
@@ -218,9 +210,6 @@ void HeltecBalancerBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt
     case ESP_GATTC_NOTIFY_EVT: {
       if (param->notify.handle != this->char_handle_)
         break;
-
-      ESP_LOGVV(TAG, "Notification received (handle 0x%02X): %s", param->notify.handle,
-                format_hex_pretty(param->notify.value, param->notify.value_len).c_str());
 
       this->assemble(param->notify.value, param->notify.value_len);
 
