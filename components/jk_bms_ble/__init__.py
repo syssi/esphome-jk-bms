@@ -33,8 +33,9 @@ CONFIG_SCHEMA = (
     cv.Schema(
         {
             cv.GenerateID(): cv.declare_id(JkBmsBle),
-            cv.Required(CONF_PROTOCOL_VERSION),
-            cv.Required(CONF_ADDRESS),            
+            cv.Required(CONF_PROTOCOL_VERSION): cv.enum(
+                PROTOCOL_VERSION_OPTIONS, upper=True
+            ),
             cv.Optional(
                 CONF_THROTTLE, default="2s"
             ): cv.positive_time_period_milliseconds,
@@ -52,4 +53,3 @@ async def to_code(config):
 
     cg.add(var.set_throttle(config[CONF_THROTTLE]))
     cg.add(var.set_protocol_version(config[CONF_PROTOCOL_VERSION]))
-    cg.add(var.set_address(config[CONF_ADDRESS]))    
