@@ -321,12 +321,22 @@ class JkRS485 : public uart::UARTDevice, public Component {
   binary_sensor::BinarySensor *heating_binary_sensor_;
 
   uint8_t last_detected_address_;
+  number::Number *soc100_voltage_number_;
+  number::Number *soc0_voltage_number_;
+  number::Number *voltage_cell_request_charge_voltage_number_;
+  number::Number *voltage_cell_request_float_voltage_number_;
+  number::Number *charge_ocp_delay_number_;
+  number::Number *charge_ocp_recovery_delay_number_;
+  number::Number *discharge_ocp_delay_number_;
+  number::Number *discharge_ocp_recovery_time_number_;
+  number::Number *scp_recovery_time_number_;    
   number::Number *balance_trigger_voltage_number_;
   number::Number *cell_count_number_;
   number::Number *total_battery_capacity_number_;
   number::Number *cell_voltage_overvoltage_protection_number_;
   number::Number *cell_voltage_overvoltage_recovery_number_;
-  number::Number *cell_voltage_undervoltage_protection_number_;
+  number::Number *voltage_smart_sleep_number_;
+  number::Number *cell_voltage_undervoltage_protection_number_;  
   number::Number *cell_voltage_undervoltage_recovery_number_;
   number::Number *balance_starting_voltage_number_;
   number::Number *voltage_calibration_number_;  // @FIXME: Identify value at the settings frame
