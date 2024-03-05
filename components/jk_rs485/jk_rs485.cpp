@@ -23,6 +23,13 @@ static const uint8_t COMMAND_DEVICE_INFO = 0x97;
 static const uint16_t MIN_RESPONSE_SIZE = 300;
 static const uint16_t MAX_RESPONSE_SIZE = 320;
 
+static const uint16_t JKPB_RS485_RESPONSE_SIZE = 310;
+static const uint16_t JKPB_RS485_NUMBER_OF_ELEMENTS_TO_COMPUTE_CHECKSUM = 299;
+static const uint16_t JKPB_RS485_FRAME_TYPE_ADDRESS = 4;
+static const uint16_t JKPB_RS485_FRAME_COUNTER_ADDRESS = 5;
+static const uint16_t JKPB_RS485_CHECKSUM_ADDRESS = 299;
+static const uint16_t JKPB_RS485_ADDRESS_OF_RS485_ADDRESS = 300;
+
 static const uint8_t ERRORS_SIZE = 16;
 static const char *const ERRORS[ERRORS_SIZE] = {
     "Charge Overtemperature",               // 0000 0000 0000 0001
@@ -121,12 +128,6 @@ bool JkRS485::parse_jk_rs485_byte_(uint8_t byte) {
 
   uint8_t address = 0;
 
-  // Call the function to print the array in hexadecimal
-//  if (at>=299){
-//     printf ("[at=%d]",at);
-//     printArrayInHex(raw, at+1);
-//  }
-
   // Byte 0: Start sequence (0x4E) //55aaeb900105
   if (at == 0) {
     if (raw[0] == 0x55){
@@ -168,33 +169,33 @@ bool JkRS485::parse_jk_rs485_byte_(uint8_t byte) {
   }
 
   // Byte 4: Frame Type //55aaeb90 01 05
-  if (at == 4) {
-      ESP_LOGW(TAG, "Frame Type: 0x%02X", raw[4]);
+  if (at == JKPB_RS485_FRAME_TYPE_ADDRESS) {
+      ESP_LOGW(TAG, "Frame Type: 0x%02X", raw[JKPB_RS485_FRAME_TYPE_ADDRESS]);
       return true;
   }
 
   // Byte 5: Frame Counter //55aaeb9001 05
-  if (at == 5) {
-      ESP_LOGW(TAG, "Frame Counter: 0x%02X", raw[5]);
+  if (at == JKPB_RS485_FRAME_COUNTER_ADDRESS) {
+      ESP_LOGW(TAG, "Frame Counter: 0x%02X", raw[JKPB_RS485_FRAME_COUNTER_ADDRESS]);
       return true;
   }
 
-  if (at>5 && at<307){
-    if (at == 300){
-      uint8_t computed_checksum = chksum(raw, 299);
-      uint8_t remote_checksum = raw[299];
+  if (at>JKPB_RS485_FRAME_COUNTER_ADDRESS && at<(JKPB_RS485_RESPONSE_SIZE-1)){  //308-1
+    if (at == JKPB_RS485_ADDRESS_OF_RS485_ADDRESS){
+      uint8_t computed_checksum = chksum(raw, JKPB_RS485_NUMBER_OF_ELEMENTS_TO_COMPUTE_CHECKSUM);
+      uint8_t remote_checksum = raw[JKPB_RS485_CHECKSUM_ADDRESS];
       if (computed_checksum != remote_checksum) {
         ESP_LOGW(TAG, "CHECKSUM failed! 0x%02X != 0x%02X", computed_checksum, remote_checksum);
         return false;
       } else {
         ESP_LOGW(TAG, "CHECKSUM is correct");
       }
-      this->set_last_detected_address(raw[300]);
+      this->set_last_detected_address(raw[JKPB_RS485_ADDRESS_OF_RS485_ADDRESS]); //300
     }
     return true;
   }
 
-  if (at==307){    
+  if (at==(JKPB_RS485_RESPONSE_SIZE-1)){  //308-1    
      printArrayInHex(raw, at+1);
      uint16_t data_len=at+1;
 
