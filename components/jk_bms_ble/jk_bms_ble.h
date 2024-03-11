@@ -231,6 +231,7 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   number::Number *balance_trigger_voltage_number_;
   number::Number *soc100_voltage_number_;
   number::Number *soc0_voltage_number_; 
+  number::Number *voltage_cell_request_charge_voltage_;
   number::Number *voltage_cell_request_float_voltage_; 
   number::Number *cell_count_number_;
   number::Number *total_battery_capacity_number_;
