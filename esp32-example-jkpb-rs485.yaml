@@ -244,19 +244,147 @@ sensor:
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms1
+    min_cell_voltage:
+      name: "${bms1} min cell voltage"
+    max_cell_voltage:
+      name: "${bms1} max cell voltage"
+    min_voltage_cell:
+      name: "${bms1} min voltage cell"
+    max_voltage_cell:
+      name: "${bms1} max voltage cell"
     delta_cell_voltage:
       name: "${bms1} delta cell voltage"
     average_cell_voltage:
       name: "${bms1} average cell voltage"
-    power_tube_temperature:
-      name: "${bms1} power tube temperature"
+    cell_voltage_1:
+      name: "${bms1} cell voltage 1"
+    cell_voltage_2:
+      name: "${bms1} cell voltage 2"
+    cell_voltage_3:
+      name: "${bms1} cell voltage 3"
+    cell_voltage_4:
+      name: "${bms1} cell voltage 4"
+    cell_voltage_5:
+      name: "${bms1} cell voltage 5"
+    cell_voltage_6:
+      name: "${bms1} cell voltage 6"
+    cell_voltage_7:
+      name: "${bms1} cell voltage 7"
+    cell_voltage_8:
+      name: "${bms1} cell voltage 8"
+    cell_voltage_9:
+      name: "${bms1} cell voltage 9"
+    cell_voltage_10:
+      name: "${bms1} cell voltage 10"
+    cell_voltage_11:
+      name: "${bms1} cell voltage 11"
+    cell_voltage_12:
+      name: "${bms1} cell voltage 12"
+    cell_voltage_13:
+      name: "${bms1} cell voltage 13"
+    cell_voltage_14:
+      name: "${bms1} cell voltage 14"
+    cell_voltage_15:
+      name: "${bms1} cell voltage 15"
+    cell_voltage_16:
+      name: "${bms1} cell voltage 16"
+    cell_voltage_17:
+      name: "${bms1} cell voltage 17"
+    cell_voltage_18:
+      name: "${bms1} cell voltage 18"
+    cell_voltage_19:
+      name: "${bms1} cell voltage 19"
+    cell_voltage_20:
+      name: "${bms1} cell voltage 20"
+    cell_voltage_21:
+      name: "${bms1} cell voltage 21"
+    cell_voltage_22:
+      name: "${bms1} cell voltage 22"
+    cell_voltage_23:
+      name: "${bms1} cell voltage 23"
+    cell_voltage_24:
+      name: "${bms1} cell voltage 24"
+    cell_resistance_1:
+      name: "${bms1} cell resistance 1"
+    cell_resistance_2:
+      name: "${bms1} cell resistance 2"
+    cell_resistance_3:
+      name: "${bms1} cell resistance 3"
+    cell_resistance_4:
+      name: "${bms1} cell resistance 4"
+    cell_resistance_5:
+      name: "${bms1} cell resistance 5"
+    cell_resistance_6:
+      name: "${bms1} cell resistance 6"
+    cell_resistance_7:
+      name: "${bms1} cell resistance 7"
+    cell_resistance_8:
+      name: "${bms1} cell resistance 8"
+    cell_resistance_9:
+      name: "${bms1} cell resistance 9"
+    cell_resistance_10:
+      name: "${bms1} cell resistance 10"
+    cell_resistance_11:
+      name: "${bms1} cell resistance 11"
+    cell_resistance_12:
+      name: "${bms1} cell resistance 12"
+    cell_resistance_13:
+      name: "${bms1} cell resistance 13"
+    cell_resistance_14:
+      name: "${bms1} cell resistance 14"
+    cell_resistance_15:
+      name: "${bms1} cell resistance 15"
+    cell_resistance_16:
+      name: "${bms1} cell resistance 16"
+    cell_resistance_17:
+      name: "${bms1} cell resistance 17"
+    cell_resistance_18:
+      name: "${bms1} cell resistance 18"
+    cell_resistance_19:
+      name: "${bms1} cell resistance 19"
+    cell_resistance_20:
+      name: "${bms1} cell resistance 20"
+    cell_resistance_21:
+      name: "${bms1} cell resistance 21"
+    cell_resistance_22:
+      name: "${bms1} cell resistance 22"
+    cell_resistance_23:
+      name: "${bms1} cell resistance 23"
+    cell_resistance_24:
+      name: "${bms1} cell resistance 24"    
     total_voltage:
       name: "${bms1} total voltage"
     current:
       name: "${bms1} current"
     power:
       name: "${bms1} power"
-    # ...
+    charging_power:
+      name: "${bms1} charging power"
+    discharging_power:
+      name: "${bms1} discharging power"
+    temperature_sensor_1:
+      name: "${bms1} temperature sensor 1"
+    temperature_sensor_2:
+      name: "${bms1} temperature sensor 2"
+    power_tube_temperature:
+      name: "${bms1} power tube temperature"
+    state_of_charge:
+      name: "${bms1} state of charge"
+    capacity_remaining:
+      name: "${bms1} capacity remaining"
+    total_battery_capacity_setting:
+      name: "${bms1} total battery capacity setting"
+    charging_cycles:
+      name: "${bms1} charging cycles"
+    total_charging_cycle_capacity:
+      name: "${bms1} total charging cycle capacity"
+    total_runtime:
+      name: "${bms1} total runtime"
+    balancing_current:
+      name: "${bms1} balancing current"
+    errors_bitmask:
+      name: "${bms1} errors bitmask"      
+
 
 switch:
   - platform: jk_rs485_bms
