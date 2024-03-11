@@ -66,6 +66,9 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   void set_cell_voltage_sensor(uint8_t cell, sensor::Sensor *cell_voltage_sensor) {
     this->cells_[cell].cell_voltage_sensor_ = cell_voltage_sensor;
   }
+  void set_cell_resistance_sensor(uint8_t cell, sensor::Sensor *cell_resistance_sensor) {
+    this->cells_[cell].cell_resistance_sensor_ = cell_resistance_sensor;
+  }
   void set_power_tube_temperature_sensor(sensor::Sensor *power_tube_temperature_sensor) {
     power_tube_temperature_sensor_ = power_tube_temperature_sensor;
   }
@@ -172,6 +175,9 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
     temperature_sensor_temperature_difference_protection_sensor_ =
         temperature_sensor_temperature_difference_protection_sensor;
   }
+  void set_state_of_charge_sensor(sensor::Sensor *state_of_charge_sensor) {
+    state_of_charge_sensor_ = state_of_charge_sensor;
+  }
   void set_charging_high_temperature_protection_sensor(sensor::Sensor *charging_high_temperature_protection_sensor) {
     charging_high_temperature_protection_sensor_ = charging_high_temperature_protection_sensor;
   }
@@ -247,6 +253,9 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   void set_total_runtime_formatted_text_sensor(text_sensor::TextSensor *total_runtime_formatted_text_sensor) {
     total_runtime_formatted_text_sensor_ = total_runtime_formatted_text_sensor;
   }
+  void set_balancing_current_sensor(sensor::Sensor *balancing_current_sensor) {
+    balancing_current_sensor_ = balancing_current_sensor;
+  }  
 
   void dump_config() override;
 
