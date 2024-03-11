@@ -1,0 +1,167 @@
+substitutions:
+  name: jk-bms-dev2
+  bms0: "bms0"
+  bms1: "bms1"
+  device_description: "Monitor two JK-BMS via UART-TTL"
+  external_components_source: github://syssi/esphome-jk-bms@main
+  tx_pin_uart_0: GPIO17 #GPIO1 #GPIO16
+  rx_pin_uart_0: GPIO16 #GPIO3 #GPIO17
+
+esphome:
+  name: ${name}
+  comment: ${device_description}
+  project:
+    name: "syssi.esphome-jk-bms"
+    version: 2.0.0
+
+esp32:
+  board: wemos_d1_mini32
+  framework:
+    type: esp-idf
+
+#esp8266:
+#  board: d1_mini
+
+
+external_components:
+#  - source: ${external_components_source}
+#    refresh: 0s
+  - source: ./components
+    refresh: 0s
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+ota:
+
+logger:
+  level: INFO #VERY_VERBOSE #VERBOSE #DEBUG #INFO #DEBUG
+
+# If you use Home Assistant please remove this `mqtt` section and uncomment the `api` component!
+# The native API has many advantages over MQTT: https://esphome.io/components/api.html#advantages-over-mqtt
+mqtt:
+  broker: !secret mqtt_host
+  username: !secret mqtt_username
+  password: !secret mqtt_password
+  id: mqtt_client
+  log_topic: null
+
+# api:
+
+uart:
+  - id: uart_0
+    baud_rate: 115200
+    rx_buffer_size: 1000
+    tx_pin: ${tx_pin_uart_0}
+    rx_pin: ${rx_pin_uart_0}
+
+jk_rs485_sniffer:
+  - id: sniffer0
+    protocol_version: "JK02_32S"
+    rx_timeout: 500ms
+    uart_id: uart_0
+
+jk_rs485_bms:
+  - id: bms0
+    rs485_address: 0x00
+    jk_rs485_sniffer_id: sniffer0
+    update_interval: 5s
+  - id: bms1
+    rs485_address: 0x07
+    jk_rs485_sniffer_id: sniffer0
+    update_interval: 5s
+
+binary_sensor:
+  - platform: jk_rs485_bms
+    jk_rs485_bms_id: bms0
+    balancing:
+      name: "${bms0} balancing"
+    charging:
+      name: "${bms0} charging"
+    discharging:
+      name: "${bms0} discharging"
+    online_status:
+      name: "${bms0} online status"
+    # ...
+    # ...
+  - platform: jk_rs485_bms
+    jk_rs485_bms_id: bms1
+    balancing:
+      name: "${bms1} balancing"
+    charging:
+      name: "${bms1} charging"
+    discharging:
+      name: "${bms1} discharging"
+    online_status:
+      name: "${bms1} online status"
+    # ...
+
+sensor:
+  - platform: jk_rs485_bms
+    jk_rs485_bms_id: bms0
+    delta_cell_voltage:
+      name: "${bms0} delta cell voltage"
+    average_cell_voltage:
+      name: "${bms0} average cell voltage"
+    power_tube_temperature:
+      name: "${bms0} power tube temperature"
+    total_voltage:
+      name: "${bms0} total voltage"
+    current:
+      name: "${bms0} current"
+    power:
+      name: "${bms0} power"
+    # ...
+
+  - platform: jk_rs485_bms
+    jk_rs485_bms_id: bms1
+    delta_cell_voltage:
+      name: "${bms1} delta cell voltage"
+    average_cell_voltage:
+      name: "${bms1} average cell voltage"
+    power_tube_temperature:
+      name: "${bms1} power tube temperature"
+    total_voltage:
+      name: "${bms1} total voltage"
+    current:
+      name: "${bms1} current"
+    power:
+      name: "${bms1} power"
+    # ...
+
+switch:
+  - platform: jk_rs485_bms
+    jk_rs485_bms_id: bms0
+    charging:
+      name: "${bms0} charging"
+    discharging:
+      name: "${bms0} discharging"
+
+  - platform: jk_rs485_bms
+    jk_rs485_bms_id: bms1
+    charging:
+      name: "${bms1} charging"
+    discharging:
+      name: "${bms1} discharging"
+
+text_sensor:
+  - platform: jk_rs485_bms
+    jk_rs485_bms_id: bms0
+    errors:
+      name: "${bms0} errors"
+    operation_mode:
+      name: "${bms0} operation mode"
+    total_runtime_formatted:
+      name: "${bms0} total runtime formatted"
+    # ...
+
+  - platform: jk_rs485_bms
+    jk_rs485_bms_id: bms1
+    errors:
+      name: "${bms1} errors"
+    operation_mode:
+      name: "${bms1} operation mode"
+    total_runtime_formatted:
+      name: "${bms1} total runtime formatted"
+    # ...

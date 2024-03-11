@@ -1,6 +1,5 @@
-"""Constants for the jk bms ble component."""
+"""Constants for the jk bms component."""
 
 CONF_BALANCER = "balancer"
 CONF_CHARGING = "charging"
 CONF_DISCHARGING = "discharging"
-CONF_HEATING = "heating"
