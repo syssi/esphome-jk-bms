@@ -36,6 +36,19 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   void set_balance_trigger_voltage_number(number::Number *balance_trigger_voltage_number) {
     balance_trigger_voltage_number_ = balance_trigger_voltage_number;
   }
+  void set_soc100_voltage_number(number::Number *soc100_voltage_number) {
+    soc100_voltage_number_ = soc100_voltage_number;
+  }
+  void set_soc0_voltage_number(number::Number *soc0_voltage_number) {
+    soc0_voltage_number_ = soc0_voltage_number;
+  }
+  void set_voltage_cell_request_float_voltage(number::Number *voltage_cell_request_float_voltage) {
+    voltage_cell_request_float_voltage_ = voltage_cell_request_float_voltage;
+  }
+  void set_voltage_cell_request_charge_voltage(number::Number *voltage_cell_request_charge_voltage) {
+    voltage_cell_request_charge_voltage_ = voltage_cell_request_charge_voltage;
+  }
+
   void set_cell_count_number(number::Number *cell_count_number) { cell_count_number_ = cell_count_number; }
   void set_total_battery_capacity_number(number::Number *total_battery_capacity_number) {
     total_battery_capacity_number_ = total_battery_capacity_number;
@@ -46,6 +59,10 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   void set_cell_voltage_overvoltage_recovery_number(number::Number *cell_voltage_overvoltage_recovery_number) {
     cell_voltage_overvoltage_recovery_number_ = cell_voltage_overvoltage_recovery_number;
   }
+  
+  void set_voltage_smart_sleep_voltage_number(number::Number *voltage_smart_sleep_voltage_number) {
+    voltage_smart_sleep_voltage_number_ = voltage_smart_sleep_voltage_number;
+  }  
   void set_cell_voltage_undervoltage_protection_number(number::Number *cell_voltage_undervoltage_protection_number) {
     cell_voltage_undervoltage_protection_number_ = cell_voltage_undervoltage_protection_number;
   }
@@ -212,10 +229,14 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   binary_sensor::BinarySensor *heating_binary_sensor_;
 
   number::Number *balance_trigger_voltage_number_;
+  number::Number *soc100_voltage_number_;
+  number::Number *soc0_voltage_number_; 
+  number::Number *voltage_cell_request_float_voltage_; 
   number::Number *cell_count_number_;
   number::Number *total_battery_capacity_number_;
   number::Number *cell_voltage_overvoltage_protection_number_;
   number::Number *cell_voltage_overvoltage_recovery_number_;
+  number::Number *voltage_smart_sleep_voltage_number_;
   number::Number *cell_voltage_undervoltage_protection_number_;
   number::Number *cell_voltage_undervoltage_recovery_number_;
   number::Number *balance_starting_voltage_number_;

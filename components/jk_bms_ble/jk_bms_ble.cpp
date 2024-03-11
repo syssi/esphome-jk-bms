@@ -799,7 +799,9 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   // 4     1   0x01                   Frame type
   // 5     1   0x4F                   Frame counter
   // 6     4   0x58 0x02 0x00 0x00    ** [JK-PB2A16S-20P v14] VOLTAGE SMART SLEEP
-  ESP_LOGD(TAG, "  Unknown6: %f", (float) jk_get_32bit(6) * 0.001f);
+  ESP_LOGD(TAG, "  VOLTAGE SMART SLEEP: %f V", (float) jk_get_32bit(6) * 0.001f);
+  this->publish_state_(this->voltage_smart_sleep_voltage_number_, (float) jk_get_32bit(6) * 0.001f);
+
   // 10    4   0x54 0x0B 0x00 0x00    Cell UVP
   ESP_LOGI(TAG, "  Cell UVP: %f V", (float) jk_get_32bit(10) * 0.001f);
   this->publish_state_(this->cell_voltage_undervoltage_protection_number_, (float) jk_get_32bit(10) * 0.001f);
@@ -821,9 +823,21 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->balance_trigger_voltage_number_, (float) jk_get_32bit(26) * 0.001f);
 
   // 30    4   0x00 0x00 0x00 0x00    ** [JK-PB2A16S-20P v14] SOC-100% VOLTAGE
+  ESP_LOGI(TAG, "  SOC-100 voltage: %f V", (float) jk_get_32bit(30) * 0.001f);
+  this->publish_state_(this->soc100_voltage_number_, (float) jk_get_32bit(30) * 0.001f);
+
   // 34    4   0x00 0x00 0x00 0x00    ** [JK-PB2A16S-20P v14] SOC-0% VOLTAGE
+  ESP_LOGI(TAG, "  SOC-0 voltage: %f V", (float) jk_get_32bit(34) * 0.001f);
+  this->publish_state_(this->soc0_voltage_number_, (float) jk_get_32bit(34) * 0.001f);
+
   // 38    4   0x00 0x00 0x00 0x00    ** [JK-PB2A16S-20P v14] VOLTAGE CELL REQUEST CHARGE VOLTAGE
+  ESP_LOGI(TAG, "  VOLTAGE CELL request charge voltage: %f V", (float) jk_get_32bit(38) * 0.001f);
+  this->publish_state_(this->voltage_cell_request_charge_voltage_, (float) jk_get_32bit(38) * 0.001f);
+
   // 42    4   0x00 0x00 0x00 0x00    ** [JK-PB2A16S-20P v14] VOLTAGE CELL REQUEST FLOAT VOLTAGE
+  ESP_LOGI(TAG, "  VOLTAGE CELL request float voltage: %f V", (float) jk_get_32bit(42) * 0.001f);
+  this->publish_state_(this->voltage_cell_request_float_voltage_, (float) jk_get_32bit(42) * 0.001f);
+
   // 46    4   0xF0 0x0A 0x00 0x00    Power off voltage
   ESP_LOGI(TAG, "  Power off voltage: %f V", (float) jk_get_32bit(46) * 0.001f);
   this->publish_state_(this->power_off_voltage_number_, (float) jk_get_32bit(46) * 0.001f);

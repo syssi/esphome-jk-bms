@@ -21,7 +21,9 @@ esp32:
     type: esp-idf
 
 external_components:
-  - source: ${external_components_source}
+#  - source: ${external_components_source}
+#    refresh: 0s
+  - source: ./components
     refresh: 0s
 
 wifi:
