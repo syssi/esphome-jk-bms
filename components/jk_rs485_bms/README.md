@@ -101,6 +101,9 @@ mqtt_password: MY_MQTT_PASSWORD
 EOF
 
 # Configure all the BMS in this yaml, assigning a name and the address of each one
+- IMPORTANT THINGS:
+  * 1 (ONLY ONE) BMS MUST BE MASTER IN THE RS485 NETWORK --> 0x00 (addressed) Use DIP switches to assign this address.
+  * OTHER BMS ARE SLAVE IN THE RS485 NETWORK. What address for each slave? Anyone different to 0x00. Each slave one different address, of course. Use DIP switches to assign the selected address.
 
 # Validate the configuration, create a binary, upload it, and start logs
 esphome run esp32-example-jkpb-rs485.yaml
