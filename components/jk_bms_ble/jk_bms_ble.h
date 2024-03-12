@@ -42,11 +42,11 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   void set_soc0_voltage_number(number::Number *soc0_voltage_number) {
     soc0_voltage_number_ = soc0_voltage_number;
   }
-  void set_voltage_cell_request_float_voltage(number::Number *voltage_cell_request_float_voltage) {
-    voltage_cell_request_float_voltage_ = voltage_cell_request_float_voltage;
+  void set_voltage_cell_request_float_voltage_number(number::Number *voltage_cell_request_float_voltage_number) {
+    voltage_cell_request_float_voltage_number_ = voltage_cell_request_float_voltage_number;
   }
-  void set_voltage_cell_request_charge_voltage(number::Number *voltage_cell_request_charge_voltage) {
-    voltage_cell_request_charge_voltage_ = voltage_cell_request_charge_voltage;
+  void set_voltage_cell_request_charge_voltage_number(number::Number *voltage_cell_request_charge_voltage_number) {
+    voltage_cell_request_charge_voltage_number_ = voltage_cell_request_charge_voltage_number_;
   }
 
   void set_cell_count_number(number::Number *cell_count_number) { cell_count_number_ = cell_count_number; }

@@ -832,11 +832,11 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
 
   // 38    4   0x00 0x00 0x00 0x00    ** [JK-PB2A16S-20P v14] VOLTAGE CELL REQUEST CHARGE VOLTAGE
   ESP_LOGI(TAG, "  VOLTAGE CELL request charge voltage: %f V", (float) jk_get_32bit(38) * 0.001f);
-  this->publish_state_(this->voltage_cell_request_charge_voltage_, (float) jk_get_32bit(38) * 0.001f);
+  this->publish_state_(this->voltage_cell_request_charge_voltage_number_, (float) jk_get_32bit(38) * 0.001f);
 
   // 42    4   0x00 0x00 0x00 0x00    ** [JK-PB2A16S-20P v14] VOLTAGE CELL REQUEST FLOAT VOLTAGE
   ESP_LOGI(TAG, "  VOLTAGE CELL request float voltage: %f V", (float) jk_get_32bit(42) * 0.001f);
-  this->publish_state_(this->voltage_cell_request_float_voltage_, (float) jk_get_32bit(42) * 0.001f);
+  this->publish_state_(this->voltage_cell_request_float_voltage_number_, (float) jk_get_32bit(42) * 0.001f);
 
   // 46    4   0xF0 0x0A 0x00 0x00    Power off voltage
   ESP_LOGI(TAG, "  Power off voltage: %f V", (float) jk_get_32bit(46) * 0.001f);
