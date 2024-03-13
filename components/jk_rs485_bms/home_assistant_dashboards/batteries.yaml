@@ -1,0 +1,169 @@
+views:
+  - title: Batteries
+    cards:
+      - type: gauge
+        needle: true
+        min: 48
+        max: 58.4
+        segments:
+          - from: 32
+            color: '#db4437'
+          - from: 38.4
+            color: '#ffa600'
+          - from: 49.6
+            color: '#43a047'
+          - from: 53.6
+            color: '#999999'
+          - from: 55.2
+            color: '#00a6ee'
+          - from: 57.6
+            color: '#ffa600'
+          - from: 58.4
+            color: '#db4437'
+        entity: sensor.bms0_total_voltage
+      - type: gauge
+        needle: true
+        segments:
+          - from: -100
+            color: '#db4437'
+          - from: -75
+            color: '#ffa600'
+          - from: -50
+            color: '#43a047'
+          - from: 50
+            color: '#ffa600'
+          - from: 75
+            color: '#db4437'
+        min: -100
+        entity: sensor.bms0_current
+        max: 100
+      - type: gauge
+        needle: true
+        min: 48
+        max: 58.4
+        segments:
+          - from: 32
+            color: '#db4437'
+          - from: 38.4
+            color: '#ffa600'
+          - from: 49.6
+            color: '#43a047'
+          - from: 53.6
+            color: '#999999'
+          - from: 55.2
+            color: '#00a6ee'
+          - from: 57.6
+            color: '#ffa600'
+          - from: 58.4
+            color: '#db4437'
+        entity: sensor.bms1_total_voltage
+      - type: gauge
+        needle: true
+        segments:
+          - from: -100
+            color: '#db4437'
+          - from: -75
+            color: '#ffa600'
+          - from: -50
+            color: '#43a047'
+          - from: 50
+            color: '#ffa600'
+          - from: 75
+            color: '#db4437'
+        min: -100
+        entity: sensor.bms1_current
+        max: 100
+      - type: entity
+        entity: sensor.bms0_average_cell_voltage
+      - graph: line
+        type: sensor
+        detail: 1
+        entity: sensor.bms0_delta_cell_voltage
+        unit: V
+      - type: entity
+        entity: sensor.bms1_average_cell_voltage
+      - graph: line
+        type: sensor
+        detail: 1
+        entity: sensor.bms1_delta_cell_voltage
+        unit: V
+      - type: entity
+        entity: sensor.bms0_power_tube_temperature
+      - type: entity
+        entity: sensor.bms1_power_tube_temperature
+      - type: gauge
+        needle: true
+        segments:
+          - from: -5000
+            color: '#db4437'
+          - from: -3000
+            color: '#ffa600'
+          - from: -2500
+            color: '#43a047'
+          - from: 2500
+            color: '#ffa600'
+          - from: 3000
+            color: '#db4437'
+          - from: 5000
+            color: '#db4437'
+        entity: sensor.bms0_power
+        min: -5000
+        max: 5000
+      - type: gauge
+        needle: true
+        segments:
+          - from: -5000
+            color: '#db4437'
+          - from: -3000
+            color: '#ffa600'
+          - from: -2500
+            color: '#43a047'
+          - from: 2500
+            color: '#ffa600'
+          - from: 3000
+            color: '#db4437'
+          - from: 5000
+            color: '#db4437'
+        entity: sensor.bms1_power
+        min: -5000
+        max: 5000
+      - type: entity
+        entity: sensor.bms0_max_cell_voltage
+      - type: entity
+        entity: sensor.bms1_max_cell_voltage
+      - type: entity
+        entity: sensor.bms0_charging_cycles
+      - type: entity
+        entity: sensor.bms1_charging_cycles
+      - type: gauge
+        needle: true
+        segments:
+          - from: 0
+            color: '#db4437'
+          - from: 15
+            color: '#ffa600'
+          - from: 25
+            color: '#43a047'
+          - from: 100
+            color: '#ffa600'
+        entity: sensor.bms0_state_of_charge
+        min: 0
+        max: 100
+      - type: gauge
+        needle: true
+        segments:
+          - from: 0
+            color: '#db4437'
+          - from: 15
+            color: '#ffa600'
+          - from: 25
+            color: '#43a047'
+          - from: 100
+            color: '#ffa600'
+        entity: sensor.bms1_state_of_charge
+        min: 0
+        max: 100
+      - type: entity
+        entity: sensor.bms0_capacity_remaining
+      - type: entity
+        entity: sensor.bms1_capacity_remaining

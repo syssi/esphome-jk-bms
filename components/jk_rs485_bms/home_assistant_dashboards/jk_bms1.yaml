@@ -1,0 +1,295 @@
+title: BMS1
+views:
+  - path: default_view
+    title: JK-BMS1
+    cards:
+      - type: entities
+        entities:
+          - entity: binary_sensor.bms1_balancing
+          - entity: binary_sensor.bms1_charging
+          - entity: binary_sensor.bms1_discharging
+          - entity: sensor.bms1_errors
+          - entity: sensor.bms1_errors_bitmask
+          - entity: sensor.bms1_charging_cycles
+        title: STATUS
+      - type: entities
+        entities:
+          - entity: switch.bms1_balancer
+            name: BALANCE
+          - entity: switch.bms1_charging
+            name: CHARGE
+          - entity: switch.bms1_discharging
+            name: DISCHARGE
+          - entity: switch.bms1_enable_bluetooth_connection
+            name: BLUETOOTH
+        title: Switch
+        show_header_toggle: false
+      - type: entities
+        entities:
+          - entity: sensor.bms1_power
+          - entity: sensor.bms1_charging_power
+          - entity: sensor.bms1_discharging_power
+        title: POWER
+      - type: entities
+        entities:
+          - entity: sensor.bms1_total_voltage
+          - entity: sensor.bms1_delta_cell_voltage
+          - entity: sensor.bms1_max_cell_voltage
+          - entity: sensor.bms1_average_cell_voltage
+          - entity: sensor.bms1_min_cell_voltage
+          - entity: sensor.bms1_max_voltage_cell
+          - entity: sensor.bms1_min_voltage_cell
+        title: BANK Voltage
+      - type: entities
+        entities:
+          - entity: sensor.bms1_power_tube_temperature
+          - entity: sensor.bms1_temperature_sensor_1
+          - entity: sensor.bms1_temperature_sensor_2
+          - entity: sensor.bms1_temperature_sensor_3
+          - entity: sensor.bms1_temperature_sensor_4
+        title: Temperature
+      - type: entities
+        entities:
+          - entity: sensor.bms1_current
+          - entity: sensor.bms1_balancing_current
+        title: BANK current
+      - type: entities
+        entities:
+          - entity: sensor.bms1_capacity_remaining
+          - entity: sensor.bms1_total_battery_capacity_setting
+        title: CAPACITY
+  - title: INFO
+    path: info
+    badges: []
+    cards:
+      - type: entities
+        entities:
+          - entity: binary_sensor.updater
+          - entity: binary_sensor.bms1_balancing
+          - entity: binary_sensor.bms1_charging
+          - entity: binary_sensor.bms1_discharging
+          - entity: sensor.bms1_total_runtime
+          - entity: sensor.bms1_total_runtime_formatted
+          - entity: sensor.bms1_errors
+          - entity: sensor.bms1_errors_bitmask
+          - entity: sensor.bms1_total_battery_capacity_setting
+          - entity: sensor.bms1_total_charging_cycle_capacity
+          - entity: sensor.bms1_charging_cycles
+        title: GENERAL INFO
+  - title: CELLs
+    path: test
+    icon: ''
+    badges: []
+    cards:
+      - type: entities
+        entities:
+          - sensor.bms1_cell_voltage_1
+          - sensor.bms1_cell_voltage_2
+          - sensor.bms1_cell_voltage_3
+          - sensor.bms1_cell_voltage_4
+          - sensor.bms1_cell_voltage_5
+          - sensor.bms1_cell_voltage_6
+          - sensor.bms1_cell_voltage_7
+          - sensor.bms1_cell_voltage_8
+          - sensor.bms1_cell_voltage_9
+          - sensor.bms1_cell_voltage_10
+          - sensor.bms1_cell_voltage_11
+          - sensor.bms1_cell_voltage_12
+          - sensor.bms1_cell_voltage_13
+          - sensor.bms1_cell_voltage_14
+          - sensor.bms1_cell_voltage_15
+          - sensor.bms1_cell_voltage_16
+        title: CELL Voltage
+      - type: entities
+        entities:
+          - sensor.bms1_cell_resistance_1
+          - sensor.bms1_cell_resistance_2
+          - sensor.bms1_cell_resistance_3
+          - sensor.bms1_cell_resistance_4
+          - sensor.bms1_cell_resistance_5
+          - sensor.bms1_cell_resistance_6
+          - sensor.bms1_cell_resistance_7
+          - sensor.bms1_cell_resistance_8
+          - sensor.bms1_cell_resistance_9
+          - sensor.bms1_cell_resistance_10
+          - sensor.bms1_cell_resistance_11
+          - sensor.bms1_cell_resistance_12
+          - sensor.bms1_cell_resistance_13
+          - sensor.bms1_cell_resistance_14
+          - sensor.bms1_cell_resistance_15
+          - sensor.bms1_cell_resistance_16
+        title: CELL Resistance
+  - title: Panel
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: custom:stack-in-card
+            keep:
+              margin: false
+              box_shadow: false
+            cards:
+              - type: custom:stack-in-card
+                columns: 1
+                cards:
+                  - type: markdown
+                    content: |-
+                      <center>Time:&nbsp;<b><font color=#3090C7>{{
+                        states('sensor.bms1_total_runtime_formatted') | upper }}</font>
+                  - type: markdown
+                    content: >-
+
+                      <center>Charge:&nbsp; <b> {% if
+                      states('switch.bms1_charging') == 'on' %} <font
+                      color=#41CD52>{{ states('switch.bms1_charging') | upper
+                      }}</font> {% else %} <font color=red>{{
+                      states('switch.bms1_charging') | upper }}</font> {% endif
+                      %} </b> {{'&nbsp;' * 5 }}
+
+                      Discharge:&nbsp;<b> {% if
+                      states('switch.bms1_discharging') == 'on' %} <font
+                      color=#41CD52>{{ states('switch.bms1_discharging') | upper
+                      }}</font> {% else %} <font color=red> {{
+                      states('switch.bms1_discharging') | upper }} </font> {%
+                      endif %} </b>
+
+                      {{'&nbsp;' * 5 }} Balance:<b> {% if
+                      states('switch.bms1_balancer') == 'on' %} <font
+                      color=#41CD52>{{ states('switch.bms1_balancer') | upper
+                      }}</font> {% else %} <font color=red>{{
+                      states('switch.bms1_balancer') | upper }}</font> {% endif
+                      %} 
+          - type: custom:stack-in-card
+            keep:
+              margin: false
+              box_shadow: false
+              background: false
+            cards:
+              - type: custom:stack-in-card
+                margin: false
+                columns: 2
+                mode: horizontal
+                cards:
+                  - type: markdown
+                    content: >-
+                      <center><b><font color=#41CD52 size=6>{{
+                      states('sensor.bms1_total_voltage') }} V</font></b><br>
+                      </center>  {% macro pad_right(w, s) %} {{ s }} {% set slen
+                      =  w - (s|length) %} 
+                        {% for idx in range(slen)%} &nbsp; {%endfor %}
+                      {%- endmacro %} 
+
+                      {% macro green(s) %} <font color=#41CD52 size=2
+                      family=Consolas> {{ s }} </font> {%- endmacro %}
+
+                      <div>  {{ pad_right(14, "Power Draw:") -}}   {% set power
+                      = states('sensor.bms1_power') | int %} {{ green('%d' %
+                      power + ' W') }}<br>  {{ pad_right(16, "Total Capacity:")
+                      -}}   {{
+                      green(states('sensor.bms1_total_battery_capacity_setting')
+                      + " Ah") }}<br>  {{ pad_right(16, 'Cycle Capacity:') }}  
+                      {{
+                      green(states('sensor.bms1_total_charging_cycle_capacity') 
+                      + " Ah") }}<br>  {{ pad_right(16, 'Avg Cell V:') }}   {{
+                      green(states('sensor.bms1_average_cell_voltage') + ' V')
+                      }}<br>  {{ pad_right(16, 'Balance Curr:') }}   {{
+                      green(states('sensor.bms1_balancing_current') + ' A')
+                      }}<br>  {{ pad_right(16, 'Battery T1:') }}   {{
+                      green(states('sensor.bms1_temperature_sensor_1') +  ' °C')
+                      }}<br>  {{ pad_right(16, 'Battery T3:') }}   {{
+                      green(states('sensor.bms1_temperature_sensor_3') +  ' °C')
+                      }}  </div>
+                  - type: markdown
+                    content: >-
+                      <center><b><font color=#41CD52 size=6>{{
+                      states('sensor.bms1_current') }} A</font></b><br>
+                      </center> {% macro pad_right(w, s) %}  {{ s }} {% set slen
+                      =  w - (s|length) %} {% for idx in range(slen)%} &nbsp;
+                      {%endfor %} {%- endmacro %} {% macro green(s) %} <font
+                      color=#41CD52 family=Consolas> {{ s }} </font> {%-
+                      endmacro %} <div>  {{ pad_right(14, "Remaining:") -}}  {{
+                      green(states('sensor.bms1_state_of_charge') + ' %')
+                      }}<br>    {{ pad_right(15, "Rem. Capacity:") -}}    {{
+                      green(states('sensor.bms1_capacity_remaining') + " Ah")
+                      }}<br>   {{ pad_right(15, 'Cycle Count:') }}  {{
+                      green(states('sensor.bms1_charging_cycles')) }}<br> {{
+                      pad_right(16, 'Delta Cell V:') }}  {{
+                      green(states('sensor.bms1_delta_cell_voltage') + ' V') }}
+                      <br>  {{ pad_right(14, 'MOS  Temp.:') }}  {{
+                      green(states('sensor.bms1_power_tube_temperature') + '
+                      °C') }} <br>  {{ pad_right(15, 'Battery T2:') }}  {{
+                      green(states('sensor.bms1_temperature_sensor_2') +  ' °C')
+                      }} <br>  {{ pad_right(15, 'Battery T4:') }}  {{
+                      green(states('sensor.bms1_temperature_sensor_4') +  ' °C')
+                      }}</div>
+          - type: custom:stack-in-card
+            keep:
+              margin: false
+              box_shadow: false
+              background: false
+            cards:
+              - type: grid
+                square: false
+                columns: 1
+                cards:
+                  - type: markdown
+                    content: <center><b> Cells </b> </center>
+              - type: grid
+                square: false
+                columns: 2
+                cards:
+                  - type: markdown
+                    content: >-
+                      <center> {% for idx in range(1, 9) -%} {%- set min_idx =
+                      states('sensor.bms1_min_voltage_cell') %} {%- set max_idx
+                      = states('sensor.bms1_max_voltage_cell') %} {%- set is_max
+                      = states('sensor.bms1_max_voltage_cell')| int == idx %}
+                      {%- set is_min = states('sensor.bms1_min_voltage_cell')|
+                      int == idx %} {%- set volt_sensor_id =
+                      'sensor.bms1_cell_voltage_%d' % idx %} {%- set
+                      ohm_sensor_id = 'sensor.bms1_cell_resistance_%d' % idx %}
+                      {%- set cell_volt = states('sensor.bms1_cell_voltage_%d' %
+                      idx) %} {%- set cell_resistance =
+                      states('sensor.bms1_cell_resistance_%d' % idx) %} {%- set
+                      font_start = '<font color="#3090C7">' if is_max else
+                      '<font color="red">' if is_min else '' %} {%- set font_end
+                      = '</font>' if is_max or is_min else '' %} {{ "%02d" % idx
+                      }}. {{ font_start }} {{ cell_volt }} V {{ font_end -}}
+                      &nbsp;/&nbsp; {{ cell_resistance |float * 1000 }} mΩ 
+                      <br>               {% endfor %} </center>
+                  - type: markdown
+                    content: >-
+                      <center>              {% for idx in range(9, 17) -%} {%-
+                      set min_idx = states('sensor.bms1_min_voltage_cell') %}
+                      {%- set max_idx = states('sensor.bms1_max_voltage_cell')
+                      %} {%- set is_max =
+                      states('sensor.bms1_max_voltage_cell')| int == idx %} {%-
+                      set is_min = states('sensor.bms1_min_voltage_cell')| int
+                      == idx %} {%- set volt_sensor_id =
+                      'sensor.bms1_cell_voltage_%d' % idx %} {%- set
+                      ohm_sensor_id = 'sensor.bms1_cell_resistance_%d' % idx %}
+                      {%- set cell_volt = states('sensor.bms1_cell_voltage_%d' %
+                      idx) %} {%- set cell_resistance =
+                      states('sensor.bms1_cell_resistance_%d' % idx) %} {%- set
+                      font_start = '<font color="#3090C7">' if is_max else
+                      '<font color="red">' if is_min else '' %} {%- set font_end
+                      = '</font>' if is_max or is_min else '' %} {{ "%02d" % idx
+                      }}. {{ font_start }} {{ cell_volt }} V {{ font_end -}}
+                      &nbsp;/&nbsp; {{ cell_resistance |float * 1000 }} mΩ 
+                      <br>               {% endfor %} </center>
+      - type: entities
+        entities:
+          - number.bms1_balance_starting_voltage
+          - number.bms1_balance_trigger_voltage
+          - number.bms1_cell_count
+          - number.bms1_cell_voltage_overvoltage_protection
+          - number.bms1_cell_voltage_overvoltage_recovery
+          - number.bms1_cell_voltage_undervoltage_protection
+          - number.bms1_cell_voltage_undervoltage_recovery
+          - number.bms1_current_calibration
+          - number.bms1_max_balance_current
+          - number.bms1_max_charge_current
+          - number.bms1_max_discharge_current
+          - number.bms1_power_off_voltage
+          - number.bms1_total_battery_capacity
+          - number.bms1_voltage_calibration
+        title: bms1
