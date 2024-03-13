@@ -87,15 +87,18 @@ CONF_CELL_RESISTANCE_23 = "cell_resistance_23"
 CONF_CELL_RESISTANCE_24 = "cell_resistance_24"
 
 
-CONF_POWER_TUBE_TEMPERATURE = "power_tube_temperature"
 CONF_TEMPERATURE_SENSOR_1 = "temperature_sensor_1"
 CONF_TEMPERATURE_SENSOR_2 = "temperature_sensor_2"
+CONF_TEMPERATURE_SENSOR_3 = "temperature_sensor_3"
+CONF_TEMPERATURE_SENSOR_4 = "temperature_sensor_4"
+CONF_POWER_TUBE_TEMPERATURE = "power_tube_temperature"
+CONF_TEMPERATURE_SENSORS = "temperature_sensors"
+
 CONF_TOTAL_VOLTAGE = "total_voltage"
 CONF_CHARGING_POWER = "charging_power"
 CONF_DISCHARGING_POWER = "discharging_power"
 CONF_CAPACITY_REMAINING = "capacity_remaining"
 CONF_CAPACITY_REMAINING_DERIVED = "capacity_remaining_derived"
-CONF_TEMPERATURE_SENSORS = "temperature_sensors"
 CONF_CHARGING_CYCLES = "charging_cycles"
 CONF_TOTAL_CHARGING_CYCLE_CAPACITY = "total_charging_cycle_capacity"
 CONF_BATTERY_STRINGS = "battery_strings"
@@ -236,6 +239,12 @@ CELL_RESISTANCES = [
     CONF_CELL_RESISTANCE_24,
 ]
 
+TEMPERATURES = [
+    CONF_TEMPERATURE_SENSOR_1,
+    CONF_TEMPERATURE_SENSOR_2,
+    CONF_TEMPERATURE_SENSOR_3,
+    CONF_TEMPERATURE_SENSOR_4,
+]
 
 SENSORS = [
     CONF_MIN_CELL_VOLTAGE,
@@ -245,8 +254,6 @@ SENSORS = [
     CONF_DELTA_CELL_VOLTAGE,
     CONF_AVERAGE_CELL_VOLTAGE,
     CONF_POWER_TUBE_TEMPERATURE,
-    CONF_TEMPERATURE_SENSOR_1,
-    CONF_TEMPERATURE_SENSOR_2,
     CONF_TOTAL_VOLTAGE,
     CONF_CURRENT,
     CONF_POWER,
@@ -681,21 +688,35 @@ CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
             device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_POWER_TUBE_TEMPERATURE): sensor.sensor_schema(
-            unit_of_measurement=UNIT_CELSIUS,
-            icon=ICON_EMPTY,
-            accuracy_decimals=0,
-            device_class=DEVICE_CLASS_TEMPERATURE,
-            state_class=STATE_CLASS_MEASUREMENT,
-        ),
         cv.Optional(CONF_TEMPERATURE_SENSOR_1): sensor.sensor_schema(
             unit_of_measurement=UNIT_CELSIUS,
             icon=ICON_EMPTY,
-            accuracy_decimals=0,
+            accuracy_decimals=1,
             device_class=DEVICE_CLASS_TEMPERATURE,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
         cv.Optional(CONF_TEMPERATURE_SENSOR_2): sensor.sensor_schema(
+            unit_of_measurement=UNIT_CELSIUS,
+            icon=ICON_EMPTY,
+            accuracy_decimals=1,
+            device_class=DEVICE_CLASS_TEMPERATURE,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_TEMPERATURE_SENSOR_3): sensor.sensor_schema(
+            unit_of_measurement=UNIT_CELSIUS,
+            icon=ICON_EMPTY,
+            accuracy_decimals=1,
+            device_class=DEVICE_CLASS_TEMPERATURE,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_TEMPERATURE_SENSOR_4): sensor.sensor_schema(
+            unit_of_measurement=UNIT_CELSIUS,
+            icon=ICON_EMPTY,
+            accuracy_decimals=1,
+            device_class=DEVICE_CLASS_TEMPERATURE,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),        
+        cv.Optional(CONF_POWER_TUBE_TEMPERATURE): sensor.sensor_schema(
             unit_of_measurement=UNIT_CELSIUS,
             icon=ICON_EMPTY,
             accuracy_decimals=0,
@@ -1077,7 +1098,11 @@ async def to_code(config):
             conf = config[key]
             sens = await sensor.new_sensor(conf)
             cg.add(hub.set_cell_resistance_sensor(i, sens))
-
+    for i, key in enumerate(TEMPERATURES):
+        if key in config:
+            conf = config[key]
+            sens = await sensor.new_sensor(conf)
+            cg.add(hub.set_temperature_sensor(i, sens))
     for key in SENSORS:
         if key in config:
             conf = config[key]

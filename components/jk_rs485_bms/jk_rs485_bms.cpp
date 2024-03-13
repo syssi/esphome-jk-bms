@@ -295,11 +295,13 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // 154   4   0x3D 0x04 0x00 0x00    Cycle_Capacity       0.001         Ah
   this->publish_state_(this->total_charging_cycle_capacity_sensor_, (float) jk_get_32bit(154 + offset) * 0.001f);
 
-  // 158   2   0x64 0x00              Unknown158
-  ESP_LOGD(TAG, "Unknown158: 0x%02X 0x%02X (always 0x64 0x00?)", data[158 + offset], data[159 + offset]);
+  // 158   1   0x64                   SOCSOH
+  ESP_LOGD(TAG, "SOCSOH: 0x%02X (always 0x64?)", data[158 + offset], data[159 + offset]);
+  // 159   1   0x00                   Precharge
+  ESP_LOGD(TAG, "SOCSOH: 0x%02X (always 0x00?)", data[159 + offset], data[159 + offset]);
 
-  // 160   2   0x79 0x04              Unknown160 (Cycle capacity?)
-  ESP_LOGD(TAG, "Unknown160: 0x%02X 0x%02X (always 0xC5 0x09?)", data[160 + offset], data[161 + offset]);
+  // 160   2   0x79 0x04              UserAlarm 
+  ESP_LOGD(TAG, "UserAlarm: 0x%02X 0x%02X (always 0xC5 0x09?)", data[160 + offset], data[161 + offset]);
 
   // 162   4   0xCA 0x03 0x10 0x00    Total runtime in seconds           s
   this->publish_state_(this->total_runtime_sensor_, (float) jk_get_32bit(162 + offset));
@@ -364,7 +366,7 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
     this->publish_state_(this->temperatures_[3].temperature_sensor_,
                          (float) ((int16_t) jk_get_16bit(224 + offset)) * 0.1f);
     this->publish_state_(this->temperatures_[2].temperature_sensor_,
-                         (float) ((int16_t) jk_get_16bit(226 + offset)) * 0.1f);
+                         (float) ((int16_t) jk_get_16bit(226 + offset)) * 0.1f);                       
   }
 
   // 299   1   0xCD                   CHECKSUM
@@ -406,7 +408,7 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   // 5     1   0x4F                   Frame counter
   // 6     4   0x58 0x02 0x00 0x00    ** [JK-PB2A16S-20P v14] VOLTAGE SMART SLEEP
   ESP_LOGD(TAG, "  Voltage Smart Sleep: %f", (float) jk_get_32bit(6) * 0.001f);
-  this->publish_state_(this->voltage_smart_sleep_number_, (float) jk_get_32bit(10) * 0.001f);
+  this->publish_state_(this->voltage_smart_sleep_number_, (float) jk_get_32bit(6) * 0.001f);
   // 10    4   0x54 0x0B 0x00 0x00    Cell UVP
   ESP_LOGI(TAG, "  Cell UVP: %f V", (float) jk_get_32bit(10) * 0.001f);
   this->publish_state_(this->cell_voltage_undervoltage_protection_number_, (float) jk_get_32bit(10) * 0.001f);
@@ -428,17 +430,17 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->balance_trigger_voltage_number_, (float) jk_get_32bit(26) * 0.001f);
 
   // 30    4   0x00 0x00 0x00 0x00    ** [JK-PB2A16S-20P v14] SOC-100% VOLTAGE
-  ESP_LOGI(TAG, "  SOC-100 VOLTAGE: %f V", (float) jk_get_32bit(26) * 0.001f);
-  this->publish_state_(this->soc100_voltage_number_, (float) jk_get_32bit(26) * 0.001f);
+  ESP_LOGI(TAG, "  SOC-100 VOLTAGE: %f V", (float) jk_get_32bit(30) * 0.001f);
+  this->publish_state_(this->soc100_voltage_number_, (float) jk_get_32bit(30) * 0.001f);
   // 34    4   0x00 0x00 0x00 0x00    ** [JK-PB2A16S-20P v14] SOC-0% VOLTAGE
-  ESP_LOGI(TAG, "  SOC-0 VOLTAGE: %f V", (float) jk_get_32bit(26) * 0.001f);
-  this->publish_state_(this->soc0_voltage_number_, (float) jk_get_32bit(26) * 0.001f);  
+  ESP_LOGI(TAG, "  SOC-0 VOLTAGE: %f V", (float) jk_get_32bit(34) * 0.001f);
+  this->publish_state_(this->soc0_voltage_number_, (float) jk_get_32bit(34) * 0.001f);  
   // 38    4   0x00 0x00 0x00 0x00    ** [JK-PB2A16S-20P v14] VOLTAGE CELL REQUEST CHARGE VOLTAGE [RCV]
-  ESP_LOGI(TAG, "  VOLTAGE CELL REQUEST CHARGE VOLTAGE [RCV]: %f V", (float) jk_get_32bit(26) * 0.001f);
-  this->publish_state_(this->voltage_cell_request_charge_voltage_number_, (float) jk_get_32bit(26) * 0.001f);  
+  ESP_LOGI(TAG, "  VOLTAGE CELL REQUEST CHARGE VOLTAGE [RCV]: %f V", (float) jk_get_32bit(38) * 0.001f);
+  this->publish_state_(this->voltage_cell_request_charge_voltage_number_, (float) jk_get_32bit(38) * 0.001f);  
   // 42    4   0x00 0x00 0x00 0x00    ** [JK-PB2A16S-20P v14] VOLTAGE CELL REQUEST FLOAT VOLTAGE
-  ESP_LOGI(TAG, "  VOLTAGE CELL REQUEST FLOAT VOLTAGE [RFV]: %f V", (float) jk_get_32bit(26) * 0.001f);
-  this->publish_state_(this->voltage_cell_request_float_voltage_number_, (float) jk_get_32bit(26) * 0.001f);   
+  ESP_LOGI(TAG, "  VOLTAGE CELL REQUEST FLOAT VOLTAGE [RFV]: %f V", (float) jk_get_32bit(42) * 0.001f);
+  this->publish_state_(this->voltage_cell_request_float_voltage_number_, (float) jk_get_32bit(42) * 0.001f);   
   // 46    4   0xF0 0x0A 0x00 0x00    Power off voltage
   ESP_LOGI(TAG, "  Power off voltage: %f V", (float) jk_get_32bit(46) * 0.001f);
   this->publish_state_(this->power_off_voltage_number_, (float) jk_get_32bit(46) * 0.001f);
@@ -449,23 +451,23 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
 
   // 54    4   0x1E 0x00 0x00 0x00    Charge OCP delay
   ESP_LOGI(TAG, "  Charge OCP delay: %f s", (float) jk_get_32bit(54));
-  this->publish_state_(this->charge_ocp_delay_number_, (float) jk_get_32bit(50) * 0.001f);
+  this->publish_state_(this->charge_ocp_delay_number_, (float) jk_get_32bit(54) * 0.001f);
   // 58    4   0x3C 0x00 0x00 0x00    Charge OCP recovery time
   ESP_LOGI(TAG, "  Charge OCP recovery delay: %f s", (float) jk_get_32bit(58));
-  this->publish_state_(this->charge_ocp_recovery_delay_number_, (float) jk_get_32bit(50) * 0.001f);
+  this->publish_state_(this->charge_ocp_recovery_delay_number_, (float) jk_get_32bit(58) * 0.001f);
   // 62    4   0xF0 0x49 0x02 0x00    Max. discharge current
   ESP_LOGI(TAG, "  Max. discharge current: %f A", (float) jk_get_32bit(62) * 0.001f);
   this->publish_state_(this->max_discharge_current_number_, (float) jk_get_32bit(62) * 0.001f);
 
   // 66    4   0x2C 0x01 0x00 0x00    Discharge OCP delay
   ESP_LOGI(TAG, "  Discharge OCP delay: %f s", (float) jk_get_32bit(66));
-  this->publish_state_(this->discharge_ocp_delay_number_, (float) jk_get_32bit(50) * 0.001f);  
+  this->publish_state_(this->discharge_ocp_delay_number_, (float) jk_get_32bit(66) * 0.001f);  
   // 70    4   0x3C 0x00 0x00 0x00    Discharge OCP recovery time
   ESP_LOGI(TAG, "  Discharge OCP recovery time: %f s", (float) jk_get_32bit(70));
-  this->publish_state_(this->discharge_ocp_recovery_time_number_, (float) jk_get_32bit(50) * 0.001f);    
+  this->publish_state_(this->discharge_ocp_recovery_time_number_, (float) jk_get_32bit(70) * 0.001f);    
   // 74    4   0x3C 0x00 0x00 0x00    SCPR time
   ESP_LOGI(TAG, "  SCP recovery time: %f s", (float) jk_get_32bit(74));
-  this->publish_state_(this->scp_recovery_time_number_, (float) jk_get_32bit(50) * 0.001f);  
+  this->publish_state_(this->scp_recovery_time_number_, (float) jk_get_32bit(74) * 0.001f);  
   // 78    4   0xD0 0x07 0x00 0x00    Max balance current
   ESP_LOGI(TAG, "  Max. balance current: %f A", (float) jk_get_32bit(78) * 0.001f);
   this->publish_state_(this->max_balance_current_number_, (float) jk_get_32bit(78) * 0.001f);
@@ -507,8 +509,8 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->total_battery_capacity_number_, (float) jk_get_32bit(130) * 0.001f);
 
   // 134   4   0xDC 0x05 0x00 0x00    SCP DELAY (us) 
-  ESP_LOGI(TAG, "  SCP DELAY: %f us", (float) jk_get_32bit(130) * 0.001f);
-  //this->publish_state_(this->scp_delay_number_, (float) jk_get_32bit(130) * 0.001f);
+  ESP_LOGI(TAG, "  SCP DELAY: %f us", (float) jk_get_32bit(134) * 0.001f);
+  //this->publish_state_(this->scp_delay_number_, (float) jk_get_32bit(134) * 0.001f);
   // 138   4   0xE4 0x0C 0x00 0x00    Start balance voltage
   ESP_LOGI(TAG, "  Start balance voltage: %f V", (float) jk_get_32bit(138) * 0.001f);
   this->publish_state_(this->balance_starting_voltage_number_, (float) jk_get_32bit(138) * 0.001f);

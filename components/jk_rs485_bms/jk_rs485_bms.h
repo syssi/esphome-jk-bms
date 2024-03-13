@@ -69,6 +69,12 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   void set_cell_resistance_sensor(uint8_t cell, sensor::Sensor *cell_resistance_sensor) {
     this->cells_[cell].cell_resistance_sensor_ = cell_resistance_sensor;
   }
+//  void set_temperature_temperature_sensor(uint8_t i, sensor::Sensor *temperature_temperature_sensor) {
+//    this->temperatures_[i].temperature_sensor_ = temperature_temperature_sensor;
+//  }  
+  void set_temperature_sensor(uint8_t i, sensor::Sensor *temperature_sensor) {
+    this->temperatures_[i].temperature_sensor_ = temperature_sensor;
+  }    
   void set_power_tube_temperature_sensor(sensor::Sensor *power_tube_temperature_sensor) {
     power_tube_temperature_sensor_ = power_tube_temperature_sensor;
   }
