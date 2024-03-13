@@ -6,7 +6,16 @@
 
 ESPHome component to monitor a Jikong Battery Management System (JK-PB) via ESP SERIAL (UART-TTL) + SERIAL TO RS485 + ETHERNET CABLE
 In theory 1 ESP can gather information of every BMS in the RS485 network: MAX 16
-The bluetooth is free to use with your mobile.
+The BMS bluetooth remains free to use with your mobile.
+
+Added some Home Assistant Dashboards (see components/jk_rs485_bms/home_assistant_dashboards/)
+
+![image](https://github.com/txubelaxu/esphome-jk-bms/assets/156140720/980697a4-7f6b-4e7b-b4dc-7f1b66efc464)
+
+![image](https://github.com/txubelaxu/esphome-jk-bms/assets/156140720/b149a2e8-6a82-483a-bee7-5636ae5881f0)
+
+![image](https://github.com/txubelaxu/esphome-jk-bms/assets/156140720/30ff5fba-97c9-4588-837c-597dcec06387)
+
 
 ## Supported devices
 
