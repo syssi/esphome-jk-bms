@@ -2,6 +2,7 @@ substitutions:
   esp_name: esp-rs485-gw
   bms0_name: bms0
   bms1_name: bms1
+      
   device_description: "Monitor two JK-BMS via UART-TTL"
   external_components_source: github://syssi/esphome-jk-bms@main
   tx_pin_uart_0: GPIO17 #GPIO1 #GPIO16
@@ -68,34 +69,10 @@ jk_rs485_bms:
     jk_rs485_sniffer_id: sniffer0
     update_interval: 5s
   - id: bms1
-    rs485_address: 0x07
+    rs485_address: 0x01
     jk_rs485_sniffer_id: sniffer0
     update_interval: 5s
 
-binary_sensor:
-  - platform: jk_rs485_bms
-    jk_rs485_bms_id: bms0
-    balancing:
-      name: "${bms0_name} balancing"
-    charging:
-      name: "${bms0_name} charging"
-    discharging:
-      name: "${bms0_name} discharging"
-    online_status:
-      name: "${bms0_name} online status"
-    # ...
-    # ...
-  - platform: jk_rs485_bms
-    jk_rs485_bms_id: bms1
-    balancing:
-      name: "${bms1_name} balancing"
-    charging:
-      name: "${bms1_name} charging"
-    discharging:
-      name: "${bms1_name} discharging"
-    online_status:
-      name: "${bms1_name} online status"
-    # ...
 
 sensor:
   - platform: jk_rs485_bms
@@ -245,7 +222,6 @@ sensor:
     errors_bitmask:
       name: "${bms0_name} errors bitmask"      
 
-
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms1
     min_cell_voltage:
@@ -392,7 +368,7 @@ sensor:
       name: "${bms1_name} balancing current"
     errors_bitmask:
       name: "${bms1_name} errors bitmask"      
-
+#2
 
 switch:
   - platform: jk_rs485_bms
@@ -418,7 +394,6 @@ text_sensor:
       name: "${bms0_name} operation mode"
     total_runtime_formatted:
       name: "${bms0_name} total runtime formatted"
-    # ...
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms1
@@ -428,4 +403,4 @@ text_sensor:
       name: "${bms1_name} operation mode"
     total_runtime_formatted:
       name: "${bms1_name} total runtime formatted"
-    # ...
+
