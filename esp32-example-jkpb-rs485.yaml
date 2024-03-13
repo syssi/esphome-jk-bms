@@ -1,7 +1,7 @@
 substitutions:
-  name: jk-rs485-bms
-  bms0: "bms0"
-  bms1: "bms1"
+  name: esp-rs485-gw
+  bms0: bms0
+  bms1: bms1
   device_description: "Monitor two JK-BMS via UART-TTL"
   external_components_source: github://syssi/esphome-jk-bms@main
   tx_pin_uart_0: GPIO17 #GPIO1 #GPIO16
