@@ -35,6 +35,8 @@ wifi:
 
 ota:
 
+api:
+
 logger:
   level: INFO #VERY_VERBOSE #VERBOSE #DEBUG #INFO #DEBUG
 
