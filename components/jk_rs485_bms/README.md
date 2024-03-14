@@ -1,4 +1,4 @@
-# esphome JK-PB BMSs
+# esphome gathering info from multiple JK-PB BMSs usign RS485 internal network
 
 ![GitHub stars](https://img.shields.io/github/stars/txubelaxu/esphome-jk-bms)
 ![GitHub forks](https://img.shields.io/github/forks/txubelaxu/esphome-jk-bms)
