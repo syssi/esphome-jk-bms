@@ -21,8 +21,8 @@ Added some Home Assistant Dashboards (see components/jk_rs485_bms/home_assistant
 
 JK-PBx models with software version `>=14.0` are using the implemented protocol and should be supported.
 
-* JK-PB2A16S-20P, hw 14.XA, sw 14.20, using `JK02_32S` (reported by [@txubelaxu]
-* JK-PBx, hw 15.XA, sw 15.11, using `JK02_32S` (reported by [@denveronly]
+* JK-PB2A16S-20P, hw 14.XA, sw 14.20, using `JK02_32S` (reported by [@txubelaxu])
+* JK-PBx, hw 15.XA, sw 15.11, using `JK02_32S` (reported by [@denveronly])
 
 ## Untested devices
 
