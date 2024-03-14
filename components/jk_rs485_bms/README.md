@@ -51,9 +51,9 @@ JK-PBx models with software version `>=14.0` are using the implemented protocol 
 │          │                │ CONVERTER │                │         │
 |          |<------GND----->|           |<------GND----->|         |<--GND
 └──────────┘                └───────────┘                └─────────┘      
-
-# ESP32 UART-TTL               
-┌─── ─────── ────┐
+                                 ||
+# ESP32 UART-TTL                 |└--DE: must be connected to GND 
+┌─── ─────── ────┐               └---RE: must be connected to GND
 │                │
 │ O   O   O   O  │
 │GND  RX  TX Vcc │
