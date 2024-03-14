@@ -22,10 +22,11 @@ Added some Home Assistant Dashboards (see components/jk_rs485_bms/home_assistant
 JK-PBx models with software version `>=14.0` are using the implemented protocol and should be supported.
 
 * JK-PB2A16S-20P, hw 14.XA, sw 14.20, using `JK02_32S` (reported by [@txubelaxu]
+* JK-PBx, hw 15.XA, sw 15.11, using `JK02_32S` (reported by [@denveronly]
 
 ## Untested devices
 
-* JK-PB2A16S-20P, hw 15.XA,
+* JK-PB1A16S-20P, hw 15.XA,
 
 ## Requirements
 
@@ -44,20 +45,21 @@ JK-PBx models with software version `>=14.0` are using the implemented protocol 
 ```
                               CONVERTER                    UART-TTL
 ┌──────────┐                ┌───────────┐                ┌─────────┐
-│          │<----- A  ----->│  SERIAL   │------ RX ----->│         │
+│          │<----- A  ----->│  SERIAL   │<----- Vcc------│         │<--Vcc
 │  JK-BMS  │<----- B  ----->│  TTL TO   │                │ ESP32/  │
-│          │<----- GND ---->│  RS485    │<----- GND ---->│ ESP8266 │<-- Vcc
-│          │                │ CONVERTER │                │         │<-- GND
-└──────────┘                └───────────┘                └─────────┘
+│          │                │  RS485    │-RO---------RX->│ ESP8266 │
+│          │                │ CONVERTER │                │         │
+|          |<------GND----->|           |<------GND----->|         |<--GND
+└──────────┘                └───────────┘                └─────────┘      
 
 # ESP32 UART-TTL               
 ┌─── ─────── ────┐
 │                │
 │ O   O   O   O  │
-│GND  RX  TX VBAT│
+│GND  RX  TX Vcc │
 └────────────────┘
-  │   │   
-  │   │   
+  │   │       |   
+  │   │       └Vcc
   │   └─────── GPIO16
   └─────────── GND
 
