@@ -37,12 +37,12 @@ CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
                 cv.Optional(CONF_ICON, default=ICON_DISCHARGING): cv.icon,
             }
         ).extend(cv.COMPONENT_SCHEMA),
-        # cv.Optional(CONF_BALANCER): switch.SWITCH_SCHEMA.extend(
-        #     {
-        #         cv.GenerateID(): cv.declare_id(JkSwitch),
-        #         cv.Optional(CONF_ICON, default=ICON_BALANCER): cv.icon,
-        #     }
-        # ).extend(cv.COMPONENT_SCHEMA),
+         cv.Optional(CONF_BALANCER): switch.SWITCH_SCHEMA.extend(
+             {
+                 cv.GenerateID(): cv.declare_id(JkRS485BmsSwitch),
+                 cv.Optional(CONF_ICON, default=ICON_BALANCER): cv.icon,
+             }
+         ).extend(cv.COMPONENT_SCHEMA),
     }
 )
 

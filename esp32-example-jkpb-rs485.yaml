@@ -245,7 +245,6 @@ sensor:
     errors_bitmask:
       name: "${bms0_name} errors bitmask"      
 
-
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms1
     min_cell_voltage:
@@ -401,13 +400,17 @@ switch:
       name: "${bms0_name} charging"
     discharging:
       name: "${bms0_name} discharging"
+    balancer:
+      name: "${bms0_name} balancer"      
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms1
     charging:
       name: "${bms1_name} charging"
     discharging:
-      name: "${bms1_name} discharging"
+      name: "${bms1_name} discharging"      
+    balancer:
+      name: "${bms1_name} balancer"
 
 text_sensor:
   - platform: jk_rs485_bms

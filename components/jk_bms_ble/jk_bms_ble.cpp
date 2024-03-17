@@ -748,11 +748,7 @@ void JkBmsBle::decode_jk04_cell_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->total_runtime_sensor_, (float) jk_get_32bit(286));
   this->publish_state_(this->total_runtime_formatted_text_sensor_, format_total_runtime_(jk_get_32bit(286)));
 
-  // 290   1   0x00    Unknown290
-  // 291   1   0x00    ** [JK-PB2A16S-20P v14] CHARGE IS WORKING 
-  // 292   1   0x00    ** [JK-PB2A16S-20P v14] DISCHARGE IS WORKING
-  // 293   1   0x00    ** [JK-PB2A16S-20P v14] PREDISCHARGE IS WORKING (?)
-  // 294   1   0x00    ** [JK-PB2A16S-20P v14] BALANCE IS WORKING (?)     
+  // 290   4   0x00 0x00 0x00 0x00    Unknown290
   ESP_LOGD(TAG, "Unknown290: 0x%02X 0x%02X 0x%02X 0x%02X (always 0x00 0x00 0x00 0x00?)", data[290], data[291],
            data[292], data[293]);
 
@@ -798,15 +794,13 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   // 0     4   0x55 0xAA 0xEB 0x90    Header
   // 4     1   0x01                   Frame type
   // 5     1   0x4F                   Frame counter
-  // 6     4   0x58 0x02 0x00 0x00    ** [JK-PB2A16S-20P v14] VOLTAGE SMART SLEEP
-  ESP_LOGD(TAG, "  VOLTAGE SMART SLEEP: %f V", (float) jk_get_32bit(6) * 0.001f);
-  this->publish_state_(this->voltage_smart_sleep_voltage_number_, (float) jk_get_32bit(6) * 0.001f);
-
+  // 6     4   0x58 0x02 0x00 0x00    Unknown6
+  ESP_LOGD(TAG, "  Unknown6: %f", (float) jk_get_32bit(6) * 0.001f);
   // 10    4   0x54 0x0B 0x00 0x00    Cell UVP
   ESP_LOGI(TAG, "  Cell UVP: %f V", (float) jk_get_32bit(10) * 0.001f);
   this->publish_state_(this->cell_voltage_undervoltage_protection_number_, (float) jk_get_32bit(10) * 0.001f);
 
-  // 14    4   0x80 0x0C 0x00 0x00    Cell UVP Recovery
+  // 14    4   0x80 0x0C 0x00 0x00    Cell OVP Recovery
   ESP_LOGI(TAG, "  Cell UVPR: %f V", (float) jk_get_32bit(14) * 0.001f);
   this->publish_state_(this->cell_voltage_undervoltage_recovery_number_, (float) jk_get_32bit(14) * 0.001f);
 
@@ -822,22 +816,10 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   ESP_LOGI(TAG, "  Balance trigger voltage: %f V", (float) jk_get_32bit(26) * 0.001f);
   this->publish_state_(this->balance_trigger_voltage_number_, (float) jk_get_32bit(26) * 0.001f);
 
-  // 30    4   0x00 0x00 0x00 0x00    ** [JK-PB2A16S-20P v14] SOC-100% VOLTAGE
-  ESP_LOGI(TAG, "  SOC-100 voltage: %f V", (float) jk_get_32bit(30) * 0.001f);
-  this->publish_state_(this->soc100_voltage_number_, (float) jk_get_32bit(30) * 0.001f);
-
-  // 34    4   0x00 0x00 0x00 0x00    ** [JK-PB2A16S-20P v14] SOC-0% VOLTAGE
-  ESP_LOGI(TAG, "  SOC-0 voltage: %f V", (float) jk_get_32bit(34) * 0.001f);
-  this->publish_state_(this->soc0_voltage_number_, (float) jk_get_32bit(34) * 0.001f);
-
-  // 38    4   0x00 0x00 0x00 0x00    ** [JK-PB2A16S-20P v14] VOLTAGE CELL REQUEST CHARGE VOLTAGE
-  ESP_LOGI(TAG, "  VOLTAGE CELL request charge voltage: %f V", (float) jk_get_32bit(38) * 0.001f);
-  this->publish_state_(this->voltage_cell_request_charge_voltage_number_, (float) jk_get_32bit(38) * 0.001f);
-
-  // 42    4   0x00 0x00 0x00 0x00    ** [JK-PB2A16S-20P v14] VOLTAGE CELL REQUEST FLOAT VOLTAGE
-  ESP_LOGI(TAG, "  VOLTAGE CELL request float voltage: %f V", (float) jk_get_32bit(42) * 0.001f);
-  this->publish_state_(this->voltage_cell_request_float_voltage_number_, (float) jk_get_32bit(42) * 0.001f);
-
+  // 30    4   0x00 0x00 0x00 0x00    Unknown30
+  // 34    4   0x00 0x00 0x00 0x00    Unknown34
+  // 38    4   0x00 0x00 0x00 0x00    Unknown38
+  // 42    4   0x00 0x00 0x00 0x00    Unknown42
   // 46    4   0xF0 0x0A 0x00 0x00    Power off voltage
   ESP_LOGI(TAG, "  Power off voltage: %f V", (float) jk_get_32bit(46) * 0.001f);
   this->publish_state_(this->power_off_voltage_number_, (float) jk_get_32bit(46) * 0.001f);
@@ -848,7 +830,7 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
 
   // 54    4   0x1E 0x00 0x00 0x00    Charge OCP delay
   ESP_LOGI(TAG, "  Charge OCP delay: %f s", (float) jk_get_32bit(54));
-  // 58    4   0x3C 0x00 0x00 0x00    Charge OCP recovery time
+  // 58    4   0x3C 0x00 0x00 0x00    Charge OCP recovery delay
   ESP_LOGI(TAG, "  Charge OCP recovery delay: %f s", (float) jk_get_32bit(58));
   // 62    4   0xF0 0x49 0x02 0x00    Max. discharge current
   ESP_LOGI(TAG, "  Max. discharge current: %f A", (float) jk_get_32bit(62) * 0.001f);
@@ -856,7 +838,7 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
 
   // 66    4   0x2C 0x01 0x00 0x00    Discharge OCP delay
   ESP_LOGI(TAG, "  Discharge OCP recovery delay: %f s", (float) jk_get_32bit(66));
-  // 70    4   0x3C 0x00 0x00 0x00    Discharge OCP recovery time
+  // 70    4   0x3C 0x00 0x00 0x00    Discharge OCP recovery delay
   ESP_LOGI(TAG, "  Discharge OCP recovery delay: %f s", (float) jk_get_32bit(70));
   // 74    4   0x3C 0x00 0x00 0x00    SCPR time
   ESP_LOGI(TAG, "  SCP recovery time: %f s", (float) jk_get_32bit(74));
@@ -947,26 +929,13 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   // 274   4   0x00 0x00 0x00 0x00
   // 278   4   0x00 0x00 0x00 0x00
   // 282   1   0x00                   New controls bitmask
-  // ** [JK-PB2A16S-20P v14] 
-  //    bit0: HEATING_SWITCH_ENABLED
-  //    bit1: DISABLE_TEMP_SENSOR_SWITCH_ENABLED
-  //    bit2: ?
-  //    bit3: ?
-  //    bit4: DISPLAY_ALWAYS_ON_SWITCH_ENABLED
-  //    bit5: ?
-  //    bit6: SMART_SLEEP_ON_SWITCH_ENABLED
-  //    bit7: DISABLE_PCL_MODULE_SWITCH_ENABLED
   this->publish_state_(this->heating_switch_, check_bit_(data[282], 1));
   ESP_LOGI(TAG, "  heating switch: %s", ((bool) check_bit_(data[282], 1)) ? "on" : "off");
   this->publish_state_(this->disable_temperature_sensors_switch_, check_bit_(data[282], 2));
   this->publish_state_(this->display_always_on_switch_, check_bit_(data[282], 16));
   ESP_LOGI(TAG, "  Port switch: %s", check_bit_(data[282], 8) ? "RS485" : "CAN");
 
-  // 283   1   0x00
-  // ** [JK-PB2A16S-20P v14] 
-  //    bit0: TIME_STORED_DATA_SWITCH_ENABLED
-  //    bit1: CHARGING_FLOAT_MODE_SWITCH_ENABLED
-  // 284   2   0X00 0X00
+  // 283   3   0x00 0x00 0x00
   // 286   4   0x00 0x00 0x00 0x00
   // 290   4   0x00 0x00 0x00 0x00
   // 294   4   0x00 0x00 0x00 0x00

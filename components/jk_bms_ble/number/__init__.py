@@ -43,13 +43,6 @@ DEFAULT_STEP = 1
 # 0f 04 e8030000  Set Max discharge Current to 1.0
 
 CONF_BALANCE_TRIGGER_VOLTAGE = "balance_trigger_voltage"
-
-CONF_SOC100_VOLTAGE = "soc100_voltage"
-CONF_SOC0_VOLTAGE = "soc0_voltage"
-CONF_VOLTAGE_CELL_REQUEST_CHARGE_VOLTAGE = "voltage_cell_request_charge_voltage"
-CONF_VOLTAGE_CELL_REQUEST_FLOAT_VOLTAGE = "voltage_cell_request_float_voltage"
-CONF_VOLTAGE_SMART_SLEEP_VOLTAGE = "voltage_smart_sleep_voltage"
-
 CONF_CELL_COUNT = "cell_count"
 CONF_TOTAL_BATTERY_CAPACITY = "total_battery_capacity"
 CONF_CELL_VOLTAGE_OVERVOLTAGE_PROTECTION = "cell_voltage_overvoltage_protection"
@@ -87,40 +80,34 @@ CONF_MAX_DISCHARGE_CURRENT = "max_discharge_current"
 
 # JK02_32S
 #
-# 01 04 ????????  Set Smart Sleep Voltage                        3.5   V (3500)
-# 02 04 ac0d0000  UVP                                            3.5   V (3500)
-# 03 04 100e0000  UVPR                                           3.6   V (3600)
-# 04 04 68100000  OVP                                            4.2   V (4200)
-# 05 04 a00f0000  OVPR                                           4.0   V (4000)
-# 06 04 64000000  Set balance trigger voltage                    0.100 V (100)
-# 07 04 ????????  Set SOC 100% voltage                           3.449 V (3449)  
-# 08 04 ????????  Set SOC   0% voltage                           2.640 V (2640)           
-# 09 04 ????????  Set Voltage Cell Request Charge Voltage (RCV)  3.450 v (3450)
-# 0a 04 ????????  Set Voltage Cell Request Float Voltage  (RFV)  3.350 V (3350)
-# 0b 04 480d0000  Power Off Vol.                                 3.40  V (3400)
-# 0c 04 b80b0000  Continued Charge Current                       3.0   A (3000)
-# 0d 04 28000000  Charge OCP Delay                              40     S (40)
-# 0e 04 46000000  Charge OCPR Time                             70     S (70)
-# 0f 04 e8030000  Continued Discharge Current                   10     A (1000)
-# 10 04 2c010000  Discharge OCP Delay                          300     S (300)
-# 11 04 46000000  Discharge OCPR Time                           70     S (70)
-# 12 04 46000000  SCPR Time                                     70     S (70)
-# 13 04 2c010000  Max Balance Current                            0.3   A (300)
-# 14 04 94020000  Charge OTP                                    66.0  °C (660)
-# 15 04 62020000  Charge OTPR                                   61.0  °C (610)
-# 16 04 02030000  Discharge OTP                                 77.0  °C (770)
-# 17 04 8a020000  Discharge OTPR                                65.0  °C (650)
-# 18 04 24ffffff  Charge UTP                                   -22.0  °C (-220)
-# 19 04 a6ffffff  Charge UTPR                                   -9.0  °C (-90)
-# 1a 04 de030000  MOS OTP                                       99.0  °C (990)
-# 1b 04 0c030000  MOS OTPR                                      78.0  °C (780)
-# 1c 04 06000000  Set cell count to                              6       (6)
-# 20 04 b0360000  Set battery capacity                          14    Ah (14)
-# 21 04 d0070000  SCP Delay                                   2000    uS (2000)
-# 22 04 04100000  Start Balance voltage                          3450  V (3450)
-# 64 04 983a0000  Set calibration voltage                       15.00  V (15000)
-# 67 04 c8000000  Set calibration current                        2.0   A (200)
-# ?? ?? ????????
+# 02 04 ac0d0000  UVP                              3.5 V (3500)
+# 03 04 100e0000  UVPR                             3.6 V (3600)
+# 04 04 68100000  OVP                              4.2 V (4200)
+# 05 04 a00f0000  OVPR                             4.0 V (4000)
+# 06 04 64000000  Set balance trigger voltage    0.100 V (100)
+# 0b 04 480d0000  Power Off Vol.                  3.40 V (3400)
+# 0c 04 b80b0000  Continued Charge Current         3.0 A (3000)
+# 0d 04 28000000  Charge OCP Delay                  40 S (40)
+# 0e 04 46000000  Charge OCPR Time                  70 S (70)
+# 0f 04 e8030000  Continued Discharge Current       10 A (1000)
+# 10 04 2c010000  Discharge OCP Delay              300 S (300)
+# 11 04 46000000  Discharge OCPR Time               70 S (70)
+# 12 04 46000000  SCPR Time                         70 S (70)
+# 13 04 2c010000  Max Balance Current              0.3 A (300)
+# 14 04 94020000  Charge OTP                     66.0 °C (660)
+# 15 04 62020000  Charge OTPR                    61.0 °C (610)
+# 16 04 02030000  Discharge OTP                  77.0 °C (770)
+# 17 04 8a020000  Discharge OTPR                 65.0 °C (650)
+# 18 04 24ffffff  Charge UTP                    -22.0 °C (-220)
+# 19 04 a6ffffff  Charge UTPR                    -9.0 °C (-90)
+# 1a 04 de030000  MOS OTP                        99.0 °C (990)
+# 1b 04 0c030000  MOS OTPR                       78.0 °C (780)
+# 1c 04 06000000  Set cell count to                    6 (6)
+# 20 04 b0360000  Set battery capacity             14 Ah (14)
+# 21 04 d0070000  SCP Delay                      2000 uS (2000)
+# 22 04 04100000  Start Balance voltage            4.1 V (4100)
+# 64 04 983a0000  Set calibration voltage        15.00 V (15000)
+# 67 04 c8000000  Set calibration current          2.0 A (200)
 #
 # https://github.com/syssi/esphome-jk-bms/issues/276#issuecomment-1468145528
 
@@ -142,11 +129,6 @@ NUMBERS = {
     CONF_MAX_BALANCE_CURRENT: [0x00, 0x13, 0x13, 1000.0],
     CONF_MAX_CHARGE_CURRENT: [0x00, 0x0C, 0x0C, 1000.0],
     CONF_MAX_DISCHARGE_CURRENT: [0x00, 0x0F, 0x0F, 1000.0],
-    CONF_VOLTAGE_SMART_SLEEP_VOLTAGE: [0x00, 0x01, 0x01, 3500.0],    
-    CONF_SOC100_VOLTAGE: [0x00, 0x07, 0x07, 3449.0],
-    CONF_SOC0_VOLTAGE: [0x00, 0x08, 0x08, 2640.0],
-    CONF_VOLTAGE_CELL_REQUEST_CHARGE_VOLTAGE: [0x00, 0x09, 0x09, 3450.0],
-    CONF_VOLTAGE_CELL_REQUEST_FLOAT_VOLTAGE: [0x00, 0x0a, 0x0a, 3335.0],    
 }
 
 JkNumber = jk_bms_ble_ns.class_("JkNumber", number.Number, cg.Component)
@@ -165,7 +147,7 @@ JK_NUMBER_SCHEMA = number.NUMBER_SCHEMA.extend(
 ).extend(cv.COMPONENT_SCHEMA)
 
 CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
-    {       
+    {
         cv.Optional(CONF_BALANCE_TRIGGER_VOLTAGE): JK_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=0.003): cv.float_,
@@ -285,42 +267,6 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
                 ): cv.string_strict,
             }
         ),
-        cv.Optional(CONF_VOLTAGE_SMART_SLEEP_VOLTAGE): JK_NUMBER_SCHEMA.extend(
-            {
-                cv.Optional(CONF_MIN_VALUE, default=3.000): cv.float_,
-                cv.Optional(CONF_MAX_VALUE, default=3.500): cv.float_,
-                cv.Optional(CONF_STEP, default=0.001): cv.float_,
-            }
-        ),    
-
-        cv.Optional(CONF_SOC100_VOLTAGE): JK_NUMBER_SCHEMA.extend(
-            {
-                cv.Optional(CONF_MIN_VALUE, default=3.000): cv.float_,
-                cv.Optional(CONF_MAX_VALUE, default=3.600): cv.float_,
-                cv.Optional(CONF_STEP, default=0.001): cv.float_,
-            }
-        ), 
-        cv.Optional(CONF_SOC0_VOLTAGE): JK_NUMBER_SCHEMA.extend(
-            {
-                cv.Optional(CONF_MIN_VALUE, default=3.000): cv.float_,
-                cv.Optional(CONF_MAX_VALUE, default=2.500): cv.float_,
-                cv.Optional(CONF_STEP, default=0.001): cv.float_,
-            }
-        ), 
-        cv.Optional(CONF_VOLTAGE_CELL_REQUEST_CHARGE_VOLTAGE): JK_NUMBER_SCHEMA.extend(
-            {
-                cv.Optional(CONF_MIN_VALUE, default=3.650): cv.float_,
-                cv.Optional(CONF_MAX_VALUE, default=3.000): cv.float_,
-                cv.Optional(CONF_STEP, default=0.001): cv.float_,
-            }
-        ), 
-        cv.Optional(CONF_VOLTAGE_CELL_REQUEST_FLOAT_VOLTAGE): JK_NUMBER_SCHEMA.extend(
-            {
-                cv.Optional(CONF_MIN_VALUE, default=3.650): cv.float_,
-                cv.Optional(CONF_MAX_VALUE, default=3.000): cv.float_,
-                cv.Optional(CONF_STEP, default=0.001): cv.float_,
-            }
-        ),                                      
     }
 )
 

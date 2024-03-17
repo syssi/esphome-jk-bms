@@ -1050,7 +1050,7 @@ CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
             state_class=STATE_CLASS_MEASUREMENT,
         ),
         cv.Optional(CONF_TOTAL_RUNTIME): sensor.sensor_schema(
-            unit_of_measurement=UNIT_HOURS,
+            unit_of_measurement=UNIT_SECONDS,
             icon=ICON_TIMELAPSE,
             accuracy_decimals=0,
             device_class=DEVICE_CLASS_EMPTY,
