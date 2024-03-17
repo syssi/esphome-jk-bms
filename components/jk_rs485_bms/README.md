@@ -58,7 +58,7 @@ JK-PBx models with software version `>=14.0` are using the implemented protocol 
 FIRST: CONNECT ALL THE BMSs IN CHAIN
 SECOND: CONNECT THE SNIFFER (ESP32->RS485 CONVERTER->) AT ONE END OF THE CHAIN
 ```
-![image](https://github.com/txubelaxu/esphome-jk-bms/assets/156140720/ac435a4e-5b1d-4e07-b820-296351084d9c)
+![image](https://github.com/txubelaxu/esphome-jk-bms/assets/156140720/b9ef1522-cd68-4ab7-a709-1c7efb24b0ca)
 
 ![image](https://github.com/txubelaxu/esphome-jk-bms/assets/156140720/9505df34-a807-4953-b0b9-946aa2de66e6)
 pinout:
