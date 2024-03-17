@@ -1,4 +1,4 @@
-# esphome JK-PB BMSs
+# esphome gathering info from multiple JK-PB BMSs usign RS485 internal network
 
 ![GitHub stars](https://img.shields.io/github/stars/txubelaxu/esphome-jk-bms)
 ![GitHub forks](https://img.shields.io/github/forks/txubelaxu/esphome-jk-bms)
@@ -8,21 +8,12 @@ ESPHome component to monitor a Jikong Battery Management System (JK-PB) via ESP 
 In theory 1 ESP can gather information of every BMS in the RS485 network: MAX 16
 The BMS bluetooth remains free to use with your mobile.
 
-Added some Home Assistant Dashboards (see components/jk_rs485_bms/home_assistant_dashboards/)
-
-![image](https://github.com/txubelaxu/esphome-jk-bms/assets/156140720/980697a4-7f6b-4e7b-b4dc-7f1b66efc464)
-
-![image](https://github.com/txubelaxu/esphome-jk-bms/assets/156140720/b149a2e8-6a82-483a-bee7-5636ae5881f0)
-
-![image](https://github.com/txubelaxu/esphome-jk-bms/assets/156140720/30ff5fba-97c9-4588-837c-597dcec06387)
-
-
 ## Supported devices
 
 JK-PBx models with software version `>=14.0` are using the implemented protocol and should be supported.
 
-* JK-PB2A16S-20P, hw 14.XA, sw 14.20, using `JK02_32S` (reported by [@txubelaxu]
-* JK-PBx, hw 15.XA, sw 15.11, using `JK02_32S` (reported by [@denveronly]
+* JK-PB2A16S-20P, hw 14.XA, sw 14.20, using `JK02_32S` (reported by [@txubelaxu])
+* JK-PBx, hw 15.XA, sw 15.11, using `JK02_32S` (reported by [@denveronly])
 
 ## Untested devices
 
@@ -74,7 +65,6 @@ pinout:
 ![image](https://github.com/txubelaxu/esphome-jk-bms/assets/156140720/278abcac-c095-4ae2-8ba2-f82f1f152343)
 
 ```
-
 Usable any of the two connectors:
 ┌─────────────────────────┐       ┌─────────────────────────┐
 │                         │       │                         │
@@ -85,15 +75,16 @@ Usable any of the two connectors:
   │  │  └──── GND                   │  │  └──── GND 
   │  └─────── A                     │  └─────── A
   └────────── B                     └────────── B
-
-
 ```
+
+
 
 ## Installation
 
 just use the `esp32-example-jkpb-rs485.yaml` as proof of concept:
 
-```bash
+```
+bash
 # Install esphome
 python3 -m pip install esphome
 
@@ -133,11 +124,21 @@ A user of this project ([@dr3amr](https://github.com/dr3amr)) shared some [Home 
 
 If this component doesn't work out of the box for your device please update your configuration to enable the debug output of the UART component and increase the log level to the see outgoing and incoming serial traffic:
 
-```
 logger:
   level: DEBUG
 
 ```
+
+## MUCH MORE
+Added some <a href="./home_assistant_dashboards/">Home Assistant Dashboards</a>
+
+![image](https://github.com/txubelaxu/esphome-jk-bms/assets/156140720/980697a4-7f6b-4e7b-b4dc-7f1b66efc464)
+
+![image](https://github.com/txubelaxu/esphome-jk-bms/assets/156140720/b149a2e8-6a82-483a-bee7-5636ae5881f0)
+
+![image](https://github.com/txubelaxu/esphome-jk-bms/assets/156140720/30ff5fba-97c9-4588-837c-597dcec06387)
+
+
 
 ## References
 
