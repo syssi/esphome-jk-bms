@@ -8,7 +8,7 @@ from .const import CONF_CHARGING, CONF_DISCHARGING
 
 DEPENDENCIES = ["jk_rs485_bms"]
 
-CODEOWNERS = ["@syssi"]
+CODEOWNERS = ["@syssi","@txubelaxu"]
 
 CONF_CHARGING_SWITCH = (
     "charging_switch"  # @DEPRECATED and superseded by switch.charging
@@ -20,6 +20,7 @@ CONF_BALANCING = "balancing"
 CONF_BALANCING_SWITCH = "balancing_switch"
 CONF_DEDICATED_CHARGER_SWITCH = "dedicated_charger_switch"
 CONF_ONLINE_STATUS = "online_status"
+CONF_DISPLAY_ALWAYS_ON_SWITCHSTATUS = "online_status"
 
 ICON_CHARGING = "mdi:battery-charging"
 ICON_CHARGING_SWITCH = "mdi:battery-charging"
