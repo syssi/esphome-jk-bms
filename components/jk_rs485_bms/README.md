@@ -89,7 +89,7 @@ bash
 python3 -m pip install esphome
 
 # Clone this external component
-git clone https://github.com/syssi/esphome-jk-bms.git
+git clone https://github.com/txubelaxu/esphome-jk-bms.git
 cd esphome-jk-bms
 
 # Create a secrets.yaml containing some setup specific secrets
