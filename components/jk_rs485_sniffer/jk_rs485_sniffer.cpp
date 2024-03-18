@@ -180,10 +180,10 @@ bool JkRS485Sniffer::parse_jk_rs485_sniffer_byte_(uint8_t byte) {
   for (auto *device : this->devices_) {
 //      if (device->address_ == address) {
       //device->on_jk_rs485_sniffer_data(FUNCTION_READ_ALL, data);
-      if ((found==false) && (address==7) && (raw[JKPB_RS485_FRAME_TYPE_ADDRESS]==1)){
-          printBuffer();
-          found = true;
-      }
+//      if ((found==false) && (address==7) && (raw[JKPB_RS485_FRAME_TYPE_ADDRESS]==1)){
+//          printBuffer();
+//          found = true;
+//      }
       device->on_jk_rs485_sniffer_data(address, raw[JKPB_RS485_FRAME_TYPE_ADDRESS], data);   
 //        found = true;
     //}

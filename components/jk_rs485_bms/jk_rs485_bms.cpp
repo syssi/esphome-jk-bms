@@ -608,9 +608,9 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   // 242   4   0x00 0x00 0x00 0x00    Con. wire resistance 22
   // 246   4   0x00 0x00 0x00 0x00    Con. wire resistance 23
   // 250   4   0x00 0x00 0x00 0x00    Con. wire resistance 24
-  for (uint8_t i = 0; i < 24; i++) {
-    ESP_LOGV(TAG, "  Con. wire resistance %d: %f Ohm", i + 1, (float) jk_get_32bit(i * 4 + 158) * 0.001f);
-  }
+  //for (uint8_t i = 0; i < 24; i++) {
+  //  ESP_LOGV(TAG, "  Con. wire resistance %d: %f Ohm", i + 1, (float) jk_get_32bit(i * 4 + 158) * 0.001f);
+  //}
 
   // 254   4   0x00 0x00 0x00 0x00
   //ESP_LOGI(TAG, "         254: %02X%02X%02X%02X",data[254],data[255],data[256],data[257]);
@@ -621,12 +621,12 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   // 266   4   0x00 0x00 0x00 0x00
   //ESP_LOGI(TAG, "         266: %02X%02X%02X%02X",data[266],data[267],data[268],data[269]);
   // 270   4   0x00 0x00 0x00 0x00
-  ESP_LOGI(TAG, "  Device address: 0x%02X", data[270]);
+  //ESP_LOGI(TAG, "  Device address: 0x%02X", data[270]);
   //ESP_LOGI(TAG, "         270: %02X%02X%02X%02X",data[270],data[271],data[272],data[273]);
   // 274   4   0x00 0x00 0x00 0x00
-  ESP_LOGI(TAG, "         274: %02X%02X%02X%02X",data[274],data[275],data[276],data[277]);
+  //ESP_LOGI(TAG, "         274: %02X%02X%02X%02X",data[274],data[275],data[276],data[277]);
   // 278   4   0x00 0x00 0x00 0x00  //60 e3 16 00          10023c3218feffffffbfe90102000000000001
-  ESP_LOGI(TAG, "         278: %02X%02X%02X%02X",data[278],data[279],data[280],data[281]);
+  //ESP_LOGI(TAG, "         278: %02X%02X%02X%02X",data[278],data[279],data[280],data[281]);
 
   // 282   1   0x00                   New controls bitmask
   // ** [JK-PB2A16S-20P v14] 
