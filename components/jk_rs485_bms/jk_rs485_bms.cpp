@@ -541,18 +541,6 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->cell_count_number_, (float) data[114]);
 
 
-  ESP_LOGI(TAG, "  switch 118: %d", (data[118]));
-  ESP_LOGI(TAG, "  switch 119: %d", (data[119]));
-  ESP_LOGI(TAG, "  switch 120: %d", (data[120]));
-  ESP_LOGI(TAG, "  switch 121: %d", (data[121]));
-  ESP_LOGI(TAG, "  switch 122: %d", (data[122]));
-  ESP_LOGI(TAG, "  switch 123: %d", (data[123]));
-  ESP_LOGI(TAG, "  switch 124: %d", (data[124]));
-  ESP_LOGI(TAG, "  switch 125: %d", (data[125]));
-  ESP_LOGI(TAG, "  switch 126: %d", (data[126]));
-  ESP_LOGI(TAG, "  switch 127: %d", (data[127]));
-  ESP_LOGI(TAG, "  switch 128: %d", (data[128]));
-  ESP_LOGI(TAG, "  switch 129: %d", (data[129]));
   // 118   4   0x01 0x00 0x00 0x00    Charge switch
   //  ESP_LOGI(TAG, "  Charge switch: %s", ((bool) data[118]) ? "on" : "off");
   this->publish_state_(this->charging_switch_, (bool) data[118]);

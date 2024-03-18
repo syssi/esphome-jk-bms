@@ -61,33 +61,6 @@ void JkRS485Sniffer::loop() {
 }
 
 
-void JkRS485Sniffer::loop2() {
-
-  const uint32_t now = millis();
-  if (now - this->last_jk_rs485_sniffer_byte_ > this->rx_timeout_) {
-    ESP_LOGI(TAG, "Entering now..."); 
-    this->last_jk_rs485_sniffer_byte_ = now;    
-    ESP_LOGI(TAG, "Buffer cleared due to %d timeout: %s", this->rx_timeout_,
-              format_hex_pretty(&this->rx_buffer_.front(), this->rx_buffer_.size()).c_str());
-    this->rx_buffer_.clear();
-
-  }
-
-  while (this->available()) {
-    uint8_t byte;
-    this->read_byte(&byte);
-
-
-    if (this->rx_buffer_.size()==800){
-      ESP_LOGI(TAG, "Clearing buffer... size: %d",this->rx_buffer_.size());
-      this->rx_buffer_.clear();
-    }    
-  }
-
-
-
-}
-
 uint16_t chksum(const uint8_t data[], const uint16_t len) {
   uint16_t checksum = 0;
   for (uint16_t i = 0; i < len; i++) {

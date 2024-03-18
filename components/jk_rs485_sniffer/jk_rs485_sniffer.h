@@ -19,7 +19,6 @@ class JkRS485Sniffer : public uart::UARTDevice, public Component {
   JkRS485Sniffer() = default;
 
   void loop() override;
-  void loop2() ;
 
   void dump_config() override;
 
