@@ -8,6 +8,9 @@
 
 ESPHome component to monitor a Jikong Battery Management System (JK-BMS) via UART-TTL or BLE
 
+NEW: monitor your new JK-PBx BMSs via internal RS485 network using 1 only ESP.
+Click here https://github.com/txubelaxu/esphome-jk-bms/blob/main/components/jk_rs485_bms/README.md for more info.
+
 ![Lovelace entities card](lovelace-entities-card.png "Lovelace entities card")
 
 ## Supported devices
