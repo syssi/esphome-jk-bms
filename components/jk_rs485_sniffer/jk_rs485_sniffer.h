@@ -31,6 +31,7 @@ class JkRS485Sniffer : public uart::UARTDevice, public Component {
 
  protected:
   ProtocolVersion protocol_version_{PROTOCOL_VERSION_JK02_32S};
+  void printBuffer(void);
   bool parse_jk_rs485_sniffer_byte_(uint8_t byte);
 
   std::vector<uint8_t> rx_buffer_;

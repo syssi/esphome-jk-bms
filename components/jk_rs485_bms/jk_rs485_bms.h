@@ -29,6 +29,9 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   void set_charging_binary_sensor(binary_sensor::BinarySensor *charging_binary_sensor) {
     charging_binary_sensor_ = charging_binary_sensor;
   }
+  void set_precharging_switch_binary_sensor(binary_sensor::BinarySensor *precharging_switch_binary_sensor) {
+    precharging_switch_binary_sensor_ = precharging_switch_binary_sensor;
+  }  
   void set_charging_switch_binary_sensor(binary_sensor::BinarySensor *charging_switch_binary_sensor) {
     charging_switch_binary_sensor_ = charging_switch_binary_sensor;
   }
@@ -233,9 +236,11 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
     protocol_version_sensor_ = protocol_version_sensor;
   }
 
+  void set_precharging_switch(switch_::Switch *precharging_switch) { precharging_switch_ = precharging_switch; }
   void set_charging_switch(switch_::Switch *charging_switch) { charging_switch_ = charging_switch; }
   void set_discharging_switch(switch_::Switch *discharging_switch) { discharging_switch_ = discharging_switch; }
   void set_balancer_switch(switch_::Switch *balancer_switch) { balancer_switch_ = balancer_switch; }
+  void set_display_always_on_switch(switch_::Switch *display_always_on_switch) { display_always_on_switch_ = display_always_on_switch; }
 
   void set_errors_text_sensor(text_sensor::TextSensor *errors_text_sensor) { errors_text_sensor_ = errors_text_sensor; }
   void set_operation_mode_text_sensor(text_sensor::TextSensor *operation_mode_text_sensor) {
@@ -275,7 +280,9 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
 
   binary_sensor::BinarySensor *balancing_binary_sensor_;
   binary_sensor::BinarySensor *balancing_switch_binary_sensor_;
+  binary_sensor::BinarySensor *precharging_binary_sensor_; 
   binary_sensor::BinarySensor *charging_binary_sensor_;
+  binary_sensor::BinarySensor *precharging_switch_binary_sensor_;
   binary_sensor::BinarySensor *charging_switch_binary_sensor_;
   binary_sensor::BinarySensor *discharging_binary_sensor_;
   binary_sensor::BinarySensor *discharging_switch_binary_sensor_;
@@ -356,6 +363,7 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   sensor::Sensor *discharging_low_temperature_protection_sensor_;
   sensor::Sensor *discharging_low_temperature_recovery_sensor_;
   sensor::Sensor *total_battery_capacity_setting_sensor_;
+ 
   sensor::Sensor *charging_sensor_;
   sensor::Sensor *discharging_sensor_;
   sensor::Sensor *current_calibration_sensor_;
@@ -374,6 +382,7 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   sensor::Sensor *balancing_current_sensor_;
   sensor::Sensor *emergency_time_countdown_sensor_;
 
+  switch_::Switch *precharging_switch_;
   switch_::Switch *charging_switch_;
   switch_::Switch *discharging_switch_;
   switch_::Switch *balancer_switch_;

@@ -41,7 +41,7 @@ void JkRS485Sniffer::loop() {
 
   const uint32_t now = millis();
 
-  if (this->rx_buffer_.size()>=500){
+  if (this->rx_buffer_.size()>=JKPB_RS485_RESPONSE_SIZE*2){
     ESP_LOGI(TAG, "Buffer cleared buffer size: %d",this->rx_buffer_.size());
     this->rx_buffer_.clear();
   }
@@ -96,19 +96,19 @@ uint16_t chksum(const uint8_t data[], const uint16_t len) {
   return checksum;
 }
 
-// Function to print the content of the array in hexadecimal
-void printArrayInHex(const uint8_t *array, size_t length) {
-    printf("HEX: ");
-    for (int i = 0; i < length; i++) {
-        if (i<5000 || i>300){
-           printf("%02x", array[i]);
-        } else if (i==100){
-          printf("...");
-        }
-    }
-    printf("\n"); // Newline at the end
-}
 
+void JkRS485Sniffer::printBuffer(void){
+  std::string bufferHex;
+
+  bufferHex="";
+  // Volcar el contenido del buffer en el string en formato hexadecimal
+  for (auto byte : this->rx_buffer_) {
+      char hexByte[3];
+      sprintf(hexByte, "%02X", byte);
+      bufferHex += hexByte;
+  }  
+  ESP_LOGI("BUFFER", "(%d): %s",this->rx_buffer_.size(), bufferHex.c_str());
+}
 
 bool JkRS485Sniffer::parse_jk_rs485_sniffer_byte_(uint8_t byte) {
   size_t at = this->rx_buffer_.size();
@@ -124,9 +124,10 @@ bool JkRS485Sniffer::parse_jk_rs485_sniffer_byte_(uint8_t byte) {
 
       size_t index = std::distance(this->rx_buffer_.begin(), it);
       
-
+//      printBuffer();
       // Eliminar los elementos anteriores a la secuencia
       this->rx_buffer_.erase(this->rx_buffer_.begin(), this->rx_buffer_.begin() + index);
+//      printBuffer();
 
       if (this->rx_buffer_.size()>=JKPB_RS485_RESPONSE_SIZE){
         //continue
@@ -163,8 +164,6 @@ bool JkRS485Sniffer::parse_jk_rs485_sniffer_byte_(uint8_t byte) {
     }
   }
 
- 
-    //printArrayInHex(raw, at+1);
     uint16_t data_len=at+1;
 
     address=raw[JKPB_RS485_ADDRESS_OF_RS485_ADDRESS];
@@ -181,6 +180,10 @@ bool JkRS485Sniffer::parse_jk_rs485_sniffer_byte_(uint8_t byte) {
   for (auto *device : this->devices_) {
 //      if (device->address_ == address) {
       //device->on_jk_rs485_sniffer_data(FUNCTION_READ_ALL, data);
+      if ((found==false) && (address==7) && (raw[JKPB_RS485_FRAME_TYPE_ADDRESS]==1)){
+          printBuffer();
+          found = true;
+      }
       device->on_jk_rs485_sniffer_data(address, raw[JKPB_RS485_FRAME_TYPE_ADDRESS], data);   
 //        found = true;
     //}

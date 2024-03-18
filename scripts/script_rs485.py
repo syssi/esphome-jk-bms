@@ -55,7 +55,7 @@ def read_serial_port(serial_port, baud_rate):
                 first_byte = bytes_data[0]
                 if first_byte <= 0x0f:
                      address=first_byte
-                print("["+str(hex(address)) + "]:" + str(hex_data))
+                print("["+str(hex(address)) + "]:" + (str(hex_data)).upper())
 
         # If there is no more data, exit the loop
         sys.stdout.flush()

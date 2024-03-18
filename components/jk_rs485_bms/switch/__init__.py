@@ -4,7 +4,7 @@ import esphome.config_validation as cv
 from esphome.const import CONF_ICON, CONF_ID
 
 from .. import CONF_JK_RS485_BMS_ID, JK_RS485_BMS_COMPONENT_SCHEMA, jk_rs485_bms_ns
-from ..const import CONF_BALANCER, CONF_CHARGING, CONF_DISCHARGING
+from ..const import CONF_BALANCER, CONF_PRECHARGING, CONF_CHARGING, CONF_DISCHARGING, CONF_DISPLAY_ALWAYS_ON
 
 DEPENDENCIES = ["jk_rs485_bms"]
 
@@ -13,18 +13,28 @@ CODEOWNERS = ["@syssi"]
 ICON_CHARGING = "mdi:battery-charging-50"
 ICON_DISCHARGING = "mdi:battery-charging-50"
 ICON_BALANCER = "mdi:seesaw"
+ICON_DISPLAY_ALWAYS_ON = "mdi:television"
+
 
 SWITCHES = {
+    CONF_PRECHARGING: 0xAB,
     CONF_CHARGING: 0xAB,
     CONF_DISCHARGING: 0xAC,
     # The BMS (v11) doesn't accept updates of register 0x9D at the moment
     CONF_BALANCER: 0x9D,
+    CONF_DISPLAY_ALWAYS_ON: 0x00
 }
 
 JkRS485BmsSwitch = jk_rs485_bms_ns.class_("JkRS485BmsSwitch", switch.Switch, cg.Component)
 
 CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
     {
+        cv.Optional(CONF_PRECHARGING): switch.SWITCH_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(JkRS485BmsSwitch),
+                cv.Optional(CONF_ICON, default=ICON_CHARGING): cv.icon,
+            }
+        ).extend(cv.COMPONENT_SCHEMA),
         cv.Optional(CONF_CHARGING): switch.SWITCH_SCHEMA.extend(
             {
                 cv.GenerateID(): cv.declare_id(JkRS485BmsSwitch),
@@ -43,6 +53,12 @@ CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
                  cv.Optional(CONF_ICON, default=ICON_BALANCER): cv.icon,
              }
          ).extend(cv.COMPONENT_SCHEMA),
+         cv.Optional(CONF_DISPLAY_ALWAYS_ON): switch.SWITCH_SCHEMA.extend(
+             {
+                 cv.GenerateID(): cv.declare_id(JkRS485BmsSwitch),
+                 cv.Optional(CONF_ICON, default=ICON_DISPLAY_ALWAYS_ON): cv.icon,
+             }
+         ).extend(cv.COMPONENT_SCHEMA),         
     }
 )
 
@@ -57,4 +73,4 @@ async def to_code(config):
             await switch.register_switch(var, conf)
             cg.add(getattr(hub, f"set_{key}_switch")(var))
             cg.add(var.set_parent(hub))
-            cg.add(var.set_holding_register(address))
+            #cg.add(var.set_holding_register(address))

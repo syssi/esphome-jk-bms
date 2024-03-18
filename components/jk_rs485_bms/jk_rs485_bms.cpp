@@ -54,7 +54,7 @@ void JkRS485Bms::on_jk_rs485_sniffer_data(const uint8_t &origin_address, const u
   //this->reset_online_status_tracker_();
 
   if (origin_address == this->address_){
-    //this->reset_online_status_tracker_();
+    this->reset_online_status_tracker_();
       ESP_LOGI(TAG, "This BMS address is: %d  and address received %d ==> WORKING (frame type:%d)", this->address_, origin_address, frame_type);
       switch (frame_type) {
         case 0x01:
@@ -356,24 +356,34 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->heating_binary_sensor_, (bool) data[224 + offset]);
   ESP_LOGI(TAG, "HEATING BINARY SENSOR STATUS:  0x%02X", data[224 + offset]);
 
-  // 234   2   0x01 0xFD              BATTERY VOLTAGE    0.001         V   ??????????????????????????
+  // 234   2   0x01 0xFD              BATTERY VOLTAGE    0.001         V   ????????????????????????????????????????????????????????????????????
   //this->publish_state_(this->heating_current_sensor_, (float) ((int16_t) jk_get_16bit(236 + offset)) * 0.001f);
-  ESP_LOGI(TAG, "BATTERY VOLTAGE:  %f V", (float) ((int16_t) jk_get_16bit(234 + offset)));
+  //ESP_LOGI(TAG, "BATTERY VOLTAGE:  %f V", (float) ((int16_t) jk_get_16bit(234 + offset)));
 
   // 236   2   0x01 0xFD              Heating current         0.001         A
   this->publish_state_(this->heating_current_sensor_, (float) ((int16_t) jk_get_16bit(236 + offset)) * 0.001f);
   ESP_LOGI(TAG, "HEATING CURRENT:  %f", (float) ((int16_t) jk_get_16bit(236 + offset)) * 0.001f);
 
   if (frame_version == FRAME_VERSION_JK02_32S) {
+
+    ESP_LOGI(TAG, "  TimeOVPR??:  %d", ((int16_t) jk_get_16bit(180 + offset)));
+    ESP_LOGI(TAG, "  TimeUVPR??:  %d", ((int16_t) jk_get_16bit(178 + offset)));
+    // 186
     uint16_t raw_emergency_time_countdown = jk_get_16bit(186 + offset);
     ESP_LOGI(TAG, "  Emergency switch: %s", (raw_emergency_time_countdown > 0) ? "on" : "off");
     this->publish_state_(this->emergency_switch_, raw_emergency_time_countdown > 0);
     this->publish_state_(this->emergency_time_countdown_sensor_, (float) raw_emergency_time_countdown * 1.0f);
 
+    // 202 Battery Voltage (better 118 measurement --> more decimals)
     this->publish_state_(this->temperatures_[3].temperature_sensor_,
                          (float) ((int16_t) jk_get_16bit(224 + offset)) * 0.1f);
     this->publish_state_(this->temperatures_[2].temperature_sensor_,
-                         (float) ((int16_t) jk_get_16bit(226 + offset)) * 0.1f);                       
+                         (float) ((int16_t) jk_get_16bit(226 + offset)) * 0.1f); 
+    
+    ESP_LOGI(TAG, "  Charger plugged: %d", (data[207 + offset] ) );
+    // 208 SysRunTicks ???
+    ESP_LOGI(TAG, "  SysRunTicks:  %d", ((int32_t) jk_get_32bit(208 + offset)));
+                                                   
   }
 
 //       3450                  <<<<<<<<<<<<<<<<<<<<<< START BALANCE VOLT (V) [CONFIRMED]
@@ -456,7 +466,7 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->cell_voltage_undervoltage_recovery_number_, (float) jk_get_32bit(14) * 0.001f);
 
   // 18    4   0xCC 0x10 0x00 0x00    Cell OVP
-  ESP_LOGI(TAG, "  Cell OVP: %f V", (float) jk_get_32bit(18) * 0.001f);
+  ESP_LOGI(TAG, "%02X%02X%02X%02X Cell OVP: %f V",data[18],data[19],data[20],data[21], (float) jk_get_32bit(18));
   this->publish_state_(this->cell_voltage_overvoltage_protection_number_, (float) jk_get_32bit(18) * 0.001f);
 
   // 22    4   0x68 0x10 0x00 0x00    Cell OVP Recovery
@@ -530,33 +540,50 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   ESP_LOGI(TAG, "  Cell count: %f", (float) jk_get_32bit(114));
   this->publish_state_(this->cell_count_number_, (float) data[114]);
 
+
+  ESP_LOGI(TAG, "  switch 118: %d", (data[118]));
+  ESP_LOGI(TAG, "  switch 119: %d", (data[119]));
+  ESP_LOGI(TAG, "  switch 120: %d", (data[120]));
+  ESP_LOGI(TAG, "  switch 121: %d", (data[121]));
+  ESP_LOGI(TAG, "  switch 122: %d", (data[122]));
+  ESP_LOGI(TAG, "  switch 123: %d", (data[123]));
+  ESP_LOGI(TAG, "  switch 124: %d", (data[124]));
+  ESP_LOGI(TAG, "  switch 125: %d", (data[125]));
+  ESP_LOGI(TAG, "  switch 126: %d", (data[126]));
+  ESP_LOGI(TAG, "  switch 127: %d", (data[127]));
+  ESP_LOGI(TAG, "  switch 128: %d", (data[128]));
+  ESP_LOGI(TAG, "  switch 129: %d", (data[129]));
   // 118   4   0x01 0x00 0x00 0x00    Charge switch
-  ESP_LOGI(TAG, "  Charge switch: %s", ((bool) data[118]) ? "on" : "off");
+  //  ESP_LOGI(TAG, "  Charge switch: %s", ((bool) data[118]) ? "on" : "off");
   this->publish_state_(this->charging_switch_, (bool) data[118]);
 
   // 122   4   0x01 0x00 0x00 0x00    Discharge switch
-  ESP_LOGI(TAG, "  Discharge switch: %s", ((bool) data[122]) ? "on" : "off");
+  // ESP_LOGI(TAG, "  Discharge switch: %s", ((bool) data[122]) ? "on" : "off");
   this->publish_state_(this->discharging_switch_, (bool) data[122]);
 
   // 126   4   0x01 0x00 0x00 0x00    Balancer switch
-  ESP_LOGI(TAG, "  Balancer switch: %s", ((bool) data[126]) ? "on" : "off");
+  // ESP_LOGI(TAG, "  Balancer switch: %s", ((bool) data[126]) ? "on" : "off");
   this->publish_state_(this->balancer_switch_, (bool) (data[126]));
 
   // 130   4   0x88 0x13 0x00 0x00    Nominal battery capacity
-  ESP_LOGI(TAG, "  Nominal battery capacity: %f Ah", (float) jk_get_32bit(130) * 0.001f);
+  // ESP_LOGI(TAG, "  Nominal battery capacity: %f Ah", (float) jk_get_32bit(130) * 0.001f);
   this->publish_state_(this->total_battery_capacity_number_, (float) jk_get_32bit(130) * 0.001f);
 
   // 134   4   0xDC 0x05 0x00 0x00    SCP DELAY (us) 
-  ESP_LOGI(TAG, "  SCP DELAY: %f us", (float) jk_get_32bit(134) * 0.001f);
+  // ESP_LOGI(TAG, "  SCP DELAY: %f us", (float) jk_get_32bit(134) * 0.001f);
   //this->publish_state_(this->scp_delay_number_, (float) jk_get_32bit(134) * 0.001f);
   // 138   4   0xE4 0x0C 0x00 0x00    Start balance voltage
-  ESP_LOGI(TAG, "  Start balance voltage: %f V", (float) jk_get_32bit(138) * 0.001f);
+  // ESP_LOGI(TAG, "  Start balance voltage: %f V", (float) jk_get_32bit(138) * 0.001f);
   this->publish_state_(this->balance_starting_voltage_number_, (float) jk_get_32bit(138) * 0.001f);
 
   // 142   4   0x00 0x00 0x00 0x00
+  // ESP_LOGI(TAG, "         142: %02X%02X%02X%02X",data[142],data[143],data[144],data[145]);
   // 146   4   0x00 0x00 0x00 0x00
+  // ESP_LOGI(TAG, "         146: %02X%02X%02X%02X",data[146],data[147],data[148],data[149]);
   // 150   4   0x00 0x00 0x00 0x00
+  // ESP_LOGI(TAG, "         150: %02X%02X%02X%02X",data[150],data[151],data[152],data[153]);
   // 154   4   0x00 0x00 0x00 0x00
+  // ESP_LOGI(TAG, "         154: %02X%02X%02X%02X",data[154],data[155],data[156],data[157]);
   // 158   4   0x00 0x00 0x00 0x00    Con. wire resistance 1
   // 162   4   0x00 0x00 0x00 0x00    Con. wire resistance 2
   // 166   4   0x00 0x00 0x00 0x00    Con. wire resistance 3
@@ -586,13 +613,21 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   }
 
   // 254   4   0x00 0x00 0x00 0x00
+  //ESP_LOGI(TAG, "         254: %02X%02X%02X%02X",data[254],data[255],data[256],data[257]);
   // 258   4   0x00 0x00 0x00 0x00
+  //ESP_LOGI(TAG, "         258: %02X%02X%02X%02X",data[258],data[259],data[260],data[261]);
   // 262   4   0x00 0x00 0x00 0x00
+  //ESP_LOGI(TAG, "         262: %02X%02X%02X%02X",data[262],data[263],data[264],data[265]);
   // 266   4   0x00 0x00 0x00 0x00
+  //ESP_LOGI(TAG, "         266: %02X%02X%02X%02X",data[266],data[267],data[268],data[269]);
   // 270   4   0x00 0x00 0x00 0x00
   ESP_LOGI(TAG, "  Device address: 0x%02X", data[270]);
+  //ESP_LOGI(TAG, "         270: %02X%02X%02X%02X",data[270],data[271],data[272],data[273]);
   // 274   4   0x00 0x00 0x00 0x00
-  // 278   4   0x00 0x00 0x00 0x00
+  ESP_LOGI(TAG, "         274: %02X%02X%02X%02X",data[274],data[275],data[276],data[277]);
+  // 278   4   0x00 0x00 0x00 0x00  //60 e3 16 00          10023c3218feffffffbfe90102000000000001
+  ESP_LOGI(TAG, "         278: %02X%02X%02X%02X",data[278],data[279],data[280],data[281]);
+
   // 282   1   0x00                   New controls bitmask
   // ** [JK-PB2A16S-20P v14] 
   //    bit0: HEATING_SWITCH_ENABLED                 1
@@ -608,12 +643,6 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->disable_temperature_sensors_switch_, this->check_bit_(data[282], 2));
   this->publish_state_(this->display_always_on_switch_, this->check_bit_(data[282], 16));
   ESP_LOGI(TAG, "  Port switch: %s", this->check_bit_(data[282], 8) ? "RS485" : "CAN");
-
-  // 283   1   0x00
-  // ** [JK-PB2A16S-20P v14] 
-  //    bit0: TIME_STORED_DATA_SWITCH_ENABLED
-  //    bit1: CHARGING_FLOAT_MODE_SWITCH_ENABLED
-  ESP_LOGI(TAG, "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Unknown283: 0x%02X", data[283]);
 
   // 284   2   0X00 0X00
   // 286   4   0x00 0x00 0x00 0x00

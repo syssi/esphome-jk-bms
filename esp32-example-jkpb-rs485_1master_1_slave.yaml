@@ -372,17 +372,25 @@ sensor:
 switch:
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms0
+    precharging:
+      name: "${bms0_name} precharging"
     charging:
       name: "${bms0_name} charging"
     discharging:
       name: "${bms0_name} discharging"
+    display_always_on:
+      name: "${bms0_name} display_always_on"      
 
   - platform: jk_rs485_bms
+    precharging:
+      name: "${bms1_name} precharging"
     jk_rs485_bms_id: bms1
     charging:
       name: "${bms1_name} charging"
     discharging:
       name: "${bms1_name} discharging"
+    display_always_on:
+      name: "${bms1_name} display_always_on"
 
 text_sensor:
   - platform: jk_rs485_bms
@@ -393,6 +401,8 @@ text_sensor:
       name: "${bms0_name} operation mode"
     total_runtime_formatted:
       name: "${bms0_name} total runtime formatted"
+    battery_type:
+      name: "${bms0_name} battery type"      
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms1
@@ -402,4 +412,5 @@ text_sensor:
       name: "${bms1_name} operation mode"
     total_runtime_formatted:
       name: "${bms1_name} total runtime formatted"
-
+    battery_type:
+      name: "${bms1_name} battery type"

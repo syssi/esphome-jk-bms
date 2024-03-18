@@ -5,6 +5,7 @@ views:
     cards:
       - type: entities
         entities:
+          - entity: binary_sensor.bms0_online_status
           - entity: binary_sensor.bms0_balancing
           - entity: binary_sensor.bms0_charging
           - entity: binary_sensor.bms0_discharging
@@ -16,12 +17,14 @@ views:
         entities:
           - entity: switch.bms0_balancer
             name: BALANCE
+          - entity: switch.bms0_precharging
+            name: PRECHARGE
           - entity: switch.bms0_charging
             name: CHARGE
           - entity: switch.bms0_discharging
             name: DISCHARGE
-          - entity: switch.bms0_enable_bluetooth_connection
-            name: BLUETOOTH
+          - entity: switch.bms0_display_always_on
+            name: DISPLAY ALWAYS ON
         title: Switch
         show_header_toggle: false
       - type: entities
@@ -64,6 +67,7 @@ views:
     cards:
       - type: entities
         entities:
+          - entity: sensor.bms0_battery_type
           - entity: binary_sensor.updater
           - entity: binary_sensor.bms0_balancing
           - entity: binary_sensor.bms0_charging

@@ -1215,51 +1215,80 @@ sensor:
 switch:
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms0
+    precharging:
+      name: "${bms0_name} precharging"
     charging:
       name: "${bms0_name} charging"
     discharging:
       name: "${bms0_name} discharging"
+    display_always_on:
+      name: "${bms0_name} display_always_on"       
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms1
+    precharging:
+      name: "${bms1_name} precharging"    
     charging:
       name: "${bms1_name} charging"
     discharging:
       name: "${bms1_name} discharging"
+    display_always_on:
+      name: "${bms1_name} display_always_on" 
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms2
+    precharging:
+      name: "${bms2_name} precharging"
     charging:
       name: "${bms2_name} charging"
     discharging:
       name: "${bms2_name} discharging"
+    display_always_on:
+      name: "${bms2_name} display_always_on"       
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms3
+    precharging:
+      name: "${bms3_name} precharging"
     charging:
       name: "${bms3_name} charging"
     discharging:
       name: "${bms3_name} discharging"            
+    display_always_on:
+      name: "${bms3_name} display_always_on" 
+
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms4
+    precharging:
+      name: "${bms4_name} precharging"
     charging:
       name: "${bms4_name} charging"
     discharging:
       name: "${bms4_name} discharging"
+    display_always_on:
+      name: "${bms4_name} display_always_on" 
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms5
+    precharging:
+      name: "${bms5_name} precharging"
     charging:
       name: "${bms5_name} charging"
     discharging:
       name: "${bms5_name} discharging"
+    display_always_on:
+      name: "${bms5_name} display_always_on" 
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms6
+    precharging:
+      name: "${bms6_name} precharging"
     charging:
       name: "${bms6_name} charging"
     discharging:
       name: "${bms6_name} discharging"      
+    display_always_on:
+      name: "${bms6_name} display_always_on" 
 
 text_sensor:
   - platform: jk_rs485_bms
@@ -1270,6 +1299,8 @@ text_sensor:
       name: "${bms0_name} operation mode"
     total_runtime_formatted:
       name: "${bms0_name} total runtime formatted"
+    battery_type:
+      name: "${bms0_name} battery type"   
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms1
@@ -1279,6 +1310,8 @@ text_sensor:
       name: "${bms1_name} operation mode"
     total_runtime_formatted:
       name: "${bms1_name} total runtime formatted"
+    battery_type:
+      name: "${bms1_name} battery type" 
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms2
@@ -1297,6 +1330,8 @@ text_sensor:
       name: "${bms3_name} operation mode"
     total_runtime_formatted:
       name: "${bms3_name} total runtime formatted"
+    battery_type:
+      name: "${bms3_name} battery type" 
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms4
@@ -1306,6 +1341,8 @@ text_sensor:
       name: "${bms4_name} operation mode"
     total_runtime_formatted:
       name: "${bms4_name} total runtime formatted"
+    battery_type:
+      name: "${bms4_name} battery type" 
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms5
@@ -1315,6 +1352,8 @@ text_sensor:
       name: "${bms5_name} operation mode"
     total_runtime_formatted:
       name: "${bms5_name} total runtime formatted"
+    battery_type:
+      name: "${bms5_name} battery type" 
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms6
@@ -1324,3 +1363,5 @@ text_sensor:
       name: "${bms6_name} operation mode"
     total_runtime_formatted:
       name: "${bms6_name} total runtime formatted"
+    battery_type:
+      name: "${bms6_name} battery type" 

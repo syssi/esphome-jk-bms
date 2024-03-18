@@ -39,6 +39,7 @@ api:
 
 logger:
   level: INFO #VERY_VERBOSE #VERBOSE #DEBUG #INFO #DEBUG
+  tx_buffer_size: 1024
 
 # If you use Home Assistant please remove this `mqtt` section and uncomment the `api` component!
 # The native API has many advantages over MQTT: https://esphome.io/components/api.html#advantages-over-mqtt
@@ -396,21 +397,29 @@ sensor:
 switch:
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms0
+    precharging:
+      name: "${bms0_name} precharging"
     charging:
       name: "${bms0_name} charging"
     discharging:
       name: "${bms0_name} discharging"
     balancer:
       name: "${bms0_name} balancer"      
+    display_always_on:
+      name: "${bms0_name} display_always_on"
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms1
+    precharging:
+      name: "${bms0_name} precharging"
     charging:
       name: "${bms1_name} charging"
     discharging:
       name: "${bms1_name} discharging"      
     balancer:
       name: "${bms1_name} balancer"
+    display_always_on:
+      name: "${bms1_name} display_always_on"      
 
 text_sensor:
   - platform: jk_rs485_bms
@@ -421,6 +430,8 @@ text_sensor:
       name: "${bms0_name} operation mode"
     total_runtime_formatted:
       name: "${bms0_name} total runtime formatted"
+    battery_type:
+      name: "${bms0_name} battery type"
     # ...
 
   - platform: jk_rs485_bms
@@ -431,4 +442,6 @@ text_sensor:
       name: "${bms1_name} operation mode"
     total_runtime_formatted:
       name: "${bms1_name} total runtime formatted"
+    battery_type:
+      name: "${bms1_name} battery type"
     # ...
