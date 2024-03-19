@@ -24,10 +24,10 @@ esp32:
 
 
 external_components:
-  - source: ${external_components_source}
-    refresh: 0s
-#  - source: ./components
+#  - source: ${external_components_source}
 #    refresh: 0s
+  - source: ./components
+    refresh: 0s
 
 wifi:
   ssid: !secret wifi_ssid
@@ -101,6 +101,8 @@ binary_sensor:
 sensor:
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms0
+    smart_sleep_voltage:
+      name: "${bms0_name} smart sleep voltage"
     min_cell_voltage:
       name: "${bms0_name} min cell voltage"
     max_cell_voltage:
@@ -248,6 +250,8 @@ sensor:
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms1
+    smart_sleep_voltage:
+      name: "${bms1_name} smart sleep voltage"
     min_cell_voltage:
       name: "${bms1_name} min cell voltage"
     max_cell_voltage:

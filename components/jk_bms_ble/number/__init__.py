@@ -21,12 +21,13 @@ from .. import CONF_JK_BMS_BLE_ID, JK_BMS_BLE_COMPONENT_SCHEMA, jk_bms_ble_ns
 
 DEPENDENCIES = ["jk_bms_ble"]
 
-CODEOWNERS = ["@syssi"]
+CODEOWNERS = ["@syssi","txubelaxu"]
 
 DEFAULT_STEP = 1
 
 # JK02_24S
 #
+# 01 04 03000000  Set smart sleep voltage to 0.003
 # 06 04 03000000  Set balance trig voltage to 0.003
 # 1c 04 10000000  Set cell count to 16
 # 20 04 f0ba0400  Set battery cap to 310
@@ -42,6 +43,7 @@ DEFAULT_STEP = 1
 # 0c 04 e8030000  Set Max charge Current to 1.0
 # 0f 04 e8030000  Set Max discharge Current to 1.0
 
+CONF_SMART_SLEEP_VOLTAGE = "smart_sleep_voltage"
 CONF_BALANCE_TRIGGER_VOLTAGE = "balance_trigger_voltage"
 CONF_CELL_COUNT = "cell_count"
 CONF_TOTAL_BATTERY_CAPACITY = "total_battery_capacity"
@@ -115,6 +117,7 @@ UNIT_AMPERE_HOUR = "Ah"
 
 NUMBERS = {
     # JK04, JK02, JK02_32S, factor
+    CONF_SMART_SLEEP_VOLTAGE: [0x00, 0x01, 0x01, 1000.0],    
     CONF_BALANCE_TRIGGER_VOLTAGE: [0x00, 0x06, 0x06, 1000.0],
     CONF_CELL_COUNT: [0x00, 0x1C, 0x1C, 1.0],
     CONF_TOTAL_BATTERY_CAPACITY: [0x00, 0x20, 0x20, 1000.0],
@@ -148,6 +151,13 @@ JK_NUMBER_SCHEMA = number.NUMBER_SCHEMA.extend(
 
 CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
     {
+        cv.Optional(CONF_SMART_SLEEP_VOLTAGE): JK_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=0.003): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=3.650): cv.float_,
+                cv.Optional(CONF_STEP, default=0.001): cv.float_,
+            }
+        ),        
         cv.Optional(CONF_BALANCE_TRIGGER_VOLTAGE): JK_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=0.003): cv.float_,

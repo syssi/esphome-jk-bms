@@ -33,6 +33,9 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   void update() override;
   float get_setup_priority() const override { return setup_priority::DATA; }
 
+  void set_smart_sleep_voltage_number(number::Number *smart_sleep_voltage_number) {
+    smart_sleep_voltage_number_ = smart_sleep_voltage_number;
+  }
   void set_balance_trigger_voltage_number(number::Number *balance_trigger_voltage_number) {
     balance_trigger_voltage_number_ = balance_trigger_voltage_number;
   }
@@ -211,6 +214,7 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   binary_sensor::BinarySensor *online_status_binary_sensor_;
   binary_sensor::BinarySensor *heating_binary_sensor_;
 
+  number::Number *smart_sleep_voltage_number_;
   number::Number *balance_trigger_voltage_number_;
   number::Number *cell_count_number_;
   number::Number *total_battery_capacity_number_;

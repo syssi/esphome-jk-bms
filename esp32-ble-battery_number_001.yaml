@@ -21,9 +21,10 @@ esp32:
     type: esp-idf
 
 external_components:
-  - source: ${external_components_source}
+#  - source: ${external_components_source}
+#    refresh: 0s
+  - source: ./components
     refresh: 0s
-
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
@@ -86,7 +87,9 @@ button:
 
 number:
   - platform: jk_bms_ble
-    jk_bms_ble_id: bms0
+    jk_bms_ble_id: bms0    
+    smart_sleep_voltage:
+      name: "${name} smart sleep voltage"    
     balance_trigger_voltage:
       name: "${name} balance trigger voltage"
     cell_count:

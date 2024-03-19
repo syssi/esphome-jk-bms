@@ -27,8 +27,9 @@ from . import CONF_JK_RS485_BMS_ID, JK_RS485_BMS_COMPONENT_SCHEMA
 
 DEPENDENCIES = ["jk_rs485_bms"]
 
-CODEOWNERS = ["@syssi"]
+CODEOWNERS = ["@syssi","txubelaxu"]
 
+CONF_SMART_SLEEP_VOLTAGE = "smart_sleep_voltage"
 CONF_MIN_CELL_VOLTAGE = "min_cell_voltage"
 CONF_MAX_CELL_VOLTAGE = "max_cell_voltage"
 CONF_MIN_VOLTAGE_CELL = "min_voltage_cell"
@@ -248,6 +249,7 @@ TEMPERATURES = [
 ]
 
 SENSORS = [
+    CONF_SMART_SLEEP_VOLTAGE,
     CONF_MIN_CELL_VOLTAGE,
     CONF_MAX_CELL_VOLTAGE,
     CONF_MIN_VOLTAGE_CELL,
@@ -311,6 +313,13 @@ SENSORS = [
 # pylint: disable=too-many-function-args
 CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
     {
+        cv.Optional(CONF_SMART_SLEEP_VOLTAGE): sensor.sensor_schema(
+            unit_of_measurement=UNIT_VOLT,
+            icon=ICON_EMPTY,
+            accuracy_decimals=3,
+            device_class=DEVICE_CLASS_VOLTAGE,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),        
         cv.Optional(CONF_MIN_CELL_VOLTAGE): sensor.sensor_schema(
             unit_of_measurement=UNIT_VOLT,
             icon=ICON_EMPTY,

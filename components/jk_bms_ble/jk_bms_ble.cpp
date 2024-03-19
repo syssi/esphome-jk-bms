@@ -794,25 +794,28 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   // 0     4   0x55 0xAA 0xEB 0x90    Header
   // 4     1   0x01                   Frame type
   // 5     1   0x4F                   Frame counter
-  // 6     4   0x58 0x02 0x00 0x00    Unknown6
-  ESP_LOGD(TAG, "  Unknown6: %f", (float) jk_get_32bit(6) * 0.001f);
-  // 10    4   0x54 0x0B 0x00 0x00    Cell UVP
+
+  // 6  [1]     4   0x58 0x02 0x00 0x00    ** [JK-PB2A16S-20P v14] VOLTAGE SMART SLEEP
+  ESP_LOGD(TAG, "  Smart Sleep Voltage: %f", (float) jk_get_32bit(6) * 0.001f);
+  this->publish_state_(this->smart_sleep_voltage_number_, (float) jk_get_32bit(6) * 0.001f);
+
+  // 10 [2]    4   0x54 0x0B 0x00 0x00    Cell UVP
   ESP_LOGI(TAG, "  Cell UVP: %f V", (float) jk_get_32bit(10) * 0.001f);
   this->publish_state_(this->cell_voltage_undervoltage_protection_number_, (float) jk_get_32bit(10) * 0.001f);
 
-  // 14    4   0x80 0x0C 0x00 0x00    Cell OVP Recovery
+  // 14 [3]    4   0x80 0x0C 0x00 0x00    Cell UVP Recovery
   ESP_LOGI(TAG, "  Cell UVPR: %f V", (float) jk_get_32bit(14) * 0.001f);
   this->publish_state_(this->cell_voltage_undervoltage_recovery_number_, (float) jk_get_32bit(14) * 0.001f);
 
-  // 18    4   0xCC 0x10 0x00 0x00    Cell OVP
+  // 18 [4]    4   0xCC 0x10 0x00 0x00    Cell OVP
   ESP_LOGI(TAG, "  Cell OVP: %f V", (float) jk_get_32bit(18) * 0.001f);
   this->publish_state_(this->cell_voltage_overvoltage_protection_number_, (float) jk_get_32bit(18) * 0.001f);
 
-  // 22    4   0x68 0x10 0x00 0x00    Cell OVP Recovery
+  // 22 [5]    4   0x68 0x10 0x00 0x00    Cell OVP Recovery
   ESP_LOGI(TAG, "  Cell OVPR: %f V", (float) jk_get_32bit(22) * 0.001f);
   this->publish_state_(this->cell_voltage_overvoltage_recovery_number_, (float) jk_get_32bit(22) * 0.001f);
 
-  // 26    4   0x0A 0x00 0x00 0x00    Balance trigger voltage
+  // 26 [6]    4   0x0A 0x00 0x00 0x00    Balance trigger voltage
   ESP_LOGI(TAG, "  Balance trigger voltage: %f V", (float) jk_get_32bit(26) * 0.001f);
   this->publish_state_(this->balance_trigger_voltage_number_, (float) jk_get_32bit(26) * 0.001f);
 

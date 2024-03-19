@@ -48,6 +48,9 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
     online_status_binary_sensor_ = online_status_binary_sensor;
   }
 
+  void set_smart_sleep_voltage_sensor(sensor::Sensor *smart_sleep_voltage_sensor) {
+    smart_sleep_voltage_sensor_ = smart_sleep_voltage_sensor;
+  }
   void set_min_cell_voltage_sensor(sensor::Sensor *min_cell_voltage_sensor) {
     min_cell_voltage_sensor_ = min_cell_voltage_sensor;
   }
@@ -291,7 +294,7 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   binary_sensor::BinarySensor *heating_binary_sensor_;
 
   
-  sensor::Sensor *voltage_smart_sleep_number_;
+
   sensor::Sensor *cell_voltage_undervoltage_protection_number_;  
   sensor::Sensor *cell_voltage_undervoltage_recovery_number_;
   sensor::Sensor *cell_voltage_overvoltage_protection_number_;  
@@ -314,6 +317,7 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   sensor::Sensor *total_battery_capacity_number_;  
   sensor::Sensor *balance_starting_voltage_number_;  
 
+  sensor::Sensor *smart_sleep_voltage_sensor_;
   sensor::Sensor *min_cell_voltage_sensor_;
   sensor::Sensor *max_cell_voltage_sensor_;
   sensor::Sensor *min_voltage_cell_sensor_;

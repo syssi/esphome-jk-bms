@@ -456,7 +456,7 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   // 5     1   0x4F                   Frame counter
   // 6     4   0x58 0x02 0x00 0x00    ** [JK-PB2A16S-20P v14] VOLTAGE SMART SLEEP
   ESP_LOGD(TAG, "  Voltage Smart Sleep: %f", (float) jk_get_32bit(6) * 0.001f);
-  this->publish_state_(this->voltage_smart_sleep_number_, (float) jk_get_32bit(6) * 0.001f);
+  this->publish_state_(this->smart_sleep_voltage_sensor_, (float) jk_get_32bit(6) * 0.001f);
   // 10    4   0x54 0x0B 0x00 0x00    Cell UVP
   ESP_LOGI(TAG, "  Cell UVP: %f V", (float) jk_get_32bit(10) * 0.001f);
   this->publish_state_(this->cell_voltage_undervoltage_protection_number_, (float) jk_get_32bit(10) * 0.001f);
