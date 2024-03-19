@@ -276,7 +276,7 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   //                                                                     0x01: Charging balancer
   //                                                                     0x02: Discharging balancer
   this->publish_state_(this->balancing_binary_sensor_, (data[140 + offset] != 0x00));
-
+  this->publish_state_(this->balancing_number_, (data[140 + offset]));
   // 141   1   0x54                   State of charge in   1.0           %
   this->publish_state_(this->state_of_charge_sensor_, (float) data[141 + offset]);
 

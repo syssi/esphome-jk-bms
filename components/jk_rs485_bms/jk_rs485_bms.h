@@ -23,6 +23,9 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   void set_balancing_binary_sensor(binary_sensor::BinarySensor *balancing_binary_sensor) {
     balancing_binary_sensor_ = balancing_binary_sensor;
   }
+  void set_balancing_sensor(sensor::Sensor *balancing_number) {
+    balancing_number_ = balancing_number;
+  }  
   void set_balancing_switch_binary_sensor(binary_sensor::BinarySensor *balancing_switch_binary_sensor) {
     balancing_switch_binary_sensor_ = balancing_switch_binary_sensor;
   }
@@ -301,7 +304,7 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   binary_sensor::BinarySensor *heating_binary_sensor_;
 
   
-
+  sensor::Sensor *balancing_number_;
   sensor::Sensor *cell_voltage_undervoltage_protection_number_;  
   sensor::Sensor *cell_voltage_undervoltage_recovery_number_;
   sensor::Sensor *cell_voltage_overvoltage_protection_number_;  

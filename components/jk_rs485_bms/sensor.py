@@ -153,6 +153,7 @@ CONF_DISCHARGING_LOW_TEMPERATURE_RECOVERY = "discharging_low_temperature_recover
 # CONF_BATTERY_STRINGS = "battery_strings"
 CONF_TOTAL_BATTERY_CAPACITY_SETTING = "total_battery_capacity_setting"
 
+CONF_BALANCING = "balancing"
 CONF_CURRENT_CALIBRATION = "current_calibration"
 CONF_DEVICE_ADDRESS = "device_address"
 CONF_SLEEP_WAIT_TIME = "sleep_wait_time"
@@ -181,6 +182,7 @@ ICON_CHARGING_CYCLES = "mdi:battery-sync"
 ICON_ALARM_LOW_VOLUME = "mdi:volume-high"
 
 ICON_CELL_RESISTANCE = "mdi:omega"
+ICON_BALANCER = "mdi:seesaw"
 
 UNIT_SECONDS = "s"
 UNIT_HOURS = "h"
@@ -249,6 +251,7 @@ TEMPERATURES = [
 ]
 
 SENSORS = [
+    CONF_BALANCING,
     CONF_SMART_SLEEP_VOLTAGE,
     CONF_MIN_CELL_VOLTAGE,
     CONF_MAX_CELL_VOLTAGE,
@@ -313,6 +316,13 @@ SENSORS = [
 # pylint: disable=too-many-function-args
 CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
     {
+        cv.Optional(CONF_BALANCING): sensor.sensor_schema(
+            unit_of_measurement=UNIT_EMPTY,            
+            icon=ICON_BALANCER,
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_CURRENT,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),          
         cv.Optional(CONF_SMART_SLEEP_VOLTAGE): sensor.sensor_schema(
             unit_of_measurement=UNIT_VOLT,
             icon=ICON_EMPTY,

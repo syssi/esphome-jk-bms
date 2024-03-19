@@ -92,6 +92,9 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   void set_balancing_binary_sensor(binary_sensor::BinarySensor *balancing_binary_sensor) {
     balancing_binary_sensor_ = balancing_binary_sensor;
   }
+  void set_balancing_sensor(sensor::Sensor *balancing_sensor) {
+    balancing_sensor_ = balancing_sensor;
+  }  
   void set_precharging_binary_sensor(binary_sensor::BinarySensor *precharging_binary_sensor) {
     precharging_binary_sensor_ = precharging_binary_sensor;
   }
@@ -250,6 +253,7 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   number::Number *max_charge_current_number_;
   number::Number *max_discharge_current_number_;
 
+  sensor::Sensor *balancing_sensor_;
   sensor::Sensor *min_cell_voltage_sensor_;
   sensor::Sensor *max_cell_voltage_sensor_;
   sensor::Sensor *min_voltage_cell_sensor_;

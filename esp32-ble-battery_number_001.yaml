@@ -130,6 +130,8 @@ number:
 sensor:
   - platform: jk_bms_ble
     jk_bms_ble_id: bms0
+    balancing:
+      name: "${name} balancing"    
     min_cell_voltage:
       name: "${name} min cell voltage"
     max_cell_voltage:

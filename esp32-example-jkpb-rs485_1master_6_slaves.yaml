@@ -194,6 +194,8 @@ binary_sensor:
 sensor:
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms0
+    balancing:
+      name: "${bms0_name} balancing"    
     smart_sleep_voltage:
       name: "${bms0_name} smart sleep voltage"    
     min_cell_voltage:
@@ -343,6 +345,8 @@ sensor:
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms1
+    balancing:
+      name: "${bms1_name} balancing"    
     smart_sleep_voltage:
       name: "${bms1_name} smart sleep voltage"    
     min_cell_voltage:
@@ -493,6 +497,8 @@ sensor:
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms2
+    balancing:
+      name: "${bms2_name} balancing"    
     smart_sleep_voltage:
       name: "${bms2_name} smart sleep voltage"    
     min_cell_voltage:
@@ -643,6 +649,8 @@ sensor:
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms3
+    balancing:
+      name: "${bms3_name} balancing"    
     smart_sleep_voltage:
       name: "${bms3_name} smart sleep voltage"    
     min_cell_voltage:
@@ -793,6 +801,8 @@ sensor:
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms4
+    balancing:
+      name: "${bms4_name} balancing"    
     smart_sleep_voltage:
       name: "${bms4_name} smart sleep voltage"    
     min_cell_voltage:
@@ -943,6 +953,8 @@ sensor:
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms5
+    balancing:
+      name: "${bms5_name} balancing"
     smart_sleep_voltage:
       name: "${bms5_name} smart sleep voltage"    
     min_cell_voltage:
@@ -1093,6 +1105,8 @@ sensor:
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms6
+    balancing:
+      name: "${bms6_name} balancing"    
     smart_sleep_voltage:
       name: "${bms6_name} smart sleep voltage"    
     min_cell_voltage:
