@@ -293,6 +293,15 @@ switch:
       name: "${name} emergency"
     charging_float_mode:
       name: "${name} charging float mode"
+    timed_stored_data:
+      name: "${name} timed stored data"      
+    disable_temperature_sensors:
+      name: "${name} disable temperature sensors"      
+    smart_sleep_on:
+      name: "${name} smart sleep on"    
+
+    disable_pcl_module:
+      name: "${name} disable pcl module"              
   - platform: ble_client
     ble_client_id: client0
     name: "${name} enable bluetooth connection"

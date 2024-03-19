@@ -4,18 +4,11 @@ import esphome.config_validation as cv
 from esphome.const import CONF_ICON, CONF_ID
 
 from .. import CONF_JK_BMS_BLE_ID, JK_BMS_BLE_COMPONENT_SCHEMA, jk_bms_ble_ns
-from ..const import CONF_BALANCER, CONF_CHARGING, CONF_DISCHARGING, CONF_HEATING, CONF_CHARGING_FLOAT_MODE
+from ..const import CONF_BALANCER, CONF_CHARGING, CONF_DISCHARGING, CONF_HEATING, CONF_CHARGING_FLOAT_MODE,CONF_TIMED_STORE_DATA,CONF_EMERGENCY,CONF_DISABLE_TEMPERATURE_SENSORS,CONF_DISPLAY_ALWAYS_ON,CONF_SMART_SLEEP_ON,CONF_TIMED_STORED_DATA,CONF_DISABLE_PCL_MODULE
 
 DEPENDENCIES = ["jk_bms_ble"]
 
 CODEOWNERS = ["@syssi","@txubelaxu"]
-
-CONF_EMERGENCY = "emergency"
-CONF_DISABLE_TEMPERATURE_SENSORS = "disable_temperature_sensors"
-CONF_DISPLAY_ALWAYS_ON = "display_always_on"
-CONF_SMART_SLEEP = "smart_sleep"
-CONF_TIMED_STORED_DATA = "timed_stored_data"
-CONF_DISABLE_PCL_MODULE = "disable_pcl_module"
 
 ICON_CHARGING = "mdi:battery-charging-50"
 ICON_DISCHARGING = "mdi:battery-charging-50"
@@ -23,7 +16,7 @@ ICON_BALANCER = "mdi:seesaw"
 ICON_EMERGENCY = "mdi:exit-run"
 ICON_HEATING = "mdi:radiator"
 ICON_DISABLE_TEMPERATURE_SENSORS = "mdi:thermometer-off"
-ICON_SMART_SLEEP = "mdi:sleep"
+ICON_SMART_SLEEP_ON = "mdi:sleep"
 ICON_TIMED_STORED_DATA = "mdi:calendar-clock"
 ICON_DISABLE_PCL_MODULE = "mdi:power-plug-off"
 ICON_CHARGING_FLOAT_MODE = "mdi:battery-charging-80"
@@ -38,7 +31,7 @@ SWITCHES = {
     CONF_HEATING: [0x00, 0x27, 0x27],
     CONF_DISABLE_TEMPERATURE_SENSORS: [0x00, 0x00, 0x28],
     CONF_DISPLAY_ALWAYS_ON: [0x00, 0x00, 0x2B],
-    CONF_SMART_SLEEP: [0x00, 0x00, 0x2D],
+    CONF_SMART_SLEEP_ON: [0x00, 0x00, 0x2D],
     CONF_DISABLE_PCL_MODULE: [0x00, 0x00, 0x2E],
     CONF_TIMED_STORED_DATA: [0x00, 0x00, 0x2F],
     CONF_CHARGING_FLOAT_MODE: [0x00, 0x00, 0x30],
@@ -92,10 +85,10 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
                 cv.Optional(CONF_ICON, default=ICON_DISPLAY_ALWAYS_ON): cv.icon,
             }
         ).extend(cv.COMPONENT_SCHEMA),
-        cv.Optional(CONF_SMART_SLEEP): switch.SWITCH_SCHEMA.extend(
+        cv.Optional(CONF_SMART_SLEEP_ON): switch.SWITCH_SCHEMA.extend(
             {
                 cv.GenerateID(): cv.declare_id(JkSwitch),
-                cv.Optional(CONF_ICON, default=ICON_SMART_SLEEP): cv.icon,
+                cv.Optional(CONF_ICON, default=ICON_SMART_SLEEP_ON): cv.icon,
             }
         ).extend(cv.COMPONENT_SCHEMA),
         cv.Optional(CONF_DISABLE_PCL_MODULE): switch.SWITCH_SCHEMA.extend(

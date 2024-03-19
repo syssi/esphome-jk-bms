@@ -622,12 +622,12 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   // ** [JK-PB2A16S-20P v14] 
   //    bit0: HEATING_SWITCH_ENABLED                 1
   //    bit1: DISABLE_TEMP_SENSOR_SWITCH_ENABLED     2
-  //    bit2: ?                                      3
-  //    bit3: ?                                      4
-  //    bit4: DISPLAY_ALWAYS_ON_SWITCH_ENABLED       5
-  //    bit5: ?                                      6
-  //    bit6: SMART_SLEEP_ON_SWITCH_ENABLED          7
-  //    bit7: DISABLE_PCL_MODULE_SWITCH_ENABLED      8
+  //    bit2: ?                                      4
+  //    bit3: port switch????                        8
+  //    bit4: DISPLAY_ALWAYS_ON_SWITCH_ENABLED       16
+  //    bit5: ?                                      32
+  //    bit6: SMART_SLEEP_ON_SWITCH_ENABLED          64
+  //    bit7: DISABLE_PCL_MODULE_SWITCH_ENABLED      128
   this->publish_state_(this->heating_switch_, (bool) this->check_bit_(data[282], 1));
   ESP_LOGI(TAG, "  heating switch: %s", ( this->check_bit_(data[282], 1)) ? "on" : "off");
   this->publish_state_(this->disable_temperature_sensors_switch_, this->check_bit_(data[282], 2));
@@ -638,12 +638,12 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   // ** [JK-PB2A16S-20P v14] 
   //    bit0: TIMED_STORED_DATA_SWITCH_ENABLED       1
   //    bit1: CHARGING_FLOAT_MODE_SWITCH_ENABLED     2
-  //    bit2: ?                                      3
-  //    bit3: ?                                      4
-  //    bit4: ?                                      5
-  //    bit5: ?                                      6
-  //    bit6: ?                                      7
-  //    bit7: ?                                      8
+  //    bit2: ?                                      4
+  //    bit3: ?                                      8
+  //    bit4: ?                                      16
+  //    bit5: ?                                      32
+  //    bit6: ?                                      64
+  //    bit7: ?                                      128
   //this->publish_state_(this->timed_stored_data_switch_, (bool) this->check_bit_(data[283], 1));
   ESP_LOGI(TAG, "  timed_stored_data_switch: %s", ( this->check_bit_(data[283], 1)) ? "on" : "off");
   this->publish_state_(this->charging_float_mode_switch_, (bool) this->check_bit_(data[283], 2));

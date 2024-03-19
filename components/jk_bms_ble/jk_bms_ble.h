@@ -199,7 +199,7 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   void set_display_always_on_switch(switch_::Switch *display_always_on_switch) {
     display_always_on_switch_ = display_always_on_switch;
   }
-  void set_smart_sleep_switch(switch_::Switch *smart_sleep_switch) { smart_sleep_switch_ = smart_sleep_switch; }
+  void set_smart_sleep_on_switch(switch_::Switch *smart_sleep_on_switch) { smart_sleep_on_switch_ = smart_sleep_on_switch; }
   void set_timed_stored_data_switch(switch_::Switch *timed_stored_data_switch) {
     timed_stored_data_switch_ = timed_stored_data_switch;
   }
@@ -284,7 +284,7 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   switch_::Switch *heating_switch_;
   switch_::Switch *disable_temperature_sensors_switch_;
   switch_::Switch *display_always_on_switch_;
-  switch_::Switch *smart_sleep_switch_;
+  switch_::Switch *smart_sleep_on_switch_;
   switch_::Switch *timed_stored_data_switch_;
   switch_::Switch *disable_pcl_module_switch_;
   switch_::Switch *charging_float_mode_switch_;
