@@ -310,10 +310,10 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->discharging_binary_sensor_, (bool) data[167 + offset]);
   ESP_LOGI(TAG, "DISCHARGE WORKING STATUS: 0x%02X", data[167 + offset]);
   // 168   1   0x01                   PRE Discharging                              0x00: off, 0x01: on
-  //this->publish_state_(this->discharging_binary_sensor_, (bool) data[167 + offset]);
+  this->publish_state_(this->precharging_binary_sensor_, (bool) data[168 + offset]);
   ESP_LOGI(TAG, "PRECHARGE WORKING STATUS: 0x%02X", data[168 + offset]);
   // 169   1   0x01                   Balancer working                             0x00: off, 0x01: on
-  //this->publish_state_(this->discharging_binary_sensor_, (bool) data[167 + offset]);
+  this->publish_state_(this->balancing_binary_sensor_, (bool) data[169 + offset]);
   ESP_LOGI(TAG, "BALANCER WORKING STATUS:  0x%02X", data[169 + offset]);
 
   // 168   1   0xAA                   Unknown168

@@ -72,7 +72,20 @@ jk_rs485_bms:
     jk_rs485_sniffer_id: sniffer0
     update_interval: 5s
 
-
+binary_sensor:
+  - platform: jk_rs485_bms
+    jk_rs485_bms_id: bms0
+    balancing:
+      name: "${bms0_name} balancing"
+    precharging:
+      name: "${bms0_name} precharging"
+    charging:
+      name: "${bms0_name} charging"
+    discharging:
+      name: "${bms0_name} discharging"
+    online_status:
+      name: "${bms0_name} online status"
+      
 sensor:
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms0

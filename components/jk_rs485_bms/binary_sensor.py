@@ -16,12 +16,16 @@ CONF_CHARGING_SWITCH = (
 CONF_DISCHARGING_SWITCH = (
     "discharging_switch"  # @DEPRECATED and superseded by switch.discharging
 )
+CONF_PRECHARGING = "precharging"
+CONF_PRECHARGING_SWITCH = "precharging_switch"
 CONF_BALANCING = "balancing"
 CONF_BALANCING_SWITCH = "balancing_switch"
 CONF_DEDICATED_CHARGER_SWITCH = "dedicated_charger_switch"
 CONF_ONLINE_STATUS = "online_status"
 CONF_DISPLAY_ALWAYS_ON_SWITCHSTATUS = "online_status"
 
+ICON_PRECHARGING = "mdi:battery-charging"
+ICON_PRECHARGING_SWITCH = "mdi:battery-charging"
 ICON_CHARGING = "mdi:battery-charging"
 ICON_CHARGING_SWITCH = "mdi:battery-charging"
 ICON_DISCHARGING = "mdi:power-plug"
@@ -31,6 +35,8 @@ ICON_BALANCING_SWITCH = "mdi:battery-heart-variant"
 ICON_DEDICATED_CHARGER_SWITCH = "mdi:battery-charging"
 
 BINARY_SENSORS = [
+    CONF_PRECHARGING,
+    CONF_PRECHARGING_SWITCH,
     CONF_CHARGING,
     CONF_CHARGING_SWITCH,
     CONF_DISCHARGING,
@@ -43,6 +49,12 @@ BINARY_SENSORS = [
 
 CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
     {
+        cv.Optional(CONF_PRECHARGING): binary_sensor.binary_sensor_schema(
+            icon=ICON_PRECHARGING
+        ),        
+        cv.Optional(CONF_PRECHARGING_SWITCH): binary_sensor.binary_sensor_schema(
+            icon=ICON_PRECHARGING_SWITCH
+        ),        
         cv.Optional(CONF_CHARGING): binary_sensor.binary_sensor_schema(
             icon=ICON_CHARGING
         ),

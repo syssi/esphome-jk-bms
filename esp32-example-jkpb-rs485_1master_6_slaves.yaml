@@ -103,6 +103,8 @@ binary_sensor:
     jk_rs485_bms_id: bms0
     balancing:
       name: "${bms0_name} balancing"
+    precharging:
+      name: "${bms0_name} precharging"
     charging:
       name: "${bms0_name} charging"
     discharging:
@@ -114,6 +116,8 @@ binary_sensor:
     jk_rs485_bms_id: bms1
     balancing:
       name: "${bms1_name} balancing"
+    precharging:
+      name: "${bms1_name} precharging"
     charging:
       name: "${bms1_name} charging"
     discharging:
@@ -125,6 +129,8 @@ binary_sensor:
     jk_rs485_bms_id: bms2
     balancing:
       name: "${bms2_name} balancing"
+    precharging:
+      name: "${bms2_name} precharging"
     charging:
       name: "${bms2_name} charging"
     discharging:
@@ -136,6 +142,8 @@ binary_sensor:
     jk_rs485_bms_id: bms3
     balancing:
       name: "${bms3_name} balancing"
+    precharging:
+      name: "${bms3_name} precharging"
     charging:
       name: "${bms3_name} charging"
     discharging:
@@ -147,6 +155,8 @@ binary_sensor:
     jk_rs485_bms_id: bms4
     balancing:
       name: "${bms4_name} balancing"
+    precharging:
+      name: "${bms4_name} precharging"
     charging:
       name: "${bms4_name} charging"
     discharging:
@@ -158,6 +168,8 @@ binary_sensor:
     jk_rs485_bms_id: bms5
     balancing:
       name: "${bms5_name} balancing"
+    precharging:
+      name: "${bms5_name} precharging"
     charging:
       name: "${bms5_name} charging"
     discharging:
@@ -169,6 +181,8 @@ binary_sensor:
     jk_rs485_bms_id: bms6
     balancing:
       name: "${bms6_name} balancing"
+    precharging:
+      name: "${bms6_name} precharging"
     charging:
       name: "${bms6_name} charging"
     discharging:

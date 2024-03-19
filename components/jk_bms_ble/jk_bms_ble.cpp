@@ -524,11 +524,13 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // 167   1   0x01                   Discharging mosfet enabled                   0x00: off, 0x01: on
   this->publish_state_(this->discharging_binary_sensor_, (bool) data[167 + offset]);
 
-  ESP_LOGD(TAG, "Unknown168: %s",
-           format_hex_pretty(&data.front() + 168 + offset, data.size() - (168 + offset) - 4 - 81 - 1).c_str());
+  // 168   1   0x01                   PRE Discharging                              0x00: off, 0x01: on
+  this->publish_state_(this->discharging_binary_sensor_, (bool) data[167 + offset]);
+  ESP_LOGI(TAG, "PRECHARGE WORKING STATUS: 0x%02X", data[168 + offset]);
+  // 169   1   0x01                   Balancer working                             0x00: off, 0x01: on
+  this->publish_state_(this->discharging_binary_sensor_, (bool) data[167 + offset]);
+  ESP_LOGI(TAG, "BALANCER WORKING STATUS:  0x%02X", data[169 + offset]);
 
-  // 168   1   0xAA                   Unknown168
-  // 169   2   0x06 0x00              Unknown169
   // 171   2   0x00 0x00              Unknown171
   // 173   2   0x00 0x00              Unknown173
   // 175   2   0x00 0x00              Unknown175
