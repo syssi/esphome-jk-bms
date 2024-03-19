@@ -252,6 +252,10 @@ sensor:
       name: "${name} temperature sensor 1"
     temperature_sensor_2:
       name: "${name} temperature sensor 2"
+    temperature_sensor_3:
+      name: "${name} temperature sensor 3"
+    temperature_sensor_4:
+      name: "${name} temperature sensor 4"      
     power_tube_temperature:
       name: "${name} power tube temperature"
     state_of_charge:
@@ -281,7 +285,12 @@ switch:
       name: "${name} balancer"
     display_always_on:
       name: "${name} display always on"      
-
+    heating:
+      name: "${name} heating"
+    emergency:
+      name: "${name} emergency"
+    charging_float_mode:
+      name: "${name} charging float mode"
   - platform: ble_client
     ble_client_id: client0
     name: "${name} enable bluetooth connection"

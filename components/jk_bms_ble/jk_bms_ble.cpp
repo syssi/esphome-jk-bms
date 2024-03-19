@@ -505,8 +505,11 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // 154   4   0x3D 0x04 0x00 0x00    Cycle_Capacity       0.001         Ah
   this->publish_state_(this->total_charging_cycle_capacity_sensor_, (float) jk_get_32bit(154 + offset) * 0.001f);
 
-  // 158   2   0x64 0x00              Unknown158
-  ESP_LOGD(TAG, "Unknown158: 0x%02X 0x%02X (always 0x64 0x00?)", data[158 + offset], data[159 + offset]);
+  // 158   1   0x64                   SOCSOH
+  ESP_LOGD(TAG, "SOCSOH: 0x%02X (always 0x64?)", data[158 + offset]);
+  
+  // 159   1   0x00                   Precharge
+  ESP_LOGI(TAG, "Precharge: 0x%02X (always 0x00?)", data[159 + offset]);
 
   // 160   2   0x79 0x04              Unknown160 (Cycle capacity?)
   ESP_LOGD(TAG, "Unknown160: 0x%02X 0x%02X (always 0xC5 0x09?)", data[160 + offset], data[161 + offset]);
