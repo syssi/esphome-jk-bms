@@ -416,9 +416,15 @@ switch:
     discharging:
       name: "${bms0_name} discharging"
     balancer:
-      name: "${bms0_name} balancer"      
+      name: "${bms0_name} balancer"   
+    emergency:
+      name: "${bms0_name} emergency"
+    heating:
+      name: "${bms0_name} heating"      
     display_always_on:
       name: "${bms0_name} display_always_on"
+    charging_float_mode:
+      name: "${bms0_name} charging float mode"      
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms1
@@ -430,8 +436,14 @@ switch:
       name: "${bms1_name} discharging"      
     balancer:
       name: "${bms1_name} balancer"
+    emergency:
+      name: "${bms1_name} emergency"  
+    heating:
+      name: "${bms1_name} heating"              
     display_always_on:
-      name: "${bms1_name} display_always_on"      
+      name: "${bms1_name} display_always_on"   
+    charging_float_mode:
+      name: "${bms1_name} charging float mode"           
 
 text_sensor:
   - platform: jk_rs485_bms

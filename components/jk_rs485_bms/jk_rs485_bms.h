@@ -253,7 +253,12 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   void set_charging_switch(switch_::Switch *charging_switch) { charging_switch_ = charging_switch; }
   void set_discharging_switch(switch_::Switch *discharging_switch) { discharging_switch_ = discharging_switch; }
   void set_balancer_switch(switch_::Switch *balancer_switch) { balancer_switch_ = balancer_switch; }
+  void set_emergency_switch(switch_::Switch *emergency_switch) { emergency_switch_ = emergency_switch; }
+  void set_heating_switch(switch_::Switch *heating_switch) { heating_switch_ = heating_switch; }
   void set_display_always_on_switch(switch_::Switch *display_always_on_switch) { display_always_on_switch_ = display_always_on_switch; }
+  void set_charging_float_mode_switch(switch_::Switch *charging_float_mode_switch) {
+    charging_float_mode_switch_ = charging_float_mode_switch;
+  }
 
   void set_errors_text_sensor(text_sensor::TextSensor *errors_text_sensor) { errors_text_sensor_ = errors_text_sensor; }
   void set_operation_mode_text_sensor(text_sensor::TextSensor *operation_mode_text_sensor) {
@@ -400,9 +405,9 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   switch_::Switch *charging_switch_;
   switch_::Switch *discharging_switch_;
   switch_::Switch *balancer_switch_;
-
   switch_::Switch *emergency_switch_;  
   switch_::Switch *heating_switch_; 
+  switch_::Switch *charging_float_mode_switch_;
   switch_::Switch *disable_temperature_sensors_switch_; 
   switch_::Switch *display_always_on_switch_;   
 

@@ -277,6 +277,7 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   //                                                                     0x02: Discharging balancer
   this->publish_state_(this->balancing_binary_sensor_, (data[140 + offset] != 0x00));
   this->publish_state_(this->balancing_number_, (data[140 + offset]));
+
   // 141   1   0x54                   State of charge in   1.0           %
   this->publish_state_(this->state_of_charge_sensor_, (float) data[141 + offset]);
 
@@ -293,9 +294,9 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->total_charging_cycle_capacity_sensor_, (float) jk_get_32bit(154 + offset) * 0.001f);
 
   // 158   1   0x64                   SOCSOH
-  ESP_LOGD(TAG, "SOCSOH: 0x%02X (always 0x64?)", data[158 + offset]);
+  ESP_LOGI(TAG, "SOCSOH: 0x%02X (always 0x64?)", data[158 + offset]);
   // 159   1   0x00                   Precharge
-  ESP_LOGD(TAG, "SOCSOH: 0x%02X (always 0x00?)", data[159 + offset]);
+  ESP_LOGI(TAG, "Precharge: 0x%02X (always 0x00?)", data[159 + offset]);
 
   // 160   2   0x79 0x04              UserAlarm 
   ESP_LOGD(TAG, "UserAlarm: 0x%02X 0x%02X (always 0xC5 0x09?)", data[160 + offset], data[161 + offset]);
@@ -372,7 +373,7 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
     // 186
     uint16_t raw_emergency_time_countdown = jk_get_16bit(186 + offset);
     ESP_LOGI(TAG, "  Emergency switch: %s", (raw_emergency_time_countdown > 0) ? "on" : "off");
-    this->publish_state_(this->emergency_switch_, raw_emergency_time_countdown > 0);
+    this->publish_state_(this->emergency_switch_, (bool) (raw_emergency_time_countdown > 0));
     this->publish_state_(this->emergency_time_countdown_sensor_, (float) raw_emergency_time_countdown * 1.0f);
 
     // 202 Battery Voltage (better 118 measurement --> more decimals)
@@ -617,7 +618,7 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   // 278   4   0x00 0x00 0x00 0x00  //60 e3 16 00          10023c3218feffffffbfe90102000000000001
   //ESP_LOGI(TAG, "         278: %02X%02X%02X%02X",data[278],data[279],data[280],data[281]);
 
-  // 282   1   0x00                   New controls bitmask
+  // 282 [27?]   1   0x00                   New controls bitmask
   // ** [JK-PB2A16S-20P v14] 
   //    bit0: HEATING_SWITCH_ENABLED                 1
   //    bit1: DISABLE_TEMP_SENSOR_SWITCH_ENABLED     2
@@ -627,11 +628,24 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   //    bit5: ?                                      6
   //    bit6: SMART_SLEEP_ON_SWITCH_ENABLED          7
   //    bit7: DISABLE_PCL_MODULE_SWITCH_ENABLED      8
-  this->publish_state_(this->heating_switch_, this->check_bit_(data[282], 1));
-  ESP_LOGI(TAG, "  heating switch: %s", ((bool) this->check_bit_(data[282], 1)) ? "on" : "off");
+  this->publish_state_(this->heating_switch_, (bool) this->check_bit_(data[282], 1));
+  ESP_LOGI(TAG, "  heating switch: %s", ( this->check_bit_(data[282], 1)) ? "on" : "off");
   this->publish_state_(this->disable_temperature_sensors_switch_, this->check_bit_(data[282], 2));
   this->publish_state_(this->display_always_on_switch_, this->check_bit_(data[282], 16));
   ESP_LOGI(TAG, "  Port switch: %s", this->check_bit_(data[282], 8) ? "RS485" : "CAN");
+
+  // 283 [28?]   1   0x00                   New controls bitmask
+  // ** [JK-PB2A16S-20P v14] 
+  //    bit0: TIMED_STORED_DATA_SWITCH_ENABLED       1
+  //    bit1: CHARGING_FLOAT_MODE_SWITCH_ENABLED     2
+  //    bit2: ?                                      3
+  //    bit3: ?                                      4
+  //    bit4: ?                                      5
+  //    bit5: ?                                      6
+  //    bit6: ?                                      7
+  //    bit7: ?                                      8
+  this->publish_state_(this->charging_float_mode_switch_, (bool) this->check_bit_(data[283], 0));
+  ESP_LOGI(TAG, "  charging_float_mode_switch: %s", ( this->check_bit_(data[283], 0)) ? "on" : "off");
 
   // 284   2   0X00 0X00
   // 286   4   0x00 0x00 0x00 0x00
