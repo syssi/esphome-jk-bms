@@ -644,8 +644,10 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   //    bit5: ?                                      6
   //    bit6: ?                                      7
   //    bit7: ?                                      8
-  this->publish_state_(this->charging_float_mode_switch_, (bool) this->check_bit_(data[283], 0));
-  ESP_LOGI(TAG, "  charging_float_mode_switch: %s", ( this->check_bit_(data[283], 0)) ? "on" : "off");
+  //this->publish_state_(this->timed_stored_data_switch_, (bool) this->check_bit_(data[283], 0));
+  //ESP_LOGI(TAG, "  timed_stored_data_switch: %s", ( this->check_bit_(data[283], 0)) ? "on" : "off");
+  this->publish_state_(this->charging_float_mode_switch_, (bool) this->check_bit_(data[283], 1));
+  ESP_LOGI(TAG, "  charging_float_mode_switch: %s", ( this->check_bit_(data[283], 1)) ? "on" : "off");
 
   // 284   2   0X00 0X00
   // 286   4   0x00 0x00 0x00 0x00
