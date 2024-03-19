@@ -38,6 +38,12 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   }
   void set_balance_trigger_voltage_number(number::Number *balance_trigger_voltage_number) {
     balance_trigger_voltage_number_ = balance_trigger_voltage_number;
+  }  
+  void set_soc100_voltage_number(number::Number *soc100_voltage_number) {
+    soc100_voltage_number_ = soc100_voltage_number;
+  }
+  void set_soc0_voltage_number(number::Number *soc0_voltage_number) {
+    soc0_voltage_number_ = soc0_voltage_number;
   }
   void set_cell_count_number(number::Number *cell_count_number) { cell_count_number_ = cell_count_number; }
   void set_total_battery_capacity_number(number::Number *total_battery_capacity_number) {
@@ -216,6 +222,8 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
 
   number::Number *smart_sleep_voltage_number_;
   number::Number *balance_trigger_voltage_number_;
+  number::Number *soc100_voltage_number_;
+  number::Number *soc0_voltage_number_;    
   number::Number *cell_count_number_;
   number::Number *total_battery_capacity_number_;
   number::Number *cell_voltage_overvoltage_protection_number_;

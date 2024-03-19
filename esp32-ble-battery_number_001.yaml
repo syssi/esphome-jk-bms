@@ -32,7 +32,7 @@ wifi:
 ota:
 
 logger:
-  level: DEBUG
+  level: INFO #VERY_VERBOSE #VERBOSE #DEBUG #INFO #DEBUG
 
 # If you don't use Home Assistant please remove this `api` section and uncomment the `mqtt` component!
 api:
@@ -90,20 +90,24 @@ number:
     jk_bms_ble_id: bms0    
     smart_sleep_voltage:
       name: "${name} smart sleep voltage"    
+    cell_voltage_undervoltage_protection:
+      name: "${name} cell voltage undervoltage protection"
+    cell_voltage_undervoltage_recovery:
+      name: "${name} cell voltage undervoltage recovery"  
+    cell_voltage_overvoltage_protection:
+      name: "${name} cell voltage overvoltage protection"
+    cell_voltage_overvoltage_recovery:
+      name: "${name} cell voltage overvoltage recovery"  
     balance_trigger_voltage:
       name: "${name} balance trigger voltage"
+    soc100_voltage:
+      name: "${name} soc100 voltage"
+    soc0_voltage:
+      name: "${name} soc0 voltage"
     cell_count:
       name: "${name} cell count"
     total_battery_capacity:
       name: "${name} total battery capacity"
-    cell_voltage_overvoltage_protection:
-      name: "${name} cell voltage overvoltage protection"
-    cell_voltage_overvoltage_recovery:
-      name: "${name} cell voltage overvoltage recovery"
-    cell_voltage_undervoltage_protection:
-      name: "${name} cell voltage undervoltage protection"
-    cell_voltage_undervoltage_recovery:
-      name: "${name} cell voltage undervoltage recovery"
     balance_starting_voltage:
       name: "${name} balance starting voltage"
     voltage_calibration:

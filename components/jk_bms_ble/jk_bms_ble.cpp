@@ -819,8 +819,14 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   ESP_LOGI(TAG, "  Balance trigger voltage: %f V", (float) jk_get_32bit(26) * 0.001f);
   this->publish_state_(this->balance_trigger_voltage_number_, (float) jk_get_32bit(26) * 0.001f);
 
-  // 30    4   0x00 0x00 0x00 0x00    Unknown30
-  // 34    4   0x00 0x00 0x00 0x00    Unknown34
+  // 30 [7]   4   0x00 0x00 0x00 0x00    ** [JK-PB2A16S-20P v14] SOC-100% VOLTAGE
+  ESP_LOGI(TAG, "  SOC-100 VOLTAGE: %f V", (float) jk_get_32bit(30) * 0.001f);
+  this->publish_state_(this->soc100_voltage_number_, (float) jk_get_32bit(30) * 0.001f);
+  
+  // 34 [8]    4   0x00 0x00 0x00 0x00    ** [JK-PB2A16S-20P v14] SOC-0% VOLTAGE
+  ESP_LOGI(TAG, "  SOC-0 VOLTAGE: %f V", (float) jk_get_32bit(34) * 0.001f);
+  this->publish_state_(this->soc0_voltage_number_, (float) jk_get_32bit(34) * 0.001f);  
+
   // 38    4   0x00 0x00 0x00 0x00    Unknown38
   // 42    4   0x00 0x00 0x00 0x00    Unknown42
   // 46    4   0xF0 0x0A 0x00 0x00    Power off voltage
