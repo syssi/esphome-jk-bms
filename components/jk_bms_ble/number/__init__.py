@@ -35,6 +35,8 @@ DEFAULT_STEP = 1
 # 06 04 03000000  Set balance trig voltage to 0.003
 # 07 04 03000000  Set SOC100% voltage to 0.003
 # 08 04 03000000  Set SOC0% voltage to 0.003
+# 09 04 03000000  Set VOLTAGE CELL REQUEST CHARGE VOLTAGE [RCV] to 0.003
+# 0a 04 03000000  Set VOLTAGE CELL REQUEST FLOAT VOLTAGE [RCV] to 0.003
 
 # 1c 04 10000000  Set cell count to 16
 # 20 04 f0ba0400  Set battery cap to 310
@@ -55,6 +57,8 @@ CONF_CELL_VOLTAGE_OVERVOLTAGE_RECOVERY = "cell_voltage_overvoltage_recovery"
 CONF_BALANCE_TRIGGER_VOLTAGE = "balance_trigger_voltage"
 CONF_SOC100_VOLTAGE = "soc100_voltage"
 CONF_SOC0_VOLTAGE = "soc0_voltage"
+CONF_CELL_REQUEST_CHARGE_VOLTAGE= "cell_request_charge_voltage"
+CONF_CELL_REQUEST_FLOAT_VOLTAGE= "cell_request_float_voltage"
 
 CONF_CELL_COUNT = "cell_count"
 CONF_TOTAL_BATTERY_CAPACITY = "total_battery_capacity"
@@ -133,6 +137,8 @@ NUMBERS = {
     CONF_BALANCE_TRIGGER_VOLTAGE: [0x00, 0x06, 0x06, 1000.0],
     CONF_SOC100_VOLTAGE: [0x00, 0x07, 0x07, 1000.0],
     CONF_SOC0_VOLTAGE: [0x00, 0x08, 0x08, 1000.0],
+    CONF_CELL_REQUEST_CHARGE_VOLTAGE: [0x00, 0x09, 0x09, 1000.0],
+    CONF_CELL_REQUEST_FLOAT_VOLTAGE: [0x00, 0x0a, 0x0a, 1000.0],
 
     CONF_CELL_COUNT: [0x00, 0x1C, 0x1C, 1.0],
     CONF_TOTAL_BATTERY_CAPACITY: [0x00, 0x20, 0x20, 1000.0],
@@ -219,6 +225,20 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
                 cv.Optional(CONF_STEP, default=0.001): cv.float_,
             }
         ),
+        cv.Optional(CONF_CELL_REQUEST_CHARGE_VOLTAGE): JK_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=0.003): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=3.650): cv.float_,
+                cv.Optional(CONF_STEP, default=0.001): cv.float_,
+            }
+        ),
+        cv.Optional(CONF_CELL_REQUEST_FLOAT_VOLTAGE): JK_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=0.003): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=3.650): cv.float_,
+                cv.Optional(CONF_STEP, default=0.001): cv.float_,
+            }
+        ),        
 
 
         cv.Optional(CONF_CELL_COUNT): JK_NUMBER_SCHEMA.extend(

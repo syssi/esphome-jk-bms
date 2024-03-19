@@ -21,10 +21,10 @@ esp32:
     type: esp-idf
 
 external_components:
-#  - source: ${external_components_source}
-#    refresh: 0s
-  - source: ./components
+  - source: ${external_components_source}
     refresh: 0s
+#  - source: ./components
+#    refresh: 0s
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
@@ -104,6 +104,10 @@ number:
       name: "${name} soc100 voltage"
     soc0_voltage:
       name: "${name} soc0 voltage"
+    cell_request_charge_voltage:
+      name: "${name} cell request charge voltage"      
+    cell_request_float_voltage:
+      name: "${name} cell request float voltage"        
     cell_count:
       name: "${name} cell count"
     total_battery_capacity:

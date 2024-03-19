@@ -827,8 +827,14 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   ESP_LOGI(TAG, "  SOC-0 VOLTAGE: %f V", (float) jk_get_32bit(34) * 0.001f);
   this->publish_state_(this->soc0_voltage_number_, (float) jk_get_32bit(34) * 0.001f);  
 
-  // 38    4   0x00 0x00 0x00 0x00    Unknown38
-  // 42    4   0x00 0x00 0x00 0x00    Unknown42
+  // 38    4   0x00 0x00 0x00 0x00    ** [JK-PB2A16S-20P v14] VOLTAGE CELL REQUEST CHARGE VOLTAGE [RCV]
+  ESP_LOGI(TAG, "  VOLTAGE CELL REQUEST CHARGE VOLTAGE [RCV]: %f V", (float) jk_get_32bit(38) * 0.001f);
+  this->publish_state_(this->cell_request_charge_voltage_number_, (float) jk_get_32bit(38) * 0.001f);  
+
+  // 42    4   0x00 0x00 0x00 0x00    ** [JK-PB2A16S-20P v14] VOLTAGE CELL REQUEST FLOAT VOLTAGE
+  ESP_LOGI(TAG, "  VOLTAGE CELL REQUEST FLOAT VOLTAGE [RFV]: %f V", (float) jk_get_32bit(42) * 0.001f);
+  this->publish_state_(this->cell_request_float_voltage_number_, (float) jk_get_32bit(42) * 0.001f);   
+
   // 46    4   0xF0 0x0A 0x00 0x00    Power off voltage
   ESP_LOGI(TAG, "  Power off voltage: %f V", (float) jk_get_32bit(46) * 0.001f);
   this->publish_state_(this->power_off_voltage_number_, (float) jk_get_32bit(46) * 0.001f);
