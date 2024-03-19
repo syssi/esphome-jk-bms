@@ -960,7 +960,27 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->disable_temperature_sensors_switch_, check_bit_(data[282], 2));
   this->publish_state_(this->display_always_on_switch_, check_bit_(data[282], 16));
   ESP_LOGI(TAG, "  Port switch: %s", check_bit_(data[282], 8) ? "RS485" : "CAN");
-
+  
+  // 283 [28?]   1   0x00                   New controls bitmask
+  // ** [JK-PB2A16S-20P v14] 
+  //    bit0: TIMED_STORED_DATA_SWITCH_ENABLED       1
+  //    bit1: CHARGING_FLOAT_MODE_SWITCH_ENABLED     2
+  //    bit2: ?                                      3
+  //    bit3: ?                                      4
+  //    bit4: ?                                      5
+  //    bit5: ?                                      6
+  //    bit6: ?                                      7
+  //    bit7: ?                                      8
+  //this->publish_state_(this->timed_stored_data_switch_, (bool) this->check_bit_(data[283], 1));
+  ESP_LOGI(TAG, "  timed_stored_data_switch: %s", ( this->check_bit_(data[283], 1)) ? "on" : "off");
+  this->publish_state_(this->charging_float_mode_switch_, (bool) this->check_bit_(data[283], 2));
+  ESP_LOGI(TAG, "  charging_float_mode_switch: %s", ( this->check_bit_(data[283], 2)) ? "on" : "off");
+  ESP_LOGI(TAG, "  switch bit2: %s", ( this->check_bit_(data[283], 3)) ? "on" : "off");
+  ESP_LOGI(TAG, "  switch bit3: %s", ( this->check_bit_(data[283], 4)) ? "on" : "off");
+  ESP_LOGI(TAG, "  switch bit4: %s", ( this->check_bit_(data[283], 5)) ? "on" : "off");
+  ESP_LOGI(TAG, "  switch bit5: %s", ( this->check_bit_(data[283], 6)) ? "on" : "off");
+  ESP_LOGI(TAG, "  switch bit6: %s", ( this->check_bit_(data[283], 7)) ? "on" : "off");
+  ESP_LOGI(TAG, "  switch bit7: %s", ( this->check_bit_(data[283], 8)) ? "on" : "off");
   // 283   3   0x00 0x00 0x00
   // 286   4   0x00 0x00 0x00 0x00
   // 290   4   0x00 0x00 0x00 0x00
