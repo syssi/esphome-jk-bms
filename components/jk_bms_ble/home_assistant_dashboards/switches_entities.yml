@@ -1,0 +1,28 @@
+type: entities
+entities:
+  - entity: switch.jk_bms_charging
+    name: CHARGE
+  - entity: switch.jk_bms_discharging
+    name: DISCHARGE
+  - entity: switch.jk_bms_balancer
+    name: BALANCE
+  - entity: switch.jk_bms_emergency
+    name: EMERGENCY
+  - entity: switch.jk_bms_heating
+    name: HEATING
+  - entity: switch.jk_bms_disable_temperature_sensors
+    name: DISABLE TEMPERATURE SENSORS
+  - entity: switch.jk_bms_display_always_on
+    name: DISPLAY ALWAYS ON
+  - entity: switch.jk_bms_smart_sleep_on
+    name: SMART SLEEP ON
+  - entity: switch.jk_bms_disable_pcl_module
+    name: DISABLE PCL MODULE
+  - entity: switch.jk_bms_timed_stored_data
+    name: TIMED_STORED_DATA
+  - entity: switch.jk_bms_charging_float_mode
+    name: CHARGE FLOAT MODE
+  - entity: switch.jk_bms_enable_bluetooth_connection
+    name: ESP BLUETOOTH
+title: Switch
+show_header_toggle: false
