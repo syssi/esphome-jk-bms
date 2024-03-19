@@ -279,6 +279,8 @@ switch:
       name: "${name} discharging"
     balancer:
       name: "${name} balancer"
+    display_always_on:
+      name: "${name} display always on"      
 
   - platform: ble_client
     ble_client_id: client0

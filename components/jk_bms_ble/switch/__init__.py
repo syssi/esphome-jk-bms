@@ -24,11 +24,11 @@ ICON_BALANCER = "mdi:seesaw"
 ICON_EMERGENCY = "mdi:exit-run"
 ICON_HEATING = "mdi:radiator"
 ICON_DISABLE_TEMPERATURE_SENSORS = "mdi:thermometer-off"
-ICON_DISPLAY_ALWAYS_ON = "mdi:led-on"
 ICON_SMART_SLEEP = "mdi:sleep"
 ICON_TIMED_STORED_DATA = "mdi:calendar-clock"
 ICON_DISABLE_PCL_MODULE = "mdi:power-plug-off"
 ICON_CHARGING_FLOAT_MODE = "mdi:battery-charging-80"
+ICON_DISPLAY_ALWAYS_ON = "mdi:television"
 
 SWITCHES = {
     # JK04, JK02, JK02_32S
