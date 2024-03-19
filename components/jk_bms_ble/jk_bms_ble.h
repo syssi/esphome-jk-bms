@@ -92,6 +92,9 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   void set_balancing_binary_sensor(binary_sensor::BinarySensor *balancing_binary_sensor) {
     balancing_binary_sensor_ = balancing_binary_sensor;
   }
+  void set_precharging_binary_sensor(binary_sensor::BinarySensor *precharging_binary_sensor) {
+    precharging_binary_sensor_ = precharging_binary_sensor;
+  }
   void set_charging_binary_sensor(binary_sensor::BinarySensor *charging_binary_sensor) {
     charging_binary_sensor_ = charging_binary_sensor;
   }
@@ -221,6 +224,7 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   ProtocolVersion protocol_version_{PROTOCOL_VERSION_JK02_24S};
 
   binary_sensor::BinarySensor *balancing_binary_sensor_;
+  binary_sensor::BinarySensor *precharging_binary_sensor_;  
   binary_sensor::BinarySensor *charging_binary_sensor_;
   binary_sensor::BinarySensor *discharging_binary_sensor_;
   binary_sensor::BinarySensor *online_status_binary_sensor_;

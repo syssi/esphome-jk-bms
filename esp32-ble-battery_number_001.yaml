@@ -21,10 +21,10 @@ esp32:
     type: esp-idf
 
 external_components:
-#  - source: ${external_components_source}
-#    refresh: 0s
-  - source: ./components
+  - source: ${external_components_source}
     refresh: 0s
+#  - source: ./components
+#    refresh: 0s
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password

@@ -127,6 +127,7 @@ void JkBmsBle::dump_config() {  // NOLINT(google-readability-function-size,reada
   LOG_TEXT_SENSOR("", "Operation Status", this->operation_status_text_sensor_);
   LOG_TEXT_SENSOR("", "Total Runtime Formatted", this->total_runtime_formatted_text_sensor_);
   LOG_BINARY_SENSOR("", "Balancing", this->balancing_binary_sensor_);
+  LOG_BINARY_SENSOR("", "Precharging", this->precharging_binary_sensor_);  
   LOG_BINARY_SENSOR("", "Charging", this->charging_binary_sensor_);
   LOG_BINARY_SENSOR("", "Discharging", this->discharging_binary_sensor_);
   LOG_BINARY_SENSOR("", "Heating", this->heating_binary_sensor_);
@@ -520,15 +521,15 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
 
   // 166   1   0x01                   Charging mosfet enabled                      0x00: off, 0x01: on
   this->publish_state_(this->charging_binary_sensor_, (bool) data[166 + offset]);
-
+  ESP_LOGI(TAG, "CHARGE WORKING STATUS:    0x%02X", data[166 + offset]);
   // 167   1   0x01                   Discharging mosfet enabled                   0x00: off, 0x01: on
   this->publish_state_(this->discharging_binary_sensor_, (bool) data[167 + offset]);
-
+  ESP_LOGI(TAG, "DISCHARGE WORKING STATUS: 0x%02X", data[167 + offset]);
   // 168   1   0x01                   PRE Discharging                              0x00: off, 0x01: on
-  this->publish_state_(this->discharging_binary_sensor_, (bool) data[167 + offset]);
+  this->publish_state_(this->precharging_binary_sensor_, (bool) data[168 + offset]);
   ESP_LOGI(TAG, "PRECHARGE WORKING STATUS: 0x%02X", data[168 + offset]);
   // 169   1   0x01                   Balancer working                             0x00: off, 0x01: on
-  this->publish_state_(this->discharging_binary_sensor_, (bool) data[167 + offset]);
+  this->publish_state_(this->balancing_binary_sensor_, (bool) data[169 + offset]);
   ESP_LOGI(TAG, "BALANCER WORKING STATUS:  0x%02X", data[169 + offset]);
 
   // 171   2   0x00 0x00              Unknown171
@@ -908,6 +909,10 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   ESP_LOGI(TAG, "  Start balance voltage: %f V", (float) jk_get_32bit(138) * 0.001f);
   this->publish_state_(this->balance_starting_voltage_number_, (float) jk_get_32bit(138) * 0.001f);
 
+  ESP_LOGI(TAG, "  142: %f", (float) jk_get_32bit(142) * 0.001f);
+  ESP_LOGI(TAG, "  146: %f", (float) jk_get_32bit(146) * 0.001f);
+  ESP_LOGI(TAG, "  150: %f", (float) jk_get_32bit(150) * 0.001f);
+  ESP_LOGI(TAG, "  154: %f", (float) jk_get_32bit(154) * 0.001f);
   // 142   4   0x00 0x00 0x00 0x00
   // 146   4   0x00 0x00 0x00 0x00
   // 150   4   0x00 0x00 0x00 0x00
