@@ -55,8 +55,8 @@ CONF_CELL_UNDERVOLTAGE_PROTECTION_RECOVERY = "cell_undervoltage_protection_recov
 CONF_CELL_OVERVOLTAGE_PROTECTION = "cell_overvoltage_protection"
 CONF_CELL_OVERVOLTAGE_PROTECTION_RECOVERY = "cell_overvoltage_protection_recovery"
 CONF_BALANCE_TRIGGER_VOLTAGE = "balance_trigger_voltage"
-CONF_SOC100_VOLTAGE = "soc100_voltage"
-CONF_SOC0_VOLTAGE = "soc0_voltage"
+CONF_CELL_SOC100_VOLTAGE = "cell_soc100_voltage"
+CONF_CELL_SOC0_VOLTAGE = "cell_soc0_voltage"
 CONF_CELL_REQUEST_CHARGE_VOLTAGE= "cell_request_charge_voltage"
 CONF_CELL_REQUEST_FLOAT_VOLTAGE= "cell_request_float_voltage"
 
@@ -135,8 +135,8 @@ NUMBERS = {
     CONF_CELL_OVERVOLTAGE_PROTECTION: [0x00, 0x04, 0x04, 1000.0], 
     CONF_CELL_OVERVOLTAGE_PROTECTION_RECOVERY: [0x00, 0x05, 0x05, 1000.0],
     CONF_BALANCE_TRIGGER_VOLTAGE: [0x00, 0x06, 0x06, 1000.0],
-    CONF_SOC100_VOLTAGE: [0x00, 0x07, 0x07, 1000.0],
-    CONF_SOC0_VOLTAGE: [0x00, 0x08, 0x08, 1000.0],
+    CONF_CELL_SOC100_VOLTAGE: [0x00, 0x07, 0x07, 1000.0],
+    CONF_CELL_SOC0_VOLTAGE: [0x00, 0x08, 0x08, 1000.0],
     CONF_CELL_REQUEST_CHARGE_VOLTAGE: [0x00, 0x09, 0x09, 1000.0],
     CONF_CELL_REQUEST_FLOAT_VOLTAGE: [0x00, 0x0a, 0x0a, 1000.0],
 
@@ -211,14 +211,14 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
                 cv.Optional(CONF_STEP, default=0.001): cv.float_,
             }
         ),
-        cv.Optional(CONF_SOC100_VOLTAGE): JK_NUMBER_SCHEMA.extend(
+        cv.Optional(CONF_CELL_SOC100_VOLTAGE): JK_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=0.003): cv.float_,
                 cv.Optional(CONF_MAX_VALUE, default=1.0): cv.float_,
                 cv.Optional(CONF_STEP, default=0.001): cv.float_,
             }
         ),
-        cv.Optional(CONF_SOC0_VOLTAGE): JK_NUMBER_SCHEMA.extend(
+        cv.Optional(CONF_CELL_SOC0_VOLTAGE): JK_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=0.003): cv.float_,
                 cv.Optional(CONF_MAX_VALUE, default=1.0): cv.float_,

@@ -105,10 +105,10 @@ number:
       name: "${name} cell overvoltage protection recovery"  
     balance_trigger_voltage:
       name: "${name} balance trigger voltage"
-    soc100_voltage:
-      name: "${name} soc100 voltage"
-    soc0_voltage:
-      name: "${name} soc0 voltage"
+    cell_soc100_voltage:
+      name: "${name} cell_soc100 voltage"
+    cell_soc0_voltage:
+      name: "${name} cell_soc0 voltage"
     cell_request_charge_voltage:
       name: "${name} cell request charge voltage"      
     cell_request_float_voltage:

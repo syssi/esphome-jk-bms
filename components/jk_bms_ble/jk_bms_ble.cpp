@@ -827,11 +827,11 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
 
   // 30 [7]   4   0x00 0x00 0x00 0x00    ** [JK-PB2A16S-20P v14] SOC-100% VOLTAGE
   ESP_LOGI(TAG, "  SOC-100 VOLTAGE: %f V", (float) jk_get_32bit(30) * 0.001f);
-  this->publish_state_(this->soc100_voltage_sensor_, (float) jk_get_32bit(30) * 0.001f);
+  this->publish_state_(this->cell_soc100_voltage_number_, (float) jk_get_32bit(30) * 0.001f);
   
   // 34 [8]    4   0x00 0x00 0x00 0x00    ** [JK-PB2A16S-20P v14] SOC-0% VOLTAGE
   ESP_LOGI(TAG, "  SOC-0 VOLTAGE: %f V", (float) jk_get_32bit(34) * 0.001f);
-  this->publish_state_(this->soc0_voltage_sensor_, (float) jk_get_32bit(34) * 0.001f);  
+  this->publish_state_(this->cell_soc0_voltage_number_, (float) jk_get_32bit(34) * 0.001f);  
 
   // 38    4   0x00 0x00 0x00 0x00    ** [JK-PB2A16S-20P v14] VOLTAGE CELL REQUEST CHARGE VOLTAGE [RCV]
   ESP_LOGI(TAG, "  VOLTAGE CELL REQUEST CHARGE VOLTAGE [RCV]: %f V", (float) jk_get_32bit(38) * 0.001f);
