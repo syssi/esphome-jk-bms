@@ -23,10 +23,10 @@ esp32:
 #  board: d1_mini
 
 external_components:
-    - source: ${external_components_source}
-      refresh: 0s
-  #- source: ./components
-  #  refresh: 0s
+#    - source: ${external_components_source}
+#      refresh: 0s
+  - source: ./components
+    refresh: 0s
 
 wifi:
   ssid: !secret wifi_ssid
@@ -254,14 +254,26 @@ sensor:
       name: "${bms0_name} errors bitmask"
     cell_count:
       name: "${bms0_name} cell count"
-    cell_voltage_overvoltage_protection:
-      name: "${bms0_name} cell voltage overvoltage protection"
-    cell_voltage_overvoltage_protection_recovery:
-      name: "${bms0_name} cell voltage overvoltage protection recovery"
+    cell_overvoltage_protection:
+      name: "${bms0_name} cell overvoltage protection"
+    cell_overvoltage_protection_recovery:
+      name: "${bms0_name} cell overvoltage protection recovery"
     cell_request_charge_voltage:
       name: "${bms0_name} cell request charge voltage"      
     cell_request_float_voltage:
-      name: "${bms0_name} cell request float voltage"        
+      name: "${bms0_name} cell request float voltage"    
+    balance_starting_voltage:
+      name: "${bms0_name} balance starting voltage"   
+    cell_soc100_voltage:
+      name: "${bms0_name} cell soc100 voltage" 
+    cell_soc0_voltage:
+      name: "${bms0_name} cell soc0 voltage"  
+    cell_undervoltage_protection:
+      name: "${bms0_name} cell undervoltage protection"
+    cell_undervoltage_protection_recovery:
+      name: "${bms0_name} cell undervoltage protection recovery"                     
+    cell_power_off_voltage:
+      name: "${bms0_name} cell power off voltage"      
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms1
@@ -415,14 +427,27 @@ sensor:
       name: "${bms1_name} errors bitmask"
     cell_count:
       name: "${bms1_name} cell count"
-    cell_voltage_overvoltage_protection:
-      name: "${bms1_name} cell voltage overvoltage protection"
-    cell_voltage_overvoltage_protection_recovery:
-      name: "${bms1_name} cell voltage overvoltage protection recovery"
+    cell_overvoltage_protection:
+      name: "${bms1_name} cell overvoltage protection"
+    cell_overvoltage_protection_recovery:
+      name: "${bms1_name} cell overvoltage protection recovery"
     cell_request_charge_voltage:
       name: "${bms1_name} cell request charge voltage"      
     cell_request_float_voltage:
-      name: "${bms1_name} cell request float voltage"         
+      name: "${bms1_name} cell request float voltage"   
+    balance_starting_voltage:
+      name: "${bms1_name} balance starting voltage"     
+    cell_soc100_voltage:
+      name: "${bms1_name} cell soc100 voltage" 
+    cell_soc0_voltage:
+      name: "${bms1_name} cell soc0 voltage"  
+    cell_undervoltage_protection:
+      name: "${bms1_name} cell undervoltage protection"
+    cell_undervoltage_protection_recovery:
+      name: "${bms1_name} cell undervoltage protection recovery"   
+    cell_power_off_voltage:
+      name: "${bms1_name} cell power off voltage"           
+
 switch:
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms0

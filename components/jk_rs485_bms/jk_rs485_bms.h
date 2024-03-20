@@ -141,20 +141,20 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   void set_total_voltage_undervoltage_protection_sensor(sensor::Sensor *total_voltage_undervoltage_protection_sensor) {
     total_voltage_undervoltage_protection_sensor_ = total_voltage_undervoltage_protection_sensor;
   }
-  void set_cell_voltage_overvoltage_protection_sensor(sensor::Sensor *cell_voltage_overvoltage_protection_sensor) {
-    cell_voltage_overvoltage_protection_sensor_ = cell_voltage_overvoltage_protection_sensor;
+  void set_cell_overvoltage_protection_sensor(sensor::Sensor *cell_overvoltage_protection_sensor) {
+    cell_overvoltage_protection_sensor_ = cell_overvoltage_protection_sensor;
   }
-  void set_cell_voltage_overvoltage_protection_recovery_sensor(sensor::Sensor *cell_voltage_overvoltage_protection_recovery_sensor) {
-    cell_voltage_overvoltage_protection_recovery_sensor_ = cell_voltage_overvoltage_protection_recovery_sensor;
+  void set_cell_overvoltage_protection_recovery_sensor(sensor::Sensor *cell_overvoltage_protection_recovery_sensor) {
+    cell_overvoltage_protection_recovery_sensor_ = cell_overvoltage_protection_recovery_sensor;
   }
   void set_cell_voltage_overvoltage_delay_sensor(sensor::Sensor *cell_voltage_overvoltage_delay_sensor) {
     cell_voltage_overvoltage_delay_sensor_ = cell_voltage_overvoltage_delay_sensor;
   }
-  void set_cell_voltage_undervoltage_protection_sensor(sensor::Sensor *cell_voltage_undervoltage_protection_sensor) {
-    cell_voltage_undervoltage_protection_sensor_ = cell_voltage_undervoltage_protection_sensor;
+  void set_cell_undervoltage_protection_sensor(sensor::Sensor *cell_undervoltage_protection_sensor) {
+    cell_undervoltage_protection_sensor_ = cell_undervoltage_protection_sensor;
   }
-  void set_cell_voltage_undervoltage_protection_recovery_sensor(sensor::Sensor *cell_voltage_undervoltage_protection_recovery_sensor) {
-    cell_voltage_undervoltage_protection_recovery_sensor_ = cell_voltage_undervoltage_protection_recovery_sensor;
+  void set_cell_undervoltage_protection_recovery_sensor(sensor::Sensor *cell_undervoltage_protection_recovery_sensor) {
+    cell_undervoltage_protection_recovery_sensor_ = cell_undervoltage_protection_recovery_sensor;
   }
   void set_cell_request_charge_voltage_sensor(sensor::Sensor *cell_request_charge_voltage_sensor) {
     cell_request_charge_voltage_sensor_ = cell_request_charge_voltage_sensor;
@@ -162,11 +162,19 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   void set_cell_request_float_voltage_sensor(sensor::Sensor *cell_request_float_voltage_sensor) {
     cell_request_float_voltage_sensor_ = cell_request_float_voltage_sensor;
   }
-
-
   void set_cell_voltage_undervoltage_delay_sensor(sensor::Sensor *cell_voltage_undervoltage_delay_sensor) {
     cell_voltage_undervoltage_delay_sensor_ = cell_voltage_undervoltage_delay_sensor;
   }
+  void set_cell_soc100_voltage_sensor(sensor::Sensor *cell_soc100_voltage_sensor) {
+    cell_soc100_voltage_sensor_ = cell_soc100_voltage_sensor;
+  }
+  void set_cell_soc0_voltage_sensor(sensor::Sensor *cell_soc0_voltage_sensor) {
+    cell_soc0_voltage_sensor_ = cell_soc0_voltage_sensor;
+  }
+  void set_cell_power_off_voltage_sensor(sensor::Sensor *cell_power_off_voltage_sensor) {
+    cell_power_off_voltage_sensor_ = cell_power_off_voltage_sensor;
+  }
+
   void set_cell_pressure_difference_protection_sensor(sensor::Sensor *cell_pressure_difference_protection_sensor) {
     cell_pressure_difference_protection_sensor_ = cell_pressure_difference_protection_sensor;
   }
@@ -332,18 +340,19 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
 
   
 
-  sensor::Sensor *cell_voltage_undervoltage_protection_sensor_;  
-  sensor::Sensor *cell_voltage_undervoltage_protection_recovery_sensor_;
-  sensor::Sensor *cell_voltage_overvoltage_protection_sensor_; 
-  sensor::Sensor *cell_voltage_overvoltage_protection_recovery_sensor_; 
+  sensor::Sensor *cell_undervoltage_protection_sensor_;  
+  sensor::Sensor *cell_undervoltage_protection_recovery_sensor_;
+  sensor::Sensor *cell_overvoltage_protection_sensor_; 
+  sensor::Sensor *cell_overvoltage_protection_recovery_sensor_; 
   sensor::Sensor *cell_request_charge_voltage_sensor_;
   sensor::Sensor *cell_request_float_voltage_sensor_; 
 
-  sensor::Sensor *balance_trigger_voltage_number_;  
-  sensor::Sensor *soc100_voltage_number_;
-  sensor::Sensor *soc0_voltage_number_;  
+  sensor::Sensor *balance_trigger_voltage_sensor_;  
+  sensor::Sensor *cell_soc100_voltage_sensor_;
+  sensor::Sensor *cell_soc0_voltage_sensor_;  
+  sensor::Sensor *cell_power_off_voltage_sensor_;
 
-  sensor::Sensor *power_off_voltage_number_;
+
   sensor::Sensor *max_charge_current_number_;
   sensor::Sensor *charge_ocp_delay_number_;
   sensor::Sensor *charge_ocp_recovery_delay_number_;
@@ -353,7 +362,6 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   sensor::Sensor *scp_recovery_time_number_;    
   sensor::Sensor *max_balance_current_number_;    
   sensor::Sensor *total_battery_capacity_number_;  
-  sensor::Sensor *balance_starting_voltage_number_;
 
   sensor::Sensor *balancing_sensor_; 
   sensor::Sensor *cell_count_sensor_;  
