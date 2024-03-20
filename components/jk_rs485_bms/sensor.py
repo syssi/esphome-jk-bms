@@ -36,6 +36,9 @@ CONF_MIN_VOLTAGE_CELL = "min_voltage_cell"
 CONF_MAX_VOLTAGE_CELL = "max_voltage_cell"
 CONF_DELTA_CELL_VOLTAGE = "delta_cell_voltage"
 CONF_AVERAGE_CELL_VOLTAGE = "average_cell_voltage"
+CONF_CELL_COUNT = "cell_count"
+CONF_CELL_REQUEST_CHARGE_VOLTAGE = "cell_request_charge_voltage"
+CONF_CELL_REQUEST_FLOAT_VOLTAGE = "cell_request_float_voltage"
 
 CONF_CELL_VOLTAGE_1 = "cell_voltage_1"
 CONF_CELL_VOLTAGE_2 = "cell_voltage_2"
@@ -112,11 +115,11 @@ CONF_TOTAL_VOLTAGE_OVERVOLTAGE_PROTECTION = "total_voltage_overvoltage_protectio
 CONF_TOTAL_VOLTAGE_UNDERVOLTAGE_PROTECTION = "total_voltage_undervoltage_protection"
 
 CONF_CELL_VOLTAGE_OVERVOLTAGE_PROTECTION = "cell_voltage_overvoltage_protection"
-CONF_CELL_VOLTAGE_OVERVOLTAGE_RECOVERY = "cell_voltage_overvoltage_recovery"
+CONF_CELL_VOLTAGE_OVERVOLTAGE_RECOVERY = "cell_voltage_overvoltage_protection_recovery"
 CONF_CELL_VOLTAGE_OVERVOLTAGE_DELAY = "cell_voltage_overvoltage_delay"
 
 CONF_CELL_VOLTAGE_UNDERVOLTAGE_PROTECTION = "cell_voltage_undervoltage_protection"
-CONF_CELL_VOLTAGE_UNDERVOLTAGE_RECOVERY = "cell_voltage_undervoltage_recovery"
+CONF_CELL_VOLTAGE_UNDERVOLTAGE_RECOVERY = "cell_voltage_undervoltage_protection_recovery"
 CONF_CELL_VOLTAGE_UNDERVOLTAGE_DELAY = "cell_voltage_undervoltage_delay"
 
 CONF_CELL_PRESSURE_DIFFERENCE_PROTECTION = "cell_pressure_difference_protection"
@@ -259,6 +262,9 @@ SENSORS = [
     CONF_MAX_VOLTAGE_CELL,
     CONF_DELTA_CELL_VOLTAGE,
     CONF_AVERAGE_CELL_VOLTAGE,
+    CONF_CELL_COUNT,
+    CONF_CELL_REQUEST_CHARGE_VOLTAGE,
+    CONF_CELL_REQUEST_FLOAT_VOLTAGE,    
     CONF_POWER_TUBE_TEMPERATURE,
     CONF_TOTAL_VOLTAGE,
     CONF_CURRENT,
@@ -372,6 +378,27 @@ CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
             device_class=DEVICE_CLASS_VOLTAGE,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
+        cv.Optional(CONF_CELL_COUNT): sensor.sensor_schema(
+            unit_of_measurement=UNIT_EMPTY,
+            icon=ICON_EMPTY,
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),   
+        cv.Optional(CONF_CELL_REQUEST_CHARGE_VOLTAGE): sensor.sensor_schema(
+            unit_of_measurement=UNIT_VOLT,
+            icon=ICON_EMPTY,
+            accuracy_decimals=3,
+            device_class=DEVICE_CLASS_VOLTAGE,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),         
+        cv.Optional(CONF_CELL_REQUEST_FLOAT_VOLTAGE): sensor.sensor_schema(
+            unit_of_measurement=UNIT_VOLT,
+            icon=ICON_EMPTY,
+            accuracy_decimals=3,
+            device_class=DEVICE_CLASS_VOLTAGE,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),                   
         cv.Optional(CONF_CELL_VOLTAGE_1): sensor.sensor_schema(
             unit_of_measurement=UNIT_VOLT,
             icon=ICON_EMPTY,

@@ -22,12 +22,11 @@ esp32:
 #esp8266:
 #  board: d1_mini
 
-
 external_components:
-  - source: ${external_components_source}
-    refresh: 0s
-#  - source: ./components
-#    refresh: 0s
+    - source: ${external_components_source}
+      refresh: 0s
+  #- source: ./components
+  #  refresh: 0s
 
 wifi:
   ssid: !secret wifi_ssid
@@ -216,7 +215,7 @@ sensor:
     cell_resistance_23:
       name: "${bms0_name} cell resistance 23"
     cell_resistance_24:
-      name: "${bms0_name} cell resistance 24"    
+      name: "${bms0_name} cell resistance 24"
     total_voltage:
       name: "${bms0_name} total voltage"
     current:
@@ -234,7 +233,7 @@ sensor:
     temperature_sensor_3:
       name: "${bms0_name} temperature sensor 3"
     temperature_sensor_4:
-      name: "${bms0_name} temperature sensor 4"      
+      name: "${bms0_name} temperature sensor 4"
     power_tube_temperature:
       name: "${bms0_name} power tube temperature"
     state_of_charge:
@@ -252,7 +251,17 @@ sensor:
     balancing_current:
       name: "${bms0_name} balancing current"
     errors_bitmask:
-      name: "${bms0_name} errors bitmask"      
+      name: "${bms0_name} errors bitmask"
+    cell_count:
+      name: "${bms0_name} cell count"
+    cell_voltage_overvoltage_protection:
+      name: "${bms0_name} cell voltage overvoltage protection"
+    cell_voltage_overvoltage_protection_recovery:
+      name: "${bms0_name} cell voltage overvoltage protection recovery"
+    cell_request_charge_voltage:
+      name: "${bms0_name} cell request charge voltage"      
+    cell_request_float_voltage:
+      name: "${bms0_name} cell request float voltage"        
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms1
@@ -367,7 +376,7 @@ sensor:
     cell_resistance_23:
       name: "${bms1_name} cell resistance 23"
     cell_resistance_24:
-      name: "${bms1_name} cell resistance 24"    
+      name: "${bms1_name} cell resistance 24"
     total_voltage:
       name: "${bms1_name} total voltage"
     current:
@@ -385,7 +394,7 @@ sensor:
     temperature_sensor_3:
       name: "${bms1_name} temperature sensor 3"
     temperature_sensor_4:
-      name: "${bms1_name} temperature sensor 4"      
+      name: "${bms1_name} temperature sensor 4"
     power_tube_temperature:
       name: "${bms1_name} power tube temperature"
     state_of_charge:
@@ -403,9 +412,17 @@ sensor:
     balancing_current:
       name: "${bms1_name} balancing current"
     errors_bitmask:
-      name: "${bms1_name} errors bitmask"      
-
-
+      name: "${bms1_name} errors bitmask"
+    cell_count:
+      name: "${bms1_name} cell count"
+    cell_voltage_overvoltage_protection:
+      name: "${bms1_name} cell voltage overvoltage protection"
+    cell_voltage_overvoltage_protection_recovery:
+      name: "${bms1_name} cell voltage overvoltage protection recovery"
+    cell_request_charge_voltage:
+      name: "${bms1_name} cell request charge voltage"      
+    cell_request_float_voltage:
+      name: "${bms1_name} cell request float voltage"         
 switch:
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms0
@@ -416,23 +433,23 @@ switch:
     discharging:
       name: "${bms0_name} discharging"
     balancer:
-      name: "${bms0_name} balancer"   
+      name: "${bms0_name} balancer"
     emergency:
       name: "${bms0_name} emergency"
     heating:
-      name: "${bms0_name} heating"      
+      name: "${bms0_name} heating"
     display_always_on:
       name: "${bms0_name} display_always_on"
     charging_float_mode:
-      name: "${bms0_name} charging float mode"      
+      name: "${bms0_name} charging float mode"
     timed_stored_data:
-      name: "${bms0_name} timed stored data"      
+      name: "${bms0_name} timed stored data"
     disable_temperature_sensors:
-      name: "${bms0_name} disable temperature sensors"      
+      name: "${bms0_name} disable temperature sensors"
     smart_sleep_on:
-      name: "${bms0_name} smart sleep on"       
+      name: "${bms0_name} smart sleep on"
     disable_pcl_module:
-      name: "${bms0_name} disable pcl module" 
+      name: "${bms0_name} disable pcl module"
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms1
@@ -441,26 +458,25 @@ switch:
     charging:
       name: "${bms1_name} charging"
     discharging:
-      name: "${bms1_name} discharging"      
+      name: "${bms1_name} discharging"
     balancer:
       name: "${bms1_name} balancer"
     emergency:
-      name: "${bms1_name} emergency"  
+      name: "${bms1_name} emergency"
     heating:
-      name: "${bms1_name} heating"              
+      name: "${bms1_name} heating"
     display_always_on:
-      name: "${bms1_name} display_always_on"   
+      name: "${bms1_name} display_always_on"
     charging_float_mode:
-      name: "${bms1_name} charging float mode"           
+      name: "${bms1_name} charging float mode"
     timed_stored_data:
-      name: "${bms1_name} timed stored data"      
+      name: "${bms1_name} timed stored data"
     disable_temperature_sensors:
-      name: "${bms1_name} disable temperature sensors"      
+      name: "${bms1_name} disable temperature sensors"
     smart_sleep_on:
-      name: "${bms1_name} smart sleep on" 
+      name: "${bms1_name} smart sleep on"
     disable_pcl_module:
-      name: "${bms1_name} disable pcl module" 
-
+      name: "${bms1_name} disable pcl module"
 
 text_sensor:
   - platform: jk_rs485_bms
@@ -473,8 +489,8 @@ text_sensor:
       name: "${bms0_name} total runtime formatted"
     battery_type:
       name: "${bms0_name} battery type"
-    # ...
 
+    # ...
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms1
     errors:

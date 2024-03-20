@@ -276,7 +276,7 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   //                                                                     0x01: Charging balancer
   //                                                                     0x02: Discharging balancer
   this->publish_state_(this->balancing_binary_sensor_, (data[140 + offset] != 0x00));
-  this->publish_state_(this->balancing_number_, (data[140 + offset]));
+  this->publish_state_(this->balancing_sensor_, (data[140 + offset]));
 
   // 141   1   0x54                   State of charge in   1.0           %
   this->publish_state_(this->state_of_charge_sensor_, (float) data[141 + offset]);
@@ -377,10 +377,8 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
     this->publish_state_(this->emergency_time_countdown_sensor_, (float) raw_emergency_time_countdown * 1.0f);
 
     // 202 Battery Voltage (better 118 measurement --> more decimals)
-    this->publish_state_(this->temperatures_[3].temperature_sensor_,
-                         (float) ((int16_t) jk_get_16bit(224 + offset)) * 0.1f);
-    this->publish_state_(this->temperatures_[2].temperature_sensor_,
-                         (float) ((int16_t) jk_get_16bit(226 + offset)) * 0.1f); 
+    this->publish_state_(this->temperatures_[3].temperature_sensor_,(float) ((int16_t) jk_get_16bit(224 + offset)) * 0.1f);
+    this->publish_state_(this->temperatures_[2].temperature_sensor_,(float) ((int16_t) jk_get_16bit(226 + offset)) * 0.1f); 
     
     ESP_LOGI(TAG, "  Charger plugged: %d", (data[207 + offset] ) );
     // 208 SysRunTicks ???
@@ -461,19 +459,19 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->smart_sleep_voltage_sensor_, (float) jk_get_32bit(6) * 0.001f);
   // 10    4   0x54 0x0B 0x00 0x00    Cell UVP
   ESP_LOGI(TAG, "  Cell UVP: %f V", (float) jk_get_32bit(10) * 0.001f);
-  this->publish_state_(this->cell_voltage_undervoltage_protection_number_, (float) jk_get_32bit(10) * 0.001f);
+  this->publish_state_(this->cell_voltage_undervoltage_protection_sensor_, (float) jk_get_32bit(10) * 0.001f);
 
   // 14    4   0x80 0x0C 0x00 0x00    Cell UVP Recovery
   ESP_LOGI(TAG, "  Cell UVPR: %f V", (float) jk_get_32bit(14) * 0.001f);
-  this->publish_state_(this->cell_voltage_undervoltage_recovery_number_, (float) jk_get_32bit(14) * 0.001f);
+  this->publish_state_(this->cell_voltage_undervoltage_protection_recovery_sensor_, (float) jk_get_32bit(14) * 0.001f);
 
   // 18    4   0xCC 0x10 0x00 0x00    Cell OVP
   ESP_LOGI(TAG, "%02X%02X%02X%02X Cell OVP: %f V",data[18],data[19],data[20],data[21], (float) jk_get_32bit(18));
-  this->publish_state_(this->cell_voltage_overvoltage_protection_number_, (float) jk_get_32bit(18) * 0.001f);
+  this->publish_state_(this->cell_voltage_overvoltage_protection_sensor_, (float) jk_get_32bit(18) * 0.001f);
 
   // 22    4   0x68 0x10 0x00 0x00    Cell OVP Recovery
   ESP_LOGI(TAG, "  Cell OVPR: %f V", (float) jk_get_32bit(22) * 0.001f);
-  this->publish_state_(this->cell_voltage_overvoltage_recovery_number_, (float) jk_get_32bit(22) * 0.001f);
+  this->publish_state_(this->cell_voltage_overvoltage_protection_recovery_sensor_, (float) jk_get_32bit(22) * 0.001f);
 
   // 26    4   0x0A 0x00 0x00 0x00    Balance trigger voltage
   ESP_LOGI(TAG, "  Balance trigger voltage: %f V", (float) jk_get_32bit(26) * 0.001f);
@@ -486,11 +484,11 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   ESP_LOGI(TAG, "  SOC-0 VOLTAGE: %f V", (float) jk_get_32bit(34) * 0.001f);
   this->publish_state_(this->soc0_voltage_number_, (float) jk_get_32bit(34) * 0.001f);  
   // 38    4   0x00 0x00 0x00 0x00    ** [JK-PB2A16S-20P v14] VOLTAGE CELL REQUEST CHARGE VOLTAGE [RCV]
-  ESP_LOGI(TAG, "  VOLTAGE CELL REQUEST CHARGE VOLTAGE [RCV]: %f V", (float) jk_get_32bit(38) * 0.001f);
-  this->publish_state_(this->voltage_cell_request_charge_voltage_number_, (float) jk_get_32bit(38) * 0.001f);  
+  ESP_LOGI(TAG, "  CELL REQUEST CHARGE VOLTAGE [RCV]: %f V", (float) jk_get_32bit(38) * 0.001f);
+  this->publish_state_(this->cell_request_charge_voltage_sensor_, (float) jk_get_32bit(38) * 0.001f);  
   // 42    4   0x00 0x00 0x00 0x00    ** [JK-PB2A16S-20P v14] VOLTAGE CELL REQUEST FLOAT VOLTAGE
-  ESP_LOGI(TAG, "  VOLTAGE CELL REQUEST FLOAT VOLTAGE [RFV]: %f V", (float) jk_get_32bit(42) * 0.001f);
-  this->publish_state_(this->voltage_cell_request_float_voltage_number_, (float) jk_get_32bit(42) * 0.001f);   
+  ESP_LOGI(TAG, "  CELL REQUEST FLOAT VOLTAGE [RFV]: %f V", (float) jk_get_32bit(42) * 0.001f);
+  this->publish_state_(this->cell_request_float_voltage_sensor_, (float) jk_get_32bit(42) * 0.001f);   
   // 46    4   0xF0 0x0A 0x00 0x00    Power off voltage
   ESP_LOGI(TAG, "  Power off voltage: %f V", (float) jk_get_32bit(46) * 0.001f);
   this->publish_state_(this->power_off_voltage_number_, (float) jk_get_32bit(46) * 0.001f);
@@ -540,7 +538,7 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   ESP_LOGI(TAG, "  MOS OTP recovery: %f °C", (float) ((int32_t) jk_get_32bit(110)) * 0.1f);
   // 114   4   0x0D 0x00 0x00 0x00    Cell count
   ESP_LOGI(TAG, "  Cell count: %f", (float) jk_get_32bit(114));
-  this->publish_state_(this->cell_count_number_, (float) data[114]);
+  this->publish_state_(this->cell_count_sensor_, (float) data[114]);
 
 
   // 118   4   0x01 0x00 0x00 0x00    Charge switch
@@ -559,8 +557,8 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   // ESP_LOGI(TAG, "  Nominal battery capacity: %f Ah", (float) jk_get_32bit(130) * 0.001f);
   this->publish_state_(this->total_battery_capacity_number_, (float) jk_get_32bit(130) * 0.001f);
 
-  // 134   4   0xDC 0x05 0x00 0x00    SCP DELAY (us) 
-  // ESP_LOGI(TAG, "  SCP DELAY: %f us", (float) jk_get_32bit(134) * 0.001f);
+  // 134   4   0xDC 0x05 0x00 0x00    SCP DELAY?? (us) 
+  // ESP_LOGI(TAG, "  SCP DELAY??: %f us", (float) jk_get_32bit(134) * 0.001f);
   //this->publish_state_(this->scp_delay_number_, (float) jk_get_32bit(134) * 0.001f);
   // 138   4   0xE4 0x0C 0x00 0x00    Start balance voltage
   // ESP_LOGI(TAG, "  Start balance voltage: %f V", (float) jk_get_32bit(138) * 0.001f);
@@ -788,10 +786,10 @@ void JkRS485Bms::publish_device_unavailable_() {
   this->publish_state_(total_voltage_overvoltage_protection_sensor_, NAN);
   this->publish_state_(total_voltage_undervoltage_protection_sensor_, NAN);
   this->publish_state_(cell_voltage_overvoltage_protection_sensor_, NAN);
-  this->publish_state_(cell_voltage_overvoltage_recovery_sensor_, NAN);
+  this->publish_state_(cell_voltage_overvoltage_protection_recovery_sensor_, NAN);
   this->publish_state_(cell_voltage_overvoltage_delay_sensor_, NAN);
   this->publish_state_(cell_voltage_undervoltage_protection_sensor_, NAN);
-  this->publish_state_(cell_voltage_undervoltage_recovery_sensor_, NAN);
+  this->publish_state_(cell_voltage_undervoltage_protection_recovery_sensor_, NAN);
   this->publish_state_(cell_voltage_undervoltage_delay_sensor_, NAN);
   this->publish_state_(cell_pressure_difference_protection_sensor_, NAN);
   this->publish_state_(discharging_overcurrent_protection_sensor_, NAN);
@@ -950,10 +948,10 @@ void JkRS485Bms::dump_config() {  // NOLINT(google-readability-function-size,rea
   LOG_SENSOR("", "Total Voltage Overvoltage Protection", this->total_voltage_overvoltage_protection_sensor_);
   LOG_SENSOR("", "Total Voltage Undervoltage Protection", this->total_voltage_undervoltage_protection_sensor_);
   LOG_SENSOR("", "Cell Voltage Overvoltage Protection", this->cell_voltage_overvoltage_protection_sensor_);
-  LOG_SENSOR("", "Cell Voltage Overvoltage Recovery", this->cell_voltage_overvoltage_recovery_sensor_);
+  LOG_SENSOR("", "Cell Voltage Overvoltage Protection Recovery", this->cell_voltage_overvoltage_protection_recovery_sensor_);
   LOG_SENSOR("", "Cell Voltage Overvoltage Delay", this->cell_voltage_overvoltage_delay_sensor_);
   LOG_SENSOR("", "Cell Voltage Undervoltage Protection", this->cell_voltage_undervoltage_protection_sensor_);
-  LOG_SENSOR("", "Cell Voltage Undervoltage Recovery", this->cell_voltage_undervoltage_recovery_sensor_);
+  LOG_SENSOR("", "Cell Voltage Undervoltage Protection Recovery", this->cell_voltage_undervoltage_protection_recovery_sensor_);
   LOG_SENSOR("", "Cell Voltage Undervoltage Delay", this->cell_voltage_undervoltage_delay_sensor_);
   LOG_SENSOR("", "Cell Pressure Difference Protection", this->cell_pressure_difference_protection_sensor_);
   LOG_SENSOR("", "Discharging Overcurrent Protection", this->discharging_overcurrent_protection_sensor_);
