@@ -55,17 +55,17 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   void set_total_battery_capacity_number(number::Number *total_battery_capacity_number) {
     total_battery_capacity_number_ = total_battery_capacity_number;
   }
-  void set_cell_voltage_overvoltage_protection_number(number::Number *cell_voltage_overvoltage_protection_number) {
-    cell_voltage_overvoltage_protection_number_ = cell_voltage_overvoltage_protection_number;
+  void set_cell_overvoltage_protection_number(number::Number *cell_overvoltage_protection_number) {
+    cell_overvoltage_protection_number_ = cell_overvoltage_protection_number;
   }
-  void set_cell_voltage_overvoltage_recovery_number(number::Number *cell_voltage_overvoltage_recovery_number) {
-    cell_voltage_overvoltage_recovery_number_ = cell_voltage_overvoltage_recovery_number;
+  void set_cell_overvoltage_protection_recovery_number(number::Number *cell_overvoltage_protection_recovery_number) {
+    cell_overvoltage_protection_recovery_number_ = cell_overvoltage_protection_recovery_number;
   }
-  void set_cell_voltage_undervoltage_protection_number(number::Number *cell_voltage_undervoltage_protection_number) {
-    cell_voltage_undervoltage_protection_number_ = cell_voltage_undervoltage_protection_number;
+  void set_cell_undervoltage_protection_number(number::Number *cell_undervoltage_protection_number) {
+    cell_undervoltage_protection_number_ = cell_undervoltage_protection_number;
   }
-  void set_cell_voltage_undervoltage_recovery_number(number::Number *cell_voltage_undervoltage_recovery_number) {
-    cell_voltage_undervoltage_recovery_number_ = cell_voltage_undervoltage_recovery_number;
+  void set_cell_undervoltage_protection_recovery_number(number::Number *cell_undervoltage_protection_recovery_number) {
+    cell_undervoltage_protection_recovery_number_ = cell_undervoltage_protection_recovery_number;
   }
   void set_balance_starting_voltage_number(number::Number *balance_starting_voltage_number) {
     balance_starting_voltage_number_ = balance_starting_voltage_number;
@@ -241,10 +241,10 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   number::Number *cell_request_float_voltage_number_;
   number::Number *cell_count_number_;
   number::Number *total_battery_capacity_number_;
-  number::Number *cell_voltage_overvoltage_protection_number_;
-  number::Number *cell_voltage_overvoltage_recovery_number_;
-  number::Number *cell_voltage_undervoltage_protection_number_;
-  number::Number *cell_voltage_undervoltage_recovery_number_;
+  number::Number *cell_overvoltage_protection_number_;
+  number::Number *cell_overvoltage_protection_recovery_number_;
+  number::Number *cell_undervoltage_protection_number_;
+  number::Number *cell_undervoltage_protection_recovery_number_;
   number::Number *balance_starting_voltage_number_;
   number::Number *voltage_calibration_number_;  // @FIXME: Identify value at the settings frame
   number::Number *current_calibration_number_;  // @FIXME: Identify value at the settings frame

@@ -50,10 +50,10 @@ DEFAULT_STEP = 1
 # 0f 04 e8030000  Set Max discharge Current to 1.0
 
 CONF_SMART_SLEEP_VOLTAGE = "smart_sleep_voltage"
-CONF_CELL_VOLTAGE_UNDERVOLTAGE_PROTECTION = "cell_voltage_undervoltage_protection"
-CONF_CELL_VOLTAGE_UNDERVOLTAGE_RECOVERY = "cell_voltage_undervoltage_recovery"
-CONF_CELL_VOLTAGE_OVERVOLTAGE_PROTECTION = "cell_voltage_overvoltage_protection"
-CONF_CELL_VOLTAGE_OVERVOLTAGE_RECOVERY = "cell_voltage_overvoltage_recovery"
+CONF_CELL_UNDERVOLTAGE_PROTECTION = "cell_undervoltage_protection"
+CONF_CELL_UNDERVOLTAGE_PROTECTION_RECOVERY = "cell_undervoltage_protection_recovery"
+CONF_CELL_OVERVOLTAGE_PROTECTION = "cell_overvoltage_protection"
+CONF_CELL_OVERVOLTAGE_PROTECTION_RECOVERY = "cell_overvoltage_protection_recovery"
 CONF_BALANCE_TRIGGER_VOLTAGE = "balance_trigger_voltage"
 CONF_SOC100_VOLTAGE = "soc100_voltage"
 CONF_SOC0_VOLTAGE = "soc0_voltage"
@@ -130,10 +130,10 @@ UNIT_AMPERE_HOUR = "Ah"
 NUMBERS = {
     # JK04, JK02, JK02_32S, factor
     CONF_SMART_SLEEP_VOLTAGE: [0x00, 0x01, 0x01, 1000.0],    
-    CONF_CELL_VOLTAGE_UNDERVOLTAGE_PROTECTION: [0x00, 0x02, 0x02, 1000.0],
-    CONF_CELL_VOLTAGE_UNDERVOLTAGE_RECOVERY: [0x00, 0x03, 0x03, 1000.0],
-    CONF_CELL_VOLTAGE_OVERVOLTAGE_PROTECTION: [0x00, 0x04, 0x04, 1000.0], 
-    CONF_CELL_VOLTAGE_OVERVOLTAGE_RECOVERY: [0x00, 0x05, 0x05, 1000.0],
+    CONF_CELL_UNDERVOLTAGE_PROTECTION: [0x00, 0x02, 0x02, 1000.0],
+    CONF_CELL_UNDERVOLTAGE_PROTECTION_RECOVERY: [0x00, 0x03, 0x03, 1000.0],
+    CONF_CELL_OVERVOLTAGE_PROTECTION: [0x00, 0x04, 0x04, 1000.0], 
+    CONF_CELL_OVERVOLTAGE_PROTECTION_RECOVERY: [0x00, 0x05, 0x05, 1000.0],
     CONF_BALANCE_TRIGGER_VOLTAGE: [0x00, 0x06, 0x06, 1000.0],
     CONF_SOC100_VOLTAGE: [0x00, 0x07, 0x07, 1000.0],
     CONF_SOC0_VOLTAGE: [0x00, 0x08, 0x08, 1000.0],
@@ -142,7 +142,7 @@ NUMBERS = {
 
     CONF_CELL_COUNT: [0x00, 0x1C, 0x1C, 1.0],
     CONF_TOTAL_BATTERY_CAPACITY: [0x00, 0x20, 0x20, 1000.0],
-    CONF_CELL_VOLTAGE_OVERVOLTAGE_PROTECTION: [0x00, 0x04, 0x04, 1000.0],
+    CONF_CELL_OVERVOLTAGE_PROTECTION: [0x00, 0x04, 0x04, 1000.0],
     CONF_BALANCE_STARTING_VOLTAGE: [0x00, 0x26, 0x22, 1000.0],
     CONF_VOLTAGE_CALIBRATION: [0x00, 0x21, 0x64, 1000.0],
     CONF_CURRENT_CALIBRATION: [0x00, 0x24, 0x67, 1000.0],
@@ -176,28 +176,28 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
                 cv.Optional(CONF_STEP, default=0.001): cv.float_,
             }
         ),        
-        cv.Optional(CONF_CELL_VOLTAGE_OVERVOLTAGE_PROTECTION): JK_NUMBER_SCHEMA.extend(
+        cv.Optional(CONF_CELL_OVERVOLTAGE_PROTECTION): JK_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=1.2): cv.float_,
                 cv.Optional(CONF_MAX_VALUE, default=4.350): cv.float_,
                 cv.Optional(CONF_STEP, default=0.001): cv.float_,
             }
         ),
-        cv.Optional(CONF_CELL_VOLTAGE_OVERVOLTAGE_RECOVERY): JK_NUMBER_SCHEMA.extend(
+        cv.Optional(CONF_CELL_OVERVOLTAGE_PROTECTION_RECOVERY): JK_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=1.2): cv.float_,
                 cv.Optional(CONF_MAX_VALUE, default=4.350): cv.float_,
                 cv.Optional(CONF_STEP, default=0.001): cv.float_,
             }
         ),
-        cv.Optional(CONF_CELL_VOLTAGE_UNDERVOLTAGE_RECOVERY): JK_NUMBER_SCHEMA.extend(
+        cv.Optional(CONF_CELL_UNDERVOLTAGE_PROTECTION_RECOVERY): JK_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=1.2): cv.float_,
                 cv.Optional(CONF_MAX_VALUE, default=4.350): cv.float_,
                 cv.Optional(CONF_STEP, default=0.001): cv.float_,
             }
         ),        
-        cv.Optional(CONF_CELL_VOLTAGE_UNDERVOLTAGE_PROTECTION): JK_NUMBER_SCHEMA.extend(
+        cv.Optional(CONF_CELL_UNDERVOLTAGE_PROTECTION): JK_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=1.2): cv.float_,
                 cv.Optional(CONF_MAX_VALUE, default=4.350): cv.float_,

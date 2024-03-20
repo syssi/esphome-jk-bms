@@ -756,8 +756,7 @@ void JkBmsBle::decode_jk04_cell_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->total_runtime_formatted_text_sensor_, format_total_runtime_(jk_get_32bit(286)));
 
   // 290   4   0x00 0x00 0x00 0x00    Unknown290
-  ESP_LOGD(TAG, "Unknown290: 0x%02X 0x%02X 0x%02X 0x%02X (always 0x00 0x00 0x00 0x00?)", data[290], data[291],
-           data[292], data[293]);
+  ESP_LOGD(TAG, "Unknown290: 0x%02X 0x%02X 0x%02X 0x%02X (always 0x00 0x00 0x00 0x00?)", data[290], data[291],data[292], data[293]);
 
   // 294   4   0x00 0x48 0x22 0x40    Unknown294
   ESP_LOGD(TAG, "Unknown294: 0x%02X 0x%02X 0x%02X 0x%02X", data[294], data[295], data[296], data[297]);
@@ -808,19 +807,19 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
 
   // 10 [2]    4   0x54 0x0B 0x00 0x00    Cell UVP
   ESP_LOGI(TAG, "  Cell UVP: %f V", (float) jk_get_32bit(10) * 0.001f);
-  this->publish_state_(this->cell_voltage_undervoltage_protection_number_, (float) jk_get_32bit(10) * 0.001f);
+  this->publish_state_(this->cell_undervoltage_protection_number_, (float) jk_get_32bit(10) * 0.001f);
 
   // 14 [3]    4   0x80 0x0C 0x00 0x00    Cell UVP Recovery
   ESP_LOGI(TAG, "  Cell UVPR: %f V", (float) jk_get_32bit(14) * 0.001f);
-  this->publish_state_(this->cell_voltage_undervoltage_recovery_number_, (float) jk_get_32bit(14) * 0.001f);
+  this->publish_state_(this->cell_undervoltage_protection_recovery_number_, (float) jk_get_32bit(14) * 0.001f);
 
   // 18 [4]    4   0xCC 0x10 0x00 0x00    Cell OVP
   ESP_LOGI(TAG, "  Cell OVP: %f V", (float) jk_get_32bit(18) * 0.001f);
-  this->publish_state_(this->cell_voltage_overvoltage_protection_number_, (float) jk_get_32bit(18) * 0.001f);
+  this->publish_state_(this->cell_overvoltage_protection_number_, (float) jk_get_32bit(18) * 0.001f);
 
   // 22 [5]    4   0x68 0x10 0x00 0x00    Cell OVP Recovery
   ESP_LOGI(TAG, "  Cell OVPR: %f V", (float) jk_get_32bit(22) * 0.001f);
-  this->publish_state_(this->cell_voltage_overvoltage_recovery_number_, (float) jk_get_32bit(22) * 0.001f);
+  this->publish_state_(this->cell_overvoltage_protection_recovery_number_, (float) jk_get_32bit(22) * 0.001f);
 
   // 26 [6]    4   0x0A 0x00 0x00 0x00    Balance trigger voltage
   ESP_LOGI(TAG, "  Balance trigger voltage: %f V", (float) jk_get_32bit(26) * 0.001f);
@@ -904,8 +903,10 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   ESP_LOGI(TAG, "  Nominal battery capacity: %f Ah", (float) jk_get_32bit(130) * 0.001f);
   this->publish_state_(this->total_battery_capacity_number_, (float) jk_get_32bit(130) * 0.001f);
 
-  // 134   4   0xDC 0x05 0x00 0x00    Unknown134
-  ESP_LOGD(TAG, "  Unknown134: %f", (float) jk_get_32bit(134) * 0.001f);
+  // 134   4   0xDC 0x05 0x00 0x00    SCP DELAY??(us) 
+  ESP_LOGI(TAG, "  SCP DELAY??: %f us", (float) jk_get_32bit(134) * 0.001f);
+  //this->publish_state_(this->scp_delay_number_, (float) jk_get_32bit(134) * 0.001f);
+
   // 138   4   0xE4 0x0C 0x00 0x00    Start balance voltage
   ESP_LOGI(TAG, "  Start balance voltage: %f V", (float) jk_get_32bit(138) * 0.001f);
   this->publish_state_(this->balance_starting_voltage_number_, (float) jk_get_32bit(138) * 0.001f);
