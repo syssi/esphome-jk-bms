@@ -23,10 +23,10 @@ esp32:
 #  board: d1_mini
 
 external_components:
-#    - source: ${external_components_source}
-#      refresh: 0s
-  - source: ./components
-    refresh: 0s
+    - source: ${external_components_source}
+      refresh: 0s
+#  - source: ./components
+#    refresh: 0s
 
 wifi:
   ssid: !secret wifi_ssid
