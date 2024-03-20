@@ -1263,19 +1263,51 @@ switch:
       name: "${bms0_name} charging"
     discharging:
       name: "${bms0_name} discharging"
+    balancer:
+      name: "${bms0_name} balancer"
+    emergency:
+      name: "${bms0_name} emergency"  
+    heating:
+      name: "${bms0_name} heating"              
     display_always_on:
-      name: "${bms0_name} display_always_on"       
+      name: "${bms0_name} display_always_on"   
+    charging_float_mode:
+      name: "${bms0_name} charging float mode"           
+    timed_stored_data:
+      name: "${bms0_name} timed stored data"      
+    disable_temperature_sensors:
+      name: "${bms0_name} disable temperature sensors"      
+    smart_sleep_on:
+      name: "${bms0_name} smart sleep on"  
+    disable_pcl_module:
+      name: "${bms0 name} disable pcl module"       
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms1
     precharging:
-      name: "${bms1_name} precharging"    
+      name: "${bms1_name} precharging"
     charging:
       name: "${bms1_name} charging"
     discharging:
       name: "${bms1_name} discharging"
+    balancer:
+      name: "${bms1_name} balancer"
+    emergency:
+      name: "${bms1_name} emergency"  
+    heating:
+      name: "${bms1_name} heating"              
     display_always_on:
-      name: "${bms1_name} display_always_on" 
+      name: "${bms1_name} display_always_on"   
+    charging_float_mode:
+      name: "${bms1_name} charging float mode"           
+    timed_stored_data:
+      name: "${bms1_name} timed stored data"      
+    disable_temperature_sensors:
+      name: "${bms1_name} disable temperature sensors"      
+    smart_sleep_on:
+      name: "${bms1_name} smart sleep on" 
+    disable_pcl_module:
+      name: "${bms1_name} disable pcl module"       
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms2
@@ -1285,8 +1317,24 @@ switch:
       name: "${bms2_name} charging"
     discharging:
       name: "${bms2_name} discharging"
+    balancer:
+      name: "${bms2_name} balancer"
+    emergency:
+      name: "${bms2_name} emergency"  
+    heating:
+      name: "${bms2_name} heating"              
     display_always_on:
-      name: "${bms2_name} display_always_on"       
+      name: "${bms2_name} display_always_on"   
+    charging_float_mode:
+      name: "${bms2_name} charging float mode"           
+    timed_stored_data:
+      name: "${bms2_name} timed stored data"      
+    disable_temperature_sensors:
+      name: "${bms2_name} disable temperature sensors"      
+    smart_sleep_on:
+      name: "${bms2_name} smart sleep on"     
+    disable_pcl_module:
+      name: "${bms2_name} disable pcl module" 
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms3
@@ -1295,10 +1343,25 @@ switch:
     charging:
       name: "${bms3_name} charging"
     discharging:
-      name: "${bms3_name} discharging"            
+      name: "${bms3_name} discharging"
+    balancer:
+      name: "${bms3_name} balancer"
+    emergency:
+      name: "${bms3_name} emergency"  
+    heating:
+      name: "${bms3_name} heating"              
     display_always_on:
-      name: "${bms3_name} display_always_on" 
-
+      name: "${bms3_name} display_always_on"   
+    charging_float_mode:
+      name: "${bms3_name} charging float mode"           
+    timed_stored_data:
+      name: "${bms3_name} timed stored data"      
+    disable_temperature_sensors:
+      name: "${bms3_name} disable temperature sensors"      
+    disable_pcl_module:
+      name: "${bms3_name} disable pcl module"       
+    smart_sleep_on:
+      name: "${bms3_name} smart sleep on" 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms4
     precharging:
@@ -1307,8 +1370,24 @@ switch:
       name: "${bms4_name} charging"
     discharging:
       name: "${bms4_name} discharging"
+    balancer:
+      name: "${bms4_name} balancer"
+    emergency:
+      name: "${bms4_name} emergency"  
+    heating:
+      name: "${bms4_name} heating"              
     display_always_on:
-      name: "${bms4_name} display_always_on" 
+      name: "${bms4_name} display_always_on"   
+    charging_float_mode:
+      name: "${bms4_name} charging float mode"           
+    timed_stored_data:
+      name: "${bms4_name} timed stored data"      
+    disable_temperature_sensors:
+      name: "${bms4_name} disable temperature sensors"      
+    smart_sleep_on:
+      name: "${bms4_name} smart sleep on" 
+    disable_pcl_module:
+      name: "${bms4_name} disable pcl module" 
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms5
@@ -1318,8 +1397,24 @@ switch:
       name: "${bms5_name} charging"
     discharging:
       name: "${bms5_name} discharging"
+    balancer:
+      name: "${bms5_name} balancer"
+    emergency:
+      name: "${bms5_name} emergency"  
+    heating:
+      name: "${bms5_name} heating"              
     display_always_on:
-      name: "${bms5_name} display_always_on" 
+      name: "${bms5_name} display_always_on"   
+    charging_float_mode:
+      name: "${bms5_name} charging float mode"           
+    timed_stored_data:
+      name: "${bms5_name} timed stored data"      
+    disable_temperature_sensors:
+      name: "${bms5_name} disable temperature sensors"      
+    smart_sleep_on:
+      name: "${bms5_name} smart sleep on" 
+    disable_pcl_module:
+      name: "${bms5_name} disable pcl module"       
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms6
@@ -1328,9 +1423,25 @@ switch:
     charging:
       name: "${bms6_name} charging"
     discharging:
-      name: "${bms6_name} discharging"      
+      name: "${bms6_name} discharging"
+    balancer:
+      name: "${bms6_name} balancer"
+    emergency:
+      name: "${bms6_name} emergency"  
+    heating:
+      name: "${bms6_name} heating"              
     display_always_on:
-      name: "${bms6_name} display_always_on" 
+      name: "${bms6_name} display_always_on"   
+    charging_float_mode:
+      name: "${bms6_name} charging float mode"           
+    timed_stored_data:
+      name: "${bms6_name} timed stored data"      
+    disable_temperature_sensors:
+      name: "${bms6_name} disable temperature sensors"      
+    smart_sleep_on:
+      name: "${bms6_name} smart sleep on" 
+    disable_pcl_module:
+      name: "${bms6_name} disable pcl module"       
 
 text_sensor:
   - platform: jk_rs485_bms

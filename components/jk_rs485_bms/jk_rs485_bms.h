@@ -259,6 +259,18 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   void set_charging_float_mode_switch(switch_::Switch *charging_float_mode_switch) {
     charging_float_mode_switch_ = charging_float_mode_switch;
   }
+  void set_disable_temperature_sensors_switch(switch_::Switch *disable_temperature_sensors_switch) {
+    disable_temperature_sensors_switch_ = disable_temperature_sensors_switch;
+  }
+  void set_timed_stored_data_switch(switch_::Switch *timed_stored_data_switch) {
+    timed_stored_data_switch_ = timed_stored_data_switch;
+  }
+  
+  void set_disable_pcl_module_switch(switch_::Switch *disable_pcl_module_switch) {
+    disable_pcl_module_switch_ = disable_pcl_module_switch;
+  }
+
+  void set_smart_sleep_on_switch(switch_::Switch *smart_sleep_on_switch) { smart_sleep_on_switch_ = smart_sleep_on_switch; }
 
   void set_errors_text_sensor(text_sensor::TextSensor *errors_text_sensor) { errors_text_sensor_ = errors_text_sensor; }
   void set_operation_mode_text_sensor(text_sensor::TextSensor *operation_mode_text_sensor) {
@@ -410,6 +422,9 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   switch_::Switch *charging_float_mode_switch_;
   switch_::Switch *disable_temperature_sensors_switch_; 
   switch_::Switch *display_always_on_switch_;   
+  switch_::Switch *smart_sleep_on_switch_;
+  switch_::Switch *timed_stored_data_switch_;
+  switch_::Switch *disable_pcl_module_switch_;
 
   text_sensor::TextSensor *errors_text_sensor_;
   text_sensor::TextSensor *operation_mode_text_sensor_;

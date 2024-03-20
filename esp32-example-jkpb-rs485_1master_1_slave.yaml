@@ -399,19 +399,51 @@ switch:
       name: "${bms0_name} charging"
     discharging:
       name: "${bms0_name} discharging"
+    balancer:
+      name: "${bms0_name} balancer"
+    emergency:
+      name: "${bms0_name} emergency"  
+    heating:
+      name: "${bms0_name} heating"              
     display_always_on:
-      name: "${bms0_name} display_always_on"      
+      name: "${bms0_name} display_always_on"   
+    charging_float_mode:
+      name: "${bms0_name} charging float mode"           
+    timed_stored_data:
+      name: "${bms0_name} timed stored data"      
+    disable_temperature_sensors:
+      name: "${bms0_name} disable temperature sensors"      
+    smart_sleep_on:
+      name: "${bms0_name} smart sleep on"    
+    disable_pcl_module:
+      name: "${bms0_name} disable pcl module"        
 
   - platform: jk_rs485_bms
+    jk_rs485_bms_id: bms1
     precharging:
       name: "${bms1_name} precharging"
-    jk_rs485_bms_id: bms1
     charging:
       name: "${bms1_name} charging"
     discharging:
       name: "${bms1_name} discharging"
+    balancer:
+      name: "${bms1_name} balancer"
+    emergency:
+      name: "${bms1_name} emergency"  
+    heating:
+      name: "${bms1_name} heating"              
     display_always_on:
-      name: "${bms1_name} display_always_on"
+      name: "${bms1_name} display_always_on"   
+    charging_float_mode:
+      name: "${bms1_name} charging float mode"           
+    timed_stored_data:
+      name: "${bms1_name} timed stored data"      
+    disable_temperature_sensors:
+      name: "${bms1_name} disable temperature sensors"      
+    smart_sleep_on:
+      name: "${bms1_name} smart sleep on" 
+    disable_pcl_module:
+      name: "${bms1_name} disable pcl module" 
 
 text_sensor:
   - platform: jk_rs485_bms

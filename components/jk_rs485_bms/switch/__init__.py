@@ -4,7 +4,7 @@ import esphome.config_validation as cv
 from esphome.const import CONF_ICON, CONF_ID
 
 from .. import CONF_JK_RS485_BMS_ID, JK_RS485_BMS_COMPONENT_SCHEMA, jk_rs485_bms_ns
-from ..const import CONF_BALANCER, CONF_PRECHARGING, CONF_CHARGING, CONF_DISCHARGING, CONF_DISPLAY_ALWAYS_ON, CONF_EMERGENCY, CONF_HEATING, CONF_CHARGING_FLOAT_MODE
+from ..const import CONF_BALANCER, CONF_PRECHARGING, CONF_CHARGING, CONF_DISCHARGING, CONF_DISPLAY_ALWAYS_ON, CONF_EMERGENCY, CONF_HEATING, CONF_CHARGING_FLOAT_MODE, CONF_SMART_SLEEP_ON,CONF_DISABLE_PCL_MODULE,CONF_DISABLE_TEMPERATURE_SENSORS, CONF_TIMED_STORED_DATA    
 
 DEPENDENCIES = ["jk_rs485_bms"]
 
@@ -13,10 +13,14 @@ CODEOWNERS = ["@syssi","@txubelaxu"]
 ICON_CHARGING = "mdi:battery-charging-50"
 ICON_DISCHARGING = "mdi:battery-charging-50"
 ICON_BALANCER = "mdi:seesaw"
-ICON_DISPLAY_ALWAYS_ON = "mdi:television"
 ICON_EMERGENCY = "mdi:exit-run"
 ICON_HEATING = "mdi:radiator"
+ICON_DISABLE_TEMPERATURE_SENSORS = "mdi:thermometer-off"
+ICON_SMART_SLEEP_ON = "mdi:sleep"
+ICON_TIMED_STORED_DATA = "mdi:calendar-clock"
+ICON_DISABLE_PCL_MODULE = "mdi:power-plug-off"
 ICON_CHARGING_FLOAT_MODE = "mdi:battery-charging-80"
+ICON_DISPLAY_ALWAYS_ON = "mdi:television"
 
 SWITCHES = {
     CONF_PRECHARGING: 0xAB,
@@ -28,6 +32,10 @@ SWITCHES = {
     CONF_EMERGENCY: 0x00,
     CONF_HEATING: 0x00,    
     CONF_CHARGING_FLOAT_MODE: 0x00,
+    CONF_DISABLE_TEMPERATURE_SENSORS: 0x28,
+    CONF_SMART_SLEEP_ON: 0x2D,
+    CONF_DISABLE_PCL_MODULE: 0x2E,
+    CONF_TIMED_STORED_DATA: 0x2F,
 }
 
 JkRS485BmsSwitch = jk_rs485_bms_ns.class_("JkRS485BmsSwitch", switch.Switch, cg.Component)
@@ -69,19 +77,45 @@ CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
                 cv.GenerateID(): cv.declare_id(JkRS485BmsSwitch),
                 cv.Optional(CONF_ICON, default=ICON_HEATING): cv.icon,
             }
-        ).extend(cv.COMPONENT_SCHEMA),               
+        ).extend(cv.COMPONENT_SCHEMA),   
+        cv.Optional(CONF_DISABLE_TEMPERATURE_SENSORS): switch.SWITCH_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(JkRS485BmsSwitch),
+                cv.Optional(
+                    CONF_ICON, default=ICON_DISABLE_TEMPERATURE_SENSORS
+                ): cv.icon,
+            }
+        ).extend(cv.COMPONENT_SCHEMA),                    
          cv.Optional(CONF_DISPLAY_ALWAYS_ON): switch.SWITCH_SCHEMA.extend(
              {
                  cv.GenerateID(): cv.declare_id(JkRS485BmsSwitch),
                  cv.Optional(CONF_ICON, default=ICON_DISPLAY_ALWAYS_ON): cv.icon,
              }
          ).extend(cv.COMPONENT_SCHEMA),    
+        cv.Optional(CONF_SMART_SLEEP_ON): switch.SWITCH_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(JkRS485BmsSwitch),
+                cv.Optional(CONF_ICON, default=ICON_SMART_SLEEP_ON): cv.icon,
+            }
+        ).extend(cv.COMPONENT_SCHEMA),    
+        cv.Optional(CONF_TIMED_STORED_DATA): switch.SWITCH_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(JkRS485BmsSwitch),
+                cv.Optional(CONF_ICON, default=ICON_TIMED_STORED_DATA): cv.icon,
+            }
+        ).extend(cv.COMPONENT_SCHEMA),             
         cv.Optional(CONF_CHARGING_FLOAT_MODE): switch.SWITCH_SCHEMA.extend(
             {
                 cv.GenerateID(): cv.declare_id(JkRS485BmsSwitch),
                 cv.Optional(CONF_ICON, default=ICON_CHARGING_FLOAT_MODE): cv.icon,
             }
-        ).extend(cv.COMPONENT_SCHEMA),              
+        ).extend(cv.COMPONENT_SCHEMA),  
+        cv.Optional(CONF_DISABLE_PCL_MODULE): switch.SWITCH_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(JkRS485BmsSwitch),
+                cv.Optional(CONF_ICON, default=ICON_DISABLE_PCL_MODULE): cv.icon,
+            }
+        ).extend(cv.COMPONENT_SCHEMA),                    
     }
 )
 
