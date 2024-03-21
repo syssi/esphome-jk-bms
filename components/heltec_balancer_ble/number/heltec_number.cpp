@@ -14,7 +14,7 @@ void HeltecNumber::control(float value) {
   uint32_t payload =
       (this->holding_register_ == 0x01 || this->holding_register_ == 0x16) ? (uint32_t) value : ieee_float_(value);
   if (this->parent_->send_command(FUNCTION_WRITE, COMMAND_WRITE_REGISTER, this->holding_register_, payload)) {
-    this->publish_state(state);
+    this->publish_state(value);
   }
 }
 
