@@ -24,8 +24,9 @@ from esphome.const import (
 )
 
 from . import CONF_JK_BMS_BLE_ID, JkBmsBle
+from .const import CONF_BALANCING
 
-CODEOWNERS = ["@syssi"]
+CODEOWNERS = ["@syssi", "txubelaxu"]
 
 CONF_MIN_CELL_VOLTAGE = "min_cell_voltage"
 CONF_MAX_CELL_VOLTAGE = "max_cell_voltage"
@@ -116,6 +117,7 @@ ICON_CAPACITY_REMAINING = "mdi:battery-50"
 ICON_CHARGING_CYCLES = "mdi:battery-sync"
 ICON_ERRORS_BITMASK = "mdi:alert-circle-outline"
 ICON_CELL_RESISTANCE = "mdi:omega"
+ICON_BALANCER = "mdi:seesaw"
 
 CELL_VOLTAGES = [
     CONF_CELL_VOLTAGE_1,
@@ -179,6 +181,7 @@ TEMPERATURES = [
 ]
 
 SENSORS = [
+    CONF_BALANCING,
     CONF_MIN_CELL_VOLTAGE,
     CONF_MAX_CELL_VOLTAGE,
     CONF_MIN_VOLTAGE_CELL,
@@ -207,6 +210,13 @@ SENSORS = [
 CONFIG_SCHEMA = cv.Schema(
     {
         cv.GenerateID(CONF_JK_BMS_BLE_ID): cv.use_id(JkBmsBle),
+        cv.Optional(CONF_BALANCING): sensor.sensor_schema(
+            unit_of_measurement=UNIT_EMPTY,
+            icon=ICON_BALANCER,
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_CURRENT,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
         cv.Optional(CONF_MIN_CELL_VOLTAGE): sensor.sensor_schema(
             unit_of_measurement=UNIT_VOLT,
             icon=ICON_EMPTY,
