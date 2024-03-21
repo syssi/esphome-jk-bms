@@ -133,7 +133,6 @@ CONF_MAX_DISCHARGE_CURRENT = "max_discharge_current"
 
 UNIT_AMPERE_HOUR = "Ah"
 UNIT_HOURS = "h"
-UNIT_dcHOURS = "0.1h"
 ICON_CLOCK ="mdi:clock-outline"
 
 NUMBERS = {
@@ -160,9 +159,10 @@ NUMBERS = {
     CONF_MAX_CHARGE_CURRENT: [0x00, 0x0C, 0x0C, 1000.0],
     CONF_MAX_DISCHARGE_CURRENT: [0x00, 0x0F, 0x0F, 1000.0],
 
-    CONF_SMART_SLEEP_TIME : [0x00, 0x00, 0x00, 1.0],               # What register number for address 0x0118?
-    CONF_CELL_REQUEST_CHARGE_VOLTAGE: [0x00, 0x00, 0x00, 1000.0],  # What register number for address 0x0104?  (0x1400 TYPE REGISTER)
-    CONF_CELL_REQUEST_FLOAT_VOLTAGE: [0x00, 0x0a, 0x00, 1000.0],   # What register number for address 0x0105?  (0x1400 TYPE REGISTER)
+    CONF_SMART_SLEEP_TIME : [0x00, 0x00, 0x00, 1.0],                 # What register number for address 0x0118?
+    CONF_CELL_REQUEST_CHARGE_VOLTAGE_TIME: [0x00, 0x00, 0x00, 1.0],  # What register number for address 0x0104?  (0x1400 TYPE REGISTER)
+    CONF_CELL_REQUEST_FLOAT_VOLTAGE_TIME: [0x00, 0x0a, 0x00, 1.0],   # What register number for address 0x0105?  (0x1400 TYPE REGISTER)
+
 }
 
 JkNumber = jk_bms_ble_ns.class_("JkNumber", number.Number, cg.Component)
@@ -254,9 +254,9 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
         ),        
         cv.Optional(CONF_CELL_REQUEST_CHARGE_VOLTAGE_TIME): JK_NUMBER_SCHEMA.extend(
             {
-                cv.Optional(CONF_MIN_VALUE, default=0): cv.float_,
-                cv.Optional(CONF_MAX_VALUE, default=480): cv.float_,
-                cv.Optional(CONF_STEP, default=1): cv.float_,
+                cv.Optional(CONF_MIN_VALUE, default=0): cv.int_,
+                cv.Optional(CONF_MAX_VALUE, default=255): cv.int_,
+                cv.Optional(CONF_STEP, default=1): cv.int_,
                 cv.Optional(CONF_ICON, default=ICON_CLOCK): cv.icon,                
                 cv.Optional(
                     CONF_UNIT_OF_MEASUREMENT, default=UNIT_HOURS
@@ -265,9 +265,9 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
         ),
         cv.Optional(CONF_CELL_REQUEST_FLOAT_VOLTAGE_TIME): JK_NUMBER_SCHEMA.extend(
             {
-                cv.Optional(CONF_MIN_VALUE, default=0): cv.float_,
-                cv.Optional(CONF_MAX_VALUE, default=480): cv.float_,
-                cv.Optional(CONF_STEP, default=1): cv.float_,
+                cv.Optional(CONF_MIN_VALUE, default=0): cv.int_,
+                cv.Optional(CONF_MAX_VALUE, default=255): cv.int_,
+                cv.Optional(CONF_STEP, default=1): cv.int_,
                 cv.Optional(CONF_ICON, default=ICON_CLOCK): cv.icon,                
                 cv.Optional(
                     CONF_UNIT_OF_MEASUREMENT, default=UNIT_HOURS

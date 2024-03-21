@@ -158,13 +158,12 @@ bool JkRS485Sniffer::parse_jk_rs485_sniffer_byte_(uint8_t byte) {
 //          found = true;
 //      }
       device->on_jk_rs485_sniffer_data(address, raw[JKPB_RS485_FRAME_TYPE_ADDRESS], data);   
-//        found = true;
+      found = true;
     //}
   }
-  found=true;  
 
   if (!found) {
-    ESP_LOGW(TAG, "Got JkRS485 frame from unknown address 0x%02X!", address);
+    ESP_LOGW(TAG, "Got JkRS485 but no recipients to send [frame type:0x%02X] 0x%02X!",raw[JKPB_RS485_FRAME_TYPE_ADDRESS], address);
   }
 
 

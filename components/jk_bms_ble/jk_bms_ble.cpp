@@ -1173,6 +1173,7 @@ void JkBmsBle::decode_jk04_settings_(const std::vector<uint8_t> &data) {
   // 34    4   0x10 0x00 0x00 0x00    Cell count
   ESP_LOGI(TAG, "  Cell count: %d", data[34]);
 
+
   // 38    4   0x00 0x00 0x40 0x40    Power off voltage
   ESP_LOGI(TAG, "  Power off voltage: %f V", (float) ieee_float_(jk_get_32bit(38)));
 
@@ -1293,8 +1294,8 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
 
   ESP_LOGI(TAG, "  RCV Time: %f h", (float) ((uint8_t) data[266]) * 0.1f);
   ESP_LOGI(TAG, "  RFV Time: %f h", (float) ((uint8_t) data[267]) * 0.1f);
-  this->publish_state_(this->cell_request_charge_voltage_time_number_, (float) data[266] * 0.1);
-  this->publish_state_(this->cell_request_float_voltage_time_number_, (float) data[267] * 0.1);
+  this->publish_state_(this->cell_request_charge_voltage_time_number_, (float) data[266]*0.1f);
+  this->publish_state_(this->cell_request_float_voltage_time_number_, (float) data[267]*0.1f);
 
 }
 
@@ -1373,6 +1374,8 @@ void JkBmsBle::publish_device_unavailable_() {
   this->publish_state_(balancing_current_sensor_, NAN);
   this->publish_state_(errors_bitmask_sensor_, NAN);
   this->publish_state_(heating_current_sensor_, NAN);
+  this->publish_state_(cell_request_charge_voltage_time_number_, NAN);
+  this->publish_state_(cell_request_float_voltage_time_number_, NAN);  
 
   for (auto &cell : this->cells_) {
     this->publish_state_(cell.cell_voltage_sensor_, NAN);

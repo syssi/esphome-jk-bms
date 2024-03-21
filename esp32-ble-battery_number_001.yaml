@@ -22,8 +22,8 @@ esp32:
 external_components:
   - source: ${external_components_source}
     refresh: 0s
-  - source: ./components
-    refresh: 0s
+#  - source: ./components
+#    refresh: 0s
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
@@ -193,7 +193,7 @@ number:
     cell_request_float_voltage:
       name: "${bms_name} cell request float voltage"        
     cell_request_charge_voltage_time:
-      name: "${bms_name} cell rcv time"      
+      name: "${bms_name} cell request charge voltage time"      
     cell_request_float_voltage_time:
       name: "${bms_name} cell request float voltage time" 
     cell_count:
