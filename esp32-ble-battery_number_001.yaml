@@ -1,19 +1,19 @@
 substitutions:
   name: jk-bms
   device_description: "Monitor and control a JK-BMS via bluetooth"
-  external_components_source: github://syssi/esphome-jk-bms@main
-  mac_address: C8:47:8C:E1:E2:E1
-  # Please use "JK02_24S" if you own a old JK-BMS < hardware version 11.0 (hardware version >= 6.0 and < 11.0)
+  external_components_source: github://txubelaxu/esphome-jk-bms@main
+  mac_address: !secret mac_ble_battery_number_001
+  # Defaults to "JK02" (hardware version >= 6.0 and < 11.0)
   # Please use "JK02_32S" if you own a new JK-BMS >= hardware version 11.0 (f.e. JK-B2A8S20P hw 11.XW, sw 11.26)
   # Please use "JK04" if you have some old JK-BMS <= hardware version 3.0 (f.e. JK-B2A16S hw 3.0, sw. 3.3.0)
-  protocol_version: JK02_24S
+  protocol_version: JK02_32S
 
 esphome:
   name: ${name}
   comment: ${device_description}
   project:
     name: "syssi.esphome-jk-bms"
-    version: 2.0.0
+    version: 1.5.0
 
 esp32:
   board: wemos_d1_mini32
@@ -21,11 +21,10 @@ esp32:
     type: esp-idf
 
 external_components:
-#  - source: ${external_components_source}
-#    refresh: 0s
-  - source: ./components
+  - source: ${external_components_source}
     refresh: 0s
-
+#  - source: ./components
+#    refresh: 0s
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
@@ -36,23 +35,24 @@ ota:
       - switch.turn_off: ble_client_switch0
       - logger.log: "BLE connection suspended for OTA update"
 
+
 logger:
-  level: DEBUG
+  level: INFO #VERY_VERBOSE #VERBOSE #DEBUG #INFO #DEBUG
 
 # If you don't use Home Assistant please remove this `api` section and uncomment the `mqtt` component!
 api:
 
-# mqtt:
-#   broker: !secret mqtt_host
-#   username: !secret mqtt_username
-#   password: !secret mqtt_password
-#   id: mqtt_client
+#mqtt:
+#  broker: !secret mqtt_host
+#  username: !secret mqtt_username
+#  password: !secret mqtt_password
+#  id: mqtt_client
 
 esp32_ble_tracker:
   on_ble_advertise:
     then:
       - lambda: |-
-          if (x.get_name().rfind("JK-", 0) == 0 || x.get_name().rfind("JK_", 0) == 0) {
+          if (x.get_name().rfind("JK-", 0) == 0) {
             ESP_LOGI("ble_adv", "New JK-BMS found");
             ESP_LOGI("ble_adv", "  Name: %s", x.get_name().c_str());
             ESP_LOGI("ble_adv", "  MAC address: %s", x.address_str().c_str());
@@ -64,10 +64,10 @@ esp32_ble_tracker:
 
 ble_client:
   - mac_address: ${mac_address}
-    id: client0
+    id: ble_client0
 
 jk_bms_ble:
-  - ble_client_id: client0
+  - ble_client_id: ble_client0
     protocol_version: ${protocol_version}
     throttle: 5s
     id: bms0
@@ -80,8 +80,6 @@ binary_sensor:
       name: "${name} charging"
     discharging:
       name: "${name} discharging"
-    heating:
-      name: "${name} heating"
     online_status:
       name: "${name} online status"
 
@@ -94,21 +92,31 @@ button:
 
 number:
   - platform: jk_bms_ble
-    jk_bms_ble_id: bms0
+    jk_bms_ble_id: bms0    
+    smart_sleep_voltage:
+      name: "${name} smart sleep voltage"    
+    cell_undervoltage_protection:
+      name: "${name} cell undervoltage protection"
+    cell_undervoltage_protection_recovery:
+      name: "${name} cell undervoltage protection recovery"  
+    cell_overvoltage_protection:
+      name: "${name} cell overvoltage protection"
+    cell_overvoltage_protection_recovery:
+      name: "${name} cell overvoltage protection recovery"  
     balance_trigger_voltage:
       name: "${name} balance trigger voltage"
+    cell_soc100_voltage:
+      name: "${name} cell_soc100 voltage"
+    cell_soc0_voltage:
+      name: "${name} cell_soc0 voltage"
+    cell_request_charge_voltage:
+      name: "${name} cell request charge voltage"      
+    cell_request_float_voltage:
+      name: "${name} cell request float voltage"        
     cell_count:
       name: "${name} cell count"
     total_battery_capacity:
       name: "${name} total battery capacity"
-    cell_voltage_overvoltage_protection:
-      name: "${name} cell voltage overvoltage protection"
-    cell_voltage_overvoltage_recovery:
-      name: "${name} cell voltage overvoltage recovery"
-    cell_voltage_undervoltage_protection:
-      name: "${name} cell voltage undervoltage protection"
-    cell_voltage_undervoltage_recovery:
-      name: "${name} cell voltage undervoltage recovery"
     balance_starting_voltage:
       name: "${name} balance starting voltage"
     voltage_calibration:
@@ -127,6 +135,8 @@ number:
 sensor:
   - platform: jk_bms_ble
     jk_bms_ble_id: bms0
+    balancing:
+      name: "${name} balancing"    
     min_cell_voltage:
       name: "${name} min cell voltage"
     max_cell_voltage:
@@ -139,24 +149,24 @@ sensor:
       name: "${name} delta cell voltage"
     average_cell_voltage:
       name: "${name} average cell voltage"
-    cell_voltage_1:
-      name: "${name} cell voltage 1"
-    cell_voltage_2:
-      name: "${name} cell voltage 2"
-    cell_voltage_3:
-      name: "${name} cell voltage 3"
-    cell_voltage_4:
-      name: "${name} cell voltage 4"
-    cell_voltage_5:
-      name: "${name} cell voltage 5"
-    cell_voltage_6:
-      name: "${name} cell voltage 6"
-    cell_voltage_7:
-      name: "${name} cell voltage 7"
-    cell_voltage_8:
-      name: "${name} cell voltage 8"
-    cell_voltage_9:
-      name: "${name} cell voltage 9"
+    cell_voltage_01:
+      name: "${name} cell voltage 01"
+    cell_voltage_02:
+      name: "${name} cell voltage 02"
+    cell_voltage_03:
+      name: "${name} cell voltage 03"
+    cell_voltage_04:
+      name: "${name} cell voltage 04"
+    cell_voltage_05:
+      name: "${name} cell voltage 05"
+    cell_voltage_06:
+      name: "${name} cell voltage 06"
+    cell_voltage_07:
+      name: "${name} cell voltage 07"
+    cell_voltage_08:
+      name: "${name} cell voltage 08"
+    cell_voltage_09:
+      name: "${name} cell voltage 09"
     cell_voltage_10:
       name: "${name} cell voltage 10"
     cell_voltage_11:
@@ -187,24 +197,24 @@ sensor:
       name: "${name} cell voltage 23"
     cell_voltage_24:
       name: "${name} cell voltage 24"
-    cell_resistance_1:
-      name: "${name} cell resistance 1"
-    cell_resistance_2:
-      name: "${name} cell resistance 2"
-    cell_resistance_3:
-      name: "${name} cell resistance 3"
-    cell_resistance_4:
-      name: "${name} cell resistance 4"
-    cell_resistance_5:
-      name: "${name} cell resistance 5"
-    cell_resistance_6:
-      name: "${name} cell resistance 6"
-    cell_resistance_7:
-      name: "${name} cell resistance 7"
-    cell_resistance_8:
-      name: "${name} cell resistance 8"
-    cell_resistance_9:
-      name: "${name} cell resistance 9"
+    cell_resistance_01:
+      name: "${name} cell resistance 01"
+    cell_resistance_02:
+      name: "${name} cell resistance 02"
+    cell_resistance_03:
+      name: "${name} cell resistance 03"
+    cell_resistance_04:
+      name: "${name} cell resistance 04"
+    cell_resistance_05:
+      name: "${name} cell resistance 05"
+    cell_resistance_06:
+      name: "${name} cell resistance 06"
+    cell_resistance_07:
+      name: "${name} cell resistance 07"
+    cell_resistance_08:
+      name: "${name} cell resistance 08"
+    cell_resistance_09:
+      name: "${name} cell resistance 09"
     cell_resistance_10:
       name: "${name} cell resistance 10"
     cell_resistance_11:
@@ -239,8 +249,6 @@ sensor:
       name: "${name} total voltage"
     current:
       name: "${name} current"
-    heating_current:
-      name: "${name} heating current"
     power:
       name: "${name} power"
     charging_power:
@@ -251,10 +259,10 @@ sensor:
       name: "${name} temperature sensor 1"
     temperature_sensor_2:
       name: "${name} temperature sensor 2"
-    # temperature_sensor_3:
-    #   name: "${name} temperature sensor 3"
-    # temperature_sensor_4:
-    #   name: "${name} temperature sensor 4"
+    temperature_sensor_3:
+      name: "${name} temperature sensor 3"
+    temperature_sensor_4:
+      name: "${name} temperature sensor 4"      
     power_tube_temperature:
       name: "${name} power tube temperature"
     state_of_charge:
@@ -282,10 +290,26 @@ switch:
       name: "${name} discharging"
     balancer:
       name: "${name} balancer"
+    display_always_on:
+      name: "${name} display always on"      
+    heating:
+      name: "${name} heating"
+    emergency:
+      name: "${name} emergency"
+    charging_float_mode:
+      name: "${name} charging float mode"
+    timed_stored_data:
+      name: "${name} timed stored data"      
+    disable_temperature_sensors:
+      name: "${name} disable temperature sensors"      
+    smart_sleep_on:
+      name: "${name} smart sleep on"    
 
+    disable_pcl_module:
+      name: "${name} disable pcl module"              
   - platform: ble_client
-    ble_client_id: client0
-    id: ble_client_switch0
+    ble_client_id: ble_client0
+    id: ble_client_switch0    
     name: "${name} enable bluetooth connection"
 
 text_sensor:

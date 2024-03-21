@@ -17,30 +17,25 @@ from esphome.const import (
     UNIT_VOLT,
 )
 
-from .. import CONF_JK_BMS_BLE_ID, JK_BMS_BLE_COMPONENT_SCHEMA, jk_bms_ble_ns
+#from .. import CONF_JK_BMS_BLE_ID, JK_BMS_BLE_COMPONENT_SCHEMA, jk_bms_ble_ns
+from .. import CONF_JK_RS485_BMS_ID, JK_RS485_BMS_COMPONENT_SCHEMA, jk_rs485_bms_ns
 
-DEPENDENCIES = ["jk_bms_ble"]
+#DEPENDENCIES = ["jk_bms_ble"]
+DEPENDENCIES = ["jk_rs485_bms"]
 
-CODEOWNERS = ["@syssi","txubelaxu"]
+CODEOWNERS = ["@syssi","@txubelaxu"]
 
 DEFAULT_STEP = 1
 
 # JK02_24S
 #
-# 01 04 03000000  Set smart sleep voltage to 0.003
-# 02 04 b0040000  Set Cell UVP to 1.2
-# 03 04 b0040000  Set Cell UVPR to 1.2
-# 04 04 420e0000  Set Cell OVP to 3.65
-# 05 04 b0040000  Set Cell OVPR to 1.2
 # 06 04 03000000  Set balance trig voltage to 0.003
-# 07 04 03000000  Set SOC100% voltage to 0.003
-# 08 04 03000000  Set SOC0% voltage to 0.003
-# 09 04 03000000  Set VOLTAGE CELL REQUEST CHARGE VOLTAGE [RCV] to 0.003
-# 0a 04 03000000  Set VOLTAGE CELL REQUEST FLOAT VOLTAGE [RCV] to 0.003
-
 # 1c 04 10000000  Set cell count to 16
 # 20 04 f0ba0400  Set battery cap to 310
-
+# 04 04 420e0000  Set Cell OVP to 3.65
+# 05 04 b0040000  Set Cell OVPR to 1.2
+# 02 04 b0040000  Set Cell UVP to 1.2
+# 03 04 b0040000  Set Cell UVPR to 1.2
 # 26 04 b0040000  Set Start Balance voltage to 1.2
 # 21 04 42d10000  Set cal voltage to 53.57
 # 24 04 64000000  Set cal current to 0.100
@@ -49,20 +44,13 @@ DEFAULT_STEP = 1
 # 0c 04 e8030000  Set Max charge Current to 1.0
 # 0f 04 e8030000  Set Max discharge Current to 1.0
 
-CONF_SMART_SLEEP_VOLTAGE = "smart_sleep_voltage"
-CONF_CELL_UNDERVOLTAGE_PROTECTION = "cell_undervoltage_protection"
-CONF_CELL_UNDERVOLTAGE_PROTECTION_RECOVERY = "cell_undervoltage_protection_recovery"
-CONF_CELL_OVERVOLTAGE_PROTECTION = "cell_overvoltage_protection"
-CONF_CELL_OVERVOLTAGE_PROTECTION_RECOVERY = "cell_overvoltage_protection_recovery"
 CONF_BALANCE_TRIGGER_VOLTAGE = "balance_trigger_voltage"
-CONF_CELL_SOC100_VOLTAGE = "cell_soc100_voltage"
-CONF_CELL_SOC0_VOLTAGE = "cell_soc0_voltage"
-CONF_CELL_REQUEST_CHARGE_VOLTAGE= "cell_request_charge_voltage"
-CONF_CELL_REQUEST_FLOAT_VOLTAGE= "cell_request_float_voltage"
-
 CONF_CELL_COUNT = "cell_count"
 CONF_TOTAL_BATTERY_CAPACITY = "total_battery_capacity"
-
+CONF_CELL_VOLTAGE_OVERVOLTAGE_PROTECTION = "cell_voltage_overvoltage_protection"
+CONF_CELL_VOLTAGE_OVERVOLTAGE_RECOVERY = "cell_voltage_overvoltage_recovery"
+CONF_CELL_VOLTAGE_UNDERVOLTAGE_PROTECTION = "cell_voltage_undervoltage_protection"
+CONF_CELL_VOLTAGE_UNDERVOLTAGE_RECOVERY = "cell_voltage_undervoltage_recovery"
 CONF_BALANCE_STARTING_VOLTAGE = "balance_starting_voltage"
 CONF_VOLTAGE_CALIBRATION = "voltage_calibration"
 CONF_CURRENT_CALIBRATION = "current_calibration"
@@ -129,20 +117,13 @@ UNIT_AMPERE_HOUR = "Ah"
 
 NUMBERS = {
     # JK04, JK02, JK02_32S, factor
-    CONF_SMART_SLEEP_VOLTAGE: [0x00, 0x01, 0x01, 1000.0],    
-    CONF_CELL_UNDERVOLTAGE_PROTECTION: [0x00, 0x02, 0x02, 1000.0],
-    CONF_CELL_UNDERVOLTAGE_PROTECTION_RECOVERY: [0x00, 0x03, 0x03, 1000.0],
-    CONF_CELL_OVERVOLTAGE_PROTECTION: [0x00, 0x04, 0x04, 1000.0], 
-    CONF_CELL_OVERVOLTAGE_PROTECTION_RECOVERY: [0x00, 0x05, 0x05, 1000.0],
     CONF_BALANCE_TRIGGER_VOLTAGE: [0x00, 0x06, 0x06, 1000.0],
-    CONF_CELL_SOC100_VOLTAGE: [0x00, 0x07, 0x07, 1000.0],
-    CONF_CELL_SOC0_VOLTAGE: [0x00, 0x08, 0x08, 1000.0],
-    CONF_CELL_REQUEST_CHARGE_VOLTAGE: [0x00, 0x09, 0x09, 1000.0],
-    CONF_CELL_REQUEST_FLOAT_VOLTAGE: [0x00, 0x0a, 0x0a, 1000.0],
-
     CONF_CELL_COUNT: [0x00, 0x1C, 0x1C, 1.0],
     CONF_TOTAL_BATTERY_CAPACITY: [0x00, 0x20, 0x20, 1000.0],
-    CONF_CELL_OVERVOLTAGE_PROTECTION: [0x00, 0x04, 0x04, 1000.0],
+    CONF_CELL_VOLTAGE_OVERVOLTAGE_PROTECTION: [0x00, 0x04, 0x04, 1000.0],
+    CONF_CELL_VOLTAGE_OVERVOLTAGE_RECOVERY: [0x00, 0x05, 0x05, 1000.0],
+    CONF_CELL_VOLTAGE_UNDERVOLTAGE_PROTECTION: [0x00, 0x02, 0x02, 1000.0],
+    CONF_CELL_VOLTAGE_UNDERVOLTAGE_RECOVERY: [0x00, 0x03, 0x03, 1000.0],
     CONF_BALANCE_STARTING_VOLTAGE: [0x00, 0x26, 0x22, 1000.0],
     CONF_VOLTAGE_CALIBRATION: [0x00, 0x21, 0x64, 1000.0],
     CONF_CURRENT_CALIBRATION: [0x00, 0x24, 0x67, 1000.0],
@@ -152,11 +133,11 @@ NUMBERS = {
     CONF_MAX_DISCHARGE_CURRENT: [0x00, 0x0F, 0x0F, 1000.0],
 }
 
-JkNumber = jk_bms_ble_ns.class_("JkNumber", number.Number, cg.Component)
+JkRS485Number = jk_rs485_bms_ns.class_("JkRS485Number", number.Number, cg.Component)
 
-JK_NUMBER_SCHEMA = number.NUMBER_SCHEMA.extend(
+JK_RS485_NUMBER_SCHEMA = number.NUMBER_SCHEMA.extend(
     {
-        cv.GenerateID(): cv.declare_id(JkNumber),
+        cv.GenerateID(): cv.declare_id(JkRS485Number),
         cv.Optional(CONF_ICON, default=ICON_EMPTY): cv.icon,
         cv.Optional(CONF_STEP, default=0.01): cv.float_,
         cv.Optional(CONF_UNIT_OF_MEASUREMENT, default=UNIT_VOLT): cv.string_strict,
@@ -169,79 +150,14 @@ JK_NUMBER_SCHEMA = number.NUMBER_SCHEMA.extend(
 
 CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
     {
-        cv.Optional(CONF_SMART_SLEEP_VOLTAGE): JK_NUMBER_SCHEMA.extend(
-            {
-                cv.Optional(CONF_MIN_VALUE, default=0.003): cv.float_,
-                cv.Optional(CONF_MAX_VALUE, default=3.650): cv.float_,
-                cv.Optional(CONF_STEP, default=0.001): cv.float_,
-            }
-        ),        
-        cv.Optional(CONF_CELL_OVERVOLTAGE_PROTECTION): JK_NUMBER_SCHEMA.extend(
-            {
-                cv.Optional(CONF_MIN_VALUE, default=1.2): cv.float_,
-                cv.Optional(CONF_MAX_VALUE, default=4.350): cv.float_,
-                cv.Optional(CONF_STEP, default=0.001): cv.float_,
-            }
-        ),
-        cv.Optional(CONF_CELL_OVERVOLTAGE_PROTECTION_RECOVERY): JK_NUMBER_SCHEMA.extend(
-            {
-                cv.Optional(CONF_MIN_VALUE, default=1.2): cv.float_,
-                cv.Optional(CONF_MAX_VALUE, default=4.350): cv.float_,
-                cv.Optional(CONF_STEP, default=0.001): cv.float_,
-            }
-        ),
-        cv.Optional(CONF_CELL_UNDERVOLTAGE_PROTECTION_RECOVERY): JK_NUMBER_SCHEMA.extend(
-            {
-                cv.Optional(CONF_MIN_VALUE, default=1.2): cv.float_,
-                cv.Optional(CONF_MAX_VALUE, default=4.350): cv.float_,
-                cv.Optional(CONF_STEP, default=0.001): cv.float_,
-            }
-        ),        
-        cv.Optional(CONF_CELL_UNDERVOLTAGE_PROTECTION): JK_NUMBER_SCHEMA.extend(
-            {
-                cv.Optional(CONF_MIN_VALUE, default=1.2): cv.float_,
-                cv.Optional(CONF_MAX_VALUE, default=4.350): cv.float_,
-                cv.Optional(CONF_STEP, default=0.001): cv.float_,
-            }
-        ),
-        cv.Optional(CONF_BALANCE_TRIGGER_VOLTAGE): JK_NUMBER_SCHEMA.extend(
+        cv.Optional(CONF_BALANCE_TRIGGER_VOLTAGE): JK_RS485_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=0.003): cv.float_,
                 cv.Optional(CONF_MAX_VALUE, default=1.0): cv.float_,
                 cv.Optional(CONF_STEP, default=0.001): cv.float_,
             }
         ),
-        cv.Optional(CONF_CELL_SOC100_VOLTAGE): JK_NUMBER_SCHEMA.extend(
-            {
-                cv.Optional(CONF_MIN_VALUE, default=0.003): cv.float_,
-                cv.Optional(CONF_MAX_VALUE, default=1.0): cv.float_,
-                cv.Optional(CONF_STEP, default=0.001): cv.float_,
-            }
-        ),
-        cv.Optional(CONF_CELL_SOC0_VOLTAGE): JK_NUMBER_SCHEMA.extend(
-            {
-                cv.Optional(CONF_MIN_VALUE, default=0.003): cv.float_,
-                cv.Optional(CONF_MAX_VALUE, default=1.0): cv.float_,
-                cv.Optional(CONF_STEP, default=0.001): cv.float_,
-            }
-        ),
-        cv.Optional(CONF_CELL_REQUEST_CHARGE_VOLTAGE): JK_NUMBER_SCHEMA.extend(
-            {
-                cv.Optional(CONF_MIN_VALUE, default=0.003): cv.float_,
-                cv.Optional(CONF_MAX_VALUE, default=3.650): cv.float_,
-                cv.Optional(CONF_STEP, default=0.001): cv.float_,
-            }
-        ),
-        cv.Optional(CONF_CELL_REQUEST_FLOAT_VOLTAGE): JK_NUMBER_SCHEMA.extend(
-            {
-                cv.Optional(CONF_MIN_VALUE, default=0.003): cv.float_,
-                cv.Optional(CONF_MAX_VALUE, default=3.650): cv.float_,
-                cv.Optional(CONF_STEP, default=0.001): cv.float_,
-            }
-        ),        
-
-
-        cv.Optional(CONF_CELL_COUNT): JK_NUMBER_SCHEMA.extend(
+        cv.Optional(CONF_CELL_COUNT): JK_RS485_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=3): cv.float_,
                 cv.Optional(CONF_MAX_VALUE, default=24): cv.float_,
@@ -251,7 +167,7 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
                 ): cv.string_strict,
             }
         ),
-        cv.Optional(CONF_TOTAL_BATTERY_CAPACITY): JK_NUMBER_SCHEMA.extend(
+        cv.Optional(CONF_TOTAL_BATTERY_CAPACITY): JK_RS485_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=5): cv.float_,
                 cv.Optional(CONF_MAX_VALUE, default=2000): cv.float_,
@@ -260,15 +176,43 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
                     CONF_UNIT_OF_MEASUREMENT, default=UNIT_AMPERE_HOUR
                 ): cv.string_strict,
             }
-        ),        
-        cv.Optional(CONF_BALANCE_STARTING_VOLTAGE): JK_NUMBER_SCHEMA.extend(
+        ),
+        cv.Optional(CONF_CELL_VOLTAGE_OVERVOLTAGE_PROTECTION): JK_RS485_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=1.2): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=4.350): cv.float_,
+                cv.Optional(CONF_STEP, default=0.001): cv.float_,
+            }
+        ),
+        cv.Optional(CONF_CELL_VOLTAGE_OVERVOLTAGE_RECOVERY): JK_RS485_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=1.2): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=4.350): cv.float_,
+                cv.Optional(CONF_STEP, default=0.001): cv.float_,
+            }
+        ),
+        cv.Optional(CONF_CELL_VOLTAGE_UNDERVOLTAGE_PROTECTION): JK_RS485_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=1.2): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=4.350): cv.float_,
+                cv.Optional(CONF_STEP, default=0.001): cv.float_,
+            }
+        ),
+        cv.Optional(CONF_CELL_VOLTAGE_UNDERVOLTAGE_RECOVERY): JK_RS485_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=1.2): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=4.350): cv.float_,
+                cv.Optional(CONF_STEP, default=0.001): cv.float_,
+            }
+        ),
+        cv.Optional(CONF_BALANCE_STARTING_VOLTAGE): JK_RS485_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=1.20): cv.float_,
                 cv.Optional(CONF_MAX_VALUE, default=4.25): cv.float_,
                 cv.Optional(CONF_STEP, default=0.01): cv.float_,
             }
         ),
-        cv.Optional(CONF_VOLTAGE_CALIBRATION): JK_NUMBER_SCHEMA.extend(
+        cv.Optional(CONF_VOLTAGE_CALIBRATION): JK_RS485_NUMBER_SCHEMA.extend(
             {
                 # @FIXME The exact limits are unknown
                 cv.Optional(CONF_MIN_VALUE, default=10.0): cv.float_,
@@ -276,7 +220,7 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
                 cv.Optional(CONF_STEP, default=0.01): cv.float_,
             }
         ),
-        cv.Optional(CONF_CURRENT_CALIBRATION): JK_NUMBER_SCHEMA.extend(
+        cv.Optional(CONF_CURRENT_CALIBRATION): JK_RS485_NUMBER_SCHEMA.extend(
             {
                 # @FIXME Exact limits are unknown
                 cv.Optional(CONF_MIN_VALUE, default=0.0): cv.float_,
@@ -287,7 +231,7 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
                 ): cv.string_strict,
             }
         ),
-        cv.Optional(CONF_POWER_OFF_VOLTAGE): JK_NUMBER_SCHEMA.extend(
+        cv.Optional(CONF_POWER_OFF_VOLTAGE): JK_RS485_NUMBER_SCHEMA.extend(
             {
                 # @FIXME The upper limit is unknown
                 cv.Optional(CONF_MIN_VALUE, default=1.20): cv.float_,
@@ -295,7 +239,7 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
                 cv.Optional(CONF_STEP, default=0.01): cv.float_,
             }
         ),
-        cv.Optional(CONF_MAX_BALANCE_CURRENT): JK_NUMBER_SCHEMA.extend(
+        cv.Optional(CONF_MAX_BALANCE_CURRENT): JK_RS485_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=0.3): cv.float_,
                 cv.Optional(CONF_MAX_VALUE, default=5.0): cv.float_,
@@ -305,7 +249,7 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
                 ): cv.string_strict,
             }
         ),
-        cv.Optional(CONF_MAX_CHARGE_CURRENT): JK_NUMBER_SCHEMA.extend(
+        cv.Optional(CONF_MAX_CHARGE_CURRENT): JK_RS485_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=1.0): cv.float_,
                 cv.Optional(CONF_MAX_VALUE, default=200.1): cv.float_,
@@ -315,7 +259,7 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
                 ): cv.string_strict,
             }
         ),
-        cv.Optional(CONF_MAX_DISCHARGE_CURRENT): JK_NUMBER_SCHEMA.extend(
+        cv.Optional(CONF_MAX_DISCHARGE_CURRENT): JK_RS485_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=1.0): cv.float_,
                 cv.Optional(CONF_MAX_VALUE, default=200.1): cv.float_,
@@ -330,7 +274,8 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
 
 
 async def to_code(config):
-    hub = await cg.get_variable(config[CONF_JK_BMS_BLE_ID])
+    #hub = await cg.get_variable(config[CONF_JK_BMS_BLE_ID])
+    hub = await cg.get_variable(config[CONF_JK_RS485_BMS_ID])
     for key, address in NUMBERS.items():
         if key in config:
             conf = config[key]
@@ -345,7 +290,7 @@ async def to_code(config):
             )
             cg.add(getattr(hub, f"set_{key}_number")(var))
             cg.add(var.set_parent(hub))
-            cg.add(var.set_jk04_holding_register(address[0]))
-            cg.add(var.set_jk02_holding_register(address[1]))
-            cg.add(var.set_jk02_32s_holding_register(address[2]))
-            cg.add(var.set_factor(address[3]))
+#            cg.add(var.set_jk04_holding_register(address[0]))
+#            cg.add(var.set_jk02_holding_register(address[1]))
+#            cg.add(var.set_jk02_32s_holding_register(address[2]))
+#            cg.add(var.set_factor(address[3]))

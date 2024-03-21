@@ -1,11 +1,11 @@
-"""Constants for the jk bms ble component."""
+"""Constants for the jk bms component."""
 
+CONF_PRECHARGING = "precharging"
 CONF_BALANCER = "balancer"
 CONF_CHARGING = "charging"
 CONF_DISCHARGING = "discharging"
 CONF_HEATING = "heating"
 CONF_CHARGING_FLOAT_MODE = "charging_float_mode"
-CONF_TIMED_STORE_DATA = "timed_stored_data"
 CONF_EMERGENCY = "emergency"
 CONF_DISABLE_TEMPERATURE_SENSORS = "disable_temperature_sensors"
 CONF_DISPLAY_ALWAYS_ON = "display_always_on"
