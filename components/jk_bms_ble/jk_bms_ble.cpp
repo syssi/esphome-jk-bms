@@ -666,13 +666,19 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   ESP_LOGD(TAG, "Unknown189: 0x%02X 0x%02X", data[189], data[190]);
   // 190   1   0x00                   Unknown190
   // 191   1   0x00                   Balancer status (working: 0x01, idle: 0x00)
-  // 192   1   0x00                   Unknown192
-  ESP_LOGD(TAG, "Unknown192: 0x%02X", data[192 + offset]);
+  this->publish_state_(this->heating_status_binary_sensor_, (bool) data[192 + offset]);
+  ESP_LOGI(TAG, "HEATING BINARY SENSOR STATUS:  0x%02X", data[192 + offset]);
+
   // 193   2   0x00 0xAE              Unknown193
   ESP_LOGD(TAG, "Unknown193: 0x%02X 0x%02X (0x00 0x8D)", data[193 + offset], data[194 + offset]);
   // 195   2   0xD6 0x3B              Unknown195
   ESP_LOGD(TAG, "Unknown195: 0x%02X 0x%02X (0x21 0x40)", data[195 + offset], data[196 + offset]);
   // 197   10  0x40 0x00 0x00 0x00 0x00 0x58 0xAA 0xFD 0xFF 0x00
+
+  // 204   2   0x01 0xFD              Heating current         0.001         A
+  this->publish_state_(this->heating_current_sensor_, (float) ((int16_t) jk_get_16bit(204 + offset)) * 0.001f);  
+  ESP_LOGI(TAG, "HEATING CURRENT:  %f", (float) ((int16_t) jk_get_16bit(204 + offset)) * 0.001f);  
+
   // 207   7   0x00 0x00 0x01 0x00 0x02 0x00 0x00
   // 214   4   0xEC 0xE6 0x4F 0x00    Uptime 100ms
   //
@@ -686,11 +692,11 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   //           0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
   //           0x00
 
-  // 224   1   0x01                   Heating status          0x00: off, 0x01: on       ???? or 193?
-  this->publish_state_(this->heating_status_binary_sensor_, (bool) data[224 + offset]);
+  //// 224   1   0x01                   Heating status          0x00: off, 0x01: on       ???? or 193?
+  //this->publish_state_(this->heating_status_binary_sensor_, (bool) data[224 + offset]);
 
-  // 236   2   0x01 0xFD              Heating current         0.001         A
-  this->publish_state_(this->heating_current_sensor_, (float) ((int16_t) jk_get_16bit(236 + offset)) * 0.001f);
+  //// 236   2   0x01 0xFD              Heating current         0.001         A
+  //this->publish_state_(this->heating_current_sensor_, (float) ((int16_t) jk_get_16bit(236 + offset)) * 0.001f);
 
   if (frame_version == FRAME_VERSION_JK02_32S) {
     uint16_t raw_emergency_time_countdown = jk_get_16bit(186 + offset);
