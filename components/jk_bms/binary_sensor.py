@@ -4,7 +4,7 @@ import esphome.config_validation as cv
 from esphome.const import CONF_ID, DEVICE_CLASS_CONNECTIVITY, ENTITY_CATEGORY_DIAGNOSTIC
 
 from . import CONF_JK_BMS_ID, JK_BMS_COMPONENT_SCHEMA
-from .const import CONF_BALANCING, CONF_CHARGING, CONF_DISCHARGING
+from .const import CONF_CHARGING, CONF_DISCHARGING
 
 DEPENDENCIES = ["jk_bms"]
 

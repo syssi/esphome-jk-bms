@@ -4,7 +4,6 @@ import esphome.config_validation as cv
 from esphome.const import CONF_ID, DEVICE_CLASS_CONNECTIVITY, ENTITY_CATEGORY_DIAGNOSTIC
 
 from . import CONF_HELTEC_BALANCER_BLE_ID, HeltecBalancerBle
-from .const import CONF_BALANCING
 
 DEPENDENCIES = ["heltec_balancer_ble"]
 
