@@ -61,7 +61,6 @@ void JkRS485Bms::on_jk_rs485_sniffer_data(const uint8_t &origin_address, const u
           if (this->protocol_version_ == PROTOCOL_VERSION_JK04) {
             //this->decode_jk04_settings_(data);
           } else {
-            ESP_LOGI(TAG, "Decoding settings..................................");
             this->decode_jk02_settings_(data);
           }
           break;
@@ -69,7 +68,6 @@ void JkRS485Bms::on_jk_rs485_sniffer_data(const uint8_t &origin_address, const u
           if (this->protocol_version_ == PROTOCOL_VERSION_JK04) {
             //this->decode_jk04_cell_info_(data);
           } else {
-            ESP_LOGI(TAG, "Decoding cell info..................................");
             this->decode_jk02_cell_info_(data);
           }
           break;
@@ -106,7 +104,7 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
     offset = 16;
   }
 
-  ESP_LOGI(TAG, "[ADDRESS: %02X] Cell info frame (version %d, %d bytes) received", this->address_,frame_version, data.size());
+  ESP_LOGI(TAG, "Decoding cell info frame.... [ADDRESS: %02X] %d bytes received", this->address_, data.size());
   ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front(), 150).c_str());
   ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front() + 150, data.size() - 150).c_str());
 
@@ -530,8 +528,7 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   auto jk_get_32bit = [&](size_t i) -> uint32_t {
     return (uint32_t(jk_get_16bit(i + 2)) << 16) | (uint32_t(jk_get_16bit(i + 0)) << 0);
   };
-
-  ESP_LOGI(TAG, "[ADDRESS: %02X] Settings frame (%d bytes) received", this->address_,data.size());
+  ESP_LOGI(TAG, "Decoding settings frame..... [ADDRESS: %02X] %d bytes received", this->address_, data.size());
   ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front(), 160).c_str());
   ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front() + 160, data.size() - 160).c_str());
 
