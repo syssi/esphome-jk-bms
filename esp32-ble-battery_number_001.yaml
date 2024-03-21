@@ -1,5 +1,6 @@
 substitutions:
-  name: jk-bms
+  esp_name: jk-bms
+  bms_name: ble-bms0
   device_description: "Monitor and control a JK-BMS via bluetooth"
   external_components_source: github://txubelaxu/esphome-jk-bms@main
   mac_address: !secret mac_ble_battery_number_001
@@ -8,7 +9,7 @@ substitutions:
   # Please use "JK04" if you have some old JK-BMS <= hardware version 3.0 (f.e. JK-B2A16S hw 3.0, sw. 3.3.0)
   protocol_version: JK02_32S
 esphome:
-  name: ${name}
+  name: ${esp_name}
   comment: ${device_description}
   project:
     name: "txubelaxu.esphome-jk-bms"
@@ -19,10 +20,10 @@ esp32:
     type: esp-idf
 
 external_components:
-  - source: ${external_components_source}
-    refresh: 0s
-#  - source: ./components
+#  - source: ${external_components_source}
 #    refresh: 0s
+  - source: ./components
+    refresh: 0s
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
@@ -87,314 +88,314 @@ jk_bms_ble:
 binary_sensor:
   - platform: jk_bms_ble
     balancing_status:
-      name: "${name} balancing status"
+      name: "${bms_name} balancing status"
     precharging_status:
-      name: "${name} precharging status"      
+      name: "${bms_name} precharging status"      
     charging_status:
-      name: "${name} charging status"
+      name: "${bms_name} charging status"
     discharging_status:
-      name: "${name} discharging status"
+      name: "${bms_name} discharging status"
     online_status:
-      name: "${name} online status"
+      name: "${bms_name} online status"
     heating_status:
-      name: "${name} heating status"      
+      name: "${bms_name} heating status"      
     alarm_wireres:
-      name: "${name} alarm WireRes"
+      name: "${bms_name} alarm WireRes"
     alarm_mosotp:
-      name: "${name} alarm MosOTP"
+      name: "${bms_name} alarm MosOTP"
     alarm_cellquantity:
-      name: "${name} alarm CellQuantity"
+      name: "${bms_name} alarm CellQuantity"
     alarm_cursensorerr:
-      name: "${name} alarm CurSensorErr"
+      name: "${bms_name} alarm CurSensorErr"
     alarm_cellovp:
-      name: "${name} alarm CellOVP"
+      name: "${bms_name} alarm CellOVP"
     alarm_batovp:
-      name: "${name} alarm BatOVP"
+      name: "${bms_name} alarm BatOVP"
     alarm_chocp:
-      name: "${name} alarm ChOCP"
+      name: "${bms_name} alarm ChOCP"
     alarm_chscp:
-      name: "${name} alarm ChSCP"
+      name: "${bms_name} alarm ChSCP"
     alarm_chotp:
-      name: "${name} alarm ChOTP"
+      name: "${bms_name} alarm ChOTP"
     alarm_chutp:
-      name: "${name} alarm ChUTP"
+      name: "${bms_name} alarm ChUTP"
     alarm_cpuauxcommuerr:
-      name: "${name} alarm CPUAuxCommuErr"
+      name: "${bms_name} alarm CPUAuxCommuErr"
     alarm_celluvp:
-      name: "${name} alarm CellUVP"
+      name: "${bms_name} alarm CellUVP"
     alarm_batuvp:
-      name: "${name} alarm BatUVP"
+      name: "${bms_name} alarm BatUVP"
     alarm_dchocp:
-      name: "${name} alarm DchOCP"
+      name: "${bms_name} alarm DchOCP"
     alarm_dchscp:
-      name: "${name} alarm DchSCP"
+      name: "${bms_name} alarm DchSCP"
     alarm_dchotp:
-      name: "${name} alarm DchOTP"
+      name: "${bms_name} alarm DchOTP"
     alarm_chargemos:
-      name: "${name} alarm ChargeMOS"
+      name: "${bms_name} alarm ChargeMOS"
     alarm_dischargemos:
-      name: "${name} alarm DischargeMOS"
+      name: "${bms_name} alarm DischargeMOS"
     alarm_gpsdisconneted:
-      name: "${name} alarm GPSDisconneted"
+      name: "${bms_name} alarm GPSDisconneted"
     alarm_modifypwdintime:
-      name: "${name} alarm ModifyPWDinTime"
+      name: "${bms_name} alarm ModifyPWDinTime"
     alarm_dischargeonfailed:
-      name: "${name} alarm DischargeOnFailed"
+      name: "${bms_name} alarm DischargeOnFailed"
     alarm_batteryovertemp:
-      name: "${name} alarm BatteryOverTemp"
+      name: "${bms_name} alarm BatteryOverTemp"
     alarm_temperaturesensoranomaly:
-      name: "${name} alarm TemperatureSensorAnomaly"
+      name: "${bms_name} alarm TemperatureSensorAnomaly"
     alarm_plcmoduleanomaly:
-      name: "${name} alarm PLCModuleAnomaly"
+      name: "${bms_name} alarm PLCModuleAnomaly"
     alarm_mostempsensorabsent:
-      name: "${name} alarm MOSTempSensorAbsent"
+      name: "${bms_name} alarm MOSTempSensorAbsent"
 
     alarm_battempsensor1absent:
-      name: "${name} alarm BATTempSensor1Absent"
+      name: "${bms_name} alarm BATTempSensor1Absent"
     alarm_battempsensor2absent:
-      name: "${name} alarm BATTempSensor2Absent"
+      name: "${bms_name} alarm BATTempSensor2Absent"
     alarm_battempsensor3absent:
-      name: "${name} alarm BATTempSensor3Absent"
+      name: "${bms_name} alarm BATTempSensor3Absent"
     alarm_battempsensor4absent:
-      name: "${name} alarm BATTempSensor4Absent"
+      name: "${bms_name} alarm BATTempSensor4Absent"
     alarm_battempsensor5absent:
-      name: "${name} alarm BATTempSensor5Absent"
+      name: "${bms_name} alarm BATTempSensor5Absent"
 
 
 button:
   - platform: jk_bms_ble
     retrieve_settings:
-      name: "${name} retrieve settings"
+      name: "${bms_name} retrieve settings"
     retrieve_device_info:
-      name: "${name} retrieve device info"
+      name: "${bms_name} retrieve device info"
 
 number:
   - platform: jk_bms_ble
     jk_bms_ble_id: bms0    
     smart_sleep_voltage:
-      name: "${name} smart sleep voltage"    
+      name: "${bms_name} smart sleep voltage"    
     cell_undervoltage_protection:
-      name: "${name} cell undervoltage protection"
+      name: "${bms_name} cell undervoltage protection"
     cell_undervoltage_protection_recovery:
-      name: "${name} cell undervoltage protection recovery"  
+      name: "${bms_name} cell undervoltage protection recovery"  
     cell_overvoltage_protection:
-      name: "${name} cell overvoltage protection"
+      name: "${bms_name} cell overvoltage protection"
     cell_overvoltage_protection_recovery:
-      name: "${name} cell overvoltage protection recovery"  
+      name: "${bms_name} cell overvoltage protection recovery"  
     balance_trigger_voltage:
-      name: "${name} balance trigger voltage"
+      name: "${bms_name} balance trigger voltage"
     cell_soc100_voltage:
-      name: "${name} cell_soc100 voltage"
+      name: "${bms_name} cell_soc100 voltage"
     cell_soc0_voltage:
-      name: "${name} cell_soc0 voltage"
+      name: "${bms_name} cell_soc0 voltage"
     cell_request_charge_voltage:
-      name: "${name} cell request charge voltage"      
+      name: "${bms_name} cell request charge voltage"      
     cell_request_float_voltage:
-      name: "${name} cell request float voltage"        
+      name: "${bms_name} cell request float voltage"        
     cell_count:
-      name: "${name} cell count"
+      name: "${bms_name} cell count"
     total_battery_capacity:
-      name: "${name} total battery capacity"
+      name: "${bms_name} total battery capacity"
     balance_starting_voltage:
-      name: "${name} balance starting voltage"
+      name: "${bms_name} balance starting voltage"
     voltage_calibration:
-      name: "${name} voltage calibration"
+      name: "${bms_name} voltage calibration"
     current_calibration:
-      name: "${name} current calibration"
+      name: "${bms_name} current calibration"
     power_off_voltage:
-      name: "${name} power off voltage"
+      name: "${bms_name} power off voltage"
     max_balance_current:
-      name: "${name} max balance current"
+      name: "${bms_name} max balance current"
     max_charge_current:
-      name: "${name} max charge current"
+      name: "${bms_name} max charge current"
     max_discharge_current:
-      name: "${name} max discharge current"
+      name: "${bms_name} max discharge current"
 
 sensor:
   - platform: jk_bms_ble
     jk_bms_ble_id: bms0
     balancing:
-      name: "${name} balancing"    
+      name: "${bms_name} balancing"    
     min_cell_voltage:
-      name: "${name} min cell voltage"
+      name: "${bms_name} min cell voltage"
     max_cell_voltage:
-      name: "${name} max cell voltage"
+      name: "${bms_name} max cell voltage"
     min_voltage_cell:
-      name: "${name} min voltage cell"
+      name: "${bms_name} min voltage cell"
     max_voltage_cell:
-      name: "${name} max voltage cell"
+      name: "${bms_name} max voltage cell"
     delta_cell_voltage:
-      name: "${name} delta cell voltage"
+      name: "${bms_name} delta cell voltage"
     average_cell_voltage:
-      name: "${name} average cell voltage"
+      name: "${bms_name} average cell voltage"
     cell_voltage_01:
-      name: "${name} cell voltage 01"
+      name: "${bms_name} cell voltage 01"
     cell_voltage_02:
-      name: "${name} cell voltage 02"
+      name: "${bms_name} cell voltage 02"
     cell_voltage_03:
-      name: "${name} cell voltage 03"
+      name: "${bms_name} cell voltage 03"
     cell_voltage_04:
-      name: "${name} cell voltage 04"
+      name: "${bms_name} cell voltage 04"
     cell_voltage_05:
-      name: "${name} cell voltage 05"
+      name: "${bms_name} cell voltage 05"
     cell_voltage_06:
-      name: "${name} cell voltage 06"
+      name: "${bms_name} cell voltage 06"
     cell_voltage_07:
-      name: "${name} cell voltage 07"
+      name: "${bms_name} cell voltage 07"
     cell_voltage_08:
-      name: "${name} cell voltage 08"
+      name: "${bms_name} cell voltage 08"
     cell_voltage_09:
-      name: "${name} cell voltage 09"
+      name: "${bms_name} cell voltage 09"
     cell_voltage_10:
-      name: "${name} cell voltage 10"
+      name: "${bms_name} cell voltage 10"
     cell_voltage_11:
-      name: "${name} cell voltage 11"
+      name: "${bms_name} cell voltage 11"
     cell_voltage_12:
-      name: "${name} cell voltage 12"
+      name: "${bms_name} cell voltage 12"
     cell_voltage_13:
-      name: "${name} cell voltage 13"
+      name: "${bms_name} cell voltage 13"
     cell_voltage_14:
-      name: "${name} cell voltage 14"
+      name: "${bms_name} cell voltage 14"
     cell_voltage_15:
-      name: "${name} cell voltage 15"
+      name: "${bms_name} cell voltage 15"
     cell_voltage_16:
-      name: "${name} cell voltage 16"
+      name: "${bms_name} cell voltage 16"
     cell_voltage_17:
-      name: "${name} cell voltage 17"
+      name: "${bms_name} cell voltage 17"
     cell_voltage_18:
-      name: "${name} cell voltage 18"
+      name: "${bms_name} cell voltage 18"
     cell_voltage_19:
-      name: "${name} cell voltage 19"
+      name: "${bms_name} cell voltage 19"
     cell_voltage_20:
-      name: "${name} cell voltage 20"
+      name: "${bms_name} cell voltage 20"
     cell_voltage_21:
-      name: "${name} cell voltage 21"
+      name: "${bms_name} cell voltage 21"
     cell_voltage_22:
-      name: "${name} cell voltage 22"
+      name: "${bms_name} cell voltage 22"
     cell_voltage_23:
-      name: "${name} cell voltage 23"
+      name: "${bms_name} cell voltage 23"
     cell_voltage_24:
-      name: "${name} cell voltage 24"
+      name: "${bms_name} cell voltage 24"
     cell_resistance_01:
-      name: "${name} cell resistance 01"
+      name: "${bms_name} cell resistance 01"
     cell_resistance_02:
-      name: "${name} cell resistance 02"
+      name: "${bms_name} cell resistance 02"
     cell_resistance_03:
-      name: "${name} cell resistance 03"
+      name: "${bms_name} cell resistance 03"
     cell_resistance_04:
-      name: "${name} cell resistance 04"
+      name: "${bms_name} cell resistance 04"
     cell_resistance_05:
-      name: "${name} cell resistance 05"
+      name: "${bms_name} cell resistance 05"
     cell_resistance_06:
-      name: "${name} cell resistance 06"
+      name: "${bms_name} cell resistance 06"
     cell_resistance_07:
-      name: "${name} cell resistance 07"
+      name: "${bms_name} cell resistance 07"
     cell_resistance_08:
-      name: "${name} cell resistance 08"
+      name: "${bms_name} cell resistance 08"
     cell_resistance_09:
-      name: "${name} cell resistance 09"
+      name: "${bms_name} cell resistance 09"
     cell_resistance_10:
-      name: "${name} cell resistance 10"
+      name: "${bms_name} cell resistance 10"
     cell_resistance_11:
-      name: "${name} cell resistance 11"
+      name: "${bms_name} cell resistance 11"
     cell_resistance_12:
-      name: "${name} cell resistance 12"
+      name: "${bms_name} cell resistance 12"
     cell_resistance_13:
-      name: "${name} cell resistance 13"
+      name: "${bms_name} cell resistance 13"
     cell_resistance_14:
-      name: "${name} cell resistance 14"
+      name: "${bms_name} cell resistance 14"
     cell_resistance_15:
-      name: "${name} cell resistance 15"
+      name: "${bms_name} cell resistance 15"
     cell_resistance_16:
-      name: "${name} cell resistance 16"
+      name: "${bms_name} cell resistance 16"
     cell_resistance_17:
-      name: "${name} cell resistance 17"
+      name: "${bms_name} cell resistance 17"
     cell_resistance_18:
-      name: "${name} cell resistance 18"
+      name: "${bms_name} cell resistance 18"
     cell_resistance_19:
-      name: "${name} cell resistance 19"
+      name: "${bms_name} cell resistance 19"
     cell_resistance_20:
-      name: "${name} cell resistance 20"
+      name: "${bms_name} cell resistance 20"
     cell_resistance_21:
-      name: "${name} cell resistance 21"
+      name: "${bms_name} cell resistance 21"
     cell_resistance_22:
-      name: "${name} cell resistance 22"
+      name: "${bms_name} cell resistance 22"
     cell_resistance_23:
-      name: "${name} cell resistance 23"
+      name: "${bms_name} cell resistance 23"
     cell_resistance_24:
-      name: "${name} cell resistance 24"
+      name: "${bms_name} cell resistance 24"
     total_voltage:
-      name: "${name} total voltage"
+      name: "${bms_name} total voltage"
     current:
-      name: "${name} current"
+      name: "${bms_name} current"
     power:
-      name: "${name} power"
+      name: "${bms_name} power"
     charging_power:
-      name: "${name} charging power"
+      name: "${bms_name} charging power"
     discharging_power:
-      name: "${name} discharging power"
+      name: "${bms_name} discharging power"
     temperature_sensor_1:
-      name: "${name} temperature sensor 1"
+      name: "${bms_name} temperature sensor 1"
     temperature_sensor_2:
-      name: "${name} temperature sensor 2"
+      name: "${bms_name} temperature sensor 2"
     temperature_sensor_3:
-      name: "${name} temperature sensor 3"
+      name: "${bms_name} temperature sensor 3"
     temperature_sensor_4:
-      name: "${name} temperature sensor 4"      
+      name: "${bms_name} temperature sensor 4"      
     power_tube_temperature:
-      name: "${name} power tube temperature"
+      name: "${bms_name} power tube temperature"
     state_of_charge:
-      name: "${name} state of charge"
+      name: "${bms_name} state of charge"
     capacity_remaining:
-      name: "${name} capacity remaining"
+      name: "${bms_name} capacity remaining"
     total_battery_capacity_setting:
-      name: "${name} total battery capacity setting"
+      name: "${bms_name} total battery capacity setting"
     charging_cycles:
-      name: "${name} charging cycles"
+      name: "${bms_name} charging cycles"
     total_charging_cycle_capacity:
-      name: "${name} total charging cycle capacity"
+      name: "${bms_name} total charging cycle capacity"
     total_runtime:
-      name: "${name} total runtime"
+      name: "${bms_name} total runtime"
     balancing_current:
-      name: "${name} balancing current"
+      name: "${bms_name} balancing current"
     errors_bitmask:
-      name: "${name} errors bitmask"
+      name: "${bms_name} errors bitmask"
     heating_current:
-      name: "${name} heating current"
+      name: "${bms_name} heating current"
 
 switch:
   - platform: jk_bms_ble
     charging:
-      name: "${name} charging"
+      name: "${bms_name} charging"
     discharging:
-      name: "${name} discharging"
+      name: "${bms_name} discharging"
     balancer:
-      name: "${name} balancer"
+      name: "${bms_name} balancer"
     display_always_on:
-      name: "${name} display always on"      
+      name: "${bms_name} display always on"      
     heating:
-      name: "${name} heating"
+      name: "${bms_name} heating"
     emergency:
-      name: "${name} emergency"
+      name: "${bms_name} emergency"
     charging_float_mode:
-      name: "${name} charging float mode"
+      name: "${bms_name} charging float mode"
     timed_stored_data:
-      name: "${name} timed stored data"      
+      name: "${bms_name} timed stored data"      
     disable_temperature_sensors:
-      name: "${name} disable temperature sensors"      
+      name: "${bms_name} disable temperature sensors"      
     smart_sleep_on:
-      name: "${name} smart sleep on"    
+      name: "${bms_name} smart sleep on"    
 
     disable_pcl_module:
-      name: "${name} disable pcl module"              
+      name: "${bms_name} disable pcl module"              
   - platform: ble_client
     ble_client_id: ble_client0
     id: ble_client_switch0    
-    name: "${name} enable bluetooth connection"
+    name: "${bms_name} enable bluetooth connection"
 
 text_sensor:
   - platform: jk_bms_ble
     errors:
-      name: "${name} errors"
+      name: "${bms_name} errors"
     total_runtime_formatted:
-      name: "${name} total runtime formatted"
+      name: "${bms_name} total runtime formatted"
