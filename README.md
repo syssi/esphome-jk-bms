@@ -25,6 +25,12 @@ Last news: new parameters added and new dashboards
 ESPHome component to control and monitor a Jikong Battery Management System (JK-BMS) via UART-TTL or BLE [Click here](https://github.com/txubelaxu/esphome-jk-bms/README_uart_ble.md) for more info.
 
 
+Support
+If you want to tip me for this work, you can now buy me a coffee
+
+[!["Buy Me A Coffee"](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg)](https://www.buymeacoffee.com/txubelaxu)
+
+
 ## References
 * https://www.youtube.com/@OffGridGarageAustralia
 * https://github.com/syssi/esphome-jk-bms
