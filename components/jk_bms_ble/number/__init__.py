@@ -271,7 +271,7 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
         cv.Optional(CONF_VOLTAGE_CALIBRATION): JK_NUMBER_SCHEMA.extend(
             {
                 # @FIXME The exact limits are unknown
-                cv.Optional(CONF_MIN_VALUE, default=10.0): cv.float_,
+                cv.Optional(CONF_MIN_VALUE, default=0.0): cv.float_,
                 cv.Optional(CONF_MAX_VALUE, default=100.0): cv.float_,
                 cv.Optional(CONF_STEP, default=0.01): cv.float_,
             }

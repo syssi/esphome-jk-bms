@@ -232,6 +232,34 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->temperatures_[1].temperature_sensor_,
                        (float) ((int16_t) jk_get_16bit(132 + offset)) * 0.1f);
 
+  // 134   2   0xD2        Alarms      bit   
+        // AlarmWireRes                1   (0:normal | 1:alarm)
+        // AlarmMosOTP                 2   (0:normal | 1:alarm)
+        // AlarmCellQuantity           4   (0:normal | 1:alarm)
+        // AlarmCurSensorErr           8   (0:normal | 1:alarm)
+        // AlarmCellOVP                16  (0:normal | 1:alarm)
+        // AlarmBatOVP                 32  (0:normal | 1:alarm)
+        // AlarmChOCP                  64  (0:normal | 1:alarm)
+        // AlarmChSCP                  128 (0:normal | 1:alarm)
+  if (frame_version == FRAME_VERSION_JK02_32S) {
+    this->publish_state_(this->alarm_wireres_binary_sensor_, (bool) check_bit_(data[134], 1));
+    this->publish_state_(this->alarm_mosotp_binary_sensor_, (bool) check_bit_(data[134], 2));
+    this->publish_state_(this->alarm_cellquantity_binary_sensor_, (bool) check_bit_(data[134], 4));
+    this->publish_state_(this->alarm_cursensorerr_binary_sensor_, (bool) check_bit_(data[134], 8));
+    this->publish_state_(this->alarm_cellovp_binary_sensor_, (bool) check_bit_(data[134], 16));
+    this->publish_state_(this->alarm_batovp_binary_sensor_, (bool) check_bit_(data[134], 32));
+    this->publish_state_(this->alarm_chocp_binary_sensor_, (bool) check_bit_(data[134], 64));
+    this->publish_state_(this->alarm_chscp_binary_sensor_, (bool) check_bit_(data[134], 128));
+/*    ESP_LOGI(TAG, "alarm_WireRes_binary_sensor_:                  %d", (bool) check_bit_(data[134], 1));
+    ESP_LOGI(TAG, "alarm_MosOTP_binary_sensor_:                   %d", (bool) check_bit_(data[134], 2));
+    ESP_LOGI(TAG, "alarm_CellQuantity_binary_sensor_:             %d", (bool) check_bit_(data[134], 4));
+    ESP_LOGI(TAG, "alarm_CurSensorErr_binary_sensor_:             %d", (bool) check_bit_(data[134], 8));
+    ESP_LOGI(TAG, "alarm_CellOVP_binary_sensor_:                  %d", (bool) check_bit_(data[134], 16));
+    ESP_LOGI(TAG, "alarm_BatOVP_binary_sensor_:                   %d", (bool) check_bit_(data[134], 32));
+    ESP_LOGI(TAG, "alarm_ChOCP_binary_sensor_:                    %d", (bool) check_bit_(data[134], 64));
+    ESP_LOGI(TAG, "alarm_ChSCP_binary_sensor_:                    %d", (bool) check_bit_(data[134], 128));*/
+  }    
+
   // 134   2   0xD2 0x00              MOS Temperature       0.1          °C
   if (frame_version == FRAME_VERSION_JK02_32S) {
     uint16_t raw_errors_bitmask = (uint16_t(data[134 + offset]) << 8) | (uint16_t(data[134 + 1 + offset]) << 0);
@@ -239,6 +267,63 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
     this->publish_state_(this->errors_text_sensor_, this->error_bits_to_string_(raw_errors_bitmask));
   } else {
     this->publish_state_(this->power_tube_temperature_sensor_, (float) ((int16_t) jk_get_16bit(134 + offset)) * 0.1f);
+  }
+
+// 135   2   0xD2        Alarms      bit 
+        // AlarmChOTP                  1   (0:normal | 1:alarm)
+        // AlarmChUTP                  2   (0:normal | 1:alarm)
+        // AlarmCPUAuxCommuErr         4   (0:normal | 1:alarm)
+        // AlarmCellUVP                8   (0:normal | 1:alarm)
+        // AlarmBatUVP                 16  (0:normal | 1:alarm)
+        // AlarmDchOCP                 32  (0:normal | 1:alarm)
+        // AlarmDchSCP                 64  (0:normal | 1:alarm)
+        // AlarmDchOTP                 128 (0:normal | 1:alarm)
+  if (frame_version == FRAME_VERSION_JK02_32S) {
+    this->publish_state_(this->alarm_chotp_binary_sensor_, (bool) check_bit_(data[135], 1));
+    this->publish_state_(this->alarm_chutp_binary_sensor_, (bool) check_bit_(data[135], 2));
+    this->publish_state_(this->alarm_cpuauxcommuerr_binary_sensor_, (bool) check_bit_(data[135], 4));
+    this->publish_state_(this->alarm_celluvp_binary_sensor_, (bool) check_bit_(data[135], 8));
+    this->publish_state_(this->alarm_batuvp_binary_sensor_, (bool) check_bit_(data[135], 16));
+    this->publish_state_(this->alarm_dchocp_binary_sensor_, (bool) check_bit_(data[135], 32));
+    this->publish_state_(this->alarm_dchscp_binary_sensor_, (bool) check_bit_(data[135], 64));
+    this->publish_state_(this->alarm_dchotp_binary_sensor_, (bool) check_bit_(data[135], 128));
+/*    ESP_LOGI(TAG, "alarm_ChOTP_binary_sensor_:                    %d", (bool) check_bit_(data[135], 1));
+    ESP_LOGI(TAG, "alarm_ChUTP_binary_sensor_:                    %d", (bool) check_bit_(data[135], 2));
+    ESP_LOGI(TAG, "alarm_CPUAuxCommuErr_binary_sensor_:           %d", (bool) check_bit_(data[135], 4));
+    ESP_LOGI(TAG, "alarm_CellUVP_binary_sensor_:                  %d", (bool) check_bit_(data[135], 8));
+    ESP_LOGI(TAG, "alarm_BatUVP_binary_sensor_:                   %d", (bool) check_bit_(data[135], 16));
+    ESP_LOGI(TAG, "alarm_DchOCP_binary_sensor_:                   %d", (bool) check_bit_(data[135], 32));
+    ESP_LOGI(TAG, "alarm_DchSCP_binary_sensor_:                   %d", (bool) check_bit_(data[135], 64));
+    ESP_LOGI(TAG, "alarm_DchOTP_binary_sensor_:                   %d", (bool) check_bit_(data[135], 128)); */
+                   
+  }            
+  // 136   2   0xD2        Alarms      bit 
+        // AlarmChargeMOS              1   (0:normal | 1:alarm)
+        // AlarmDischargeMOS           2   (0:normal | 1:alarm)
+        // GPSDisconneted              4   (0:normal | 1:alarm)
+        // ModifyPWDinTime             8   (0:normal | 1:alarm)
+        // DischargeOnFailed           16  (0:normal | 1:alarm)
+        // BatteryOverTemp             32  (0:normal | 1:alarm)
+        // TemperatureSensorAnomaly    64  (0:normal | 1:alarm)
+        // PLCModuleAnomaly            128 (0:normal | 1:alarm)
+  if (frame_version == FRAME_VERSION_JK02_32S) {
+    this->publish_state_(this->alarm_chargemos_binary_sensor_, (bool) check_bit_(data[136], 1));
+    this->publish_state_(this->alarm_dischargemos_binary_sensor_, (bool) check_bit_(data[136], 2));
+    this->publish_state_(this->alarm_gpsdisconneted_binary_sensor_, (bool) check_bit_(data[136], 4));
+    this->publish_state_(this->alarm_modifypwdintime_binary_sensor_, (bool) check_bit_(data[136], 8));
+    this->publish_state_(this->alarm_dischargeonfailed_binary_sensor_, (bool) check_bit_(data[136], 16));
+    this->publish_state_(this->alarm_batteryovertemp_binary_sensor_, (bool) check_bit_(data[136], 32));
+    this->publish_state_(this->alarm_temperaturesensoranomaly_binary_sensor_, (bool) check_bit_(data[136], 64));
+    this->publish_state_(this->alarm_plcmoduleanomaly_binary_sensor_, (bool) check_bit_(data[136], 128));
+/*    ESP_LOGI(TAG, "alarm_ChargeMOS_binary_sensor_:                %d", (bool) check_bit_(data[136], 1));
+    ESP_LOGI(TAG, "alarm_DischargeMOS_binary_sensor_:             %d", (bool) check_bit_(data[136], 2));
+    ESP_LOGI(TAG, "alarm_GPSDisconneted_binary_sensor_:           %d", (bool) check_bit_(data[136], 4));
+    ESP_LOGI(TAG, "alarm_ModifyPWDinTime_binary_sensor_:          %d", (bool) check_bit_(data[136], 8));
+    ESP_LOGI(TAG, "alarm_DischargeOnFailed_binary_sensor_:        %d", (bool) check_bit_(data[136], 16));
+    ESP_LOGI(TAG, "alarm_BatteryOverTemp_binary_sensor_:          %d", (bool) check_bit_(data[136], 32));
+    ESP_LOGI(TAG, "alarm_TemperatureSensorAnomaly_binary_sensor_: %d", (bool) check_bit_(data[136], 64));
+    ESP_LOGI(TAG, "alarm_PLCModuleAnomaly_binary_sensor_:         %d", (bool) check_bit_(data[136], 128));*/
+                       
   }
 
   // 136   2   0x00 0x00              System alarms
@@ -268,6 +353,17 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
     this->publish_state_(this->errors_bitmask_sensor_, (float) raw_errors_bitmask);
     this->publish_state_(this->errors_text_sensor_, this->error_bits_to_string_(raw_errors_bitmask));
   }
+
+  // 137   2   0xD2        Alarms      bit 
+        // UnusedBit24
+        // UnusedBit25
+        // UnusedBit26
+        // UnusedBit27
+        // UnusedBit28
+        // UnusedBit29
+        // UnusedBit30
+        // UnusedBit31
+
 
   // 138   2   0x00 0x00              Balance current      0.001         A
   this->publish_state_(this->balancing_current_sensor_, (float) ((int16_t) jk_get_16bit(138 + offset)) * 0.001f);

@@ -126,11 +126,11 @@ void JkBmsBle::dump_config() {  // NOLINT(google-readability-function-size,reada
   LOG_SENSOR("", "Heating Current", this->heating_current_sensor_);
   LOG_TEXT_SENSOR("", "Operation Status", this->operation_status_text_sensor_);
   LOG_TEXT_SENSOR("", "Total Runtime Formatted", this->total_runtime_formatted_text_sensor_);
-  LOG_BINARY_SENSOR("", "Balancing", this->balancing_binary_sensor_);
-  LOG_BINARY_SENSOR("", "Precharging", this->precharging_binary_sensor_);  
-  LOG_BINARY_SENSOR("", "Charging", this->charging_binary_sensor_);
-  LOG_BINARY_SENSOR("", "Discharging", this->discharging_binary_sensor_);
-  LOG_BINARY_SENSOR("", "Heating", this->heating_binary_sensor_);
+  LOG_BINARY_SENSOR("", "Balancing Real Status", this->balancing_status_binary_sensor_);
+  LOG_BINARY_SENSOR("", "Precharging Real Status", this->precharging_status_binary_sensor_);  
+  LOG_BINARY_SENSOR("", "Charging Real Status", this->charging_status_binary_sensor_);
+  LOG_BINARY_SENSOR("", "Discharging Real Status", this->discharging_status_binary_sensor_);
+  LOG_BINARY_SENSOR("", "Heating Real Status", this->heating_status_binary_sensor_);
 }
 
 void JkBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if,
@@ -446,11 +446,105 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->temperatures_[1].temperature_sensor_,
                        (float) ((int16_t) jk_get_16bit(132 + offset)) * 0.1f);
 
-  // 134   2   0xD2 0x00              MOS Temperature       0.1          °C
+  // 134   2   0xD2        Alarms      bit   
+        // AlarmWireRes                1   (0:normal | 1:alarm)
+        // AlarmMosOTP                 2   (0:normal | 1:alarm)
+        // AlarmCellQuantity           4   (0:normal | 1:alarm)
+        // AlarmCurSensorErr           8   (0:normal | 1:alarm)
+        // AlarmCellOVP                16  (0:normal | 1:alarm)
+        // AlarmBatOVP                 32  (0:normal | 1:alarm)
+        // AlarmChOCP                  64  (0:normal | 1:alarm)
+        // AlarmChSCP                  128 (0:normal | 1:alarm)
+  if (frame_version == FRAME_VERSION_JK02_32S) {
+    this->publish_state_(this->alarm_wireres_binary_sensor_, (bool) check_bit_(data[134], 1));
+    this->publish_state_(this->alarm_mosotp_binary_sensor_, (bool) check_bit_(data[134], 2));
+    this->publish_state_(this->alarm_cellquantity_binary_sensor_, (bool) check_bit_(data[134], 4));
+    this->publish_state_(this->alarm_cursensorerr_binary_sensor_, (bool) check_bit_(data[134], 8));
+    this->publish_state_(this->alarm_cellovp_binary_sensor_, (bool) check_bit_(data[134], 16));
+    this->publish_state_(this->alarm_batovp_binary_sensor_, (bool) check_bit_(data[134], 32));
+    this->publish_state_(this->alarm_chocp_binary_sensor_, (bool) check_bit_(data[134], 64));
+    this->publish_state_(this->alarm_chscp_binary_sensor_, (bool) check_bit_(data[134], 128));
+/*    ESP_LOGI(TAG, "alarm_WireRes_binary_sensor_:                  %d", (bool) check_bit_(data[134], 1));
+    ESP_LOGI(TAG, "alarm_MosOTP_binary_sensor_:                   %d", (bool) check_bit_(data[134], 2));
+    ESP_LOGI(TAG, "alarm_CellQuantity_binary_sensor_:             %d", (bool) check_bit_(data[134], 4));
+    ESP_LOGI(TAG, "alarm_CurSensorErr_binary_sensor_:             %d", (bool) check_bit_(data[134], 8));
+    ESP_LOGI(TAG, "alarm_CellOVP_binary_sensor_:                  %d", (bool) check_bit_(data[134], 16));
+    ESP_LOGI(TAG, "alarm_BatOVP_binary_sensor_:                   %d", (bool) check_bit_(data[134], 32));
+    ESP_LOGI(TAG, "alarm_ChOCP_binary_sensor_:                    %d", (bool) check_bit_(data[134], 64));
+    ESP_LOGI(TAG, "alarm_ChSCP_binary_sensor_:                    %d", (bool) check_bit_(data[134], 128));*/
+  }        
+  // 135   2   0xD2        Alarms      bit 
+        // AlarmChOTP                  1   (0:normal | 1:alarm)
+        // AlarmChUTP                  2   (0:normal | 1:alarm)
+        // AlarmCPUAuxCommuErr         4   (0:normal | 1:alarm)
+        // AlarmCellUVP                8   (0:normal | 1:alarm)
+        // AlarmBatUVP                 16  (0:normal | 1:alarm)
+        // AlarmDchOCP                 32  (0:normal | 1:alarm)
+        // AlarmDchSCP                 64  (0:normal | 1:alarm)
+        // AlarmDchOTP                 128 (0:normal | 1:alarm)
+  if (frame_version == FRAME_VERSION_JK02_32S) {
+    this->publish_state_(this->alarm_chotp_binary_sensor_, (bool) check_bit_(data[135], 1));
+    this->publish_state_(this->alarm_chutp_binary_sensor_, (bool) check_bit_(data[135], 2));
+    this->publish_state_(this->alarm_cpuauxcommuerr_binary_sensor_, (bool) check_bit_(data[135], 4));
+    this->publish_state_(this->alarm_celluvp_binary_sensor_, (bool) check_bit_(data[135], 8));
+    this->publish_state_(this->alarm_batuvp_binary_sensor_, (bool) check_bit_(data[135], 16));
+    this->publish_state_(this->alarm_dchocp_binary_sensor_, (bool) check_bit_(data[135], 32));
+    this->publish_state_(this->alarm_dchscp_binary_sensor_, (bool) check_bit_(data[135], 64));
+    this->publish_state_(this->alarm_dchotp_binary_sensor_, (bool) check_bit_(data[135], 128));
+/*    ESP_LOGI(TAG, "alarm_ChOTP_binary_sensor_:                    %d", (bool) check_bit_(data[135], 1));
+    ESP_LOGI(TAG, "alarm_ChUTP_binary_sensor_:                    %d", (bool) check_bit_(data[135], 2));
+    ESP_LOGI(TAG, "alarm_CPUAuxCommuErr_binary_sensor_:           %d", (bool) check_bit_(data[135], 4));
+    ESP_LOGI(TAG, "alarm_CellUVP_binary_sensor_:                  %d", (bool) check_bit_(data[135], 8));
+    ESP_LOGI(TAG, "alarm_BatUVP_binary_sensor_:                   %d", (bool) check_bit_(data[135], 16));
+    ESP_LOGI(TAG, "alarm_DchOCP_binary_sensor_:                   %d", (bool) check_bit_(data[135], 32));
+    ESP_LOGI(TAG, "alarm_DchSCP_binary_sensor_:                   %d", (bool) check_bit_(data[135], 64));
+    ESP_LOGI(TAG, "alarm_DchOTP_binary_sensor_:                   %d", (bool) check_bit_(data[135], 128)); */
+                   
+  }            
+  // 136   2   0xD2        Alarms      bit 
+        // AlarmChargeMOS              1   (0:normal | 1:alarm)
+        // AlarmDischargeMOS           2   (0:normal | 1:alarm)
+        // GPSDisconneted              4   (0:normal | 1:alarm)
+        // ModifyPWDinTime             8   (0:normal | 1:alarm)
+        // DischargeOnFailed           16  (0:normal | 1:alarm)
+        // BatteryOverTemp             32  (0:normal | 1:alarm)
+        // TemperatureSensorAnomaly    64  (0:normal | 1:alarm)
+        // PLCModuleAnomaly            128 (0:normal | 1:alarm)
+  if (frame_version == FRAME_VERSION_JK02_32S) {
+    this->publish_state_(this->alarm_chargemos_binary_sensor_, (bool) check_bit_(data[136], 1));
+    this->publish_state_(this->alarm_dischargemos_binary_sensor_, (bool) check_bit_(data[136], 2));
+    this->publish_state_(this->alarm_gpsdisconneted_binary_sensor_, (bool) check_bit_(data[136], 4));
+    this->publish_state_(this->alarm_modifypwdintime_binary_sensor_, (bool) check_bit_(data[136], 8));
+    this->publish_state_(this->alarm_dischargeonfailed_binary_sensor_, (bool) check_bit_(data[136], 16));
+    this->publish_state_(this->alarm_batteryovertemp_binary_sensor_, (bool) check_bit_(data[136], 32));
+    this->publish_state_(this->alarm_temperaturesensoranomaly_binary_sensor_, (bool) check_bit_(data[136], 64));
+    this->publish_state_(this->alarm_plcmoduleanomaly_binary_sensor_, (bool) check_bit_(data[136], 128));
+/*    ESP_LOGI(TAG, "alarm_ChargeMOS_binary_sensor_:                %d", (bool) check_bit_(data[136], 1));
+    ESP_LOGI(TAG, "alarm_DischargeMOS_binary_sensor_:             %d", (bool) check_bit_(data[136], 2));
+    ESP_LOGI(TAG, "alarm_GPSDisconneted_binary_sensor_:           %d", (bool) check_bit_(data[136], 4));
+    ESP_LOGI(TAG, "alarm_ModifyPWDinTime_binary_sensor_:          %d", (bool) check_bit_(data[136], 8));
+    ESP_LOGI(TAG, "alarm_DischargeOnFailed_binary_sensor_:        %d", (bool) check_bit_(data[136], 16));
+    ESP_LOGI(TAG, "alarm_BatteryOverTemp_binary_sensor_:          %d", (bool) check_bit_(data[136], 32));
+    ESP_LOGI(TAG, "alarm_TemperatureSensorAnomaly_binary_sensor_: %d", (bool) check_bit_(data[136], 64));
+    ESP_LOGI(TAG, "alarm_PLCModuleAnomaly_binary_sensor_:         %d", (bool) check_bit_(data[136], 128));*/
+                       
+  }           
+  // 137   2   0xD2        Alarms      bit 
+        // UnusedBit24
+        // UnusedBit25
+        // UnusedBit26
+        // UnusedBit27
+        // UnusedBit28
+        // UnusedBit29
+        // UnusedBit30
+        // UnusedBit31
   if (frame_version == FRAME_VERSION_JK02_32S) {
     uint16_t raw_errors_bitmask = (uint16_t(data[134 + offset]) << 8) | (uint16_t(data[134 + 1 + offset]) << 0);
     this->publish_state_(this->errors_bitmask_sensor_, (float) raw_errors_bitmask);
     this->publish_state_(this->errors_text_sensor_, this->error_bits_to_string_(raw_errors_bitmask));
+
+
+
   } else {
     this->publish_state_(this->power_tube_temperature_sensor_, (float) ((int16_t) jk_get_16bit(134 + offset)) * 0.1f);
   }
@@ -521,16 +615,16 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->total_runtime_formatted_text_sensor_, format_total_runtime_(jk_get_32bit(162 + offset)));
 
   // 166   1   0x01                   Charging mosfet enabled                      0x00: off, 0x01: on
-  this->publish_state_(this->charging_binary_sensor_, (bool) data[166 + offset]);
+  this->publish_state_(this->charging_status_binary_sensor_, (bool) data[166 + offset]);
   ESP_LOGI(TAG, "CHARGE WORKING STATUS:    0x%02X", data[166 + offset]);
   // 167   1   0x01                   Discharging mosfet enabled                   0x00: off, 0x01: on
-  this->publish_state_(this->discharging_binary_sensor_, (bool) data[167 + offset]);
+  this->publish_state_(this->discharging_status_binary_sensor_, (bool) data[167 + offset]);
   ESP_LOGI(TAG, "DISCHARGE WORKING STATUS: 0x%02X", data[167 + offset]);
   // 168   1   0x01                   PRE Discharging                              0x00: off, 0x01: on
-  this->publish_state_(this->precharging_binary_sensor_, (bool) data[168 + offset]);
+  this->publish_state_(this->precharging_status_binary_sensor_, (bool) data[168 + offset]);
   ESP_LOGI(TAG, "PRECHARGE WORKING STATUS: 0x%02X", data[168 + offset]);
   // 169   1   0x01                   Balancer working                             0x00: off, 0x01: on
-  this->publish_state_(this->balancing_binary_sensor_, (bool) data[169 + offset]);
+  this->publish_state_(this->balancing_status_binary_sensor_, (bool) data[169 + offset]);
   ESP_LOGI(TAG, "BALANCER WORKING STATUS:  0x%02X", data[169 + offset]);
 
   // 171   2   0x00 0x00              Unknown171
@@ -538,8 +632,34 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // 175   2   0x00 0x00              Unknown175
   // 177   2   0x00 0x00              Unknown177
   // 179   2   0x00 0x00              Unknown179
-  // 181   2   0x00 0x07              Unknown181
-  // 183   2   0x00 0x01              Unknown183
+  // 181   1   0x00                   Unknown181
+  // 182   1                          SensorAlarms
+        // MOSTempSensorAbsent          1   (0:normal | 1:alarm)
+        // BATTempSensor1Absent         2   (0:normal | 1:alarm)
+        // BATTempSensor2Absent         4   (0:normal | 1:alarm)
+        // BATTempSensor3Absent         8   (0:normal | 1:alarm)
+        // BATTempSensor4Absent         16  (0:normal | 1:alarm)
+        // BATTempSensor5Absent         32  (0:normal | 1:alarm)
+        // Unusedbit6                   64  (0:normal | 1:alarm)
+        // Unusedbit7                   128 (0:normal | 1:alarm)
+ 
+  if (frame_version == FRAME_VERSION_JK02_32S) {
+    this->publish_state_(this->alarm_mostempsensorabsent_binary_sensor_, (bool) check_bit_(data[182], 1));
+    this->publish_state_(this->alarm_battempsensor1absent_binary_sensor_, (bool) check_bit_(data[182], 2));
+    this->publish_state_(this->alarm_battempsensor2absent_binary_sensor_, (bool) check_bit_(data[182], 4));
+    this->publish_state_(this->alarm_battempsensor3absent_binary_sensor_, (bool) check_bit_(data[182], 8));
+    this->publish_state_(this->alarm_battempsensor4absent_binary_sensor_, (bool) check_bit_(data[182], 16));
+    this->publish_state_(this->alarm_battempsensor5absent_binary_sensor_, (bool) check_bit_(data[182], 32));
+/*  ESP_LOGI(TAG, "MOSTempSensorAbsent:                %d", (bool) check_bit_(data[182], 1));
+    ESP_LOGI(TAG, "BATTempSensor1Absent:             %d", (bool) check_bit_(data[182], 2));
+    ESP_LOGI(TAG, "BATTempSensor2Absent:           %d", (bool) check_bit_(data[182], 4));
+    ESP_LOGI(TAG, "BATTempSensor3Absent:          %d", (bool) check_bit_(data[182], 8));
+    ESP_LOGI(TAG, "BATTempSensor4Absent:        %d", (bool) check_bit_(data[182], 16));
+    ESP_LOGI(TAG, "BATTempSensor5Absent:          %d", (bool) check_bit_(data[182], 32));*/
+  }         
+
+  // 183   2   0x00 0x01              Unknown183 Heating working???
+  //this->publish_state_(this->heating_status_binary_sensor_, (bool) data[183 + offset]);
   // 185   2   0x00 0x00              Unknown185
   // 187   2   0x00 0xD5              Unknown187
   // 189   2   0x02 0x00              Unknown189
@@ -566,8 +686,8 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   //           0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
   //           0x00
 
-  // 224   1   0x01                   Heating status          0x00: off, 0x01: on
-  this->publish_state_(this->heating_binary_sensor_, (bool) data[224 + offset]);
+  // 224   1   0x01                   Heating status          0x00: off, 0x01: on       ???? or 183?
+  this->publish_state_(this->heating_status_binary_sensor_, (bool) data[224 + offset]);
 
   // 236   2   0x01 0xFD              Heating current         0.001         A
   this->publish_state_(this->heating_current_sensor_, (float) ((int16_t) jk_get_16bit(236 + offset)) * 0.001f);
@@ -724,7 +844,7 @@ void JkBmsBle::decode_jk04_cell_info_(const std::vector<uint8_t> &data) {
 
   // 220   1   0x00                  Blink cells (0x00: Off, 0x01: Charging balancer, 0x02: Discharging balancer)
   bool balancing = (data[220] != 0x00);
-  this->publish_state_(this->balancing_binary_sensor_, balancing);
+  this->publish_state_(this->balancing_status_binary_sensor_, balancing);
   this->publish_state_(this->operation_status_text_sensor_, (balancing) ? "Balancing" : "Idle");
 
   // 221   1   0x01                  Unknown221

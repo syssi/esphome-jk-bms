@@ -25,7 +25,25 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   }
   void set_balancing_sensor(sensor::Sensor *balancing_sensor) {
     balancing_sensor_ = balancing_sensor;
-  }  
+  } 
+  void set_balancing_status_binary_sensor(binary_sensor::BinarySensor *balancing_status_binary_sensor) {
+    balancing_status_binary_sensor_ = balancing_status_binary_sensor;
+  }
+  void set_precharging_status_binary_sensor(binary_sensor::BinarySensor *precharging_status_binary_sensor) {
+    precharging_status_binary_sensor_ = precharging_status_binary_sensor;
+  }
+  void set_charging_status_binary_sensor(binary_sensor::BinarySensor *charging_status_binary_sensor) {
+    charging_status_binary_sensor_ = charging_status_binary_sensor;
+  }
+  void set_discharging_status_binary_sensor(binary_sensor::BinarySensor *discharging_status_binary_sensor) {
+    discharging_status_binary_sensor_ = discharging_status_binary_sensor;
+  }
+  void set_online_status_binary_sensor(binary_sensor::BinarySensor *online_status_binary_sensor) {
+    online_status_binary_sensor_ = online_status_binary_sensor;
+  }
+  void set_heating_status_binary_sensor(binary_sensor::BinarySensor *heating_status_binary_sensor) {
+    heating_status_binary_sensor_ = heating_status_binary_sensor;
+  }   
   void set_cell_count_sensor(sensor::Sensor *cell_count_sensor) { cell_count_sensor_ = cell_count_sensor; }
 
   void set_balancing_switch_binary_sensor(binary_sensor::BinarySensor *balancing_switch_binary_sensor) {
@@ -55,9 +73,6 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
 
   void set_dedicated_charger_switch_binary_sensor(binary_sensor::BinarySensor *dedicated_charger_switch_binary_sensor) {
     dedicated_charger_switch_binary_sensor_ = dedicated_charger_switch_binary_sensor;
-  }
-  void set_online_status_binary_sensor(binary_sensor::BinarySensor *online_status_binary_sensor) {
-    online_status_binary_sensor_ = online_status_binary_sensor;
   }
 
   void set_smart_sleep_voltage_sensor(sensor::Sensor *smart_sleep_voltage_sensor) {
@@ -267,6 +282,100 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
     protocol_version_sensor_ = protocol_version_sensor;
   }
 
+  // ALARMS
+  void set_alarm_wireres_binary_sensor(binary_sensor::BinarySensor *alarm_wireres_binary_sensor) {
+    alarm_wireres_binary_sensor_ = alarm_wireres_binary_sensor;
+  }
+  void set_alarm_mosotp_binary_sensor(binary_sensor::BinarySensor *alarm_mosotp_binary_sensor) {
+    alarm_mosotp_binary_sensor_ = alarm_mosotp_binary_sensor;
+  }
+  void set_alarm_cellquantity_binary_sensor(binary_sensor::BinarySensor *alarm_cellquantity_binary_sensor) {
+    alarm_cellquantity_binary_sensor_ = alarm_cellquantity_binary_sensor;
+  }
+  void set_alarm_cursensorerr_binary_sensor(binary_sensor::BinarySensor *alarm_cursensorerr_binary_sensor) {
+    alarm_cursensorerr_binary_sensor_ = alarm_cursensorerr_binary_sensor;
+  }
+  void set_alarm_cellovp_binary_sensor(binary_sensor::BinarySensor *alarm_cellovp_binary_sensor) {
+    alarm_cellovp_binary_sensor_ = alarm_cellovp_binary_sensor;
+  }
+  void set_alarm_batovp_binary_sensor(binary_sensor::BinarySensor *alarm_batovp_binary_sensor) {
+    alarm_batovp_binary_sensor_ = alarm_batovp_binary_sensor;
+  }
+  void set_alarm_chocp_binary_sensor(binary_sensor::BinarySensor *alarm_chocp_binary_sensor) {
+    alarm_chocp_binary_sensor_ = alarm_chocp_binary_sensor;
+  }
+  void set_alarm_chscp_binary_sensor(binary_sensor::BinarySensor *alarm_chscp_binary_sensor) {
+    alarm_chscp_binary_sensor_ = alarm_chscp_binary_sensor;
+  }
+  void set_alarm_chotp_binary_sensor(binary_sensor::BinarySensor *alarm_chotp_binary_sensor) {
+    alarm_chotp_binary_sensor_ = alarm_chotp_binary_sensor;
+  }
+  void set_alarm_chutp_binary_sensor(binary_sensor::BinarySensor *alarm_chutp_binary_sensor) {
+    alarm_chutp_binary_sensor_ = alarm_chutp_binary_sensor;
+  }
+  void set_alarm_cpuauxcommuerr_binary_sensor(binary_sensor::BinarySensor *alarm_cpuauxcommuerr_binary_sensor) {
+    alarm_cpuauxcommuerr_binary_sensor_ = alarm_cpuauxcommuerr_binary_sensor;
+  }
+  void set_alarm_celluvp_binary_sensor(binary_sensor::BinarySensor *alarm_celluvp_binary_sensor) {
+    alarm_celluvp_binary_sensor_ = alarm_celluvp_binary_sensor;
+  }
+  void set_alarm_batuvp_binary_sensor(binary_sensor::BinarySensor *alarm_batuvp_binary_sensor) {
+    alarm_batuvp_binary_sensor_ = alarm_batuvp_binary_sensor;
+  }
+  void set_alarm_dchocp_binary_sensor(binary_sensor::BinarySensor *alarm_dchocp_binary_sensor) {
+    alarm_dchocp_binary_sensor_ = alarm_dchocp_binary_sensor;
+  }
+  void set_alarm_dchscp_binary_sensor(binary_sensor::BinarySensor *alarm_dchscp_binary_sensor) {
+    alarm_dchscp_binary_sensor_ = alarm_dchscp_binary_sensor;
+  }
+  void set_alarm_dchotp_binary_sensor(binary_sensor::BinarySensor *alarm_dchotp_binary_sensor) {
+    alarm_dchotp_binary_sensor_ = alarm_dchotp_binary_sensor;
+  }
+  void set_alarm_chargemos_binary_sensor(binary_sensor::BinarySensor *alarm_chargemos_binary_sensor) {
+    alarm_chargemos_binary_sensor_ = alarm_chargemos_binary_sensor;
+  }
+  void set_alarm_dischargemos_binary_sensor(binary_sensor::BinarySensor *alarm_dischargemos_binary_sensor) {
+    alarm_dischargemos_binary_sensor_ = alarm_dischargemos_binary_sensor;
+  }
+  void set_alarm_gpsdisconneted_binary_sensor(binary_sensor::BinarySensor *alarm_gpsdisconneted_binary_sensor) {
+    alarm_gpsdisconneted_binary_sensor_ = alarm_gpsdisconneted_binary_sensor;
+  }
+  void set_alarm_modifypwdintime_binary_sensor(binary_sensor::BinarySensor *alarm_modifypwdintime_binary_sensor) {
+    alarm_modifypwdintime_binary_sensor_ = alarm_modifypwdintime_binary_sensor;
+  }
+  void set_alarm_dischargeonfailed_binary_sensor(binary_sensor::BinarySensor *alarm_dischargeonfailed_binary_sensor) {
+    alarm_dischargeonfailed_binary_sensor_ = alarm_dischargeonfailed_binary_sensor;
+  }
+  void set_alarm_batteryovertemp_binary_sensor(binary_sensor::BinarySensor *alarm_batteryovertemp_binary_sensor) {
+    alarm_batteryovertemp_binary_sensor_ = alarm_batteryovertemp_binary_sensor;
+  }
+  void set_alarm_temperaturesensoranomaly_binary_sensor(binary_sensor::BinarySensor *alarm_temperaturesensoranomaly_binary_sensor) {
+    alarm_temperaturesensoranomaly_binary_sensor_ = alarm_temperaturesensoranomaly_binary_sensor;
+  }
+  void set_alarm_plcmoduleanomaly_binary_sensor(binary_sensor::BinarySensor *alarm_plcmoduleanomaly_binary_sensor) {
+    alarm_plcmoduleanomaly_binary_sensor_ = alarm_plcmoduleanomaly_binary_sensor;
+  }
+  void set_alarm_mostempsensorabsent_binary_sensor(binary_sensor::BinarySensor *alarm_mostempsensorabsent_binary_sensor) {
+    alarm_mostempsensorabsent_binary_sensor_ = alarm_mostempsensorabsent_binary_sensor;
+  }
+  void set_alarm_battempsensor1absent_binary_sensor(binary_sensor::BinarySensor *alarm_battempsensor1absent_binary_sensor) {
+    alarm_battempsensor1absent_binary_sensor_ = alarm_battempsensor1absent_binary_sensor;
+  }
+  void set_alarm_battempsensor2absent_binary_sensor(binary_sensor::BinarySensor *alarm_battempsensor2absent_binary_sensor) {
+    alarm_battempsensor2absent_binary_sensor_ = alarm_battempsensor2absent_binary_sensor;
+  }
+  void set_alarm_battempsensor3absent_binary_sensor(binary_sensor::BinarySensor *alarm_battempsensor3absent_binary_sensor) {
+    alarm_battempsensor3absent_binary_sensor_ = alarm_battempsensor3absent_binary_sensor;
+  }
+  void set_alarm_battempsensor4absent_binary_sensor(binary_sensor::BinarySensor *alarm_battempsensor4absent_binary_sensor) {
+    alarm_battempsensor4absent_binary_sensor_ = alarm_battempsensor4absent_binary_sensor;
+  }
+  void set_alarm_battempsensor5absent_binary_sensor(binary_sensor::BinarySensor *alarm_battempsensor5absent_binary_sensor) {
+    alarm_battempsensor5absent_binary_sensor_ = alarm_battempsensor5absent_binary_sensor;
+  }
+
+
+
   void set_precharging_switch(switch_::Switch *precharging_switch) { precharging_switch_ = precharging_switch; }
   void set_charging_switch(switch_::Switch *charging_switch) { charging_switch_ = charging_switch; }
   void set_discharging_switch(switch_::Switch *discharging_switch) { discharging_switch_ = discharging_switch; }
@@ -335,10 +444,47 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   binary_sensor::BinarySensor *discharging_binary_sensor_;
   binary_sensor::BinarySensor *discharging_switch_binary_sensor_;
   binary_sensor::BinarySensor *dedicated_charger_switch_binary_sensor_;
-  binary_sensor::BinarySensor *online_status_binary_sensor_;
   binary_sensor::BinarySensor *heating_binary_sensor_;
 
-  
+  binary_sensor::BinarySensor *online_status_binary_sensor_;
+  binary_sensor::BinarySensor *balancing_status_binary_sensor_;
+  binary_sensor::BinarySensor *precharging_status_binary_sensor_;  
+  binary_sensor::BinarySensor *charging_status_binary_sensor_;
+  binary_sensor::BinarySensor *discharging_status_binary_sensor_;
+  binary_sensor::BinarySensor *heating_status_binary_sensor_;
+
+  binary_sensor::BinarySensor *alarm_wireres_binary_sensor_;
+  binary_sensor::BinarySensor *alarm_mosotp_binary_sensor_;
+  binary_sensor::BinarySensor *alarm_cellquantity_binary_sensor_;
+  binary_sensor::BinarySensor *alarm_cursensorerr_binary_sensor_;
+  binary_sensor::BinarySensor *alarm_cellovp_binary_sensor_;
+  binary_sensor::BinarySensor *alarm_batovp_binary_sensor_;
+  binary_sensor::BinarySensor *alarm_chocp_binary_sensor_;
+  binary_sensor::BinarySensor *alarm_chscp_binary_sensor_;
+  binary_sensor::BinarySensor *alarm_chotp_binary_sensor_;
+  binary_sensor::BinarySensor *alarm_chutp_binary_sensor_;
+  binary_sensor::BinarySensor *alarm_cpuauxcommuerr_binary_sensor_;
+  binary_sensor::BinarySensor *alarm_celluvp_binary_sensor_;
+  binary_sensor::BinarySensor *alarm_batuvp_binary_sensor_;
+  binary_sensor::BinarySensor *alarm_dchocp_binary_sensor_;
+  binary_sensor::BinarySensor *alarm_dchscp_binary_sensor_;
+  binary_sensor::BinarySensor *alarm_dchotp_binary_sensor_;
+  binary_sensor::BinarySensor *alarm_chargemos_binary_sensor_;
+  binary_sensor::BinarySensor *alarm_dischargemos_binary_sensor_;
+  binary_sensor::BinarySensor *alarm_gpsdisconneted_binary_sensor_;
+  binary_sensor::BinarySensor *alarm_modifypwdintime_binary_sensor_;
+  binary_sensor::BinarySensor *alarm_dischargeonfailed_binary_sensor_;
+  binary_sensor::BinarySensor *alarm_batteryovertemp_binary_sensor_;
+  binary_sensor::BinarySensor *alarm_temperaturesensoranomaly_binary_sensor_;
+  binary_sensor::BinarySensor *alarm_plcmoduleanomaly_binary_sensor_;
+  binary_sensor::BinarySensor *alarm_mostempsensorabsent_binary_sensor_;
+  binary_sensor::BinarySensor *alarm_battempsensor1absent_binary_sensor_;
+  binary_sensor::BinarySensor *alarm_battempsensor2absent_binary_sensor_;
+  binary_sensor::BinarySensor *alarm_battempsensor3absent_binary_sensor_;
+  binary_sensor::BinarySensor *alarm_battempsensor4absent_binary_sensor_;
+  binary_sensor::BinarySensor *alarm_battempsensor5absent_binary_sensor_;
+
+
 
   sensor::Sensor *cell_undervoltage_protection_sensor_;  
   sensor::Sensor *cell_undervoltage_protection_recovery_sensor_;

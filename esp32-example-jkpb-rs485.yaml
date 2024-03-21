@@ -1,5 +1,5 @@
 substitutions:
-  esp_name: esp-rs485-gw
+  name: esp-rs485-gw
   bms0_name: bms0
   bms1_name: bms1
   device_description: "Monitor two JK-BMS via UART-TTL"
@@ -8,14 +8,15 @@ substitutions:
   rx_pin_uart_0: GPIO16 #GPIO3 #GPIO17
 
 esphome:
-  name: ${esp_name}
+  name: ${name}
   comment: ${device_description}
   project:
-    name: "syssi.esphome-jk-bms"
-    version: 2.0.0
+    name: "txubelaxu.esphome-jk-bms"
+    version: 1.0.0
+
 
 esp32:
-  board: wemos_d1_mini32
+  board: esp32dev #nodemcu-32s #wemos_d1_mini32
   framework:
     type: esp-idf
 
@@ -23,14 +24,14 @@ esp32:
 #  board: d1_mini
 
 external_components:
-    - source: ${external_components_source}
-      refresh: 0s
+  - source: ${external_components_source}
+    refresh: 0s
 #  - source: ./components
 #    refresh: 0s
-
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
+
 
 ota:
 
@@ -48,6 +49,12 @@ logger:
 #  password: !secret mqtt_password
 #  id: mqtt_client
 #  log_topic: null
+web_server:
+  local: true
+  port: 80
+  auth:
+     username: !secret web_server_user
+     password: !secret web_server_password
 
 uart:
   - id: uart_0
@@ -75,31 +82,156 @@ jk_rs485_bms:
 binary_sensor:
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms0
-    balancing:
-      name: "${bms0_name} balancing"
-    precharging:
-      name: "${bms0_name} precharging"
-    charging:
-      name: "${bms0_name} charging"
-    discharging:
-      name: "${bms0_name} discharging"
+    balancing_status:
+      name: "${bms0_name} balancing status"
+    precharging_status:
+      name: "${bms0_name} precharging status"      
+    charging_status:
+      name: "${bms0_name} charging status"
+    discharging_status:
+      name: "${bms0_name} discharging status"
     online_status:
       name: "${bms0_name} online status"
-    # ...
-    # ...
+    heating_status:
+      name: "${bms0_name} heating status"      
+    alarm_wireres:
+      name: "${bms0_name} alarm WireRes"
+    alarm_mosotp:
+      name: "${bms0_name} alarm MosOTP"
+    alarm_cellquantity:
+      name: "${bms0_name} alarm CellQuantity"
+    alarm_cursensorerr:
+      name: "${bms0_name} alarm CurSensorErr"
+    alarm_cellovp:
+      name: "${bms0_name} alarm CellOVP"
+    alarm_batovp:
+      name: "${bms0_name} alarm BatOVP"
+    alarm_chocp:
+      name: "${bms0_name} alarm ChOCP"
+    alarm_chscp:
+      name: "${bms0_name} alarm ChSCP"
+    alarm_chotp:
+      name: "${bms0_name} alarm ChOTP"
+    alarm_chutp:
+      name: "${bms0_name} alarm ChUTP"
+    alarm_cpuauxcommuerr:
+      name: "${bms0_name} alarm CPUAuxCommuErr"
+    alarm_celluvp:
+      name: "${bms0_name} alarm CellUVP"
+    alarm_batuvp:
+      name: "${bms0_name} alarm BatUVP"
+    alarm_dchocp:
+      name: "${bms0_name} alarm DchOCP"
+    alarm_dchscp:
+      name: "${bms0_name} alarm DchSCP"
+    alarm_dchotp:
+      name: "${bms0_name} alarm DchOTP"
+    alarm_chargemos:
+      name: "${bms0_name} alarm ChargeMOS"
+    alarm_dischargemos:
+      name: "${bms0_name} alarm DischargeMOS"
+    alarm_gpsdisconneted:
+      name: "${bms0_name} alarm GPSDisconneted"
+    alarm_modifypwdintime:
+      name: "${bms0_name} alarm ModifyPWDinTime"
+    alarm_dischargeonfailed:
+      name: "${bms0_name} alarm DischargeOnFailed"
+    alarm_batteryovertemp:
+      name: "${bms0_name} alarm BatteryOverTemp"
+    alarm_temperaturesensoranomaly:
+      name: "${bms0_name} alarm TemperatureSensorAnomaly"
+    alarm_plcmoduleanomaly:
+      name: "${bms0_name} alarm PLCModuleAnomaly"
+    alarm_mostempsensorabsent:
+      name: "${bms0_name} alarm MOSTempSensorAbsent"
+    alarm_battempsensor1absent:
+      name: "${bms0_name} alarm BATTempSensor1Absent"
+    alarm_battempsensor2absent:
+      name: "${bms0_name} alarm BATTempSensor2Absent"
+    alarm_battempsensor3absent:
+      name: "${bms0_name} alarm BATTempSensor3Absent"
+    alarm_battempsensor4absent:
+      name: "${bms0_name} alarm BATTempSensor4Absent"
+    alarm_battempsensor5absent:
+      name: "${bms0_name} alarm BATTempSensor5Absent"
+
+
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms1
-    balancing:
-      name: "${bms1_name} balancing"
-    precharging:
-      name: "${bms1_name} precharging"
-    charging:
-      name: "${bms1_name} charging"
-    discharging:
-      name: "${bms1_name} discharging"
+    balancing_status:
+      name: "${bms1_name} balancing status"
+    precharging_status:
+      name: "${bms1_name} precharging status"      
+    charging_status:
+      name: "${bms1_name} charging status"
+    discharging_status:
+      name: "${bms1_name} discharging status"
     online_status:
       name: "${bms1_name} online status"
-    # ...
+    heating_status:
+      name: "${bms1_name} heating status"      
+    alarm_wireres:
+      name: "${bms1_name} alarm WireRes"
+    alarm_mosotp:
+      name: "${bms1_name} alarm MosOTP"
+    alarm_cellquantity:
+      name: "${bms1_name} alarm CellQuantity"
+    alarm_cursensorerr:
+      name: "${bms1_name} alarm CurSensorErr"
+    alarm_cellovp:
+      name: "${bms1_name} alarm CellOVP"
+    alarm_batovp:
+      name: "${bms1_name} alarm BatOVP"
+    alarm_chocp:
+      name: "${bms1_name} alarm ChOCP"
+    alarm_chscp:
+      name: "${bms1_name} alarm ChSCP"
+    alarm_chotp:
+      name: "${bms1_name} alarm ChOTP"
+    alarm_chutp:
+      name: "${bms1_name} alarm ChUTP"
+    alarm_cpuauxcommuerr:
+      name: "${bms1_name} alarm CPUAuxCommuErr"
+    alarm_celluvp:
+      name: "${bms1_name} alarm CellUVP"
+    alarm_batuvp:
+      name: "${bms1_name} alarm BatUVP"
+    alarm_dchocp:
+      name: "${bms1_name} alarm DchOCP"
+    alarm_dchscp:
+      name: "${bms1_name} alarm DchSCP"
+    alarm_dchotp:
+      name: "${bms1_name} alarm DchOTP"
+    alarm_chargemos:
+      name: "${bms1_name} alarm ChargeMOS"
+    alarm_dischargemos:
+      name: "${bms1_name} alarm DischargeMOS"
+    alarm_gpsdisconneted:
+      name: "${bms1_name} alarm GPSDisconneted"
+    alarm_modifypwdintime:
+      name: "${bms1_name} alarm ModifyPWDinTime"
+    alarm_dischargeonfailed:
+      name: "${bms1_name} alarm DischargeOnFailed"
+    alarm_batteryovertemp:
+      name: "${bms1_name} alarm BatteryOverTemp"
+    alarm_temperaturesensoranomaly:
+      name: "${bms1_name} alarm TemperatureSensorAnomaly"
+    alarm_plcmoduleanomaly:
+      name: "${bms1_name} alarm PLCModuleAnomaly"
+    alarm_mostempsensorabsent:
+      name: "${bms1_name} alarm MOSTempSensorAbsent"
+    alarm_battempsensor1absent:
+      name: "${bms1_name} alarm BATTempSensor1Absent"
+    alarm_battempsensor2absent:
+      name: "${bms1_name} alarm BATTempSensor2Absent"
+    alarm_battempsensor3absent:
+      name: "${bms1_name} alarm BATTempSensor3Absent"
+    alarm_battempsensor4absent:
+      name: "${bms1_name} alarm BATTempSensor4Absent"
+    alarm_battempsensor5absent:
+      name: "${bms1_name} alarm BATTempSensor5Absent"
+
+
 
 sensor:
   - platform: jk_rs485_bms
