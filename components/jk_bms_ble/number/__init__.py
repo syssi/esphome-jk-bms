@@ -259,21 +259,21 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
                 cv.Optional(CONF_STEP, default=1): cv.float_,
                 cv.Optional(CONF_ICON, default=ICON_CLOCK): cv.icon,                
                 cv.Optional(
-                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_dcHOURS
+                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_HOURS
                 ): cv.string_strict,                
             }
         ),
         cv.Optional(CONF_CELL_REQUEST_FLOAT_VOLTAGE_TIME): JK_NUMBER_SCHEMA.extend(
             {
-                cv.Optional(CONF_MIN_VALUE, default=0.003): cv.float_,
-                cv.Optional(CONF_MAX_VALUE, default=3.650): cv.float_,
-                cv.Optional(CONF_STEP, default=0.001): cv.float_,
+                cv.Optional(CONF_MIN_VALUE, default=0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=480): cv.float_,
+                cv.Optional(CONF_STEP, default=1): cv.float_,
                 cv.Optional(CONF_ICON, default=ICON_CLOCK): cv.icon,                
                 cv.Optional(
-                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_dcHOURS
-                ): cv.string_strict,                   
+                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_HOURS
+                ): cv.string_strict,                
             }
-        ), 
+        ),
 
         cv.Optional(CONF_CELL_COUNT): JK_NUMBER_SCHEMA.extend(
             {

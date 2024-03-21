@@ -1291,10 +1291,11 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
   ESP_LOGI(TAG, "  User data: %s", std::string(data.begin() + 102, data.begin() + 102 + 16).c_str());
   ESP_LOGI(TAG, "  Setup passcode: %s", std::string(data.begin() + 118, data.begin() + 118 + 16).c_str());
 
-  ESP_LOGI(TAG, "  RCV Time: %f h", (float) ((int8_t) data[266]) * 0.1f);
-  ESP_LOGI(TAG, "  RFV Time: %f h", (float) ((int8_t) data[267]) * 0.1f);
-  this->publish_state_(this->cell_request_charge_voltage_time_number_, (float) ((int8_t) data[266]) * 0.1f);
-  this->publish_state_(this->cell_request_float_voltage_time_number_, (float) ((int8_t) data[267]) * 0.1f);
+  ESP_LOGI(TAG, "  RCV Time: %f h", (float) ((uint8_t) data[266]) * 0.1f);
+  ESP_LOGI(TAG, "  RFV Time: %f h", (float) ((uint8_t) data[267]) * 0.1f);
+  this->publish_state_(this->cell_request_charge_voltage_time_number_, (float) data[266] * 0.1);
+  this->publish_state_(this->cell_request_float_voltage_time_number_, (float) data[267] * 0.1);
+
 }
 
 bool JkBmsBle::write_register(uint8_t address, uint32_t value, uint8_t length) {
