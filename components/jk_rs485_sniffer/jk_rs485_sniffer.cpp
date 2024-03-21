@@ -104,7 +104,7 @@ bool JkRS485Sniffer::parse_jk_rs485_sniffer_byte_(uint8_t byte) {
 
       if (this->rx_buffer_.size()>=JKPB_RS485_RESPONSE_SIZE){
         //continue
-        ESP_LOGI(TAG, "Sequence found SIZE: %d",(at));     
+        ESP_LOGV(TAG, "Sequence found SIZE: %d",(at));     
       } else {
         return(false);
       }
@@ -144,7 +144,7 @@ bool JkRS485Sniffer::parse_jk_rs485_sniffer_byte_(uint8_t byte) {
 //  std::vector<uint8_t> data(this->rx_buffer_.begin() + 11, this->rx_buffer_.begin() + data_len - 3);
   std::vector<uint8_t> data(this->rx_buffer_.begin() + 0, this->rx_buffer_.begin() + data_len);
 
-  ESP_LOGI(TAG, "Frame received (type:%d, %d bytes)", raw[4], data.size());
+  ESP_LOGV(TAG, "Frame received (type:%d, %d bytes)", raw[4], data.size());
   ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front(), 150).c_str());
   ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front() + 150, data.size() - 150).c_str());
 
@@ -166,28 +166,9 @@ bool JkRS485Sniffer::parse_jk_rs485_sniffer_byte_(uint8_t byte) {
   if (!found) {
     ESP_LOGW(TAG, "Got JkRS485 frame from unknown address 0x%02X!", address);
   }
-//  // Delete processed frame from rx_buffer
-//  std::string bufferHex;
 
-//  bufferHex="BEFORE:";
-//  // Volcar el contenido del buffer en el string en formato hexadecimal
-//  for (auto byte : rx_buffer_) {
-//    char hexByte[3];
-//    sprintf(hexByte, "%02X", byte);
-//    bufferHex += hexByte;
-//  }
-//  ESP_LOGI("UART", "(%d) %s",this->rx_buffer_.size(), bufferHex.c_str());
-//  ESP_LOGI("UART", "(%d) to delete", JKPB_RS485_RESPONSE_SIZE);
 
   this->rx_buffer_.erase(this->rx_buffer_.begin(), this->rx_buffer_.begin() + JKPB_RS485_RESPONSE_SIZE);
-  
-//  bufferHex="AFTER:";
-//  for (auto byte : rx_buffer_) {
-//    char hexByte2[3];
-//    sprintf(hexByte2, "%02X", byte);
-//    bufferHex += hexByte2;
-//  }
-//  ESP_LOGI("UART", "(%d) %s",this->rx_buffer_.size(), bufferHex.c_str());
 
 
   return(true);
