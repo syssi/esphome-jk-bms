@@ -686,7 +686,7 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   //           0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
   //           0x00
 
-  // 224   1   0x01                   Heating status          0x00: off, 0x01: on       ???? or 183?
+  // 224   1   0x01                   Heating status          0x00: off, 0x01: on       ???? or 193?
   this->publish_state_(this->heating_status_binary_sensor_, (bool) data[224 + offset]);
 
   // 236   2   0x01 0xFD              Heating current         0.001         A
