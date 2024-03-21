@@ -20,6 +20,7 @@ CONF_EMERGENCY = "emergency"
 CONF_DISABLE_TEMPERATURE_SENSORS = "disable_temperature_sensors"
 CONF_DISPLAY_ALWAYS_ON = "display_always_on"
 CONF_SMART_SLEEP_ON = "smart_sleep_on"
+CONF_SMART_SLEEP_TIME = "smart_sleep_time"
 CONF_TIMED_STORED_DATA = "timed_stored_data"
 CONF_DISABLE_PCL_MODULE = "disable_pcl_module"
 

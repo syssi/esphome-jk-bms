@@ -33,6 +33,9 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   void update() override;
   float get_setup_priority() const override { return setup_priority::DATA; }
 
+  void set_smart_sleep_time_number(number::Number *smart_sleep_time_number) {
+    smart_sleep_time_number_ = smart_sleep_time_number;
+  }
   void set_smart_sleep_voltage_number(number::Number *smart_sleep_voltage_number) {
     smart_sleep_voltage_number_ = smart_sleep_voltage_number;
   }
@@ -51,6 +54,12 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   void set_cell_request_float_voltage_number(number::Number *cell_request_float_voltage_number) {
     cell_request_float_voltage_number_ = cell_request_float_voltage_number;
   } 
+  void set_cell_request_charge_voltage_time_number(number::Number *cell_request_charge_voltage_time_number) {
+    cell_request_charge_voltage_time_number_ = cell_request_charge_voltage_time_number;
+  }
+  void set_cell_request_float_voltage_time_number(number::Number *cell_request_float_voltage_time_number) {
+    cell_request_float_voltage_time_number_ = cell_request_float_voltage_time_number;
+  }   
   void set_cell_count_number(number::Number *cell_count_number) { cell_count_number_ = cell_count_number; }
   void set_total_battery_capacity_number(number::Number *total_battery_capacity_number) {
     total_battery_capacity_number_ = total_battery_capacity_number;
@@ -364,6 +373,8 @@ void set_alarm_battempsensor5absent_binary_sensor(binary_sensor::BinarySensor *a
   number::Number *cell_soc0_voltage_number_;   
   number::Number *cell_request_charge_voltage_number_; 
   number::Number *cell_request_float_voltage_number_;
+  number::Number *cell_request_charge_voltage_time_number_; 
+  number::Number *cell_request_float_voltage_time_number_;
   number::Number *cell_count_number_;
   number::Number *total_battery_capacity_number_;
   number::Number *cell_overvoltage_protection_number_;
@@ -377,6 +388,7 @@ void set_alarm_battempsensor5absent_binary_sensor(binary_sensor::BinarySensor *a
   number::Number *max_balance_current_number_;
   number::Number *max_charge_current_number_;
   number::Number *max_discharge_current_number_;
+  number::Number *smart_sleep_time_number_;
 
   sensor::Sensor *balancing_sensor_;
   sensor::Sensor *min_cell_voltage_sensor_;

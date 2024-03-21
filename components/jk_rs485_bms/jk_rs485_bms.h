@@ -20,6 +20,9 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
  public:
   void set_address(uint8_t address) { address_ = address; }
 
+  void set_smart_sleep_time_sensor(sensor::Sensor *smart_sleep_time_sensor) {
+    smart_sleep_time_sensor_ = smart_sleep_time_sensor;
+  }
   void set_balancing_binary_sensor(binary_sensor::BinarySensor *balancing_binary_sensor) {
     balancing_binary_sensor_ = balancing_binary_sensor;
   }
@@ -485,7 +488,7 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   binary_sensor::BinarySensor *alarm_battempsensor5absent_binary_sensor_;
 
 
-
+  sensor::Sensor *smart_sleep_time_sensor_;
   sensor::Sensor *cell_undervoltage_protection_sensor_;  
   sensor::Sensor *cell_undervoltage_protection_recovery_sensor_;
   sensor::Sensor *cell_overvoltage_protection_sensor_; 

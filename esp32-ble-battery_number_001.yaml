@@ -20,10 +20,10 @@ esp32:
     type: esp-idf
 
 external_components:
-#  - source: ${external_components_source}
-#    refresh: 0s
-  - source: ./components
+  - source: ${external_components_source}
     refresh: 0s
+#  - source: ./components
+#    refresh: 0s
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
@@ -192,6 +192,10 @@ number:
       name: "${bms_name} cell request charge voltage"      
     cell_request_float_voltage:
       name: "${bms_name} cell request float voltage"        
+    cell_request_charge_voltage_time:
+      name: "${bms_name} cell request charge voltage time"      
+    cell_request_float_voltage_time:
+      name: "${bms_name} cell request float voltage time" 
     cell_count:
       name: "${bms_name} cell count"
     total_battery_capacity:
@@ -210,6 +214,8 @@ number:
       name: "${bms_name} max charge current"
     max_discharge_current:
       name: "${bms_name} max discharge current"
+    smart_sleep_time:
+      name: "${bms_name} smart sleep time"        
 
 sensor:
   - platform: jk_bms_ble
@@ -363,6 +369,7 @@ sensor:
     heating_current:
       name: "${bms_name} heating current"
 
+
 switch:
   - platform: jk_bms_ble
     charging:
@@ -384,7 +391,8 @@ switch:
     disable_temperature_sensors:
       name: "${bms_name} disable temperature sensors"      
     smart_sleep_on:
-      name: "${bms_name} smart sleep on"    
+      name: "${bms_name} smart sleep on"  
+        
 
     disable_pcl_module:
       name: "${bms_name} disable pcl module"              

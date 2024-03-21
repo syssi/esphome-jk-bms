@@ -23,6 +23,10 @@ from esphome.const import (
     UNIT_WATT,
 )
 
+from .const import (
+    CONF_SMART_SLEEP_TIME
+)
+
 from . import CONF_JK_RS485_BMS_ID, JK_RS485_BMS_COMPONENT_SCHEMA
 
 DEPENDENCIES = ["jk_rs485_bms"]
@@ -189,6 +193,7 @@ ICON_ALARM_LOW_VOLUME = "mdi:volume-high"
 
 ICON_CELL_RESISTANCE = "mdi:omega"
 ICON_BALANCER = "mdi:seesaw"
+ICON_CLOCK ="mdi:clock-outline"
 
 UNIT_SECONDS = "s"
 UNIT_HOURS = "h"
@@ -323,6 +328,7 @@ SENSORS = [
     CONF_ACTUAL_BATTERY_CAPACITY,
     CONF_PROTOCOL_VERSION,
     CONF_STATE_OF_CHARGE,
+    CONF_SMART_SLEEP_TIME,
 ]
 
 # pylint: disable=too-many-function-args
@@ -1157,6 +1163,14 @@ CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
             device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
+        cv.Optional(CONF_SMART_SLEEP_TIME): sensor.sensor_schema(
+            unit_of_measurement=UNIT_HOURS,
+            icon=ICON_CLOCK,
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),        
+       
     }
 )
 

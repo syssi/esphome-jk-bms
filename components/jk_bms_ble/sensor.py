@@ -23,6 +23,10 @@ from esphome.const import (
     UNIT_WATT,
 )
 
+from .const import (
+    CONF_SMART_SLEEP_TIME
+)
+
 from . import CONF_JK_BMS_BLE_ID, JkBmsBle
 
 CODEOWNERS = ["@syssi","txubelaxu"]
@@ -204,6 +208,7 @@ SENSORS = [
     CONF_ERRORS_BITMASK,
     CONF_EMERGENCY_TIME_COUNTDOWN,
     CONF_HEATING_CURRENT,
+    CONF_SMART_SLEEP_TIME
 ]
 
 # pylint: disable=too-many-function-args

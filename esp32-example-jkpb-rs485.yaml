@@ -24,10 +24,10 @@ esp32:
 #  board: d1_mini
 
 external_components:
-#  - source: ${external_components_source}
-#    refresh: 0s
-  - source: ./components
+  - source: ${external_components_source}
     refresh: 0s
+#  - source: ./components
+#    refresh: 0s
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
@@ -154,7 +154,6 @@ binary_sensor:
       name: "${bms0_name} alarm BATTempSensor4Absent"
     alarm_battempsensor5absent:
       name: "${bms0_name} alarm BATTempSensor5Absent"
-
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms1
@@ -406,6 +405,8 @@ sensor:
       name: "${bms0_name} cell undervoltage protection recovery"                     
     cell_power_off_voltage:
       name: "${bms0_name} cell power off voltage"      
+    smart_sleep_time:
+      name: "${bms0_name} smart sleep time"
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms1
@@ -578,7 +579,9 @@ sensor:
     cell_undervoltage_protection_recovery:
       name: "${bms1_name} cell undervoltage protection recovery"   
     cell_power_off_voltage:
-      name: "${bms1_name} cell power off voltage"           
+      name: "${bms1_name} cell power off voltage"   
+    smart_sleep_time:
+      name: "${bms1_name} smart sleep time"              
 
 switch:
   - platform: jk_rs485_bms
@@ -634,6 +637,7 @@ switch:
       name: "${bms1_name} smart sleep on"
     disable_pcl_module:
       name: "${bms1_name} disable pcl module"
+
 
 text_sensor:
   - platform: jk_rs485_bms

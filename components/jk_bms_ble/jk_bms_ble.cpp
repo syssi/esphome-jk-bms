@@ -1121,6 +1121,8 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   ESP_LOGI(TAG, "  switch bit7: %s", ( this->check_bit_(data[283], 8)) ? "on" : "off");
   // 283   3   0x00 0x00 0x00
   // 286   4   0x00 0x00 0x00 0x00
+  ESP_LOGI(TAG, "  TIMSmartSleep: %d H", (uint8_t) (data[286]));
+  this->publish_state_(this->smart_sleep_time_number_, (uint8_t)(data[286]));    
   // 290   4   0x00 0x00 0x00 0x00
   // 294   4   0x00 0x00 0x00 0x00
   // 298   1   0x00
@@ -1288,6 +1290,11 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
   ESP_LOGI(TAG, "  Passcode: %s", std::string(data.begin() + 97, data.begin() + 97 + 5).c_str());
   ESP_LOGI(TAG, "  User data: %s", std::string(data.begin() + 102, data.begin() + 102 + 16).c_str());
   ESP_LOGI(TAG, "  Setup passcode: %s", std::string(data.begin() + 118, data.begin() + 118 + 16).c_str());
+
+  ESP_LOGI(TAG, "  RCV Time: %f h", (float) ((int8_t) data[266]) * 0.1f);
+  ESP_LOGI(TAG, "  RFV Time: %f h", (float) ((int8_t) data[267]) * 0.1f);
+  this->publish_state_(this->cell_request_charge_voltage_time_number_, (float) ((int8_t) data[266]) * 0.1f);
+  this->publish_state_(this->cell_request_float_voltage_time_number_, (float) ((int8_t) data[267]) * 0.1f);
 }
 
 bool JkBmsBle::write_register(uint8_t address, uint32_t value, uint8_t length) {

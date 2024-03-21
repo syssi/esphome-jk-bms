@@ -17,6 +17,10 @@ from esphome.const import (
     UNIT_VOLT,
 )
 
+from ..const import (
+    CONF_SMART_SLEEP_TIME
+)
+
 from .. import CONF_JK_BMS_BLE_ID, JK_BMS_BLE_COMPONENT_SCHEMA, jk_bms_ble_ns
 
 DEPENDENCIES = ["jk_bms_ble"]
@@ -59,6 +63,8 @@ CONF_CELL_SOC100_VOLTAGE = "cell_soc100_voltage"
 CONF_CELL_SOC0_VOLTAGE = "cell_soc0_voltage"
 CONF_CELL_REQUEST_CHARGE_VOLTAGE= "cell_request_charge_voltage"
 CONF_CELL_REQUEST_FLOAT_VOLTAGE= "cell_request_float_voltage"
+CONF_CELL_REQUEST_CHARGE_VOLTAGE_TIME= "cell_request_charge_voltage_time"
+CONF_CELL_REQUEST_FLOAT_VOLTAGE_TIME= "cell_request_float_voltage_time"
 
 CONF_CELL_COUNT = "cell_count"
 CONF_TOTAL_BATTERY_CAPACITY = "total_battery_capacity"
@@ -126,6 +132,9 @@ CONF_MAX_DISCHARGE_CURRENT = "max_discharge_current"
 # https://github.com/syssi/esphome-jk-bms/issues/276#issuecomment-1468145528
 
 UNIT_AMPERE_HOUR = "Ah"
+UNIT_HOURS = "h"
+UNIT_dcHOURS = "0.1h"
+ICON_CLOCK ="mdi:clock-outline"
 
 NUMBERS = {
     # JK04, JK02, JK02_32S, factor
@@ -150,6 +159,10 @@ NUMBERS = {
     CONF_MAX_BALANCE_CURRENT: [0x00, 0x13, 0x13, 1000.0],
     CONF_MAX_CHARGE_CURRENT: [0x00, 0x0C, 0x0C, 1000.0],
     CONF_MAX_DISCHARGE_CURRENT: [0x00, 0x0F, 0x0F, 1000.0],
+
+    CONF_SMART_SLEEP_TIME : [0x00, 0x00, 0x00, 1.0],               # What register number for address 0x0118?
+    CONF_CELL_REQUEST_CHARGE_VOLTAGE: [0x00, 0x00, 0x00, 1000.0],  # What register number for address 0x0104?  (0x1400 TYPE REGISTER)
+    CONF_CELL_REQUEST_FLOAT_VOLTAGE: [0x00, 0x0a, 0x00, 1000.0],   # What register number for address 0x0105?  (0x1400 TYPE REGISTER)
 }
 
 JkNumber = jk_bms_ble_ns.class_("JkNumber", number.Number, cg.Component)
@@ -239,7 +252,28 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
                 cv.Optional(CONF_STEP, default=0.001): cv.float_,
             }
         ),        
-
+        cv.Optional(CONF_CELL_REQUEST_CHARGE_VOLTAGE_TIME): JK_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=480): cv.float_,
+                cv.Optional(CONF_STEP, default=1): cv.float_,
+                cv.Optional(CONF_ICON, default=ICON_CLOCK): cv.icon,                
+                cv.Optional(
+                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_dcHOURS
+                ): cv.string_strict,                
+            }
+        ),
+        cv.Optional(CONF_CELL_REQUEST_FLOAT_VOLTAGE_TIME): JK_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=0.003): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=3.650): cv.float_,
+                cv.Optional(CONF_STEP, default=0.001): cv.float_,
+                cv.Optional(CONF_ICON, default=ICON_CLOCK): cv.icon,                
+                cv.Optional(
+                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_dcHOURS
+                ): cv.string_strict,                   
+            }
+        ), 
 
         cv.Optional(CONF_CELL_COUNT): JK_NUMBER_SCHEMA.extend(
             {
@@ -325,6 +359,17 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
                 ): cv.string_strict,
             }
         ),
+        cv.Optional(CONF_SMART_SLEEP_TIME): JK_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=0.0): cv.int_,
+                cv.Optional(CONF_MAX_VALUE, default=255.0): cv.int_,
+                cv.Optional(CONF_STEP, default=1.0): cv.int_,
+                cv.Optional(CONF_ICON, default=ICON_CLOCK): cv.icon,
+                cv.Optional(
+                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_HOURS
+                ): cv.string_strict,
+            }
+        ),                 
     }
 )
 
