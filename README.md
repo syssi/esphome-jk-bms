@@ -12,7 +12,7 @@ ESPHome components to monitor Jikong Battery Management Systems (JK-BMS) via UAR
 
 **NEW:** monitor your new JK-PBx BMSs via internal RS485 network using 1 only ESP. [Click here](https://github.com/txubelaxu/esphome-jk-bms/blob/main/components/jk_rs485_bms/README.md) for more info. Home Assistant dashboards inside as well.
 
-Last news: new parameters added and new dashboards
+Last: new parameters added and new dashboards
 + Multiple alarm signals: BATTempSensor1Absent, BATTempSensor2Absent, BATTempSensor3Absent, BATTempSensor4Absent, BATTempSensor5Absent, BatOVP, BatUVP, BatteryOverTemp, CPUAuxCommuErr, CellOVP, CellQuantity, CellUVP, ChOCP, ChOTP, ChSCP, ChUTP, ChargeMOS, CurSensorErr, DchOCP, DchOTP, DchSCP, DischargeMOS, DischargeOnFailed, GPSDisconneted, MOSTempSensorAbsent, ModifyPWDinTime, MosOTP, PLCModuleAnomaly, TemperatureSensorAnomaly, WireRes (thanks to [@jblance and @jrventer](https://github.com/jblance/mpp-solar/issues/460)
 + difference between: "switch status" and "real working status". Useful for balancing, for example: balancer could be ON, but balancing can be on or off, depending on conditions...
 
@@ -21,6 +21,10 @@ Last news: new parameters added and new dashboards
 ![image](https://github.com/txubelaxu/esphome-jk-bms/assets/156140720/5187ac3f-950a-40f9-ba00-097275ffe9bf)
 
 ## Via Bluetooth (BLE) or UART (best for controlling)
+
+Last: new parameters added and new dashboards
++ New information about device: vendorid, hardware_version, software_version, device_name, device_password
+  So, if you lose your password of your jk bms you can recover using this.
 
 ESPHome component to control and monitor a Jikong Battery Management System (JK-BMS) via UART-TTL or BLE [Click here](https://github.com/txubelaxu/esphome-jk-bms/README_uart_ble.md) for more info.
 
