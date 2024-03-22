@@ -399,10 +399,10 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
 
   // 166   1   0x01                   Charging mosfet enabled                      0x00: off, 0x01: on
   this->publish_state_(this->status_charging_binary_sensor_, (bool) check_bit_(data[166+ offset], 1));
-  ESP_LOGI(TAG, "CHARGE WORKING STATUS:    0x%02X", data[166 + offset]);
+  ESP_LOGV(TAG, "CHARGE WORKING STATUS:    0x%02X", data[166 + offset]);
   // 167   1   0x01                   Discharging mosfet enabled                   0x00: off, 0x01: on
   this->publish_state_(this->status_discharging_binary_sensor_, (bool) check_bit_(data[167+ offset], 1));
-  ESP_LOGI(TAG, "DISCHARGE WORKING STATUS: 0x%02X", data[167 + offset]);
+  ESP_LOGV(TAG, "DISCHARGE WORKING STATUS: 0x%02X", data[167 + offset]);
   // 168   1   0x01                   PRE Discharging                              0x00: off, 0x01: on
   this->publish_state_(this->status_precharging_binary_sensor_, (bool) check_bit_(data[168+ offset], 1));
   ESP_LOGV(TAG, "PRECHARGE WORKING STATUS: 0x%02X", data[168 + offset]);
