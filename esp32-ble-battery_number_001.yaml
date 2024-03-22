@@ -206,8 +206,8 @@ number:
       name: "${bms_name} voltage calibration"
     current_calibration:
       name: "${bms_name} current calibration"
-    power_off_voltage:
-      name: "${bms_name} power off voltage"
+    cell_power_off_voltage:
+      name: "${bms_name} cell power off voltage"
     max_balance_current:
       name: "${bms_name} max balance current"
     max_charge_current:

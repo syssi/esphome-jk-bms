@@ -978,8 +978,8 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->cell_request_float_voltage_number_, (float) jk_get_32bit(42) * 0.001f);   
 
   // 46    4   0xF0 0x0A 0x00 0x00    Power off voltage
-  ESP_LOGI(TAG, "  Power off voltage: %f V", (float) jk_get_32bit(46) * 0.001f);
-  this->publish_state_(this->power_off_voltage_number_, (float) jk_get_32bit(46) * 0.001f);
+  ESP_LOGI(TAG, "  Cell Power off voltage: %f V", (float) jk_get_32bit(46) * 0.001f);
+  this->publish_state_(this->cell_power_off_voltage_number_, (float) jk_get_32bit(46) * 0.001f);
 
   // 50    4   0xA8 0x61 0x00 0x00    Max. charge current
   ESP_LOGI(TAG, "  Max. charge current: %f A", (float) jk_get_32bit(50) * 0.001f);

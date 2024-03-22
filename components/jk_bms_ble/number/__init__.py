@@ -72,7 +72,7 @@ CONF_TOTAL_BATTERY_CAPACITY = "total_battery_capacity"
 CONF_BALANCE_STARTING_VOLTAGE = "balance_starting_voltage"
 CONF_VOLTAGE_CALIBRATION = "voltage_calibration"
 CONF_CURRENT_CALIBRATION = "current_calibration"
-CONF_POWER_OFF_VOLTAGE = "power_off_voltage"
+CONF_CELL_POWER_OFF_VOLTAGE = "cell_power_off_voltage"
 CONF_MAX_BALANCE_CURRENT = "max_balance_current"
 CONF_MAX_CHARGE_CURRENT = "max_charge_current"
 CONF_MAX_DISCHARGE_CURRENT = "max_discharge_current"
@@ -154,7 +154,7 @@ NUMBERS = {
     CONF_BALANCE_STARTING_VOLTAGE: [0x00, 0x26, 0x22, 1000.0],
     CONF_VOLTAGE_CALIBRATION: [0x00, 0x21, 0x64, 1000.0],
     CONF_CURRENT_CALIBRATION: [0x00, 0x24, 0x67, 1000.0],
-    CONF_POWER_OFF_VOLTAGE: [0x00, 0x0B, 0x0B, 1000.0],
+    CONF_CELL_POWER_OFF_VOLTAGE: [0x00, 0x0B, 0x0B, 1000.0],
     CONF_MAX_BALANCE_CURRENT: [0x00, 0x13, 0x13, 1000.0],
     CONF_MAX_CHARGE_CURRENT: [0x00, 0x0C, 0x0C, 1000.0],
     CONF_MAX_DISCHARGE_CURRENT: [0x00, 0x0F, 0x0F, 1000.0],
@@ -321,7 +321,7 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
                 ): cv.string_strict,
             }
         ),
-        cv.Optional(CONF_POWER_OFF_VOLTAGE): JK_NUMBER_SCHEMA.extend(
+        cv.Optional(CONF_CELL_POWER_OFF_VOLTAGE): JK_NUMBER_SCHEMA.extend(
             {
                 # @FIXME The upper limit is unknown
                 cv.Optional(CONF_MIN_VALUE, default=1.20): cv.float_,

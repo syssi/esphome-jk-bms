@@ -85,8 +85,8 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   void set_current_calibration_number(number::Number *current_calibration_number) {
     current_calibration_number_ = current_calibration_number;
   }
-  void set_power_off_voltage_number(number::Number *power_off_voltage_number) {
-    power_off_voltage_number_ = power_off_voltage_number;
+  void set_cell_power_off_voltage_number(number::Number *cell_power_off_voltage_number) {
+    cell_power_off_voltage_number_ = cell_power_off_voltage_number;
   }
   void set_max_balance_current_number(number::Number *max_balance_current_number) {
     max_balance_current_number_ = max_balance_current_number;
@@ -384,7 +384,7 @@ void set_alarm_battempsensor5absent_binary_sensor(binary_sensor::BinarySensor *a
   number::Number *balance_starting_voltage_number_;
   number::Number *voltage_calibration_number_;  // @FIXME: Identify value at the settings frame
   number::Number *current_calibration_number_;  // @FIXME: Identify value at the settings frame
-  number::Number *power_off_voltage_number_;
+  number::Number *cell_power_off_voltage_number_;
   number::Number *max_balance_current_number_;
   number::Number *max_charge_current_number_;
   number::Number *max_discharge_current_number_;
