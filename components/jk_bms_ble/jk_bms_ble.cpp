@@ -244,15 +244,14 @@ void JkBmsBle::update() {
     this->write_register(COMMAND_CELL_INFO, 0x00000000, 0x00);
   }
 
-  if (this->cell_count_number_->state==0){
-    const uint32_t now = millis();
-    if (now - this->last_device_info_ < 10000) {   //testing
-      return;
-    }
-    this->last_device_info_ = now;
-    ESP_LOGI(TAG, "Request device info");
-    this->write_register(COMMAND_DEVICE_INFO, 0x00000000, 0x00);
+/*  const uint32_t now = millis();
+  if (now - this->last_device_info_ < 60000) {   //testing
+    return;
   }
+  this->last_device_info_ = now;
+  ESP_LOGI(TAG, "Request device info");
+  this->write_register(COMMAND_DEVICE_INFO, 0x00000000, 0x00);
+*/
 }
 
 // TODO: There is no need to assemble frames if the MTU can be increased to > 320 bytes
