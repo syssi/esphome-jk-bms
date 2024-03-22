@@ -88,7 +88,7 @@ CONF_CELL_RESISTANCE_22 = "cell_resistance_22"
 CONF_CELL_RESISTANCE_23 = "cell_resistance_23"
 CONF_CELL_RESISTANCE_24 = "cell_resistance_24"
 
-CONF_BALANCING = "balancing"
+CONF_BALANCING_DIRECTION = "balancing_direction"
 CONF_TOTAL_VOLTAGE = "total_voltage"
 CONF_CHARGING_POWER = "charging_power"
 CONF_DISCHARGING_POWER = "discharging_power"
@@ -185,7 +185,7 @@ TEMPERATURES = [
 ]
 
 SENSORS = [
-    CONF_BALANCING,
+    CONF_BALANCING_DIRECTION,
     CONF_MIN_CELL_VOLTAGE,
     CONF_MAX_CELL_VOLTAGE,
     CONF_MIN_VOLTAGE_CELL,
@@ -215,7 +215,7 @@ SENSORS = [
 CONFIG_SCHEMA = cv.Schema(
     {
         cv.GenerateID(CONF_JK_BMS_BLE_ID): cv.use_id(JkBmsBle),
-        cv.Optional(CONF_BALANCING): sensor.sensor_schema(
+        cv.Optional(CONF_BALANCING_DIRECTION): sensor.sensor_schema(
             unit_of_measurement=UNIT_EMPTY,            
             icon=ICON_BALANCER,
             accuracy_decimals=0,

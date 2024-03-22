@@ -101,8 +101,8 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   void set_balancing_status_binary_sensor(binary_sensor::BinarySensor *balancing_status_binary_sensor) {
     balancing_status_binary_sensor_ = balancing_status_binary_sensor;
   }
-  void set_balancing_sensor(sensor::Sensor *balancing_sensor) {
-    balancing_sensor_ = balancing_sensor;
+  void set_balancing_direction_sensor(sensor::Sensor *balancing_direction_sensor) {
+    balancing_direction_sensor_ = balancing_direction_sensor;
   }  
   void set_precharging_status_binary_sensor(binary_sensor::BinarySensor *precharging_status_binary_sensor) {
     precharging_status_binary_sensor_ = precharging_status_binary_sensor;
@@ -390,7 +390,7 @@ void set_alarm_battempsensor5absent_binary_sensor(binary_sensor::BinarySensor *a
   number::Number *max_discharge_current_number_;
   number::Number *smart_sleep_time_number_;
 
-  sensor::Sensor *balancing_sensor_;
+  sensor::Sensor *balancing_direction_sensor_;
   sensor::Sensor *min_cell_voltage_sensor_;
   sensor::Sensor *max_cell_voltage_sensor_;
   sensor::Sensor *min_voltage_cell_sensor_;
@@ -436,6 +436,8 @@ void set_alarm_battempsensor5absent_binary_sensor(binary_sensor::BinarySensor *a
   uint16_t char_handle_;
   uint16_t notify_handle_;
   uint32_t last_cell_info_{0};
+  uint32_t last_device_info_{0};  
+
   uint32_t throttle_;
 
   void decode_(const std::vector<uint8_t> &data);

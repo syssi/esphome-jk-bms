@@ -243,6 +243,16 @@ void JkBmsBle::update() {
     ESP_LOGI(TAG, "Request status notification");
     this->write_register(COMMAND_CELL_INFO, 0x00000000, 0x00);
   }
+
+  if (this->cell_count_number_->state==0){
+    const uint32_t now = millis();
+    if (now - this->last_device_info_ < 10000) {   //testing
+      return;
+    }
+    this->last_device_info_ = now;
+    ESP_LOGI(TAG, "Request device info");
+    this->write_register(COMMAND_DEVICE_INFO, 0x00000000, 0x00);
+  }
 }
 
 // TODO: There is no need to assemble frames if the MTU can be increased to > 320 bytes
@@ -584,7 +594,7 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   //                                                                     0x01: Charging balancer
   //                                                                     0x02: Discharging balancer
   //this->publish_state_(this->balancing_binary_sensor_, (data[140 + offset] != 0x00));
-  this->publish_state_(this->balancing_sensor_, (data[140 + offset]));
+  this->publish_state_(this->balancing_direction_sensor_, (data[140 + offset]));
 
   // 141   1   0x54                   State of charge in   1.0           %
   this->publish_state_(this->state_of_charge_sensor_, (float) data[141 + offset]);
