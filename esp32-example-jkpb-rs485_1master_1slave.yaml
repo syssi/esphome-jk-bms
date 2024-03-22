@@ -75,7 +75,7 @@ jk_rs485_bms:
     jk_rs485_sniffer_id: sniffer0
     update_interval: 5s
   - id: bms1
-    rs485_address: 0x07
+    rs485_address: 0x01
     jk_rs485_sniffer_id: sniffer0
     update_interval: 5s
 
