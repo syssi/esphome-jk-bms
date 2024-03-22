@@ -23,9 +23,9 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   void set_smart_sleep_time_sensor(sensor::Sensor *smart_sleep_time_sensor) {
     smart_sleep_time_sensor_ = smart_sleep_time_sensor;
   }
-  void set_balancing_binary_sensor(binary_sensor::BinarySensor *balancing_binary_sensor) {
-    balancing_binary_sensor_ = balancing_binary_sensor;
-  }
+  //void set_balancing_binary_sensor(binary_sensor::BinarySensor *balancing_binary_sensor) {
+  //  balancing_binary_sensor_ = balancing_binary_sensor;
+  //}
   void set_balancing_sensor(sensor::Sensor *balancing_sensor) {
     balancing_sensor_ = balancing_sensor;
   } 
@@ -53,23 +53,23 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
     balancing_switch_binary_sensor_ = balancing_switch_binary_sensor;
   }
 
-  void set_charging_binary_sensor(binary_sensor::BinarySensor *charging_binary_sensor) {
-    charging_binary_sensor_ = charging_binary_sensor;
-  }
+  //void set_charging_binary_sensor(binary_sensor::BinarySensor *charging_binary_sensor) {
+  //  charging_binary_sensor_ = charging_binary_sensor;
+  //}
   void set_charging_switch_binary_sensor(binary_sensor::BinarySensor *charging_switch_binary_sensor) {
     charging_switch_binary_sensor_ = charging_switch_binary_sensor;
   }
 
-  void set_precharging_binary_sensor(binary_sensor::BinarySensor *precharging_binary_sensor) {
-    precharging_binary_sensor_ = precharging_binary_sensor;
-  }
+  //void set_precharging_binary_sensor(binary_sensor::BinarySensor *precharging_binary_sensor) {
+  //  precharging_binary_sensor_ = precharging_binary_sensor;
+  //}
   void set_precharging_switch_binary_sensor(binary_sensor::BinarySensor *precharging_switch_binary_sensor) {
     precharging_switch_binary_sensor_ = precharging_switch_binary_sensor;
   }  
   
-  void set_discharging_binary_sensor(binary_sensor::BinarySensor *discharging_binary_sensor) {
-    discharging_binary_sensor_ = discharging_binary_sensor;
-  }
+  //void set_discharging_binary_sensor(binary_sensor::BinarySensor *discharging_binary_sensor) {
+  //  discharging_binary_sensor_ = discharging_binary_sensor;
+  //}
   void set_discharging_switch_binary_sensor(binary_sensor::BinarySensor *discharging_switch_binary_sensor) {
     discharging_switch_binary_sensor_ = discharging_switch_binary_sensor;
   }
@@ -438,16 +438,16 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   ProtocolVersion protocol_version_{PROTOCOL_VERSION_JK02_32S};
   uint8_t address_;
 
-  binary_sensor::BinarySensor *balancing_binary_sensor_;
+  //binary_sensor::BinarySensor *balancing_binary_sensor_;
   binary_sensor::BinarySensor *balancing_switch_binary_sensor_;
-  binary_sensor::BinarySensor *precharging_binary_sensor_; 
-  binary_sensor::BinarySensor *charging_binary_sensor_;
+  //binary_sensor::BinarySensor *precharging_binary_sensor_; 
+  //binary_sensor::BinarySensor *charging_binary_sensor_;
   binary_sensor::BinarySensor *precharging_switch_binary_sensor_;
   binary_sensor::BinarySensor *charging_switch_binary_sensor_;
-  binary_sensor::BinarySensor *discharging_binary_sensor_;
+  //binary_sensor::BinarySensor *discharging_binary_sensor_;
   binary_sensor::BinarySensor *discharging_switch_binary_sensor_;
   binary_sensor::BinarySensor *dedicated_charger_switch_binary_sensor_;
-  binary_sensor::BinarySensor *heating_binary_sensor_;
+  //binary_sensor::BinarySensor *heating_binary_sensor_;
 
   binary_sensor::BinarySensor *online_status_binary_sensor_;
   binary_sensor::BinarySensor *status_balancing_binary_sensor_;

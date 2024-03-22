@@ -109,8 +109,9 @@ EOF
 ## VALIDATE CODE + UPLOAD + LAUNCH + VIEW LOGS:
 
 # Validate the configuration, create a binary, upload it, and start logs
-esphome run esp32-example-jkpb-rs485.yaml
+esphome run esp32-example-jkpb-rs485_1master_1slave.yaml
 
+(previous example has 1 MASTER at address 0x00 and 1 SLAVE at address 0x01). There is another example with 6 slaves.
 
 
 ## Known issues
