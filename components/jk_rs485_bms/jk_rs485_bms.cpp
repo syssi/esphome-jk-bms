@@ -157,8 +157,8 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
     }
     this->publish_state_(this->cells_[i].cell_voltage_sensor_, cell_voltage);
     this->publish_state_(this->cells_[i].cell_resistance_sensor_, cell_resistance);
-    ESP_LOGV(TAG, "Cell %d voltage:    %f",i,cell_voltage);
-    ESP_LOGV(TAG, "Cell %d resistance: %f",i,cell_resistance);
+    ESP_LOGV(TAG, "Cell %02d voltage:    %f",i,cell_voltage);
+    ESP_LOGV(TAG, "Cell %02d resistance: %f",i,cell_resistance);
   }
   this->publish_state_(this->cell_voltage_min_sensor_, cell_voltage_min);
   this->publish_state_(this->cell_voltage_max_sensor_, cell_voltage_max);

@@ -47,15 +47,15 @@ CONF_CELL_SOC100_VOLTAGE = "cell_soc100_voltage"
 CONF_CELL_SOC0_VOLTAGE = "cell_soc0_voltage"
 CONF_CELL_POWER_OFF_VOLTAGE = "cell_power_off_voltage"
 
-CONF_CELL_VOLTAGE_1 = "cell_voltage_1"
-CONF_CELL_VOLTAGE_2 = "cell_voltage_2"
-CONF_CELL_VOLTAGE_3 = "cell_voltage_3"
-CONF_CELL_VOLTAGE_4 = "cell_voltage_4"
-CONF_CELL_VOLTAGE_5 = "cell_voltage_5"
-CONF_CELL_VOLTAGE_6 = "cell_voltage_6"
-CONF_CELL_VOLTAGE_7 = "cell_voltage_7"
-CONF_CELL_VOLTAGE_8 = "cell_voltage_8"
-CONF_CELL_VOLTAGE_9 = "cell_voltage_9"
+CONF_CELL_VOLTAGE_01 = "cell_voltage_01"
+CONF_CELL_VOLTAGE_02 = "cell_voltage_02"
+CONF_CELL_VOLTAGE_03 = "cell_voltage_03"
+CONF_CELL_VOLTAGE_04 = "cell_voltage_04"
+CONF_CELL_VOLTAGE_05 = "cell_voltage_05"
+CONF_CELL_VOLTAGE_06 = "cell_voltage_06"
+CONF_CELL_VOLTAGE_07 = "cell_voltage_07"
+CONF_CELL_VOLTAGE_08 = "cell_voltage_08"
+CONF_CELL_VOLTAGE_09 = "cell_voltage_09"
 CONF_CELL_VOLTAGE_10 = "cell_voltage_10"
 CONF_CELL_VOLTAGE_11 = "cell_voltage_11"
 CONF_CELL_VOLTAGE_12 = "cell_voltage_12"
@@ -72,15 +72,15 @@ CONF_CELL_VOLTAGE_22 = "cell_voltage_22"
 CONF_CELL_VOLTAGE_23 = "cell_voltage_23"
 CONF_CELL_VOLTAGE_24 = "cell_voltage_24"
 
-CONF_CELL_RESISTANCE_1 = "cell_resistance_1"
-CONF_CELL_RESISTANCE_2 = "cell_resistance_2"
-CONF_CELL_RESISTANCE_3 = "cell_resistance_3"
-CONF_CELL_RESISTANCE_4 = "cell_resistance_4"
-CONF_CELL_RESISTANCE_5 = "cell_resistance_5"
-CONF_CELL_RESISTANCE_6 = "cell_resistance_6"
-CONF_CELL_RESISTANCE_7 = "cell_resistance_7"
-CONF_CELL_RESISTANCE_8 = "cell_resistance_8"
-CONF_CELL_RESISTANCE_9 = "cell_resistance_9"
+CONF_CELL_RESISTANCE_01 = "cell_resistance_01"
+CONF_CELL_RESISTANCE_02 = "cell_resistance_02"
+CONF_CELL_RESISTANCE_03 = "cell_resistance_03"
+CONF_CELL_RESISTANCE_04 = "cell_resistance_04"
+CONF_CELL_RESISTANCE_05 = "cell_resistance_05"
+CONF_CELL_RESISTANCE_06 = "cell_resistance_06"
+CONF_CELL_RESISTANCE_07 = "cell_resistance_07"
+CONF_CELL_RESISTANCE_08 = "cell_resistance_08"
+CONF_CELL_RESISTANCE_09 = "cell_resistance_09"
 CONF_CELL_RESISTANCE_10 = "cell_resistance_10"
 CONF_CELL_RESISTANCE_11 = "cell_resistance_11"
 CONF_CELL_RESISTANCE_12 = "cell_resistance_12"
@@ -201,15 +201,15 @@ UNIT_OHM = "Ω"
 UNIT_AMPERE_HOURS = "Ah"
 
 CELL_VOLTAGES = [
-    CONF_CELL_VOLTAGE_1,
-    CONF_CELL_VOLTAGE_2,
-    CONF_CELL_VOLTAGE_3,
-    CONF_CELL_VOLTAGE_4,
-    CONF_CELL_VOLTAGE_5,
-    CONF_CELL_VOLTAGE_6,
-    CONF_CELL_VOLTAGE_7,
-    CONF_CELL_VOLTAGE_8,
-    CONF_CELL_VOLTAGE_9,
+    CONF_CELL_VOLTAGE_01,
+    CONF_CELL_VOLTAGE_02,
+    CONF_CELL_VOLTAGE_03,
+    CONF_CELL_VOLTAGE_04,
+    CONF_CELL_VOLTAGE_05,
+    CONF_CELL_VOLTAGE_06,
+    CONF_CELL_VOLTAGE_07,
+    CONF_CELL_VOLTAGE_08,
+    CONF_CELL_VOLTAGE_09,
     CONF_CELL_VOLTAGE_10,
     CONF_CELL_VOLTAGE_11,
     CONF_CELL_VOLTAGE_12,
@@ -228,15 +228,15 @@ CELL_VOLTAGES = [
 ]
 
 CELL_RESISTANCES = [
-    CONF_CELL_RESISTANCE_1,
-    CONF_CELL_RESISTANCE_2,
-    CONF_CELL_RESISTANCE_3,
-    CONF_CELL_RESISTANCE_4,
-    CONF_CELL_RESISTANCE_5,
-    CONF_CELL_RESISTANCE_6,
-    CONF_CELL_RESISTANCE_7,
-    CONF_CELL_RESISTANCE_8,
-    CONF_CELL_RESISTANCE_9,
+    CONF_CELL_RESISTANCE_01,
+    CONF_CELL_RESISTANCE_02,
+    CONF_CELL_RESISTANCE_03,
+    CONF_CELL_RESISTANCE_04,
+    CONF_CELL_RESISTANCE_05,
+    CONF_CELL_RESISTANCE_06,
+    CONF_CELL_RESISTANCE_07,
+    CONF_CELL_RESISTANCE_08,
+    CONF_CELL_RESISTANCE_09,
     CONF_CELL_RESISTANCE_10,
     CONF_CELL_RESISTANCE_11,
     CONF_CELL_RESISTANCE_12,
@@ -432,63 +432,63 @@ CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
             device_class=DEVICE_CLASS_VOLTAGE,
             state_class=STATE_CLASS_MEASUREMENT,
         ),     
-        cv.Optional(CONF_CELL_VOLTAGE_1): sensor.sensor_schema(
+        cv.Optional(CONF_CELL_VOLTAGE_01): sensor.sensor_schema(
             unit_of_measurement=UNIT_VOLT,
             icon=ICON_EMPTY,
             accuracy_decimals=3,
             device_class=DEVICE_CLASS_VOLTAGE,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_CELL_VOLTAGE_2): sensor.sensor_schema(
+        cv.Optional(CONF_CELL_VOLTAGE_02): sensor.sensor_schema(
             unit_of_measurement=UNIT_VOLT,
             icon=ICON_EMPTY,
             accuracy_decimals=3,
             device_class=DEVICE_CLASS_VOLTAGE,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_CELL_VOLTAGE_3): sensor.sensor_schema(
+        cv.Optional(CONF_CELL_VOLTAGE_03): sensor.sensor_schema(
             unit_of_measurement=UNIT_VOLT,
             icon=ICON_EMPTY,
             accuracy_decimals=3,
             device_class=DEVICE_CLASS_VOLTAGE,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_CELL_VOLTAGE_4): sensor.sensor_schema(
+        cv.Optional(CONF_CELL_VOLTAGE_04): sensor.sensor_schema(
             unit_of_measurement=UNIT_VOLT,
             icon=ICON_EMPTY,
             accuracy_decimals=3,
             device_class=DEVICE_CLASS_VOLTAGE,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_CELL_VOLTAGE_5): sensor.sensor_schema(
+        cv.Optional(CONF_CELL_VOLTAGE_05): sensor.sensor_schema(
             unit_of_measurement=UNIT_VOLT,
             icon=ICON_EMPTY,
             accuracy_decimals=3,
             device_class=DEVICE_CLASS_VOLTAGE,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_CELL_VOLTAGE_6): sensor.sensor_schema(
+        cv.Optional(CONF_CELL_VOLTAGE_06): sensor.sensor_schema(
             unit_of_measurement=UNIT_VOLT,
             icon=ICON_EMPTY,
             accuracy_decimals=3,
             device_class=DEVICE_CLASS_VOLTAGE,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_CELL_VOLTAGE_7): sensor.sensor_schema(
+        cv.Optional(CONF_CELL_VOLTAGE_07): sensor.sensor_schema(
             unit_of_measurement=UNIT_VOLT,
             icon=ICON_EMPTY,
             accuracy_decimals=3,
             device_class=DEVICE_CLASS_VOLTAGE,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_CELL_VOLTAGE_8): sensor.sensor_schema(
+        cv.Optional(CONF_CELL_VOLTAGE_08): sensor.sensor_schema(
             unit_of_measurement=UNIT_VOLT,
             icon=ICON_EMPTY,
             accuracy_decimals=3,
             device_class=DEVICE_CLASS_VOLTAGE,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_CELL_VOLTAGE_9): sensor.sensor_schema(
+        cv.Optional(CONF_CELL_VOLTAGE_09): sensor.sensor_schema(
             unit_of_measurement=UNIT_VOLT,
             icon=ICON_EMPTY,
             accuracy_decimals=3,
@@ -600,63 +600,63 @@ CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
             device_class=DEVICE_CLASS_VOLTAGE,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_CELL_RESISTANCE_1): sensor.sensor_schema(
+        cv.Optional(CONF_CELL_RESISTANCE_01): sensor.sensor_schema(
             unit_of_measurement=UNIT_OHM,
             icon=ICON_CELL_RESISTANCE,
             accuracy_decimals=3,
             device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_CELL_RESISTANCE_2): sensor.sensor_schema(
+        cv.Optional(CONF_CELL_RESISTANCE_02): sensor.sensor_schema(
             unit_of_measurement=UNIT_OHM,
             icon=ICON_CELL_RESISTANCE,
             accuracy_decimals=3,
             device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_CELL_RESISTANCE_3): sensor.sensor_schema(
+        cv.Optional(CONF_CELL_RESISTANCE_03): sensor.sensor_schema(
             unit_of_measurement=UNIT_OHM,
             icon=ICON_CELL_RESISTANCE,
             accuracy_decimals=3,
             device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_CELL_RESISTANCE_4): sensor.sensor_schema(
+        cv.Optional(CONF_CELL_RESISTANCE_04): sensor.sensor_schema(
             unit_of_measurement=UNIT_OHM,
             icon=ICON_CELL_RESISTANCE,
             accuracy_decimals=3,
             device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_CELL_RESISTANCE_5): sensor.sensor_schema(
+        cv.Optional(CONF_CELL_RESISTANCE_05): sensor.sensor_schema(
             unit_of_measurement=UNIT_OHM,
             icon=ICON_CELL_RESISTANCE,
             accuracy_decimals=3,
             device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_CELL_RESISTANCE_6): sensor.sensor_schema(
+        cv.Optional(CONF_CELL_RESISTANCE_06): sensor.sensor_schema(
             unit_of_measurement=UNIT_OHM,
             icon=ICON_CELL_RESISTANCE,
             accuracy_decimals=3,
             device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_CELL_RESISTANCE_7): sensor.sensor_schema(
+        cv.Optional(CONF_CELL_RESISTANCE_07): sensor.sensor_schema(
             unit_of_measurement=UNIT_OHM,
             icon=ICON_CELL_RESISTANCE,
             accuracy_decimals=3,
             device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_CELL_RESISTANCE_8): sensor.sensor_schema(
+        cv.Optional(CONF_CELL_RESISTANCE_08): sensor.sensor_schema(
             unit_of_measurement=UNIT_OHM,
             icon=ICON_CELL_RESISTANCE,
             accuracy_decimals=3,
             device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_CELL_RESISTANCE_9): sensor.sensor_schema(
+        cv.Optional(CONF_CELL_RESISTANCE_09): sensor.sensor_schema(
             unit_of_measurement=UNIT_OHM,
             icon=ICON_CELL_RESISTANCE,
             accuracy_decimals=3,
