@@ -37,17 +37,17 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
     online_status_binary_sensor_ = online_status_binary_sensor;
   }
 
-  void set_min_cell_voltage_sensor(sensor::Sensor *min_cell_voltage_sensor) {
-    min_cell_voltage_sensor_ = min_cell_voltage_sensor;
+  void set_cell_voltage_min_sensor(sensor::Sensor *cell_voltage_min_sensor) {
+    cell_voltage_min_sensor_ = cell_voltage_min_sensor;
   }
-  void set_max_cell_voltage_sensor(sensor::Sensor *max_cell_voltage_sensor) {
-    max_cell_voltage_sensor_ = max_cell_voltage_sensor;
+  void set_cell_voltage_max_sensor(sensor::Sensor *cell_voltage_max_sensor) {
+    cell_voltage_max_sensor_ = cell_voltage_max_sensor;
   }
-  void set_min_voltage_cell_sensor(sensor::Sensor *min_voltage_cell_sensor) {
-    min_voltage_cell_sensor_ = min_voltage_cell_sensor;
+  void set_cell_voltage_min_cell_number_sensor(sensor::Sensor *cell_voltage_min_cell_number_sensor) {
+    cell_voltage_min_cell_number_sensor_ = cell_voltage_min_cell_number_sensor;
   }
-  void set_max_voltage_cell_sensor(sensor::Sensor *max_voltage_cell_sensor) {
-    max_voltage_cell_sensor_ = max_voltage_cell_sensor;
+  void set_cell_voltage_max_cell_number_sensor(sensor::Sensor *cell_voltage_max_cell_number_sensor) {
+    cell_voltage_max_cell_number_sensor_ = cell_voltage_max_cell_number_sensor;
   }
   void set_delta_cell_voltage_sensor(sensor::Sensor *delta_cell_voltage_sensor) {
     delta_cell_voltage_sensor_ = delta_cell_voltage_sensor;
@@ -256,10 +256,10 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
   binary_sensor::BinarySensor *dedicated_charger_switch_binary_sensor_;
   binary_sensor::BinarySensor *online_status_binary_sensor_;
 
-  sensor::Sensor *min_cell_voltage_sensor_;
-  sensor::Sensor *max_cell_voltage_sensor_;
-  sensor::Sensor *min_voltage_cell_sensor_;
-  sensor::Sensor *max_voltage_cell_sensor_;
+  sensor::Sensor *cell_voltage_min_sensor_;
+  sensor::Sensor *cell_voltage_max_sensor_;
+  sensor::Sensor *cell_voltage_min_cell_number_sensor_;
+  sensor::Sensor *cell_voltage_max_cell_number_sensor_;
   sensor::Sensor *delta_cell_voltage_sensor_;
   sensor::Sensor *average_cell_voltage_sensor_;
   sensor::Sensor *power_tube_temperature_sensor_;

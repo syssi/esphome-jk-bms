@@ -106,8 +106,8 @@ number:
       name: "${name} voltage cell request charge voltage"
     voltage_cell_request_float_voltage:
       name: "${name} voltage cell request float voltage"      
-    voltage_smart_sleep_voltage:
-      name: "${name} voltage smart sleep voltage"      
+    voltage_cell_smart_sleep_voltage:
+      name: "${name} voltage cell smart sleep voltage"      
 
     cell_count:
       name: "${name} cell count"
@@ -139,14 +139,14 @@ number:
 sensor:
   - platform: jk_bms_ble
     jk_bms_ble_id: bms0
-    min_cell_voltage:
-      name: "${name} min cell voltage"
-    max_cell_voltage:
-      name: "${name} max cell voltage"
-    min_voltage_cell:
-      name: "${name} min voltage cell"
-    max_voltage_cell:
-      name: "${name} max voltage cell"
+    cell_voltage_min:
+      name: "${name} cell voltage min"
+    cell_voltage_max:
+      name: "${name} cell voltage max"
+    cell_voltage_min_cell_number:
+      name: "${name} cell voltage min cell number"
+    cell_voltage_max_cell_number:
+      name: "${name} cell voltage max cell number"
     delta_cell_voltage:
       name: "${name} delta cell voltage"
     average_cell_voltage:

@@ -324,9 +324,9 @@ views:
       - graph: line
         type: sensor
         detail: 1
-        entity: sensor.bms1_max_voltage_cell
+        entity: sensor.bms1_cell_voltage_max_cell_number
       - graph: line
         type: sensor
         detail: 1
-        entity: sensor.bms1_min_voltage_cell
+        entity: sensor.bms1_cell_voltage_min_cell_number
 

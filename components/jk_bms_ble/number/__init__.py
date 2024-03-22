@@ -31,7 +31,7 @@ DEFAULT_STEP = 1
 
 # JK02_24S
 #
-# 01 04 03000000  Set smart sleep voltage to 0.003
+# 01 04 03000000  Set cell smart sleep voltage to 0.003
 # 02 04 b0040000  Set Cell UVP to 1.2
 # 03 04 b0040000  Set Cell UVPR to 1.2
 # 04 04 420e0000  Set Cell OVP to 3.65
@@ -53,7 +53,7 @@ DEFAULT_STEP = 1
 # 0c 04 e8030000  Set Max charge Current to 1.0
 # 0f 04 e8030000  Set Max discharge Current to 1.0
 
-CONF_SMART_SLEEP_VOLTAGE = "smart_sleep_voltage"
+CONF_CELL_SMART_SLEEP_VOLTAGE = "cell_smart_sleep_voltage"
 CONF_CELL_UNDERVOLTAGE_PROTECTION = "cell_undervoltage_protection"
 CONF_CELL_UNDERVOLTAGE_PROTECTION_RECOVERY = "cell_undervoltage_protection_recovery"
 CONF_CELL_OVERVOLTAGE_PROTECTION = "cell_overvoltage_protection"
@@ -137,7 +137,7 @@ ICON_CLOCK ="mdi:clock-outline"
 
 NUMBERS = {
     # JK04, JK02, JK02_32S, factor
-    CONF_SMART_SLEEP_VOLTAGE: [0x00, 0x01, 0x01, 1000.0],    
+    CONF_CELL_SMART_SLEEP_VOLTAGE: [0x00, 0x01, 0x01, 1000.0],    
     CONF_CELL_UNDERVOLTAGE_PROTECTION: [0x00, 0x02, 0x02, 1000.0],
     CONF_CELL_UNDERVOLTAGE_PROTECTION_RECOVERY: [0x00, 0x03, 0x03, 1000.0],
     CONF_CELL_OVERVOLTAGE_PROTECTION: [0x00, 0x04, 0x04, 1000.0], 
@@ -182,7 +182,7 @@ JK_NUMBER_SCHEMA = number.NUMBER_SCHEMA.extend(
 
 CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
     {
-        cv.Optional(CONF_SMART_SLEEP_VOLTAGE): JK_NUMBER_SCHEMA.extend(
+        cv.Optional(CONF_CELL_SMART_SLEEP_VOLTAGE): JK_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=0.003): cv.float_,
                 cv.Optional(CONF_MAX_VALUE, default=3.650): cv.float_,

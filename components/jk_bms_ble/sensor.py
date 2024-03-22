@@ -31,10 +31,10 @@ from . import CONF_JK_BMS_BLE_ID, JkBmsBle
 
 CODEOWNERS = ["@syssi","txubelaxu"]
 
-CONF_MIN_CELL_VOLTAGE = "min_cell_voltage"
-CONF_MAX_CELL_VOLTAGE = "max_cell_voltage"
-CONF_MIN_VOLTAGE_CELL = "min_voltage_cell"
-CONF_MAX_VOLTAGE_CELL = "max_voltage_cell"
+CONF_CELL_VOLTAGE_MIN = "cell_voltage_min"
+CONF_CELL_VOLTAGE_MAX = "cell_voltage_max"
+CONF_CELL_VOLTAGE_MIN_CELL_NUMBER = "cell_voltage_min_cell_number"
+CONF_CELL_VOLTAGE_MAX_CELL_NUMBER = "cell_voltage_max_cell_number"
 CONF_DELTA_CELL_VOLTAGE = "delta_cell_voltage"
 CONF_AVERAGE_CELL_VOLTAGE = "average_cell_voltage"
 
@@ -115,8 +115,8 @@ UNIT_SECONDS = "s"
 
 ICON_CURRENT_DC = "mdi:current-dc"
 ICON_CAPACITY = "mdi:battery-medium"
-ICON_MIN_VOLTAGE_CELL = "mdi:battery-minus-outline"
-ICON_MAX_VOLTAGE_CELL = "mdi:battery-plus-outline"
+ICON_CELL_VOLTAGE_MIN_CELL_NUMBER = "mdi:battery-minus-outline"
+ICON_CELL_VOLTAGE_MAX_CELL_NUMBER = "mdi:battery-plus-outline"
 ICON_CAPACITY_REMAINING = "mdi:battery-50"
 ICON_CHARGING_CYCLES = "mdi:battery-sync"
 ICON_ERRORS_BITMASK = "mdi:alert-circle-outline"
@@ -186,10 +186,10 @@ TEMPERATURES = [
 
 SENSORS = [
     CONF_BALANCING_DIRECTION,
-    CONF_MIN_CELL_VOLTAGE,
-    CONF_MAX_CELL_VOLTAGE,
-    CONF_MIN_VOLTAGE_CELL,
-    CONF_MAX_VOLTAGE_CELL,
+    CONF_CELL_VOLTAGE_MIN,
+    CONF_CELL_VOLTAGE_MAX,
+    CONF_CELL_VOLTAGE_MIN_CELL_NUMBER,
+    CONF_CELL_VOLTAGE_MAX_CELL_NUMBER,
     CONF_DELTA_CELL_VOLTAGE,
     CONF_AVERAGE_CELL_VOLTAGE,
     CONF_TOTAL_VOLTAGE,
@@ -222,30 +222,30 @@ CONFIG_SCHEMA = cv.Schema(
             device_class=DEVICE_CLASS_CURRENT,
             state_class=STATE_CLASS_MEASUREMENT,
         ),        
-        cv.Optional(CONF_MIN_CELL_VOLTAGE): sensor.sensor_schema(
+        cv.Optional(CONF_CELL_VOLTAGE_MIN): sensor.sensor_schema(
             unit_of_measurement=UNIT_VOLT,
             icon=ICON_EMPTY,
             accuracy_decimals=3,
             device_class=DEVICE_CLASS_VOLTAGE,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_MAX_CELL_VOLTAGE): sensor.sensor_schema(
+        cv.Optional(CONF_CELL_VOLTAGE_MAX): sensor.sensor_schema(
             unit_of_measurement=UNIT_VOLT,
             icon=ICON_EMPTY,
             accuracy_decimals=3,
             device_class=DEVICE_CLASS_VOLTAGE,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_MIN_VOLTAGE_CELL): sensor.sensor_schema(
+        cv.Optional(CONF_CELL_VOLTAGE_MIN_CELL_NUMBER): sensor.sensor_schema(
             unit_of_measurement=UNIT_EMPTY,
-            icon=ICON_MIN_VOLTAGE_CELL,
+            icon=ICON_CELL_VOLTAGE_MIN_CELL_NUMBER,
             accuracy_decimals=0,
             device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_MAX_VOLTAGE_CELL): sensor.sensor_schema(
+        cv.Optional(CONF_CELL_VOLTAGE_MAX_CELL_NUMBER): sensor.sensor_schema(
             unit_of_measurement=UNIT_EMPTY,
-            icon=ICON_MAX_VOLTAGE_CELL,
+            icon=ICON_CELL_VOLTAGE_MAX_CELL_NUMBER,
             accuracy_decimals=0,
             device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,

@@ -37,11 +37,11 @@ views:
         entities:
           - entity: sensor.bms0_total_voltage
           - entity: sensor.bms0_delta_cell_voltage
-          - entity: sensor.bms0_max_cell_voltage
+          - entity: sensor.bms0_cell_voltage_max
           - entity: sensor.bms0_average_cell_voltage
-          - entity: sensor.bms0_min_cell_voltage
-          - entity: sensor.bms0_max_voltage_cell
-          - entity: sensor.bms0_min_voltage_cell
+          - entity: sensor.bms0_cell_voltage_min
+          - entity: sensor.bms0_cell_voltage_max_cell_number
+          - entity: sensor.bms0_cell_voltage_min_cell_number
         title: BANK Voltage
       - type: entities
         entities:
@@ -244,10 +244,10 @@ views:
                   - type: markdown
                     content: >-
                       <center> {% for idx in range(1, 9) -%} {%- set min_idx =
-                      states('sensor.bms0_min_voltage_cell') %} {%- set max_idx
-                      = states('sensor.bms0_max_voltage_cell') %} {%- set is_max
-                      = states('sensor.bms0_max_voltage_cell')| int == idx %}
-                      {%- set is_min = states('sensor.bms0_min_voltage_cell')|
+                      states('sensor.bms0_cell_voltage_min_cell_number') %} {%- set max_idx
+                      = states('sensor.bms0_cell_voltage_max_cell_number') %} {%- set is_max
+                      = states('sensor.bms0_cell_voltage_max_cell_number')| int == idx %}
+                      {%- set is_min = states('sensor.bms0_cell_voltage_min_cell_number')|
                       int == idx %} {%- set volt_sensor_id =
                       'sensor.bms0_cell_voltage_%d' % idx %} {%- set
                       ohm_sensor_id = 'sensor.bms0_cell_resistance_%d' % idx %}
@@ -263,11 +263,11 @@ views:
                   - type: markdown
                     content: >-
                       <center>              {% for idx in range(9, 17) -%} {%-
-                      set min_idx = states('sensor.bms0_min_voltage_cell') %}
-                      {%- set max_idx = states('sensor.bms0_max_voltage_cell')
+                      set min_idx = states('sensor.bms0_cell_voltage_min_cell_number') %}
+                      {%- set max_idx = states('sensor.bms0_cell_voltage_max_cell_number')
                       %} {%- set is_max =
-                      states('sensor.bms0_max_voltage_cell')| int == idx %} {%-
-                      set is_min = states('sensor.bms0_min_voltage_cell')| int
+                      states('sensor.bms0_cell_voltage_max_cell_number')| int == idx %} {%-
+                      set is_min = states('sensor.bms0_cell_voltage_min_cell_number')| int
                       == idx %} {%- set volt_sensor_id =
                       'sensor.bms0_cell_voltage_%d' % idx %} {%- set
                       ohm_sensor_id = 'sensor.bms0_cell_resistance_%d' % idx %}

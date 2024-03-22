@@ -12,14 +12,27 @@ CODEOWNERS = ["@syssi"]
 CONF_ERRORS = "errors"
 CONF_OPERATION_STATUS = "operation_status"
 CONF_TOTAL_RUNTIME_FORMATTED = "total_runtime_formatted"
+CONF_INFO_VENDORID = "info_vendorid"
+CONF_INFO_HARDWARE_VERSION = "info_hardware_version";
+CONF_INFO_SOFTWARE_VERSION = "info_software_version";
+CONF_INFO_DEVICE_NAME = "info_device_name";
+CONF_INFO_DEVICE_PASSWORD = "info_device_password";
+
+
 
 ICON_ERRORS = "mdi:alert-circle-outline"
 ICON_OPERATION_STATUS = "mdi:heart-pulse"
+ICON_INFORMATION = "mdi:information"
 
 TEXT_SENSORS = [
     CONF_ERRORS,
     CONF_OPERATION_STATUS,
     CONF_TOTAL_RUNTIME_FORMATTED,
+    CONF_INFO_VENDORID,
+    CONF_INFO_HARDWARE_VERSION,
+    CONF_INFO_SOFTWARE_VERSION,
+    CONF_INFO_DEVICE_NAME,
+    CONF_INFO_DEVICE_PASSWORD,
 ]
 
 CONFIG_SCHEMA = cv.Schema(
@@ -45,6 +58,49 @@ CONFIG_SCHEMA = cv.Schema(
                 cv.Optional(CONF_ICON, default=ICON_TIMELAPSE): cv.icon,
             }
         ),
+        cv.Optional(
+            CONF_INFO_VENDORID
+        ): text_sensor.TEXT_SENSOR_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
+                cv.Optional(CONF_ICON, default=ICON_INFORMATION): cv.icon,
+            }
+        ),
+        cv.Optional(
+            CONF_INFO_HARDWARE_VERSION
+        ): text_sensor.TEXT_SENSOR_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
+                cv.Optional(CONF_ICON, default=ICON_INFORMATION): cv.icon,
+            }
+        ),
+        cv.Optional(
+            CONF_INFO_SOFTWARE_VERSION
+        ): text_sensor.TEXT_SENSOR_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
+                cv.Optional(CONF_ICON, default=ICON_INFORMATION): cv.icon,
+            }
+        ),
+        cv.Optional(
+            CONF_INFO_DEVICE_NAME
+        ): text_sensor.TEXT_SENSOR_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
+                cv.Optional(CONF_ICON, default=ICON_INFORMATION): cv.icon,
+            }
+        ),
+        cv.Optional(
+            CONF_INFO_DEVICE_PASSWORD
+        ): text_sensor.TEXT_SENSOR_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
+                cv.Optional(CONF_ICON, default=ICON_INFORMATION): cv.icon,
+            }
+        ),
+
+
+        
     }
 )
 

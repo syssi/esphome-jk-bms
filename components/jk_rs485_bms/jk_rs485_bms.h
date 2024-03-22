@@ -29,23 +29,23 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   void set_balancing_sensor(sensor::Sensor *balancing_sensor) {
     balancing_sensor_ = balancing_sensor;
   } 
-  void set_balancing_status_binary_sensor(binary_sensor::BinarySensor *balancing_status_binary_sensor) {
-    balancing_status_binary_sensor_ = balancing_status_binary_sensor;
+  void set_status_balancing_binary_sensor(binary_sensor::BinarySensor *status_balancing_binary_sensor) {
+    status_balancing_binary_sensor_ = status_balancing_binary_sensor;
   }
-  void set_precharging_status_binary_sensor(binary_sensor::BinarySensor *precharging_status_binary_sensor) {
-    precharging_status_binary_sensor_ = precharging_status_binary_sensor;
+  void set_status_precharging_binary_sensor(binary_sensor::BinarySensor *status_precharging_binary_sensor) {
+    status_precharging_binary_sensor_ = status_precharging_binary_sensor;
   }
-  void set_charging_status_binary_sensor(binary_sensor::BinarySensor *charging_status_binary_sensor) {
-    charging_status_binary_sensor_ = charging_status_binary_sensor;
+  void set_status_charging_binary_sensor(binary_sensor::BinarySensor *status_charging_binary_sensor) {
+    status_charging_binary_sensor_ = status_charging_binary_sensor;
   }
-  void set_discharging_status_binary_sensor(binary_sensor::BinarySensor *discharging_status_binary_sensor) {
-    discharging_status_binary_sensor_ = discharging_status_binary_sensor;
+  void set_status_discharging_binary_sensor(binary_sensor::BinarySensor *status_discharging_binary_sensor) {
+    status_discharging_binary_sensor_ = status_discharging_binary_sensor;
   }
   void set_online_status_binary_sensor(binary_sensor::BinarySensor *online_status_binary_sensor) {
     online_status_binary_sensor_ = online_status_binary_sensor;
   }
-  void set_heating_status_binary_sensor(binary_sensor::BinarySensor *heating_status_binary_sensor) {
-    heating_status_binary_sensor_ = heating_status_binary_sensor;
+  void set_status_heating_binary_sensor(binary_sensor::BinarySensor *status_heating_binary_sensor) {
+    status_heating_binary_sensor_ = status_heating_binary_sensor;
   }   
   void set_cell_count_sensor(sensor::Sensor *cell_count_sensor) { cell_count_sensor_ = cell_count_sensor; }
 
@@ -78,20 +78,20 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
     dedicated_charger_switch_binary_sensor_ = dedicated_charger_switch_binary_sensor;
   }
 
-  void set_smart_sleep_voltage_sensor(sensor::Sensor *smart_sleep_voltage_sensor) {
-    smart_sleep_voltage_sensor_ = smart_sleep_voltage_sensor;
+  void set_cell_smart_sleep_voltage_sensor(sensor::Sensor *cell_smart_sleep_voltage_sensor) {
+    cell_smart_sleep_voltage_sensor_ = cell_smart_sleep_voltage_sensor;
   }
-  void set_min_cell_voltage_sensor(sensor::Sensor *min_cell_voltage_sensor) {
-    min_cell_voltage_sensor_ = min_cell_voltage_sensor;
+  void set_cell_voltage_min_sensor(sensor::Sensor *cell_voltage_min_sensor) {
+    cell_voltage_min_sensor_ = cell_voltage_min_sensor;
   }
-  void set_max_cell_voltage_sensor(sensor::Sensor *max_cell_voltage_sensor) {
-    max_cell_voltage_sensor_ = max_cell_voltage_sensor;
+  void set_cell_voltage_max_sensor(sensor::Sensor *cell_voltage_max_sensor) {
+    cell_voltage_max_sensor_ = cell_voltage_max_sensor;
   }
-  void set_min_voltage_cell_sensor(sensor::Sensor *min_voltage_cell_sensor) {
-    min_voltage_cell_sensor_ = min_voltage_cell_sensor;
+  void set_cell_voltage_min_cell_number_sensor(sensor::Sensor *cell_voltage_min_cell_number_sensor) {
+    cell_voltage_min_cell_number_sensor_ = cell_voltage_min_cell_number_sensor;
   }
-  void set_max_voltage_cell_sensor(sensor::Sensor *max_voltage_cell_sensor) {
-    max_voltage_cell_sensor_ = max_voltage_cell_sensor;
+  void set_cell_voltage_max_cell_number_sensor(sensor::Sensor *cell_voltage_max_cell_number_sensor) {
+    cell_voltage_max_cell_number_sensor_ = cell_voltage_max_cell_number_sensor;
   }
   void set_delta_cell_voltage_sensor(sensor::Sensor *delta_cell_voltage_sensor) {
     delta_cell_voltage_sensor_ = delta_cell_voltage_sensor;
@@ -450,11 +450,11 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   binary_sensor::BinarySensor *heating_binary_sensor_;
 
   binary_sensor::BinarySensor *online_status_binary_sensor_;
-  binary_sensor::BinarySensor *balancing_status_binary_sensor_;
-  binary_sensor::BinarySensor *precharging_status_binary_sensor_;  
-  binary_sensor::BinarySensor *charging_status_binary_sensor_;
-  binary_sensor::BinarySensor *discharging_status_binary_sensor_;
-  binary_sensor::BinarySensor *heating_status_binary_sensor_;
+  binary_sensor::BinarySensor *status_balancing_binary_sensor_;
+  binary_sensor::BinarySensor *status_precharging_binary_sensor_;  
+  binary_sensor::BinarySensor *status_charging_binary_sensor_;
+  binary_sensor::BinarySensor *status_discharging_binary_sensor_;
+  binary_sensor::BinarySensor *status_heating_binary_sensor_;
 
   binary_sensor::BinarySensor *alarm_wireres_binary_sensor_;
   binary_sensor::BinarySensor *alarm_mosotp_binary_sensor_;
@@ -514,14 +514,14 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
 
   sensor::Sensor *balancing_sensor_; 
   sensor::Sensor *cell_count_sensor_;  
-  sensor::Sensor *smart_sleep_voltage_sensor_;
+  sensor::Sensor *cell_smart_sleep_voltage_sensor_;
 
 
 
-  sensor::Sensor *min_cell_voltage_sensor_;
-  sensor::Sensor *max_cell_voltage_sensor_;
-  sensor::Sensor *min_voltage_cell_sensor_;
-  sensor::Sensor *max_voltage_cell_sensor_;
+  sensor::Sensor *cell_voltage_min_sensor_;
+  sensor::Sensor *cell_voltage_max_sensor_;
+  sensor::Sensor *cell_voltage_min_cell_number_sensor_;
+  sensor::Sensor *cell_voltage_max_cell_number_sensor_;
   sensor::Sensor *delta_cell_voltage_sensor_;
   sensor::Sensor *average_cell_voltage_sensor_;
   sensor::Sensor *power_tube_temperature_sensor_;

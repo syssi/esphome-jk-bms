@@ -196,16 +196,16 @@ sensor:
     jk_rs485_bms_id: bms0
     balancing:
       name: "${bms0_name} balancing"    
-    smart_sleep_voltage:
-      name: "${bms0_name} smart sleep voltage"    
-    min_cell_voltage:
-      name: "${bms0_name} min cell voltage"
-    max_cell_voltage:
-      name: "${bms0_name} max cell voltage"
-    min_voltage_cell:
-      name: "${bms0_name} min voltage cell"
-    max_voltage_cell:
-      name: "${bms0_name} max voltage cell"
+    cell_smart_sleep_voltage:
+      name: "${bms0_name} cell smart sleep voltage"    
+    cell_voltage_min:
+      name: "${bms0_name} cell voltage min"
+    cell_voltage_max:
+      name: "${bms0_name} cell voltage max"
+    cell_voltage_min_cell_number:
+      name: "${bms0_name} cell voltage min cell number"
+    cell_voltage_max_cell_number:
+      name: "${bms0_name} cell voltage max cell number"
     delta_cell_voltage:
       name: "${bms0_name} delta cell voltage"
     average_cell_voltage:
@@ -347,16 +347,16 @@ sensor:
     jk_rs485_bms_id: bms1
     balancing:
       name: "${bms1_name} balancing"    
-    smart_sleep_voltage:
-      name: "${bms1_name} smart sleep voltage"    
-    min_cell_voltage:
-      name: "${bms1_name} min cell voltage"
-    max_cell_voltage:
-      name: "${bms1_name} max cell voltage"
-    min_voltage_cell:
-      name: "${bms1_name} min voltage cell"
-    max_voltage_cell:
-      name: "${bms1_name} max voltage cell"
+    cell_smart_sleep_voltage:
+      name: "${bms1_name} cell smart sleep voltage"    
+    cell_voltage_min:
+      name: "${bms1_name} cell voltage min"
+    cell_voltage_max:
+      name: "${bms1_name} cell voltage max"
+    cell_voltage_min_cell_number:
+      name: "${bms1_name} cell voltage min cell number"
+    cell_voltage_max_cell_number:
+      name: "${bms1_name} cell voltage max cell number"
     delta_cell_voltage:
       name: "${bms1_name} delta cell voltage"
     average_cell_voltage:
@@ -499,16 +499,16 @@ sensor:
     jk_rs485_bms_id: bms2
     balancing:
       name: "${bms2_name} balancing"    
-    smart_sleep_voltage:
-      name: "${bms2_name} smart sleep voltage"    
-    min_cell_voltage:
-      name: "${bms2_name} min cell voltage"
-    max_cell_voltage:
-      name: "${bms2_name} max cell voltage"
-    min_voltage_cell:
-      name: "${bms2_name} min voltage cell"
-    max_voltage_cell:
-      name: "${bms2_name} max voltage cell"
+    cell_smart_sleep_voltage:
+      name: "${bms2_name} cell smart sleep voltage"    
+    cell_voltage_min:
+      name: "${bms2_name} cell voltage min"
+    cell_voltage_max:
+      name: "${bms2_name} cell voltage max"
+    cell_voltage_min_cell_number:
+      name: "${bms2_name} cell voltage min cell number"
+    cell_voltage_max_cell_number:
+      name: "${bms2_name} cell voltage max cell number"
     delta_cell_voltage:
       name: "${bms2_name} delta cell voltage"
     average_cell_voltage:
@@ -651,16 +651,16 @@ sensor:
     jk_rs485_bms_id: bms3
     balancing:
       name: "${bms3_name} balancing"    
-    smart_sleep_voltage:
-      name: "${bms3_name} smart sleep voltage"    
-    min_cell_voltage:
-      name: "${bms3_name} min cell voltage"
-    max_cell_voltage:
-      name: "${bms3_name} max cell voltage"
-    min_voltage_cell:
-      name: "${bms3_name} min voltage cell"
-    max_voltage_cell:
-      name: "${bms3_name} max voltage cell"
+    cell_smart_sleep_voltage:
+      name: "${bms3_name} cell smart sleep voltage"    
+    cell_voltage_min:
+      name: "${bms3_name} cell voltage min"
+    cell_voltage_max:
+      name: "${bms3_name} cell voltage max"
+    cell_voltage_min_cell_number:
+      name: "${bms3_name} cell voltage min cell number"
+    cell_voltage_max_cell_number:
+      name: "${bms3_name} cell voltage max cell number"
     delta_cell_voltage:
       name: "${bms3_name} delta cell voltage"
     average_cell_voltage:
@@ -803,16 +803,16 @@ sensor:
     jk_rs485_bms_id: bms4
     balancing:
       name: "${bms4_name} balancing"    
-    smart_sleep_voltage:
-      name: "${bms4_name} smart sleep voltage"    
-    min_cell_voltage:
-      name: "${bms4_name} min cell voltage"
-    max_cell_voltage:
-      name: "${bms4_name} max cell voltage"
-    min_voltage_cell:
-      name: "${bms4_name} min voltage cell"
-    max_voltage_cell:
-      name: "${bms4_name} max voltage cell"
+    cell_smart_sleep_voltage:
+      name: "${bms4_name} cell smart sleep voltage"    
+    cell_voltage_min:
+      name: "${bms4_name} cell voltage min"
+    cell_voltage_max:
+      name: "${bms4_name} cell voltage max"
+    cell_voltage_min_cell_number:
+      name: "${bms4_name} cell voltage min cell number"
+    cell_voltage_max_cell_number:
+      name: "${bms4_name} cell voltage max cell number"
     delta_cell_voltage:
       name: "${bms4_name} delta cell voltage"
     average_cell_voltage:
@@ -955,16 +955,16 @@ sensor:
     jk_rs485_bms_id: bms5
     balancing:
       name: "${bms5_name} balancing"
-    smart_sleep_voltage:
-      name: "${bms5_name} smart sleep voltage"    
-    min_cell_voltage:
-      name: "${bms5_name} min cell voltage"
-    max_cell_voltage:
-      name: "${bms5_name} max cell voltage"
-    min_voltage_cell:
-      name: "${bms5_name} min voltage cell"
-    max_voltage_cell:
-      name: "${bms5_name} max voltage cell"
+    cell_smart_sleep_voltage:
+      name: "${bms5_name} cell smart sleep voltage"    
+    cell_voltage_min:
+      name: "${bms5_name} cell voltage min"
+    cell_voltage_max:
+      name: "${bms5_name} cell voltage max"
+    cell_voltage_min_cell_number:
+      name: "${bms5_name} cell voltage min cell number"
+    cell_voltage_max_cell_number:
+      name: "${bms5_name} cell voltage max cell number"
     delta_cell_voltage:
       name: "${bms5_name} delta cell voltage"
     average_cell_voltage:
@@ -1107,16 +1107,16 @@ sensor:
     jk_rs485_bms_id: bms6
     balancing:
       name: "${bms6_name} balancing"    
-    smart_sleep_voltage:
-      name: "${bms6_name} smart sleep voltage"    
-    min_cell_voltage:
-      name: "${bms6_name} min cell voltage"
-    max_cell_voltage:
-      name: "${bms6_name} max cell voltage"
-    min_voltage_cell:
-      name: "${bms6_name} min voltage cell"
-    max_voltage_cell:
-      name: "${bms6_name} max voltage cell"
+    cell_smart_sleep_voltage:
+      name: "${bms6_name} cell smart sleep voltage"    
+    cell_voltage_min:
+      name: "${bms6_name} cell voltage min"
+    cell_voltage_max:
+      name: "${bms6_name} cell voltage max"
+    cell_voltage_min_cell_number:
+      name: "${bms6_name} cell voltage min cell number"
+    cell_voltage_max_cell_number:
+      name: "${bms6_name} cell voltage max cell number"
     delta_cell_voltage:
       name: "${bms6_name} delta cell voltage"
     average_cell_voltage:

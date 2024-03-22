@@ -36,8 +36,8 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   void set_smart_sleep_time_number(number::Number *smart_sleep_time_number) {
     smart_sleep_time_number_ = smart_sleep_time_number;
   }
-  void set_smart_sleep_voltage_number(number::Number *smart_sleep_voltage_number) {
-    smart_sleep_voltage_number_ = smart_sleep_voltage_number;
+  void set_cell_smart_sleep_voltage_number(number::Number *cell_smart_sleep_voltage_number) {
+    cell_smart_sleep_voltage_number_ = cell_smart_sleep_voltage_number;
   }
   void set_balance_trigger_voltage_number(number::Number *balance_trigger_voltage_number) {
     balance_trigger_voltage_number_ = balance_trigger_voltage_number;
@@ -98,26 +98,26 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
     max_discharge_current_number_ = max_discharge_current_number;
   }
 
-  void set_balancing_status_binary_sensor(binary_sensor::BinarySensor *balancing_status_binary_sensor) {
-    balancing_status_binary_sensor_ = balancing_status_binary_sensor;
+  void set_status_balancing_binary_sensor(binary_sensor::BinarySensor *status_balancing_binary_sensor) {
+    status_balancing_binary_sensor_ = status_balancing_binary_sensor;
   }
   void set_balancing_direction_sensor(sensor::Sensor *balancing_direction_sensor) {
     balancing_direction_sensor_ = balancing_direction_sensor;
   }  
-  void set_precharging_status_binary_sensor(binary_sensor::BinarySensor *precharging_status_binary_sensor) {
-    precharging_status_binary_sensor_ = precharging_status_binary_sensor;
+  void set_status_precharging_binary_sensor(binary_sensor::BinarySensor *status_precharging_binary_sensor) {
+    status_precharging_binary_sensor_ = status_precharging_binary_sensor;
   }
-  void set_charging_status_binary_sensor(binary_sensor::BinarySensor *charging_status_binary_sensor) {
-    charging_status_binary_sensor_ = charging_status_binary_sensor;
+  void set_status_charging_binary_sensor(binary_sensor::BinarySensor *status_charging_binary_sensor) {
+    status_charging_binary_sensor_ = status_charging_binary_sensor;
   }
-  void set_discharging_status_binary_sensor(binary_sensor::BinarySensor *discharging_status_binary_sensor) {
-    discharging_status_binary_sensor_ = discharging_status_binary_sensor;
+  void set_status_discharging_binary_sensor(binary_sensor::BinarySensor *status_discharging_binary_sensor) {
+    status_discharging_binary_sensor_ = status_discharging_binary_sensor;
   }
   void set_online_status_binary_sensor(binary_sensor::BinarySensor *online_status_binary_sensor) {
     online_status_binary_sensor_ = online_status_binary_sensor;
   }
-  void set_heating_status_binary_sensor(binary_sensor::BinarySensor *heating_status_binary_sensor) {
-    heating_status_binary_sensor_ = heating_status_binary_sensor;
+  void set_status_heating_binary_sensor(binary_sensor::BinarySensor *status_heating_binary_sensor) {
+    status_heating_binary_sensor_ = status_heating_binary_sensor;
   }
 
  // ALARMS
@@ -214,17 +214,17 @@ void set_alarm_battempsensor5absent_binary_sensor(binary_sensor::BinarySensor *a
 
 
   void set_throttle(uint32_t throttle) { this->throttle_ = throttle; }
-  void set_min_cell_voltage_sensor(sensor::Sensor *min_cell_voltage_sensor) {
-    min_cell_voltage_sensor_ = min_cell_voltage_sensor;
+  void set_cell_voltage_min_sensor(sensor::Sensor *cell_voltage_min_sensor) {
+    cell_voltage_min_sensor_ = cell_voltage_min_sensor;
   }
-  void set_max_cell_voltage_sensor(sensor::Sensor *max_cell_voltage_sensor) {
-    max_cell_voltage_sensor_ = max_cell_voltage_sensor;
+  void set_cell_voltage_max_sensor(sensor::Sensor *cell_voltage_max_sensor) {
+    cell_voltage_max_sensor_ = cell_voltage_max_sensor;
   }
-  void set_min_voltage_cell_sensor(sensor::Sensor *min_voltage_cell_sensor) {
-    min_voltage_cell_sensor_ = min_voltage_cell_sensor;
+  void set_cell_voltage_min_cell_number_sensor(sensor::Sensor *cell_voltage_min_cell_number_sensor) {
+    cell_voltage_min_cell_number_sensor_ = cell_voltage_min_cell_number_sensor;
   }
-  void set_max_voltage_cell_sensor(sensor::Sensor *max_voltage_cell_sensor) {
-    max_voltage_cell_sensor_ = max_voltage_cell_sensor;
+  void set_cell_voltage_max_cell_number_sensor(sensor::Sensor *cell_voltage_max_cell_number_sensor) {
+    cell_voltage_max_cell_number_sensor_ = cell_voltage_max_cell_number_sensor;
   }
   void set_delta_cell_voltage_sensor(sensor::Sensor *delta_cell_voltage_sensor) {
     delta_cell_voltage_sensor_ = delta_cell_voltage_sensor;
@@ -289,6 +289,28 @@ void set_alarm_battempsensor5absent_binary_sensor(binary_sensor::BinarySensor *a
   void set_total_runtime_formatted_text_sensor(text_sensor::TextSensor *total_runtime_formatted_text_sensor) {
     total_runtime_formatted_text_sensor_ = total_runtime_formatted_text_sensor;
   }
+  void set_info_vendorid_text_sensor(text_sensor::TextSensor *info_vendorid_text_sensor) {
+    info_vendorid_text_sensor_ = info_vendorid_text_sensor;
+  }
+
+
+  void set_info_hardware_version_text_sensor(text_sensor::TextSensor *info_hardware_version_text_sensor) {
+      info_hardware_version_text_sensor_ = info_hardware_version_text_sensor;
+  }
+
+  void set_info_software_version_text_sensor(text_sensor::TextSensor *info_software_version_text_sensor) {
+      info_software_version_text_sensor_ = info_software_version_text_sensor;
+  }
+
+  void set_info_device_name_text_sensor(text_sensor::TextSensor *info_device_name_text_sensor) {
+      info_device_name_text_sensor_ = info_device_name_text_sensor;
+  }
+
+  void set_info_device_password_text_sensor(text_sensor::TextSensor *info_device_password_text_sensor) {
+      info_device_password_text_sensor_ = info_device_password_text_sensor;
+  }
+
+
 
   void set_charging_switch(switch_::Switch *charging_switch) { charging_switch_ = charging_switch; }
   void set_discharging_switch(switch_::Switch *discharging_switch) { discharging_switch_ = discharging_switch; }
@@ -329,11 +351,11 @@ void set_alarm_battempsensor5absent_binary_sensor(binary_sensor::BinarySensor *a
   ProtocolVersion protocol_version_{PROTOCOL_VERSION_JK02_24S};
 
   binary_sensor::BinarySensor *online_status_binary_sensor_;
-  binary_sensor::BinarySensor *balancing_status_binary_sensor_;
-  binary_sensor::BinarySensor *precharging_status_binary_sensor_;  
-  binary_sensor::BinarySensor *charging_status_binary_sensor_;
-  binary_sensor::BinarySensor *discharging_status_binary_sensor_;
-  binary_sensor::BinarySensor *heating_status_binary_sensor_;
+  binary_sensor::BinarySensor *status_balancing_binary_sensor_;
+  binary_sensor::BinarySensor *status_precharging_binary_sensor_;  
+  binary_sensor::BinarySensor *status_charging_binary_sensor_;
+  binary_sensor::BinarySensor *status_discharging_binary_sensor_;
+  binary_sensor::BinarySensor *status_heating_binary_sensor_;
 
   binary_sensor::BinarySensor *alarm_wireres_binary_sensor_;
   binary_sensor::BinarySensor *alarm_mosotp_binary_sensor_;
@@ -367,7 +389,7 @@ void set_alarm_battempsensor5absent_binary_sensor(binary_sensor::BinarySensor *a
   binary_sensor::BinarySensor *alarm_battempsensor5absent_binary_sensor_;
 
 
-  number::Number *smart_sleep_voltage_number_;
+  number::Number *cell_smart_sleep_voltage_number_;
   number::Number *balance_trigger_voltage_number_;
   number::Number *cell_soc100_voltage_number_;
   number::Number *cell_soc0_voltage_number_;   
@@ -391,10 +413,10 @@ void set_alarm_battempsensor5absent_binary_sensor(binary_sensor::BinarySensor *a
   number::Number *smart_sleep_time_number_;
 
   sensor::Sensor *balancing_direction_sensor_;
-  sensor::Sensor *min_cell_voltage_sensor_;
-  sensor::Sensor *max_cell_voltage_sensor_;
-  sensor::Sensor *min_voltage_cell_sensor_;
-  sensor::Sensor *max_voltage_cell_sensor_;
+  sensor::Sensor *cell_voltage_min_sensor_;
+  sensor::Sensor *cell_voltage_max_sensor_;
+  sensor::Sensor *cell_voltage_min_cell_number_sensor_;
+  sensor::Sensor *cell_voltage_max_cell_number_sensor_;
   sensor::Sensor *delta_cell_voltage_sensor_;
   sensor::Sensor *average_cell_voltage_sensor_;
   sensor::Sensor *total_voltage_sensor_;
@@ -429,6 +451,11 @@ void set_alarm_battempsensor5absent_binary_sensor(binary_sensor::BinarySensor *a
   text_sensor::TextSensor *errors_text_sensor_;
   text_sensor::TextSensor *operation_status_text_sensor_;
   text_sensor::TextSensor *total_runtime_formatted_text_sensor_;
+  text_sensor::TextSensor *info_vendorid_text_sensor_;
+  text_sensor::TextSensor *info_hardware_version_text_sensor_;
+  text_sensor::TextSensor *info_software_version_text_sensor_;
+  text_sensor::TextSensor *info_device_name_text_sensor_;
+  text_sensor::TextSensor *info_device_password_text_sensor_;
 
   std::vector<uint8_t> frame_buffer_;
   bool status_notification_received_ = false;

@@ -99,14 +99,14 @@ number:
 
 sensor:
   - platform: heltec_balancer_ble
-    min_cell_voltage:
-      name: "${name} min cell voltage"
-    max_cell_voltage:
-      name: "${name} max cell voltage"
-    min_voltage_cell:
-      name: "${name} min voltage cell"
-    max_voltage_cell:
-      name: "${name} max voltage cell"
+    cell_voltage_min:
+      name: "${name} cell voltage min"
+    cell_voltage_max:
+      name: "${name} cell voltage max"
+    cell_voltage_min_cell_number:
+      name: "${name} cell voltage min cell number"
+    cell_voltage_max_cell_number:
+      name: "${name} cell voltage max cell number"
     delta_cell_voltage:
       name: "${name} delta cell voltage"
     average_cell_voltage:

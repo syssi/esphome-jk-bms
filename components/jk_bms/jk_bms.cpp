@@ -97,31 +97,31 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
   // 0x0E 0x0E 0xF2: Cell 14        3826 * 0.001 = 3.826V                        0.001 V
   uint8_t cells = data[1] / 3;
 
-  float min_cell_voltage = 100.0f;
-  float max_cell_voltage = -100.0f;
+  float cell_voltage_min = 100.0f;
+  float cell_voltage_max = -100.0f;
   float average_cell_voltage = 0.0f;
-  uint8_t min_voltage_cell = 0;
-  uint8_t max_voltage_cell = 0;
+  uint8_t cell_voltage_min_cell_number = 0;
+  uint8_t cell_voltage_max_cell_number = 0;
   for (uint8_t i = 0; i < cells; i++) {
     float cell_voltage = (float) jk_get_16bit(i * 3 + 3) * 0.001f;
     average_cell_voltage = average_cell_voltage + cell_voltage;
-    if (cell_voltage < min_cell_voltage) {
-      min_cell_voltage = cell_voltage;
-      min_voltage_cell = i + 1;
+    if (cell_voltage < cell_voltage_min) {
+      cell_voltage_min = cell_voltage;
+      cell_voltage_min_cell_number = i + 1;
     }
-    if (cell_voltage > max_cell_voltage) {
-      max_cell_voltage = cell_voltage;
-      max_voltage_cell = i + 1;
+    if (cell_voltage > cell_voltage_max) {
+      cell_voltage_max = cell_voltage;
+      cell_voltage_max_cell_number = i + 1;
     }
     this->publish_state_(this->cells_[i].cell_voltage_sensor_, cell_voltage);
   }
   average_cell_voltage = average_cell_voltage / cells;
 
-  this->publish_state_(this->min_cell_voltage_sensor_, min_cell_voltage);
-  this->publish_state_(this->max_cell_voltage_sensor_, max_cell_voltage);
-  this->publish_state_(this->max_voltage_cell_sensor_, (float) max_voltage_cell);
-  this->publish_state_(this->min_voltage_cell_sensor_, (float) min_voltage_cell);
-  this->publish_state_(this->delta_cell_voltage_sensor_, max_cell_voltage - min_cell_voltage);
+  this->publish_state_(this->cell_voltage_min_sensor_, cell_voltage_min);
+  this->publish_state_(this->cell_voltage_max_sensor_, cell_voltage_max);
+  this->publish_state_(this->cell_voltage_max_cell_number_sensor_, (float) cell_voltage_max_cell_number);
+  this->publish_state_(this->cell_voltage_min_cell_number_sensor_, (float) cell_voltage_min_cell_number);
+  this->publish_state_(this->delta_cell_voltage_sensor_, cell_voltage_max - cell_voltage_min);
   this->publish_state_(this->average_cell_voltage_sensor_, average_cell_voltage);
 
   uint16_t offset = data[1] + 3;
@@ -406,10 +406,10 @@ void JkBms::publish_device_unavailable_() {
   this->publish_state_(this->online_status_binary_sensor_, false);
   this->publish_state_(this->errors_text_sensor_, "Offline");
 
-  this->publish_state_(min_cell_voltage_sensor_, NAN);
-  this->publish_state_(max_cell_voltage_sensor_, NAN);
-  this->publish_state_(min_voltage_cell_sensor_, NAN);
-  this->publish_state_(max_voltage_cell_sensor_, NAN);
+  this->publish_state_(cell_voltage_min_sensor_, NAN);
+  this->publish_state_(cell_voltage_max_sensor_, NAN);
+  this->publish_state_(cell_voltage_min_cell_number_sensor_, NAN);
+  this->publish_state_(cell_voltage_max_cell_number_sensor_, NAN);
   this->publish_state_(delta_cell_voltage_sensor_, NAN);
   this->publish_state_(average_cell_voltage_sensor_, NAN);
   this->publish_state_(power_tube_temperature_sensor_, NAN);
@@ -544,10 +544,10 @@ std::string JkBms::mode_bits_to_string_(const uint16_t mask) {
 void JkBms::dump_config() {  // NOLINT(google-readability-function-size,readability-function-size)
   ESP_LOGCONFIG(TAG, "JkBms:");
   ESP_LOGCONFIG(TAG, "  Address: 0x%02X", this->address_);
-  LOG_SENSOR("", "Minimum Cell Voltage", this->min_cell_voltage_sensor_);
-  LOG_SENSOR("", "Maximum Cell Voltage", this->max_cell_voltage_sensor_);
-  LOG_SENSOR("", "Minimum Voltage Cell", this->min_voltage_cell_sensor_);
-  LOG_SENSOR("", "Maximum Voltage Cell", this->max_voltage_cell_sensor_);
+  LOG_SENSOR("", "Minimum Cell Voltage", this->cell_voltage_min_sensor_);
+  LOG_SENSOR("", "Maximum Cell Voltage", this->cell_voltage_max_sensor_);
+  LOG_SENSOR("", "Minimum Voltage Cell", this->cell_voltage_min_cell_number_sensor_);
+  LOG_SENSOR("", "Maximum Voltage Cell", this->cell_voltage_max_cell_number_sensor_);
   LOG_SENSOR("", "Delta Cell Voltage", this->delta_cell_voltage_sensor_);
   LOG_SENSOR("", "Average Cell Voltage", this->average_cell_voltage_sensor_);
   LOG_SENSOR("", "Cell Voltage 1", this->cells_[0].cell_voltage_sensor_);

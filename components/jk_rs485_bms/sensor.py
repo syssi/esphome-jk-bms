@@ -33,11 +33,11 @@ DEPENDENCIES = ["jk_rs485_bms"]
 
 CODEOWNERS = ["@syssi","txubelaxu"]
 
-CONF_SMART_SLEEP_VOLTAGE = "smart_sleep_voltage"
-CONF_MIN_CELL_VOLTAGE = "min_cell_voltage"
-CONF_MAX_CELL_VOLTAGE = "max_cell_voltage"
-CONF_MIN_VOLTAGE_CELL = "min_voltage_cell"
-CONF_MAX_VOLTAGE_CELL = "max_voltage_cell"
+CONF_CELL_SMART_SLEEP_VOLTAGE = "cell_smart_sleep_voltage"
+CONF_CELL_VOLTAGE_MIN = "cell_voltage_min"
+CONF_CELL_VOLTAGE_MAX = "cell_voltage_max"
+CONF_CELL_VOLTAGE_MIN_CELL_NUMBER = "cell_voltage_min_cell_number"
+CONF_CELL_VOLTAGE_MAX_CELL_NUMBER = "cell_voltage_max_cell_number"
 CONF_DELTA_CELL_VOLTAGE = "delta_cell_voltage"
 CONF_AVERAGE_CELL_VOLTAGE = "average_cell_voltage"
 CONF_CELL_COUNT = "cell_count"
@@ -176,8 +176,8 @@ CONF_ACTUAL_BATTERY_CAPACITY = "actual_battery_capacity"
 CONF_PROTOCOL_VERSION = "protocol_version"
 
 ICON_CURRENT_DC = "mdi:current-dc"
-ICON_MIN_VOLTAGE_CELL = "mdi:battery-minus-outline"
-ICON_MAX_VOLTAGE_CELL = "mdi:battery-plus-outline"
+ICON_CELL_VOLTAGE_MIN_CELL_NUMBER = "mdi:battery-minus-outline"
+ICON_CELL_VOLTAGE_MAX_CELL_NUMBER = "mdi:battery-plus-outline"
 
 ICON_BATTERY_STRINGS = "mdi:car-battery"
 ICON_CAPACITY_REMAINING = "mdi:battery-50"
@@ -263,11 +263,11 @@ TEMPERATURES = [
 
 SENSORS = [
     CONF_BALANCING,
-    CONF_SMART_SLEEP_VOLTAGE,
-    CONF_MIN_CELL_VOLTAGE,
-    CONF_MAX_CELL_VOLTAGE,
-    CONF_MIN_VOLTAGE_CELL,
-    CONF_MAX_VOLTAGE_CELL,
+    CONF_CELL_SMART_SLEEP_VOLTAGE,
+    CONF_CELL_VOLTAGE_MIN,
+    CONF_CELL_VOLTAGE_MAX,
+    CONF_CELL_VOLTAGE_MIN_CELL_NUMBER,
+    CONF_CELL_VOLTAGE_MAX_CELL_NUMBER,
     CONF_DELTA_CELL_VOLTAGE,
     CONF_AVERAGE_CELL_VOLTAGE,
     CONF_CELL_COUNT,
@@ -341,37 +341,37 @@ CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
             device_class=DEVICE_CLASS_CURRENT,
             state_class=STATE_CLASS_MEASUREMENT,
         ),          
-        cv.Optional(CONF_SMART_SLEEP_VOLTAGE): sensor.sensor_schema(
+        cv.Optional(CONF_CELL_SMART_SLEEP_VOLTAGE): sensor.sensor_schema(
             unit_of_measurement=UNIT_VOLT,
             icon=ICON_EMPTY,
             accuracy_decimals=3,
             device_class=DEVICE_CLASS_VOLTAGE,
             state_class=STATE_CLASS_MEASUREMENT,
         ),        
-        cv.Optional(CONF_MIN_CELL_VOLTAGE): sensor.sensor_schema(
+        cv.Optional(CONF_CELL_VOLTAGE_MIN): sensor.sensor_schema(
             unit_of_measurement=UNIT_VOLT,
             icon=ICON_EMPTY,
             accuracy_decimals=3,
             device_class=DEVICE_CLASS_VOLTAGE,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_MAX_CELL_VOLTAGE): sensor.sensor_schema(
+        cv.Optional(CONF_CELL_VOLTAGE_MAX): sensor.sensor_schema(
             unit_of_measurement=UNIT_VOLT,
             icon=ICON_EMPTY,
             accuracy_decimals=3,
             device_class=DEVICE_CLASS_VOLTAGE,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_MIN_VOLTAGE_CELL): sensor.sensor_schema(
+        cv.Optional(CONF_CELL_VOLTAGE_MIN_CELL_NUMBER): sensor.sensor_schema(
             unit_of_measurement=UNIT_EMPTY,
-            icon=ICON_MIN_VOLTAGE_CELL,
+            icon=ICON_CELL_VOLTAGE_MIN_CELL_NUMBER,
             accuracy_decimals=0,
             device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_MAX_VOLTAGE_CELL): sensor.sensor_schema(
+        cv.Optional(CONF_CELL_VOLTAGE_MAX_CELL_NUMBER): sensor.sensor_schema(
             unit_of_measurement=UNIT_EMPTY,
-            icon=ICON_MAX_VOLTAGE_CELL,
+            icon=ICON_CELL_VOLTAGE_MAX_CELL_NUMBER,
             accuracy_decimals=0,
             device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,

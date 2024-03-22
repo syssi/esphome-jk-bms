@@ -82,18 +82,18 @@ jk_rs485_bms:
 binary_sensor:
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms0
-    balancing_status:
-      name: "${bms0_name} balancing status"
-    precharging_status:
-      name: "${bms0_name} precharging status"      
-    charging_status:
-      name: "${bms0_name} charging status"
-    discharging_status:
-      name: "${bms0_name} discharging status"
+    status_balancing:
+      name: "${bms0_name} status balancing"
+    status_precharging:
+      name: "${bms0_name} status precharging"      
+    status_charging:
+      name: "${bms0_name} status charging"
+    status_discharging:
+      name: "${bms0_name} status discharging"
     online_status:
       name: "${bms0_name} online status"
-    heating_status:
-      name: "${bms0_name} heating status"      
+    status_heating:
+      name: "${bms0_name} status heating"      
     alarm_wireres:
       name: "${bms0_name} alarm WireRes"
     alarm_mosotp:
@@ -157,18 +157,18 @@ binary_sensor:
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms1
-    balancing_status:
-      name: "${bms1_name} balancing status"
-    precharging_status:
-      name: "${bms1_name} precharging status"      
-    charging_status:
-      name: "${bms1_name} charging status"
-    discharging_status:
-      name: "${bms1_name} discharging status"
+    status_balancing:
+      name: "${bms1_name} status balancing"
+    status_precharging:
+      name: "${bms1_name} status precharging"      
+    status_charging:
+      name: "${bms1_name} status charging"
+    status_discharging:
+      name: "${bms1_name} status discharging"
     online_status:
       name: "${bms1_name} online status"
-    heating_status:
-      name: "${bms1_name} heating status"      
+    status_heating:
+      name: "${bms1_name} status heating"      
     alarm_wireres:
       name: "${bms1_name} alarm WireRes"
     alarm_mosotp:
@@ -237,16 +237,16 @@ sensor:
     jk_rs485_bms_id: bms0
     balancing:
       name: "${bms0_name} balancing"
-    smart_sleep_voltage:
-      name: "${bms0_name} smart sleep voltage"
-    min_cell_voltage:
-      name: "${bms0_name} min cell voltage"
-    max_cell_voltage:
-      name: "${bms0_name} max cell voltage"
-    min_voltage_cell:
-      name: "${bms0_name} min voltage cell"
-    max_voltage_cell:
-      name: "${bms0_name} max voltage cell"
+    cell_smart_sleep_voltage:
+      name: "${bms0_name} cell smart sleep voltage"
+    cell_voltage_min:
+      name: "${bms0_name} cell voltage min"
+    cell_voltage_max:
+      name: "${bms0_name} cell voltage max"
+    cell_voltage_min_cell_number:
+      name: "${bms0_name} cell voltage min cell number"
+    cell_voltage_max_cell_number:
+      name: "${bms0_name} cell voltage max cell number"
     delta_cell_voltage:
       name: "${bms0_name} delta cell voltage"
     average_cell_voltage:
@@ -412,16 +412,16 @@ sensor:
     jk_rs485_bms_id: bms1
     balancing:
       name: "${bms1_name} balancing"
-    smart_sleep_voltage:
-      name: "${bms1_name} smart sleep voltage"
-    min_cell_voltage:
-      name: "${bms1_name} min cell voltage"
-    max_cell_voltage:
-      name: "${bms1_name} max cell voltage"
-    min_voltage_cell:
-      name: "${bms1_name} min voltage cell"
-    max_voltage_cell:
-      name: "${bms1_name} max voltage cell"
+    cell_smart_sleep_voltage:
+      name: "${bms1_name} cell smart sleep voltage"
+    cell_voltage_min:
+      name: "${bms1_name} cell voltage min"
+    cell_voltage_max:
+      name: "${bms1_name} cell voltage max"
+    cell_voltage_min_cell_number:
+      name: "${bms1_name} cell voltage min cell number"
+    cell_voltage_max_cell_number:
+      name: "${bms1_name} cell voltage max cell number"
     delta_cell_voltage:
       name: "${bms1_name} delta cell voltage"
     average_cell_voltage:

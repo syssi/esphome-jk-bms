@@ -128,9 +128,9 @@ views:
         min: -5000
         max: 5000
       - type: entity
-        entity: sensor.bms0_max_cell_voltage
+        entity: sensor.bms0_cell_voltage_max
       - type: entity
-        entity: sensor.bms1_max_cell_voltage
+        entity: sensor.bms1_cell_voltage_max
       - type: entity
         entity: sensor.bms0_charging_cycles
       - type: entity

@@ -53,10 +53,10 @@ uint8_t crc(const uint8_t data[], const uint16_t len) {
 
 void JkBmsBle::dump_config() {  // NOLINT(google-readability-function-size,readability-function-size)
   ESP_LOGCONFIG(TAG, "JkBmsBle");
-  LOG_SENSOR("", "Minimum Cell Voltage", this->min_cell_voltage_sensor_);
-  LOG_SENSOR("", "Maximum Cell Voltage", this->max_cell_voltage_sensor_);
-  LOG_SENSOR("", "Minimum Voltage Cell", this->min_voltage_cell_sensor_);
-  LOG_SENSOR("", "Maximum Voltage Cell", this->max_voltage_cell_sensor_);
+  LOG_SENSOR("", "Minimum Cell Voltage", this->cell_voltage_min_sensor_);
+  LOG_SENSOR("", "Maximum Cell Voltage", this->cell_voltage_max_sensor_);
+  LOG_SENSOR("", "Minimum Voltage Cell", this->cell_voltage_min_cell_number_sensor_);
+  LOG_SENSOR("", "Maximum Voltage Cell", this->cell_voltage_max_cell_number_sensor_);
   LOG_SENSOR("", "Delta Cell Voltage", this->delta_cell_voltage_sensor_);
   LOG_SENSOR("", "Average Cell Voltage", this->average_cell_voltage_sensor_);
   LOG_SENSOR("", "Cell Voltage 1", this->cells_[0].cell_voltage_sensor_);
@@ -126,11 +126,11 @@ void JkBmsBle::dump_config() {  // NOLINT(google-readability-function-size,reada
   LOG_SENSOR("", "Heating Current", this->heating_current_sensor_);
   LOG_TEXT_SENSOR("", "Operation Status", this->operation_status_text_sensor_);
   LOG_TEXT_SENSOR("", "Total Runtime Formatted", this->total_runtime_formatted_text_sensor_);
-  LOG_BINARY_SENSOR("", "Balancing Real Status", this->balancing_status_binary_sensor_);
-  LOG_BINARY_SENSOR("", "Precharging Real Status", this->precharging_status_binary_sensor_);  
-  LOG_BINARY_SENSOR("", "Charging Real Status", this->charging_status_binary_sensor_);
-  LOG_BINARY_SENSOR("", "Discharging Real Status", this->discharging_status_binary_sensor_);
-  LOG_BINARY_SENSOR("", "Heating Real Status", this->heating_status_binary_sensor_);
+  LOG_BINARY_SENSOR("", "Balancing Real Status", this->status_balancing_binary_sensor_);
+  LOG_BINARY_SENSOR("", "Precharging Real Status", this->status_precharging_binary_sensor_);  
+  LOG_BINARY_SENSOR("", "Charging Real Status", this->status_charging_binary_sensor_);
+  LOG_BINARY_SENSOR("", "Discharging Real Status", this->status_discharging_binary_sensor_);
+  LOG_BINARY_SENSOR("", "Heating Real Status", this->status_heating_binary_sensor_);
 }
 
 void JkBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if,
@@ -244,14 +244,16 @@ void JkBmsBle::update() {
     this->write_register(COMMAND_CELL_INFO, 0x00000000, 0x00);
   }
 
-/*  const uint32_t now = millis();
-  if (now - this->last_device_info_ < 60000) {   //testing
-    return;
+  if (this->cell_count_number_->state==0){
+    const uint32_t now = millis();
+    if (now - this->last_device_info_ < 60000) {   //testing
+      return;
+    }
+    this->last_device_info_ = now;
+    ESP_LOGI(TAG, "Request device info");
+    this->write_register(COMMAND_DEVICE_INFO, 0x00000000, 0x00);
   }
-  this->last_device_info_ = now;
-  ESP_LOGI(TAG, "Request device info");
-  this->write_register(COMMAND_DEVICE_INFO, 0x00000000, 0x00);
-*/
+
 }
 
 // TODO: There is no need to assemble frames if the MTU can be increased to > 320 bytes
@@ -374,22 +376,22 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // 10    2   0x01 0x0D              Voltage cell 03       0.001        V
   // ...
   uint8_t cells = 24 + (offset / 2);
-  float min_cell_voltage = 100.0f;
-  float max_cell_voltage = -100.0f;
+  float cell_voltage_min = 100.0f;
+  float cell_voltage_max = -100.0f;
   for (uint8_t i = 0; i < cells; i++) {
     float cell_voltage = (float) jk_get_16bit(i * 2 + 6) * 0.001f;
     float cell_resistance = (float) jk_get_16bit(i * 2 + 64 + offset) * 0.001f;
-    if (cell_voltage > 0 && cell_voltage < min_cell_voltage) {
-      min_cell_voltage = cell_voltage;
+    if (cell_voltage > 0 && cell_voltage < cell_voltage_min) {
+      cell_voltage_min = cell_voltage;
     }
-    if (cell_voltage > max_cell_voltage) {
-      max_cell_voltage = cell_voltage;
+    if (cell_voltage > cell_voltage_max) {
+      cell_voltage_max = cell_voltage;
     }
     this->publish_state_(this->cells_[i].cell_voltage_sensor_, cell_voltage);
     this->publish_state_(this->cells_[i].cell_resistance_sensor_, cell_resistance);
   }
-  this->publish_state_(this->min_cell_voltage_sensor_, min_cell_voltage);
-  this->publish_state_(this->max_cell_voltage_sensor_, max_cell_voltage);
+  this->publish_state_(this->cell_voltage_min_sensor_, cell_voltage_min);
+  this->publish_state_(this->cell_voltage_max_sensor_, cell_voltage_max);
 
   // 54    4   0xFF 0xFF 0x00 0x00    Enabled cells bitmask
   //           0x0F 0x00 0x00 0x00    4 cells enabled
@@ -408,10 +410,10 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // 60    2   0x00 0x00              Delta Cell Voltage    0.001        V
   this->publish_state_(this->delta_cell_voltage_sensor_, (float) jk_get_16bit(60 + offset) * 0.001f);
 
-  // 62    1   0x00                   Max voltage cell      1
-  this->publish_state_(this->max_voltage_cell_sensor_, (float) data[62 + offset] + 1);
-  // 63    1   0x00                   Min voltage cell      1
-  this->publish_state_(this->min_voltage_cell_sensor_, (float) data[63 + offset] + 1);
+  // 62    1   0x00                   Cell voltage max cell number      1
+  this->publish_state_(this->cell_voltage_max_cell_number_sensor_, (float) data[62 + offset] + 1);
+  // 63    1   0x00                   Cell voltage min cell number      1
+  this->publish_state_(this->cell_voltage_min_cell_number_sensor_, (float) data[63 + offset] + 1);
   // 64    2   0x9D 0x01              Resistance Cell 01    0.001        Ohm
   // 66    2   0x96 0x01              Resistance Cell 02    0.001        Ohm
   // 68    2   0x8C 0x01              Resistance Cell 03    0.001        Ohm
@@ -624,16 +626,16 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->total_runtime_formatted_text_sensor_, format_total_runtime_(jk_get_32bit(162 + offset)));
 
   // 166   1   0x01                   Charging mosfet enabled                      0x00: off, 0x01: on
-  this->publish_state_(this->charging_status_binary_sensor_, (bool) data[166 + offset]);
+  this->publish_state_(this->status_charging_binary_sensor_, (bool) data[166 + offset]);
   ESP_LOGI(TAG, "CHARGE WORKING STATUS:    0x%02X", data[166 + offset]);
   // 167   1   0x01                   Discharging mosfet enabled                   0x00: off, 0x01: on
-  this->publish_state_(this->discharging_status_binary_sensor_, (bool) data[167 + offset]);
+  this->publish_state_(this->status_discharging_binary_sensor_, (bool) data[167 + offset]);
   ESP_LOGI(TAG, "DISCHARGE WORKING STATUS: 0x%02X", data[167 + offset]);
   // 168   1   0x01                   PRE Discharging                              0x00: off, 0x01: on
-  this->publish_state_(this->precharging_status_binary_sensor_, (bool) data[168 + offset]);
+  this->publish_state_(this->status_precharging_binary_sensor_, (bool) data[168 + offset]);
   ESP_LOGI(TAG, "PRECHARGE WORKING STATUS: 0x%02X", data[168 + offset]);
   // 169   1   0x01                   Balancer working                             0x00: off, 0x01: on
-  this->publish_state_(this->balancing_status_binary_sensor_, (bool) data[169 + offset]);
+  this->publish_state_(this->status_balancing_binary_sensor_, (bool) data[169 + offset]);
   ESP_LOGI(TAG, "BALANCER WORKING STATUS:  0x%02X", data[169 + offset]);
 
   // 171   2   0x00 0x00              Unknown171
@@ -668,14 +670,14 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   }         
 
   // 183   2   0x00 0x01              Unknown183 Heating working???
-  //this->publish_state_(this->heating_status_binary_sensor_, (bool) data[183 + offset]);
+  //this->publish_state_(this->status_heating_binary_sensor_, (bool) data[183 + offset]);
   // 185   2   0x00 0x00              Unknown185
   // 187   2   0x00 0xD5              Unknown187
   // 189   2   0x02 0x00              Unknown189
   ESP_LOGD(TAG, "Unknown189: 0x%02X 0x%02X", data[189], data[190]);
   // 190   1   0x00                   Unknown190
   // 191   1   0x00                   Balancer status (working: 0x01, idle: 0x00)
-  this->publish_state_(this->heating_status_binary_sensor_, (bool) data[192 + offset]);
+  this->publish_state_(this->status_heating_binary_sensor_, (bool) data[192 + offset]);
   ESP_LOGI(TAG, "HEATING BINARY SENSOR STATUS:  0x%02X", data[192 + offset]);
 
   // 193   2   0x00 0xAE              Unknown193
@@ -701,8 +703,8 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   //           0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
   //           0x00
 
-  //// 224   1   0x01                   Heating status          0x00: off, 0x01: on       ???? or 193?
-  //this->publish_state_(this->heating_status_binary_sensor_, (bool) data[224 + offset]);
+  //// 224   1   0x01                   Status heating          0x00: off, 0x01: on       ???? or 193?
+  //this->publish_state_(this->status_heating_binary_sensor_, (bool) data[224 + offset]);
 
   //// 236   2   0x01 0xFD              Heating current         0.001         A
   //this->publish_state_(this->heating_current_sensor_, (float) ((int16_t) jk_get_16bit(236 + offset)) * 0.001f);
@@ -809,32 +811,32 @@ void JkBmsBle::decode_jk04_cell_info_(const std::vector<uint8_t> &data) {
   // 194   4   0x00 0x00 0x00 0x00    Cell resistance 24                 Ohm
   // 198   4   0x00 0x00 0x00 0x00    Cell resistance 25                 Ohm
   //                                  https://github.com/jblance/mpp-solar/issues/98#issuecomment-823701486
-  uint8_t cells = 24;
-  float min_cell_voltage = 100.0f;
-  float max_cell_voltage = -100.0f;
+  uint8_t cells = (uint8_t) this->cell_count_number_->state;
+  float cell_voltage_min = 100.0f;
+  float cell_voltage_max = -100.0f;
   float total_voltage = 0.0f;
-  uint8_t min_voltage_cell = 0;
-  uint8_t max_voltage_cell = 0;
+  uint8_t cell_voltage_min_cell_number = 0;
+  uint8_t cell_voltage_max_cell_number = 0;
   for (uint8_t i = 0; i < cells; i++) {
     float cell_voltage = (float) ieee_float_(jk_get_32bit(i * 4 + 6));
     float cell_resistance = (float) ieee_float_(jk_get_32bit(i * 4 + 102));
     total_voltage = total_voltage + cell_voltage;
-    if (cell_voltage > 0 && cell_voltage < min_cell_voltage) {
-      min_cell_voltage = cell_voltage;
-      min_voltage_cell = i + 1;
+    if (cell_voltage > 0 && cell_voltage < cell_voltage_min) {
+      cell_voltage_min = cell_voltage;
+      cell_voltage_min_cell_number = i + 1;
     }
-    if (cell_voltage > max_cell_voltage) {
-      max_cell_voltage = cell_voltage;
-      max_voltage_cell = i + 1;
+    if (cell_voltage > cell_voltage_max) {
+      cell_voltage_max = cell_voltage;
+      cell_voltage_max_cell_number = i + 1;
     }
     this->publish_state_(this->cells_[i].cell_voltage_sensor_, cell_voltage);
     this->publish_state_(this->cells_[i].cell_resistance_sensor_, cell_resistance);
   }
 
-  this->publish_state_(this->min_cell_voltage_sensor_, min_cell_voltage);
-  this->publish_state_(this->max_cell_voltage_sensor_, max_cell_voltage);
-  this->publish_state_(this->max_voltage_cell_sensor_, (float) max_voltage_cell);
-  this->publish_state_(this->min_voltage_cell_sensor_, (float) min_voltage_cell);
+  this->publish_state_(this->cell_voltage_min_sensor_, cell_voltage_min);
+  this->publish_state_(this->cell_voltage_max_sensor_, cell_voltage_max);
+  this->publish_state_(this->cell_voltage_max_cell_number_sensor_, (float) cell_voltage_max_cell_number);
+  this->publish_state_(this->cell_voltage_min_cell_number_sensor_, (float) cell_voltage_min_cell_number);
   this->publish_state_(this->total_voltage_sensor_, total_voltage);
 
   // 202   4   0x03 0x95 0x56 0x40    Average Cell Voltage               V
@@ -859,7 +861,7 @@ void JkBmsBle::decode_jk04_cell_info_(const std::vector<uint8_t> &data) {
 
   // 220   1   0x00                  Blink cells (0x00: Off, 0x01: Charging balancer, 0x02: Discharging balancer)
   bool balancing = (data[220] != 0x00);
-  this->publish_state_(this->balancing_status_binary_sensor_, balancing);
+  this->publish_state_(this->status_balancing_binary_sensor_, balancing);
   this->publish_state_(this->operation_status_text_sensor_, (balancing) ? "Balancing" : "Idle");
 
   // 221   1   0x01                  Unknown221
@@ -937,8 +939,8 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   // 5     1   0x4F                   Frame counter
 
   // 6  [1]     4   0x58 0x02 0x00 0x00    ** [JK-PB2A16S-20P v14] VOLTAGE SMART SLEEP
-  ESP_LOGD(TAG, "  Smart Sleep Voltage: %f", (float) jk_get_32bit(6) * 0.001f);
-  this->publish_state_(this->smart_sleep_voltage_number_, (float) jk_get_32bit(6) * 0.001f);
+  ESP_LOGD(TAG, "  Cell smart sleep voltage: %f", (float) jk_get_32bit(6) * 0.001f);
+  this->publish_state_(this->cell_smart_sleep_voltage_number_, (float) jk_get_32bit(6) * 0.001f);
 
   // 10 [2]    4   0x54 0x0B 0x00 0x00    Cell UVP
   ESP_LOGI(TAG, "  Cell UVP: %f V", (float) jk_get_32bit(10) * 0.001f);
@@ -1079,7 +1081,7 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   // 246   4   0x00 0x00 0x00 0x00    Con. wire resistance 23
   // 250   4   0x00 0x00 0x00 0x00    Con. wire resistance 24
   for (uint8_t i = 0; i < 24; i++) {
-    ESP_LOGI(TAG, "  Con. wire resistance %d: %f Ohm", i + 1, (float) jk_get_32bit(i * 4 + 158) * 0.001f);
+    ESP_LOGV(TAG, "  Con. wire resistance %d: %f Ohm", i + 1, (float) jk_get_32bit(i * 4 + 158) * 0.001f);
   }
 
   // 254   4   0x00 0x00 0x00 0x00
@@ -1119,18 +1121,18 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   //    bit6: ?                                      64
   //    bit7: ?                                      128
   this->publish_state_(this->timed_stored_data_switch_, (bool) this->check_bit_(data[283], 1));
-  ESP_LOGI(TAG, "  timed_stored_data_switch: %s", ( this->check_bit_(data[283], 1)) ? "on" : "off");
+  ESP_LOGV(TAG, "  timed_stored_data_switch: %s", ( this->check_bit_(data[283], 1)) ? "on" : "off");
   this->publish_state_(this->charging_float_mode_switch_, (bool) this->check_bit_(data[283], 2));
-  ESP_LOGI(TAG, "  charging_float_mode_switch: %s", ( this->check_bit_(data[283], 2)) ? "on" : "off");
-  ESP_LOGI(TAG, "  switch bit2: %s", ( this->check_bit_(data[283], 3)) ? "on" : "off");
-  ESP_LOGI(TAG, "  switch bit3: %s", ( this->check_bit_(data[283], 4)) ? "on" : "off");
-  ESP_LOGI(TAG, "  switch bit4: %s", ( this->check_bit_(data[283], 5)) ? "on" : "off");
-  ESP_LOGI(TAG, "  switch bit5: %s", ( this->check_bit_(data[283], 6)) ? "on" : "off");
-  ESP_LOGI(TAG, "  switch bit6: %s", ( this->check_bit_(data[283], 7)) ? "on" : "off");
-  ESP_LOGI(TAG, "  switch bit7: %s", ( this->check_bit_(data[283], 8)) ? "on" : "off");
+  ESP_LOGVV(TAG, "  charging_float_mode_switch: %s", ( this->check_bit_(data[283], 2)) ? "on" : "off");
+  ESP_LOGVV(TAG, "  switch bit2: %s", ( this->check_bit_(data[283], 3)) ? "on" : "off");
+  ESP_LOGVV(TAG, "  switch bit3: %s", ( this->check_bit_(data[283], 4)) ? "on" : "off");
+  ESP_LOGVV(TAG, "  switch bit4: %s", ( this->check_bit_(data[283], 5)) ? "on" : "off");
+  ESP_LOGVV(TAG, "  switch bit5: %s", ( this->check_bit_(data[283], 6)) ? "on" : "off");
+  ESP_LOGVV(TAG, "  switch bit6: %s", ( this->check_bit_(data[283], 7)) ? "on" : "off");
+  ESP_LOGVV(TAG, "  switch bit7: %s", ( this->check_bit_(data[283], 8)) ? "on" : "off");
   // 283   3   0x00 0x00 0x00
   // 286   4   0x00 0x00 0x00 0x00
-  ESP_LOGI(TAG, "  TIMSmartSleep: %d H", (uint8_t) (data[286]));
+  ESP_LOGV(TAG, "  TIMSmartSleep: %d H", (uint8_t) (data[286]));
   this->publish_state_(this->smart_sleep_time_number_, (uint8_t)(data[286]));    
   // 290   4   0x00 0x00 0x00 0x00
   // 294   4   0x00 0x00 0x00 0x00
@@ -1303,6 +1305,12 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
 
   ESP_LOGI(TAG, "  RCV Time: %f h", (float) ((uint8_t) data[266]) * 0.1f);
   ESP_LOGI(TAG, "  RFV Time: %f h", (float) ((uint8_t) data[267]) * 0.1f);
+
+  this->publish_state_(this->info_vendorid_text_sensor_, std::string(data.begin() + 6, data.begin() + 6 + 16).c_str());
+  this->publish_state_(this->info_hardware_version_text_sensor_, std::string(data.begin() + 22, data.begin() + 22 + 8).c_str());
+  this->publish_state_(this->info_software_version_text_sensor_, std::string(data.begin() + 30, data.begin() + 30 + 8).c_str());
+  this->publish_state_(this->info_device_name_text_sensor_, std::string(data.begin() + 46, data.begin() + 46 + 16).c_str());
+  this->publish_state_(this->info_device_password_text_sensor_, std::string(data.begin() + 62, data.begin() + 62 + 16).c_str());
   this->publish_state_(this->cell_request_charge_voltage_time_number_, (float) data[266]*0.1f);
   this->publish_state_(this->cell_request_float_voltage_time_number_, (float) data[267]*0.1f);
 
@@ -1362,10 +1370,10 @@ void JkBmsBle::publish_device_unavailable_() {
   this->publish_state_(this->online_status_binary_sensor_, false);
   this->publish_state_(this->errors_text_sensor_, "Offline");
 
-  this->publish_state_(min_cell_voltage_sensor_, NAN);
-  this->publish_state_(max_cell_voltage_sensor_, NAN);
-  this->publish_state_(min_voltage_cell_sensor_, NAN);
-  this->publish_state_(max_voltage_cell_sensor_, NAN);
+  this->publish_state_(cell_voltage_min_sensor_, NAN);
+  this->publish_state_(cell_voltage_max_sensor_, NAN);
+  this->publish_state_(cell_voltage_min_cell_number_sensor_, NAN);
+  this->publish_state_(cell_voltage_max_cell_number_sensor_, NAN);
   this->publish_state_(delta_cell_voltage_sensor_, NAN);
   this->publish_state_(average_cell_voltage_sensor_, NAN);
   this->publish_state_(total_voltage_sensor_, NAN);

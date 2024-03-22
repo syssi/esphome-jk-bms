@@ -84,10 +84,10 @@ uint8_t crc(const uint8_t data[], const uint16_t len) {
 
 void HeltecBalancerBle::dump_config() {  // NOLINT(google-readability-function-size,readability-function-size)
   ESP_LOGCONFIG(TAG, "HeltecBalancerBle");
-  LOG_SENSOR("", "Minimum Cell Voltage", this->min_cell_voltage_sensor_);
-  LOG_SENSOR("", "Maximum Cell Voltage", this->max_cell_voltage_sensor_);
-  LOG_SENSOR("", "Minimum Voltage Cell", this->min_voltage_cell_sensor_);
-  LOG_SENSOR("", "Maximum Voltage Cell", this->max_voltage_cell_sensor_);
+  LOG_SENSOR("", "Minimum Cell Voltage", this->cell_voltage_min_sensor_);
+  LOG_SENSOR("", "Maximum Cell Voltage", this->cell_voltage_max_sensor_);
+  LOG_SENSOR("", "Minimum Voltage Cell", this->cell_voltage_min_cell_number_sensor_);
+  LOG_SENSOR("", "Maximum Voltage Cell", this->cell_voltage_max_cell_number_sensor_);
   LOG_SENSOR("", "Delta Cell Voltage", this->delta_cell_voltage_sensor_);
   LOG_SENSOR("", "Average Cell Voltage", this->average_cell_voltage_sensor_);
   LOG_SENSOR("", "Cell Voltage 1", this->cells_[0].cell_voltage_sensor_);
@@ -395,29 +395,29 @@ void HeltecBalancerBle::decode_cell_info_(const std::vector<uint8_t> &data) {
   // 209   4   0x00 0x17 0x08 0x3C              Delta Cell Voltage
   this->publish_state_(this->delta_cell_voltage_sensor_, ieee_float_(heltec_get_32bit(209)));
 
-  // 213   1   0x0A                             Max voltage cell
-  this->publish_state_(this->max_voltage_cell_sensor_, (float) data[213] + 1);
+  // 213   1   0x0A                             Cell voltage max cell number
+  this->publish_state_(this->cell_voltage_max_cell_number_sensor_, (float) data[213] + 1);
 
-  // 214   1   0x00                             Min voltage cell
-  this->publish_state_(this->min_voltage_cell_sensor_, (float) data[214] + 1);
+  // 214   1   0x00                             Cell voltage min cell number
+  this->publish_state_(this->cell_voltage_min_cell_number_sensor_, (float) data[214] + 1);
 
   uint8_t cells = 24;
-  float min_cell_voltage = 100.0f;
-  float max_cell_voltage = -100.0f;
+  float cell_voltage_min = 100.0f;
+  float cell_voltage_max = -100.0f;
   for (uint8_t i = 0; i < cells; i++) {
     float cell_voltage = ieee_float_(heltec_get_32bit(i * 4 + 9));
     float cell_resistance = ieee_float_(heltec_get_32bit(i * 4 + 105));
-    if (cell_voltage > 0 && cell_voltage < min_cell_voltage) {
-      min_cell_voltage = cell_voltage;
+    if (cell_voltage > 0 && cell_voltage < cell_voltage_min) {
+      cell_voltage_min = cell_voltage;
     }
-    if (cell_voltage > max_cell_voltage) {
-      max_cell_voltage = cell_voltage;
+    if (cell_voltage > cell_voltage_max) {
+      cell_voltage_max = cell_voltage;
     }
     this->publish_state_(this->cells_[i].cell_voltage_sensor_, cell_voltage);
     this->publish_state_(this->cells_[i].cell_resistance_sensor_, cell_resistance);
   }
-  this->publish_state_(this->min_cell_voltage_sensor_, min_cell_voltage);
-  this->publish_state_(this->max_cell_voltage_sensor_, max_cell_voltage);
+  this->publish_state_(this->cell_voltage_min_sensor_, cell_voltage_min);
+  this->publish_state_(this->cell_voltage_max_sensor_, cell_voltage_max);
 
   // 215   1   0x0F                             Single number (not exposed at the android app)
   // ESP_LOGI(TAG, "  Cell count?: %d", data[215] + 1);
@@ -793,10 +793,10 @@ void HeltecBalancerBle::publish_device_unavailable_() {
   this->publish_state_(this->online_status_binary_sensor_, false);
   this->publish_state_(this->operation_status_text_sensor_, "Offline");
 
-  this->publish_state_(min_cell_voltage_sensor_, NAN);
-  this->publish_state_(max_cell_voltage_sensor_, NAN);
-  this->publish_state_(min_voltage_cell_sensor_, NAN);
-  this->publish_state_(max_voltage_cell_sensor_, NAN);
+  this->publish_state_(cell_voltage_min_sensor_, NAN);
+  this->publish_state_(cell_voltage_max_sensor_, NAN);
+  this->publish_state_(cell_voltage_min_cell_number_sensor_, NAN);
+  this->publish_state_(cell_voltage_max_cell_number_sensor_, NAN);
   this->publish_state_(delta_cell_voltage_sensor_, NAN);
   this->publish_state_(average_cell_voltage_sensor_, NAN);
   this->publish_state_(total_voltage_sensor_, NAN);

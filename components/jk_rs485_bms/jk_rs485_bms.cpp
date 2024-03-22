@@ -144,27 +144,27 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // 10    2   0x01 0x0D              Voltage cell 03       0.001        V
   // ...
   uint8_t cells = 24 + (offset / 2);
-  float min_cell_voltage = 100.0f;
-  float max_cell_voltage = -100.0f;
+  float cell_voltage_min = 100.0f;
+  float cell_voltage_max = -100.0f;
   for (uint8_t i = 0; i < cells; i++) {
     float cell_voltage = (float) jk_get_16bit(i * 2 + 6) * 0.001f;
     float cell_resistance = (float) jk_get_16bit(i * 2 + 64 + offset) * 0.001f;
-    if (cell_voltage > 0 && cell_voltage < min_cell_voltage) {
-      min_cell_voltage = cell_voltage;
+    if (cell_voltage > 0 && cell_voltage < cell_voltage_min) {
+      cell_voltage_min = cell_voltage;
     }
-    if (cell_voltage > max_cell_voltage) {
-      max_cell_voltage = cell_voltage;
+    if (cell_voltage > cell_voltage_max) {
+      cell_voltage_max = cell_voltage;
     }
     this->publish_state_(this->cells_[i].cell_voltage_sensor_, cell_voltage);
     this->publish_state_(this->cells_[i].cell_resistance_sensor_, cell_resistance);
     ESP_LOGV(TAG, "Cell %d voltage:    %f",i,cell_voltage);
     ESP_LOGV(TAG, "Cell %d resistance: %f",i,cell_resistance);
   }
-  this->publish_state_(this->min_cell_voltage_sensor_, min_cell_voltage);
-  this->publish_state_(this->max_cell_voltage_sensor_, max_cell_voltage);
+  this->publish_state_(this->cell_voltage_min_sensor_, cell_voltage_min);
+  this->publish_state_(this->cell_voltage_max_sensor_, cell_voltage_max);
 
-  ESP_LOGV(TAG, "Cell MAX voltage:    %f",max_cell_voltage);
-  ESP_LOGV(TAG, "Cell MAX voltage:    %f",min_cell_voltage);
+  ESP_LOGV(TAG, "Cell MAX voltage:    %f",cell_voltage_max);
+  ESP_LOGV(TAG, "Cell MAX voltage:    %f",cell_voltage_min);
 
   // 54    4   0xFF 0xFF 0x00 0x00    Enabled cells bitmask
   //           0x0F 0x00 0x00 0x00    4 cells enabled
@@ -183,10 +183,10 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // 60    2   0x00 0x00              Delta Cell Voltage    0.001        V
   this->publish_state_(this->delta_cell_voltage_sensor_, (float) jk_get_16bit(60 + offset) * 0.001f);
 
-  // 62    1   0x00                   Max voltage cell      1
-  this->publish_state_(this->max_voltage_cell_sensor_, (float) data[62 + offset] + 1);
-  // 63    1   0x00                   Min voltage cell      1
-  this->publish_state_(this->min_voltage_cell_sensor_, (float) data[63 + offset] + 1);
+  // 62    1   0x00                   Cell voltage max cell number      1
+  this->publish_state_(this->cell_voltage_max_cell_number_sensor_, (float) data[62 + offset] + 1);
+  // 63    1   0x00                   Cell voltage min cell number      1
+  this->publish_state_(this->cell_voltage_min_cell_number_sensor_, (float) data[63 + offset] + 1);
   // 64    2   0x9D 0x01              Resistance Cell 01    0.001        Ohm
   // 66    2   0x96 0x01              Resistance Cell 02    0.001        Ohm
   // 68    2   0x8C 0x01              Resistance Cell 03    0.001        Ohm
@@ -427,8 +427,8 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   ESP_LOGD(TAG, "Unknown189: 0x%02X 0x%02X", data[189], data[190]);
   // 190   1   0x00                   Unknown190
   // 191   1   0x00                   Balancer status (working: 0x01, idle: 0x00)
-  // 192   1   0x01                   Heating status          0x00: off, 0x01: on
-  this->publish_state_(this->heating_status_binary_sensor_, (bool) data[192 + offset]);
+  // 192   1   0x01                   Status heating          0x00: off, 0x01: on
+  this->publish_state_(this->status_heating_binary_sensor_, (bool) data[192 + offset]);
   ESP_LOGV(TAG, "HEATING BINARY SENSOR STATUS:  0x%02X", data[192 + offset]);
 
   // 193   2   0x00 0xAE              Unknown193
@@ -454,7 +454,7 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   //           0x00
   ESP_LOGV(TAG, "Unknown218-219-220-221-222-223: 0x%02X 0x%02X 0x%02X 0x%02X 0x%02X 0x%02X", data[218], data[219], data[220], data[221], data[222], data[223]);
 
-  // 224   1   0x01                   Heating status          0x00: off, 0x01: on
+  // 224   1   0x01                   Status heating          0x00: off, 0x01: on
   //this->publish_state_(this->heating_binary_sensor_, (bool) data[224 + offset]);
   //ESP_LOGI(TAG, "HEATING BINARY SENSOR STATUS:  0x%02X", data[224 + offset]);
 
@@ -555,7 +555,7 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   // 5     1   0x4F                   Frame counter
   // 6     4   0x58 0x02 0x00 0x00    ** [JK-PB2A16S-20P v14] VOLTAGE SMART SLEEP
   ESP_LOGV(TAG, "  Voltage Smart Sleep: %f", (float) jk_get_32bit(6) * 0.001f);
-  this->publish_state_(this->smart_sleep_voltage_sensor_, (float) jk_get_32bit(6) * 0.001f);
+  this->publish_state_(this->cell_smart_sleep_voltage_sensor_, (float) jk_get_32bit(6) * 0.001f);
   // 10    4   0x54 0x0B 0x00 0x00    Cell UVP
   ESP_LOGV(TAG, "  Cell UVP: %f V", (float) jk_get_32bit(10) * 0.001f);
   this->publish_state_(this->cell_undervoltage_protection_sensor_, (float) jk_get_32bit(10) * 0.001f);
@@ -863,10 +863,10 @@ void JkRS485Bms::publish_device_unavailable_() {
   this->publish_state_(this->online_status_binary_sensor_, false);
   this->publish_state_(this->errors_text_sensor_, "Offline");
 
-  this->publish_state_(min_cell_voltage_sensor_, NAN);
-  this->publish_state_(max_cell_voltage_sensor_, NAN);
-  this->publish_state_(min_voltage_cell_sensor_, NAN);
-  this->publish_state_(max_voltage_cell_sensor_, NAN);
+  this->publish_state_(cell_voltage_min_sensor_, NAN);
+  this->publish_state_(cell_voltage_max_sensor_, NAN);
+  this->publish_state_(cell_voltage_min_cell_number_sensor_, NAN);
+  this->publish_state_(cell_voltage_max_cell_number_sensor_, NAN);
   this->publish_state_(delta_cell_voltage_sensor_, NAN);
   this->publish_state_(average_cell_voltage_sensor_, NAN);
   this->publish_state_(power_tube_temperature_sensor_, NAN);
@@ -1001,10 +1001,10 @@ std::string JkRS485Bms::mode_bits_to_string_(const uint16_t mask) {
 void JkRS485Bms::dump_config() {  // NOLINT(google-readability-function-size,readability-function-size)
   ESP_LOGCONFIG(TAG, "JkRS485Bms:");
   ESP_LOGCONFIG(TAG, "  Address: 0x%02X", this->address_);
-  LOG_SENSOR("", "Minimum Cell Voltage", this->min_cell_voltage_sensor_);
-  LOG_SENSOR("", "Maximum Cell Voltage", this->max_cell_voltage_sensor_);
-  LOG_SENSOR("", "Minimum Voltage Cell", this->min_voltage_cell_sensor_);
-  LOG_SENSOR("", "Maximum Voltage Cell", this->max_voltage_cell_sensor_);
+  LOG_SENSOR("", "Minimum Cell Voltage", this->cell_voltage_min_sensor_);
+  LOG_SENSOR("", "Maximum Cell Voltage", this->cell_voltage_max_sensor_);
+  LOG_SENSOR("", "Minimum Voltage Cell", this->cell_voltage_min_cell_number_sensor_);
+  LOG_SENSOR("", "Maximum Voltage Cell", this->cell_voltage_max_cell_number_sensor_);
   LOG_SENSOR("", "Delta Cell Voltage", this->delta_cell_voltage_sensor_);
   LOG_SENSOR("", "Average Cell Voltage", this->average_cell_voltage_sensor_);
   LOG_SENSOR("", "Cell Voltage 1", this->cells_[0].cell_voltage_sensor_);
