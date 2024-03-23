@@ -1,13 +1,13 @@
 """Constants for the jk bms ble component."""
 CONF_STATUS_BALANCING = "status_balancing"
-CONF_ONLINE_STATUS = "online_status"
+CONF_STATUS_ONLINE = "status_online"
 CONF_STATUS_PRECHARGING = "status_precharging"
 CONF_STATUS_CHARGING = "status_charging"
 CONF_STATUS_DISCHARGING = "status_discharging"
 CONF_STATUS_HEATING = "status_heating"
 
 
-CONF_BALANCER = "balancer"
+CONF_BALANCING = "balancing"
 CONF_PRECHARGING = "precharging"
 CONF_CHARGING = "charging"
 CONF_DISCHARGING = "discharging"

@@ -29,10 +29,10 @@ esp32:
 #  board: d1_mini
 
 external_components:
-  - source: ${external_components_source}
-    refresh: 0s
-#  - source: ./components
+#  - source: ${external_components_source}
 #    refresh: 0s
+  - source: ./components
+    refresh: 0s
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
@@ -115,8 +115,8 @@ binary_sensor:
       name: "${bms0_name} status charging"
     status_discharging:
       name: "${bms0_name} status discharging"
-    online_status:
-      name: "${bms0_name} online status"
+    status_online:
+      name: "${bms0_name} status online"
     status_heating:
       name: "${bms0_name} status heating"      
     alarm_wireres:
@@ -190,8 +190,8 @@ binary_sensor:
       name: "${bms1_name} status charging"
     status_discharging:
       name: "${bms1_name} status discharging"
-    online_status:
-      name: "${bms1_name} online status"
+    status_online:
+      name: "${bms1_name} status online"
     status_heating:
       name: "${bms1_name} status heating"      
     alarm_wireres:
@@ -264,8 +264,8 @@ binary_sensor:
       name: "${bms2_name} status charging"
     status_discharging:
       name: "${bms2_name} status discharging"
-    online_status:
-      name: "${bms2_name} online status"
+    status_online:
+      name: "${bms2_name} status online"
     status_heating:
       name: "${bms2_name} status heating"      
     alarm_wireres:
@@ -340,8 +340,8 @@ binary_sensor:
       name: "${bms3_name} status charging"
     status_discharging:
       name: "${bms3_name} status discharging"
-    online_status:
-      name: "${bms3_name} online status"
+    status_online:
+      name: "${bms3_name} status online"
     status_heating:
       name: "${bms3_name} status heating"      
     alarm_wireres:
@@ -416,8 +416,8 @@ binary_sensor:
       name: "${bms4_name} status charging"
     status_discharging:
       name: "${bms4_name} status discharging"
-    online_status:
-      name: "${bms4_name} online status"
+    status_online:
+      name: "${bms4_name} status online"
     status_heating:
       name: "${bms4_name} status heating"      
     alarm_wireres:
@@ -491,8 +491,8 @@ binary_sensor:
       name: "${bms5_name} status charging"
     status_discharging:
       name: "${bms5_name} status discharging"
-    online_status:
-      name: "${bms5_name} online status"
+    status_online:
+      name: "${bms5_name} status online"
     status_heating:
       name: "${bms5_name} status heating"      
     alarm_wireres:
@@ -566,8 +566,8 @@ binary_sensor:
       name: "${bms6_name} status charging"
     status_discharging:
       name: "${bms6_name} status discharging"
-    online_status:
-      name: "${bms6_name} online status"
+    status_online:
+      name: "${bms6_name} status online"
     status_heating:
       name: "${bms6_name} status heating"      
     alarm_wireres:
@@ -635,8 +635,8 @@ binary_sensor:
 sensor:
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms0
-    balancing:
-      name: "${bms0_name} balancing"
+    balancing_direction:
+      name: "${bms0_name} balancing direction"
     cell_smart_sleep_voltage:
       name: "${bms0_name} cell smart sleep voltage"
     cell_voltage_min:
@@ -793,6 +793,8 @@ sensor:
       name: "${bms0_name} cell request charge voltage"      
     cell_request_float_voltage:
       name: "${bms0_name} cell request float voltage"    
+    balance_trigger_voltage:
+      name: "${bms0_name} balance trigger voltage" 
     balance_starting_voltage:
       name: "${bms0_name} balance starting voltage"   
     cell_soc100_voltage:
@@ -807,11 +809,26 @@ sensor:
       name: "${bms0_name} cell power off voltage"      
     smart_sleep_time:
       name: "${bms0_name} smart sleep time"
+    max_charging_current:
+      name: "${bms0_name} max charging current"
+    max_discharging_current:
+      name: "${bms0_name} max discharging current" 
+    charging_overcurrent_protection_delay:
+      name: "${bms0_name} charging overcurrent protection delay"
+    charging_overcurrent_protection_recovery_delay:
+      name: "${bms0_name} charging overcurrent protection recovery delay"
+    discharging_overcurrent_protection_delay:
+      name: "${bms0_name} discharging overcurrent protection delay"
+    discharging_overcurrent_protection_recovery_delay:
+      name: "${bms0_name} discharging overcurrent protection recovery delay"  
+    short_circuit_protection_recovery_delay:
+      name: "${bms0_name} short circuit protection recovery delay"   
+
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms1
-    balancing:
-      name: "${bms1_name} balancing"
+    balancing_direction:
+      name: "${bms1_name} balancing direction"
     cell_smart_sleep_voltage:
       name: "${bms1_name} cell smart sleep voltage"
     cell_voltage_min:
@@ -967,7 +984,9 @@ sensor:
     cell_request_charge_voltage:
       name: "${bms1_name} cell request charge voltage"      
     cell_request_float_voltage:
-      name: "${bms1_name} cell request float voltage"   
+      name: "${bms1_name} cell request float voltage" 
+    balance_trigger_voltage:
+      name: "${bms1_name} balance trigger voltage"         
     balance_starting_voltage:
       name: "${bms1_name} balance starting voltage"     
     cell_soc100_voltage:
@@ -982,11 +1001,25 @@ sensor:
       name: "${bms1_name} cell power off voltage"   
     smart_sleep_time:
       name: "${bms1_name} smart sleep time"              
+    max_charging_current:
+      name: "${bms1_name} max charging current"
+    max_discharging_current:
+      name: "${bms1_name} max discharging current" 
+    charging_overcurrent_protection_delay:
+      name: "${bms1_name} charging overcurrent protection delay"
+    charging_overcurrent_protection_recovery_delay:
+      name: "${bms1_name} charging overcurrent protection recovery delay"
+    discharging_overcurrent_protection_delay:
+      name: "${bms1_name} discharging overcurrent protection delay"
+    discharging_overcurrent_protection_recovery_delay:
+      name: "${bms1_name} discharging overcurrent protection recovery delay"  
+    short_circuit_protection_recovery_delay:
+      name: "${bms1_name} short circuit protection recovery delay"   
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms2
-    balancing:
-      name: "${bms2_name} balancing"
+    balancing_direction:
+      name: "${bms2_name} balancing direction"
     cell_smart_sleep_voltage:
       name: "${bms2_name} cell smart sleep voltage"
     cell_voltage_min:
@@ -1143,6 +1176,8 @@ sensor:
       name: "${bms2_name} cell request charge voltage"      
     cell_request_float_voltage:
       name: "${bms2_name} cell request float voltage"   
+    balance_trigger_voltage:
+      name: "${bms2_name} balance trigger voltage"       
     balance_starting_voltage:
       name: "${bms2_name} balance starting voltage"     
     cell_soc100_voltage:
@@ -1157,18 +1192,25 @@ sensor:
       name: "${bms2_name} cell power off voltage"   
     smart_sleep_time:
       name: "${bms2_name} smart sleep time"              
-
-
-
-
-
-
-
+    max_charging_current:
+      name: "${bms2_name} max charging current"
+    max_discharging_current:
+      name: "${bms2_name} max discharging current" 
+    charging_overcurrent_protection_delay:
+      name: "${bms2_name} charging overcurrent protection delay"
+    charging_overcurrent_protection_recovery_delay:
+      name: "${bms2_name} charging overcurrent protection recovery delay"
+    discharging_overcurrent_protection_delay:
+      name: "${bms2_name} discharging overcurrent protection delay"
+    discharging_overcurrent_protection_recovery_delay:
+      name: "${bms2_name} discharging overcurrent protection recovery delay"  
+    short_circuit_protection_recovery_delay:
+      name: "${bms2_name} short circuit protection recovery delay"   
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms3
-    balancing:
-      name: "${bms3_name} balancing"
+    balancing_direction:
+      name: "${bms3_name} balancing direction"
     cell_smart_sleep_voltage:
       name: "${bms3_name} cell smart sleep voltage"
     cell_voltage_min:
@@ -1325,6 +1367,8 @@ sensor:
       name: "${bms3_name} cell request charge voltage"      
     cell_request_float_voltage:
       name: "${bms3_name} cell request float voltage"   
+    balance_trigger_voltage:
+      name: "${bms3_name} balance trigger voltage"       
     balance_starting_voltage:
       name: "${bms3_name} balance starting voltage"     
     cell_soc100_voltage:
@@ -1339,14 +1383,25 @@ sensor:
       name: "${bms3_name} cell power off voltage"   
     smart_sleep_time:
       name: "${bms3_name} smart sleep time"              
-
-
-
+    max_charging_current:
+      name: "${bms3_name} max charging current"
+    max_discharging_current:
+      name: "${bms3_name} max discharging current" 
+    charging_overcurrent_protection_delay:
+      name: "${bms3_name} charging overcurrent protection delay"
+    charging_overcurrent_protection_recovery_delay:
+      name: "${bms3_name} charging overcurrent protection recovery delay"
+    discharging_overcurrent_protection_delay:
+      name: "${bms3_name} discharging overcurrent protection delay"
+    discharging_overcurrent_protection_recovery_delay:
+      name: "${bms3_name} discharging overcurrent protection recovery delay"  
+    short_circuit_protection_recovery_delay:
+      name: "${bms3_name} short circuit protection recovery delay"   
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms4
-    balancing:
-      name: "${bms4_name} balancing"
+    balancing_direction:
+      name: "${bms4_name} balancing direction"
     cell_smart_sleep_voltage:
       name: "${bms4_name} cell smart sleep voltage"
     cell_voltage_min:
@@ -1502,7 +1557,9 @@ sensor:
     cell_request_charge_voltage:
       name: "${bms4_name} cell request charge voltage"      
     cell_request_float_voltage:
-      name: "${bms4_name} cell request float voltage"   
+      name: "${bms4_name} cell request float voltage"  
+    balance_trigger_voltage:
+      name: "${bms4_name} balance trigger voltage"        
     balance_starting_voltage:
       name: "${bms4_name} balance starting voltage"     
     cell_soc100_voltage:
@@ -1517,16 +1574,25 @@ sensor:
       name: "${bms4_name} cell power off voltage"   
     smart_sleep_time:
       name: "${bms4_name} smart sleep time"              
-
-
-
-
-
+    max_charging_current:
+      name: "${bms4_name} max charging current"
+    max_discharging_current:
+      name: "${bms4_name} max discharging current" 
+    charging_overcurrent_protection_delay:
+      name: "${bms4_name} charging overcurrent protection delay"
+    charging_overcurrent_protection_recovery_delay:
+      name: "${bms4_name} charging overcurrent protection recovery delay"
+    discharging_overcurrent_protection_delay:
+      name: "${bms4_name} discharging overcurrent protection delay"
+    discharging_overcurrent_protection_recovery_delay:
+      name: "${bms4_name} discharging overcurrent protection recovery delay"  
+    short_circuit_protection_recovery_delay:
+      name: "${bms4_name} short circuit protection recovery delay"   
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms5
-    balancing:
-      name: "${bms5_name} balancing"
+    balancing_direction:
+      name: "${bms5_name} balancing direction"
     cell_smart_sleep_voltage:
       name: "${bms5_name} cell smart sleep voltage"
     cell_voltage_min:
@@ -1683,6 +1749,8 @@ sensor:
       name: "${bms5_name} cell request charge voltage"      
     cell_request_float_voltage:
       name: "${bms5_name} cell request float voltage"   
+    balance_trigger_voltage:
+      name: "${bms5_name} balance trigger voltage"       
     balance_starting_voltage:
       name: "${bms5_name} balance starting voltage"     
     cell_soc100_voltage:
@@ -1697,15 +1765,26 @@ sensor:
       name: "${bms5_name} cell power off voltage"   
     smart_sleep_time:
       name: "${bms5_name} smart sleep time"              
-
-
-
+    max_charging_current:
+      name: "${bms5_name} max charging current"
+    max_discharging_current:
+      name: "${bms5_name} max discharging current"       
+    charging_overcurrent_protection_delay:
+      name: "${bms5_name} charging overcurrent protection delay"
+    charging_overcurrent_protection_recovery_delay:
+      name: "${bms5_name} charging overcurrent protection recovery delay"
+    discharging_overcurrent_protection_delay:
+      name: "${bms5_name} discharging overcurrent protection delay"
+    discharging_overcurrent_protection_recovery_delay:
+      name: "${bms5_name} discharging overcurrent protection recovery delay"  
+    short_circuit_protection_recovery_delay:
+      name: "${bms5_name} short circuit protection recovery delay"   
 
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms6
-    balancing:
-      name: "${bms6_name} balancing"
+    balancing_direction:
+      name: "${bms6_name} balancing direction"
     cell_smart_sleep_voltage:
       name: "${bms6_name} cell smart sleep voltage"
     cell_voltage_min:
@@ -1861,7 +1940,9 @@ sensor:
     cell_request_charge_voltage:
       name: "${bms6_name} cell request charge voltage"      
     cell_request_float_voltage:
-      name: "${bms6_name} cell request float voltage"   
+      name: "${bms6_name} cell request float voltage"  
+    balance_trigger_voltage:
+      name: "${bms6_name} balance trigger voltage"        
     balance_starting_voltage:
       name: "${bms6_name} balance starting voltage"     
     cell_soc100_voltage:
@@ -1876,6 +1957,20 @@ sensor:
       name: "${bms6_name} cell power off voltage"   
     smart_sleep_time:
       name: "${bms6_name} smart sleep time"              
+    max_charging_current:
+      name: "${bms6_name} max charging current"
+    max_discharging_current:
+      name: "${bms6_name} max discharging current"       
+    charging_overcurrent_protection_delay:
+      name: "${bms6_name} charging overcurrent protection delay"
+    charging_overcurrent_protection_recovery_delay:
+      name: "${bms6_name} charging overcurrent protection recovery delay"
+    discharging_overcurrent_protection_delay:
+      name: "${bms6_name} discharging overcurrent protection delay"
+    discharging_overcurrent_protection_recovery_delay:
+      name: "${bms6_name} discharging overcurrent protection recovery delay"  
+    short_circuit_protection_recovery_delay:
+      name: "${bms6_name} short circuit protection recovery delay"   
 
 switch:
   - platform: jk_rs485_bms

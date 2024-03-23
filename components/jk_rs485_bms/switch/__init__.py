@@ -5,7 +5,7 @@ from esphome.const import CONF_ICON, CONF_ID
 
 from .. import CONF_JK_RS485_BMS_ID, JK_RS485_BMS_COMPONENT_SCHEMA, jk_rs485_bms_ns
 from ..const import (
-    CONF_BALANCER, CONF_PRECHARGING, CONF_CHARGING, CONF_DISCHARGING, CONF_DISPLAY_ALWAYS_ON, CONF_EMERGENCY, CONF_HEATING, CONF_CHARGING_FLOAT_MODE, 
+    CONF_BALANCING, CONF_PRECHARGING, CONF_CHARGING, CONF_DISCHARGING, CONF_DISPLAY_ALWAYS_ON, CONF_EMERGENCY, CONF_HEATING, CONF_CHARGING_FLOAT_MODE, 
     CONF_SMART_SLEEP_ON, CONF_DISABLE_PCL_MODULE,CONF_DISABLE_TEMPERATURE_SENSORS, CONF_TIMED_STORED_DATA    
 )
 
@@ -15,7 +15,7 @@ CODEOWNERS = ["@syssi","@txubelaxu"]
 
 ICON_CHARGING = "mdi:battery-charging-50"
 ICON_DISCHARGING = "mdi:battery-charging-50"
-ICON_BALANCER = "mdi:seesaw"
+ICON_BALANCING = "mdi:seesaw"
 ICON_EMERGENCY = "mdi:exit-run"
 ICON_HEATING = "mdi:radiator"
 ICON_DISABLE_TEMPERATURE_SENSORS = "mdi:thermometer-off"
@@ -30,7 +30,7 @@ SWITCHES = {
     CONF_CHARGING: 0xAB,
     CONF_DISCHARGING: 0xAC,
     # The BMS (v11) doesn't accept updates of register 0x9D at the moment
-    CONF_BALANCER: 0x9D,
+    CONF_BALANCING: 0x9D,
     CONF_DISPLAY_ALWAYS_ON: 0x00,
     CONF_EMERGENCY: 0x00,
     CONF_HEATING: 0x00,    
@@ -63,10 +63,10 @@ CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
                 cv.Optional(CONF_ICON, default=ICON_DISCHARGING): cv.icon,
             }
         ).extend(cv.COMPONENT_SCHEMA),
-         cv.Optional(CONF_BALANCER): switch.SWITCH_SCHEMA.extend(
+         cv.Optional(CONF_BALANCING): switch.SWITCH_SCHEMA.extend(
              {
                  cv.GenerateID(): cv.declare_id(JkRS485BmsSwitch),
-                 cv.Optional(CONF_ICON, default=ICON_BALANCER): cv.icon,
+                 cv.Optional(CONF_ICON, default=ICON_BALANCING): cv.icon,
              }
          ).extend(cv.COMPONENT_SCHEMA),
         cv.Optional(CONF_EMERGENCY): switch.SWITCH_SCHEMA.extend(

@@ -51,10 +51,10 @@ static const char *const BATTERY_TYPES[BATTERY_TYPES_SIZE] = {
 
 void JkRS485Bms::on_jk_rs485_sniffer_data(const uint8_t &origin_address, const uint8_t &frame_type,
                                           const std::vector<uint8_t> &data) {
-  // this->reset_online_status_tracker_();
+  // this->reset_status_online_tracker_();
 
   if (origin_address == this->address_) {
-    this->reset_online_status_tracker_();
+    this->reset_status_online_tracker_();
     ESP_LOGV(TAG, "This BMS address is: %d  and address received %d ==> WORKING (frame type:%d)", this->address_,
              origin_address, frame_type);
     switch (frame_type) {
@@ -368,7 +368,7 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   //                                                                     0x01: Charging balancer
   //                                                                     0x02: Discharging balancer
   // this->publish_state_(this->balancing_binary_sensor_, (data[140 + offset] != 0x00));
-  this->publish_state_(this->balancing_sensor_, (data[140 + offset]));
+  this->publish_state_(this->balancing_direction_sensor_, (data[140 + offset]));
 
   // 141   1   0x54                   State of charge in   1.0           %
   this->publish_state_(this->state_of_charge_sensor_, (float) data[141 + offset]);
@@ -572,7 +572,7 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
 
   // 26    4   0x0A 0x00 0x00 0x00    Balance trigger voltage
   ESP_LOGV(TAG, "  Balance trigger voltage: %f V", (float) jk_get_32bit(26) * 0.001f);
-  this->publish_state_(this->balance_trigger_voltage_sensor_, (float) jk_get_32bit(26) * 0.001f);
+  this->publish_state_(this->balancing_trigger_voltage_sensor_, (float) jk_get_32bit(26) * 0.001f);
 
   // 30    4   0x00 0x00 0x00 0x00    ** [JK-PB2A16S-20P v14] SOC-100% VOLTAGE
   ESP_LOGV(TAG, "  SOC-100 VOLTAGE: %f V", (float) jk_get_32bit(30) * 0.001f);
@@ -590,34 +590,34 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   ESP_LOGV(TAG, "  Sys Power off voltage: %f V", (float) jk_get_32bit(46) * 0.001f);
   this->publish_state_(this->cell_power_off_voltage_sensor_, (float) jk_get_32bit(46) * 0.001f);
 
-  // 50    4   0xA8 0x61 0x00 0x00    Max. charge current CurBatCOC
-  ESP_LOGV(TAG, "  Max. charge current: %f A", (float) jk_get_32bit(50) * 0.001f);
-  this->publish_state_(this->max_charge_current_number_, (float) jk_get_32bit(50) * 0.001f);
+  // 50    4   0xA8 0x61 0x00 0x00    Max. charge current                 CurBatCOC
+  ESP_LOGV(TAG, "  Max. charging current: %f A", (float) jk_get_32bit(50) * 0.001f);
+  this->publish_state_(this->max_charging_current_sensor_, (float) jk_get_32bit(50) * 0.001f);
 
-  // 54    4   0x1E 0x00 0x00 0x00    Charge OCP delay
-  ESP_LOGV(TAG, "  Charge OCP delay: %f s", (float) jk_get_32bit(54));
-  this->publish_state_(this->charge_ocp_delay_number_, (float) jk_get_32bit(54) * 0.001f);
-  // 58    4   0x3C 0x00 0x00 0x00    Charge OCP recovery time
+  // 54    4   0x1E 0x00 0x00 0x00    Charge OCP delay                    TIMBatCOCPDly   Charging Overcurrent Protection Delay (s)
+  ESP_LOGI(TAG, "  Charge OCP delay: %f s", (float) jk_get_32bit(54));
+  this->publish_state_(this->charging_overcurrent_protection_delay_sensor_, (float) jk_get_32bit(54) * 0.001f);
+  // 58    4   0x3C 0x00 0x00 0x00    Charge OCP recovery time            TIMBatCOCPRDly  Charging Overcurrent Protection Release Delay (s)
   ESP_LOGV(TAG, "  Charge OCP recovery delay: %f s", (float) jk_get_32bit(58));
-  this->publish_state_(this->charge_ocp_recovery_delay_number_, (float) jk_get_32bit(58) * 0.001f);
+  this->publish_state_(this->charging_overcurrent_protection_recovery_delay_sensor_, (float) jk_get_32bit(58) * 0.001f);
   // 62    4   0xF0 0x49 0x02 0x00    Max. discharge current CurBatDcOC
-  ESP_LOGV(TAG, "  Max. discharge current: %f A", (float) jk_get_32bit(62) * 0.001f);
-  this->publish_state_(this->max_discharge_current_number_, (float) jk_get_32bit(62) * 0.001f);
+  ESP_LOGV(TAG, "  Max. discharging current: %f A", (float) jk_get_32bit(62) * 0.001f);
+  this->publish_state_(this->max_discharging_current_sensor_, (float) jk_get_32bit(62) * 0.001f);
 
-  // 66    4   0x2C 0x01 0x00 0x00    Discharge OCP delay
-  ESP_LOGV(TAG, "  Discharge OCP delay: %f s", (float) jk_get_32bit(66));
-  this->publish_state_(this->discharge_ocp_delay_number_, (float) jk_get_32bit(66) * 0.001f);
-  // 70    4   0x3C 0x00 0x00 0x00    Discharge OCP recovery time
+  // 66    4   0x2C 0x01 0x00 0x00    Discharge OCP delay                 TIMBatDcOCPDly   Discharge Overcurrent Protection Delay
+  ESP_LOGV(TAG, "  Discharge OCP delay: %f s", (float) jk_get_32bit(66));  
+  this->publish_state_(this->discharging_overcurrent_protection_delay_sensor_, (float) jk_get_32bit(66) * 0.001f);
+  // 70    4   0x3C 0x00 0x00 0x00    Discharge OCP recovery time         TIMBatDcOCPRDly  Discharge Overcurrent Protection Release Delay
   ESP_LOGV(TAG, "  Discharge OCP recovery time: %f s", (float) jk_get_32bit(70));
-  this->publish_state_(this->discharge_ocp_recovery_time_number_, (float) jk_get_32bit(70) * 0.001f);
-  // 74    4   0x3C 0x00 0x00 0x00    SCPR time TIMBatSCPRDly
+  this->publish_state_(this->discharging_overcurrent_protection_recovery_delay_sensor_, (float) jk_get_32bit(70) * 0.001f);
+  // 74    4   0x3C 0x00 0x00 0x00    SCPR delay                          TIMBatSCPRDly    Short Circuit Protection Recovery Delay
   ESP_LOGV(TAG, "  SCP recovery time: %f s", (float) jk_get_32bit(74));
-  this->publish_state_(this->scp_recovery_time_number_, (float) jk_get_32bit(74) * 0.001f);
+  this->publish_state_(this->short_circuit_protection_recovery_delay_sensor_, (float) jk_get_32bit(74) * 0.001f);
   // 78    4   0xD0 0x07 0x00 0x00    Max balance current
   ESP_LOGV(TAG, "  Max. balance current: %f A", (float) jk_get_32bit(78) * 0.001f);
-  this->publish_state_(this->max_balance_current_number_, (float) jk_get_32bit(78) * 0.001f);
+  this->publish_state_(this->max_balancing_current_sensor_, (float) jk_get_32bit(78) * 0.001f);
 
-  // 82    4   0xBC 0x02 0x00 0x00    Charge OTP
+  // 82    4   0xBC 0x02 0x00 0x00    Charge OTP                          
   ESP_LOGV(TAG, "  Charge OTP: %f °C", (float) jk_get_32bit(82) * 0.1f);
   // 86    4   0x58 0x02 0x00 0x00    Charge OTP Recovery
   ESP_LOGV(TAG, "  Charge OTP recovery: %f °C", (float) jk_get_32bit(86) * 0.1f);
@@ -762,7 +762,7 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   // 299   1   0x40                   CHECKSUM
 }
 
-void JkRS485Bms::update() { this->track_online_status_(); }
+void JkRS485Bms::update() { this->track_status_online_(); }
 
 void JkRS485Bms::decode_device_info_(const std::vector<uint8_t> &data) {
   auto jk_get_16bit = [&](size_t i) -> uint16_t { return (uint16_t(data[i + 1]) << 8) | (uint16_t(data[i + 0]) << 0); };
@@ -836,7 +836,7 @@ void JkRS485Bms::decode_device_info_(const std::vector<uint8_t> &data) {
   ESP_LOGI(TAG, "  Setup passcode: %s", std::string(data.begin() + 118, data.begin() + 118 + 16).c_str());
 }
 
-void JkRS485Bms::track_online_status_() {
+void JkRS485Bms::track_status_online_() {
   if (this->no_response_count_ < MAX_NO_RESPONSE_COUNT) {
     this->no_response_count_++;
   }
@@ -846,13 +846,13 @@ void JkRS485Bms::track_online_status_() {
   }
 }
 
-void JkRS485Bms::reset_online_status_tracker_() {
+void JkRS485Bms::reset_status_online_tracker_() {
   this->no_response_count_ = 0;
-  this->publish_state_(this->online_status_binary_sensor_, true);
+  this->publish_state_(this->status_online_binary_sensor_, true);
 }
 
 void JkRS485Bms::publish_device_unavailable_() {
-  this->publish_state_(this->online_status_binary_sensor_, false);
+  this->publish_state_(this->status_online_binary_sensor_, false);
   this->publish_state_(this->errors_text_sensor_, "Offline");
 
   this->publish_state_(cell_voltage_min_sensor_, NAN);
@@ -891,7 +891,7 @@ void JkRS485Bms::publish_device_unavailable_() {
   this->publish_state_(charging_overcurrent_protection_sensor_, NAN);
   this->publish_state_(charging_overcurrent_delay_sensor_, NAN);
   this->publish_state_(balance_starting_voltage_sensor_, NAN);
-  this->publish_state_(balance_opening_pressure_difference_sensor_, NAN);
+  this->publish_state_(balancing_opening_pressure_difference_sensor_, NAN);
   this->publish_state_(power_tube_temperature_protection_sensor_, NAN);
   this->publish_state_(power_tube_temperature_recovery_sensor_, NAN);
   this->publish_state_(temperature_sensor_temperature_protection_sensor_, NAN);
@@ -1053,7 +1053,7 @@ void JkRS485Bms::dump_config() {  // NOLINT(google-readability-function-size,rea
   LOG_SENSOR("", "Charging Overcurrent Protection", this->charging_overcurrent_protection_sensor_);
   LOG_SENSOR("", "Charging Overcurrent Delay", this->charging_overcurrent_delay_sensor_);
   LOG_SENSOR("", "Balance Starting Voltage", this->balance_starting_voltage_sensor_);
-  LOG_SENSOR("", "Balance Opening Pressure Difference", this->balance_opening_pressure_difference_sensor_);
+  LOG_SENSOR("", "BALANCING OPENING PRESSURE DIFFERENCE", this->balancing_opening_pressure_difference_sensor_);
   LOG_SENSOR("", "Power Tube Temperature Protection", this->power_tube_temperature_protection_sensor_);
   LOG_SENSOR("", "Power Tube Temperature Recovery", this->power_tube_temperature_recovery_sensor_);
   LOG_SENSOR("", "Temperature Sensor Temperature Protection", this->temperature_sensor_temperature_protection_sensor_);

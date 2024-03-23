@@ -5,7 +5,7 @@ views:
     cards:
       - type: entities
         entities:
-          - entity: binary_sensor.bms0_online_status
+          - entity: binary_sensor.bms0_status_online
           - entity: binary_sensor.bms0_balancing
           - entity: binary_sensor.bms0_charging
           - entity: binary_sensor.bms0_discharging

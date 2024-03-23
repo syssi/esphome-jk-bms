@@ -131,14 +131,9 @@ CONF_CELL_VOLTAGE_UNDERVOLTAGE_DELAY = "cell_undervoltage_delay"
 
 CONF_CELL_PRESSURE_DIFFERENCE_PROTECTION = "cell_pressure_difference_protection"
 
-CONF_DISCHARGING_OVERCURRENT_PROTECTION = "discharging_overcurrent_protection"
-CONF_DISCHARGING_OVERCURRENT_DELAY = "discharging_overcurrent_delay"
-
-CONF_CHARGING_OVERCURRENT_PROTECTION = "charging_overcurrent_protection"
-CONF_CHARGING_OVERCURRENT_DELAY = "charging_overcurrent_delay"
-
-CONF_BALANCE_STARTING_VOLTAGE = "balance_starting_voltage"
-CONF_BALANCE_OPENING_PRESSURE_DIFFERENCE = "balance_opening_pressure_difference"
+CONF_BALANCING_TRIGGER_VOLTAGE = "balancing_trigger_voltage"
+CONF_BALANCING_STARTING_VOLTAGE = "balancing_starting_voltage"
+CONF_BALANCING_OPENING_PRESSURE_DIFFERENCE = "balancing_opening_pressure_difference"
 
 CONF_POWER_TUBE_TEMPERATURE_PROTECTION = "power_tube_temperature_protection"
 CONF_POWER_TUBE_TEMPERATURE_RECOVERY = "power_tube_temperature_recovery"
@@ -163,7 +158,7 @@ CONF_DISCHARGING_LOW_TEMPERATURE_RECOVERY = "discharging_low_temperature_recover
 # CONF_BATTERY_STRINGS = "battery_strings"
 CONF_TOTAL_BATTERY_CAPACITY_SETTING = "total_battery_capacity_setting"
 
-CONF_BALANCING = "balancing"
+CONF_BALANCING_DIRECTION = "balancing_direction"
 CONF_CURRENT_CALIBRATION = "current_calibration"
 CONF_DEVICE_ADDRESS = "device_address"
 CONF_SLEEP_WAIT_TIME = "sleep_wait_time"
@@ -171,9 +166,18 @@ CONF_ALARM_LOW_VOLUME = "alarm_low_volume"
 CONF_MANUFACTURING_DATE = "manufacturing_date"
 CONF_TOTAL_RUNTIME = "total_runtime"
 CONF_BALANCING_CURRENT = "balancing_current"
+CONF_MAX_BALANCING_CURRENT = "max_balancing_current"
+CONF_MAX_CHARGING_CURRENT ="max_charging_current"
+CONF_MAX_DISCHARGING_CURRENT ="max_discharging_current"
 CONF_START_CURRENT_CALIBRATION = "start_current_calibration"
 CONF_ACTUAL_BATTERY_CAPACITY = "actual_battery_capacity"
 CONF_PROTOCOL_VERSION = "protocol_version"
+
+CONF_CHARGING_OVERCURRENT_PROTECION_DELAY = "charging_overcurrent_protection_delay"
+CONF_CHARGING_OVERCURRENT_PROTECION_RECOVERY_DELAY = "charging_overcurrent_protection_recovery_delay"
+CONF_DISCHARGING_OVERCURRENT_PROTECION_DELAY = "discharging_overcurrent_protection_delay"
+CONF_DISCHARGING_OVERCURRENT_PROTECION_RECOVERY_DELAY = "discharging_overcurrent_protection_recovery_delay"
+CONF_SHORT_CIRCUIT_PROTECTION_RECOVERY_DELAY ="short_circuit_protection_recovery_delay"
 
 ICON_CURRENT_DC = "mdi:current-dc"
 ICON_CELL_VOLTAGE_MIN_CELL_NUMBER = "mdi:battery-minus-outline"
@@ -192,8 +196,10 @@ ICON_CHARGING_CYCLES = "mdi:battery-sync"
 ICON_ALARM_LOW_VOLUME = "mdi:volume-high"
 
 ICON_CELL_RESISTANCE = "mdi:omega"
-ICON_BALANCER = "mdi:seesaw"
+ICON_BALANCING = "mdi:seesaw"
+ICON_DIRECTION = "mdi:swap-horizontal-bold"
 ICON_CLOCK ="mdi:clock-outline"
+
 
 UNIT_SECONDS = "s"
 UNIT_HOURS = "h"
@@ -262,7 +268,7 @@ TEMPERATURES = [
 ]
 
 SENSORS = [
-    CONF_BALANCING,
+    CONF_BALANCING_DIRECTION,
     CONF_CELL_SMART_SLEEP_VOLTAGE,
     CONF_CELL_VOLTAGE_MIN,
     CONF_CELL_VOLTAGE_MAX,
@@ -299,12 +305,14 @@ SENSORS = [
     CONF_CELL_UNDERVOLTAGE_RECOVERY,
     CONF_CELL_VOLTAGE_UNDERVOLTAGE_DELAY,
     CONF_CELL_PRESSURE_DIFFERENCE_PROTECTION,
-    CONF_DISCHARGING_OVERCURRENT_PROTECTION,
-    CONF_DISCHARGING_OVERCURRENT_DELAY,
-    CONF_CHARGING_OVERCURRENT_PROTECTION,
-    CONF_CHARGING_OVERCURRENT_DELAY,
-    CONF_BALANCE_STARTING_VOLTAGE,
-    CONF_BALANCE_OPENING_PRESSURE_DIFFERENCE,
+    CONF_CHARGING_OVERCURRENT_PROTECION_DELAY,
+    CONF_CHARGING_OVERCURRENT_PROTECION_RECOVERY_DELAY,
+    CONF_DISCHARGING_OVERCURRENT_PROTECION_DELAY,
+    CONF_DISCHARGING_OVERCURRENT_PROTECION_RECOVERY_DELAY,
+    CONF_SHORT_CIRCUIT_PROTECTION_RECOVERY_DELAY,
+    CONF_BALANCING_TRIGGER_VOLTAGE,
+    CONF_BALANCING_STARTING_VOLTAGE,
+    CONF_BALANCING_OPENING_PRESSURE_DIFFERENCE,
     CONF_POWER_TUBE_TEMPERATURE_PROTECTION,
     CONF_POWER_TUBE_TEMPERATURE_RECOVERY,
     CONF_TEMPERATURE_SENSOR_TEMPERATURE_PROTECTION,
@@ -323,7 +331,10 @@ SENSORS = [
     CONF_ALARM_LOW_VOLUME,
     CONF_MANUFACTURING_DATE,
     CONF_TOTAL_RUNTIME,
-    CONF_BALANCING_CURRENT,    
+    CONF_BALANCING_CURRENT,  
+    CONF_MAX_BALANCING_CURRENT,
+    CONF_MAX_CHARGING_CURRENT,
+    CONF_MAX_DISCHARGING_CURRENT,
     CONF_START_CURRENT_CALIBRATION,
     CONF_ACTUAL_BATTERY_CAPACITY,
     CONF_PROTOCOL_VERSION,
@@ -334,9 +345,9 @@ SENSORS = [
 # pylint: disable=too-many-function-args
 CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
     {
-        cv.Optional(CONF_BALANCING): sensor.sensor_schema(
-            unit_of_measurement=UNIT_EMPTY,            
-            icon=ICON_BALANCER,
+        cv.Optional(CONF_BALANCING_DIRECTION): sensor.sensor_schema(
+            unit_of_measurement=UNIT_EMPTY,  
+            icon=ICON_DIRECTION,
             accuracy_decimals=0,
             device_class=DEVICE_CLASS_CURRENT,
             state_class=STATE_CLASS_MEASUREMENT,
@@ -963,42 +974,56 @@ CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
             device_class=DEVICE_CLASS_VOLTAGE,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_DISCHARGING_OVERCURRENT_PROTECTION): sensor.sensor_schema(
-            unit_of_measurement=UNIT_AMPERE,
-            icon=ICON_CURRENT_DC,
-            accuracy_decimals=0,
-            device_class=DEVICE_CLASS_CURRENT,
-            state_class=STATE_CLASS_MEASUREMENT,
-        ),
-        cv.Optional(CONF_DISCHARGING_OVERCURRENT_DELAY): sensor.sensor_schema(
+        cv.Optional(CONF_CHARGING_OVERCURRENT_PROTECION_DELAY): sensor.sensor_schema(
             unit_of_measurement=UNIT_SECONDS,
             icon=ICON_TIMELAPSE,
             accuracy_decimals=0,
             device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_CHARGING_OVERCURRENT_PROTECTION): sensor.sensor_schema(
-            unit_of_measurement=UNIT_AMPERE,
-            icon=ICON_CURRENT_DC,
-            accuracy_decimals=0,
-            device_class=DEVICE_CLASS_CURRENT,
-            state_class=STATE_CLASS_MEASUREMENT,
-        ),
-        cv.Optional(CONF_CHARGING_OVERCURRENT_DELAY): sensor.sensor_schema(
+        cv.Optional(CONF_CHARGING_OVERCURRENT_PROTECION_RECOVERY_DELAY): sensor.sensor_schema(
             unit_of_measurement=UNIT_SECONDS,
             icon=ICON_TIMELAPSE,
             accuracy_decimals=0,
             device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_BALANCE_STARTING_VOLTAGE): sensor.sensor_schema(
+        cv.Optional(CONF_DISCHARGING_OVERCURRENT_PROTECION_DELAY): sensor.sensor_schema(
+            unit_of_measurement=UNIT_SECONDS,
+            icon=ICON_TIMELAPSE,
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_DISCHARGING_OVERCURRENT_PROTECION_RECOVERY_DELAY): sensor.sensor_schema(
+            unit_of_measurement=UNIT_SECONDS,
+            icon=ICON_TIMELAPSE,
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_SHORT_CIRCUIT_PROTECTION_RECOVERY_DELAY): sensor.sensor_schema(
+            unit_of_measurement=UNIT_SECONDS,
+            icon=ICON_TIMELAPSE,
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_BALANCING_TRIGGER_VOLTAGE): sensor.sensor_schema(
+            unit_of_measurement=UNIT_VOLT,
+            icon=ICON_EMPTY,
+            accuracy_decimals=3,
+            device_class=DEVICE_CLASS_VOLTAGE,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),        
+        cv.Optional(CONF_BALANCING_STARTING_VOLTAGE): sensor.sensor_schema(
             unit_of_measurement=UNIT_VOLT,
             icon=ICON_EMPTY,
             accuracy_decimals=3,
             device_class=DEVICE_CLASS_VOLTAGE,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_BALANCE_OPENING_PRESSURE_DIFFERENCE): sensor.sensor_schema(
+        cv.Optional(CONF_BALANCING_OPENING_PRESSURE_DIFFERENCE): sensor.sensor_schema(
             unit_of_measurement=UNIT_VOLT,
             icon=ICON_EMPTY,
             accuracy_decimals=3,
@@ -1141,7 +1166,28 @@ CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
             accuracy_decimals=2,
             device_class=DEVICE_CLASS_CURRENT,
             state_class=STATE_CLASS_MEASUREMENT,
-        ),        
+        ),  
+        cv.Optional(CONF_MAX_BALANCING_CURRENT): sensor.sensor_schema(
+            unit_of_measurement=UNIT_AMPERE,
+            icon=ICON_CURRENT_DC,
+            accuracy_decimals=2,
+            device_class=DEVICE_CLASS_CURRENT,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),          
+        cv.Optional(CONF_MAX_CHARGING_CURRENT): sensor.sensor_schema(
+            unit_of_measurement=UNIT_AMPERE,
+            icon=ICON_CURRENT_DC,
+            accuracy_decimals=2,
+            device_class=DEVICE_CLASS_CURRENT,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),    
+        cv.Optional(CONF_MAX_DISCHARGING_CURRENT): sensor.sensor_schema(
+            unit_of_measurement=UNIT_EMPTY,
+            icon=ICON_EMPTY,
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),                  
         cv.Optional(CONF_START_CURRENT_CALIBRATION): sensor.sensor_schema(
             unit_of_measurement=UNIT_EMPTY,
             icon=ICON_EMPTY,
@@ -1173,6 +1219,7 @@ CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
        
     }
 )
+
 
 
 async def to_code(config):
