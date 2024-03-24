@@ -217,6 +217,18 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   void set_short_circuit_protection_recovery_delay_sensor(sensor::Sensor *short_circuit_protection_recovery_delay_sensor) {
     short_circuit_protection_recovery_delay_sensor_ = short_circuit_protection_recovery_delay_sensor;
   }
+  void set_charging_overtemperature_protection_sensor(sensor::Sensor *charging_overtemperature_protection_sensor) {
+    charging_overtemperature_protection_sensor_ = charging_overtemperature_protection_sensor;
+  }
+  void set_charging_overtemperature_protection_recovery_sensor(sensor::Sensor *charging_overtemperature_protection_recovery_sensor) {
+    charging_overtemperature_protection_recovery_sensor_ = charging_overtemperature_protection_recovery_sensor;
+  }
+  void set_discharging_overtemperature_protection_sensor(sensor::Sensor *discharging_overtemperature_protection_sensor) {
+    discharging_overtemperature_protection_sensor_ = discharging_overtemperature_protection_sensor;
+  }
+  void set_discharging_overtemperature_protection_recovery_sensor(sensor::Sensor *discharging_overtemperature_protection_recovery_sensor) {
+    discharging_overtemperature_protection_recovery_sensor_ = discharging_overtemperature_protection_recovery_sensor;
+  }
 
 
   void set_balancing_starting_voltage_sensor(sensor::Sensor *balance_starting_voltage_sensor) {
@@ -535,7 +547,10 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   sensor::Sensor *discharging_overcurrent_protection_delay_sensor_;
   sensor::Sensor *discharging_overcurrent_protection_recovery_delay_sensor_;  
   sensor::Sensor *short_circuit_protection_recovery_delay_sensor_;
-
+  sensor::Sensor *charging_overtemperature_protection_sensor_;
+  sensor::Sensor *charging_overtemperature_protection_recovery_sensor_;
+  sensor::Sensor *discharging_overtemperature_protection_sensor_;
+  sensor::Sensor *discharging_overtemperature_protection_recovery_sensor_;
   sensor::Sensor *scp_recovery_time_number_;    
   sensor::Sensor *total_battery_capacity_number_;  
 

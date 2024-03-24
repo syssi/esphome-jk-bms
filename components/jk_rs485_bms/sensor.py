@@ -178,6 +178,10 @@ CONF_CHARGING_OVERCURRENT_PROTECION_RECOVERY_DELAY = "charging_overcurrent_prote
 CONF_DISCHARGING_OVERCURRENT_PROTECION_DELAY = "discharging_overcurrent_protection_delay"
 CONF_DISCHARGING_OVERCURRENT_PROTECION_RECOVERY_DELAY = "discharging_overcurrent_protection_recovery_delay"
 CONF_SHORT_CIRCUIT_PROTECTION_RECOVERY_DELAY ="short_circuit_protection_recovery_delay"
+CONF_CHARGING_OVERTEMPERATURE_PROTECION = "charging_overtemperature_protection"
+CONF_CHARGING_OVERTEMPERATURE_PROTECION_RECOVERY = "charging_overtemperature_protection_recovery"
+CONF_DISCHARGING_OVERTEMPERATURE_PROTECION = "discharging_overtemperature_protection"
+CONF_DISCHARGING_OVERTEMPERATURE_PROTECION_RECOVERY = "discharging_overtemperature_protection_recovery"
 
 ICON_CURRENT_DC = "mdi:current-dc"
 ICON_CELL_VOLTAGE_MIN_CELL_NUMBER = "mdi:battery-minus-outline"
@@ -199,6 +203,8 @@ ICON_CELL_RESISTANCE = "mdi:omega"
 ICON_BALANCING = "mdi:seesaw"
 ICON_DIRECTION = "mdi:swap-horizontal-bold"
 ICON_CLOCK ="mdi:clock-outline"
+
+ICON_HIGH_TEMPERATURE = "mdi:thermometer-alert"
 
 
 UNIT_SECONDS = "s"
@@ -310,6 +316,10 @@ SENSORS = [
     CONF_DISCHARGING_OVERCURRENT_PROTECION_DELAY,
     CONF_DISCHARGING_OVERCURRENT_PROTECION_RECOVERY_DELAY,
     CONF_SHORT_CIRCUIT_PROTECTION_RECOVERY_DELAY,
+    CONF_CHARGING_OVERTEMPERATURE_PROTECION,
+    CONF_CHARGING_OVERTEMPERATURE_PROTECION_RECOVERY,
+    CONF_DISCHARGING_OVERTEMPERATURE_PROTECION,
+    CONF_DISCHARGING_OVERTEMPERATURE_PROTECION_RECOVERY,      
     CONF_BALANCING_TRIGGER_VOLTAGE,
     CONF_BALANCING_STARTING_VOLTAGE,
     CONF_BALANCING_OPENING_PRESSURE_DIFFERENCE,
@@ -1009,6 +1019,34 @@ CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
             device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
+        cv.Optional(CONF_CHARGING_OVERTEMPERATURE_PROTECION): sensor.sensor_schema(
+            unit_of_measurement=UNIT_CELSIUS,
+            icon=ICON_HIGH_TEMPERATURE,
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_TEMPERATURE,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_CHARGING_OVERTEMPERATURE_PROTECION_RECOVERY): sensor.sensor_schema(
+            unit_of_measurement=UNIT_CELSIUS,
+            icon=ICON_HIGH_TEMPERATURE,
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_TEMPERATURE,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_DISCHARGING_OVERTEMPERATURE_PROTECION): sensor.sensor_schema(
+            unit_of_measurement=UNIT_CELSIUS,
+            icon=ICON_HIGH_TEMPERATURE,
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_TEMPERATURE,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_DISCHARGING_OVERTEMPERATURE_PROTECION_RECOVERY): sensor.sensor_schema(
+            unit_of_measurement=UNIT_CELSIUS,
+            icon=ICON_HIGH_TEMPERATURE,
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_TEMPERATURE,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),                      
         cv.Optional(CONF_BALANCING_TRIGGER_VOLTAGE): sensor.sensor_schema(
             unit_of_measurement=UNIT_VOLT,
             icon=ICON_EMPTY,

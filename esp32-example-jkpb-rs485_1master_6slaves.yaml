@@ -29,10 +29,10 @@ esp32:
 #  board: d1_mini
 
 external_components:
-#  - source: ${external_components_source}
-#    refresh: 0s
-  - source: ./components
+  - source: ${external_components_source}
     refresh: 0s
+#  - source: ./components
+#    refresh: 0s
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
@@ -823,6 +823,14 @@ sensor:
       name: "${bms0_name} discharging overcurrent protection recovery delay"  
     short_circuit_protection_recovery_delay:
       name: "${bms0_name} short circuit protection recovery delay"   
+    charging_overtemperature_protection:
+      name: "${bms0_name} charging overtemperature protection"
+    charging_overtemperature_protection_recovery:
+      name: "${bms0_name} charging overtemperature protection recovery"
+    discharging_overtemperature_protection:
+      name: "${bms0_name} discharging overtemperature protection"
+    discharging_overtemperature_protection_recovery:
+      name: "${bms0_name} discharging overtemperature protection recovery"       
 
 
   - platform: jk_rs485_bms
@@ -1015,6 +1023,14 @@ sensor:
       name: "${bms1_name} discharging overcurrent protection recovery delay"  
     short_circuit_protection_recovery_delay:
       name: "${bms1_name} short circuit protection recovery delay"   
+    charging_overtemperature_protection:
+      name: "${bms1_name} charging overtemperature protection"
+    charging_overtemperature_protection_recovery:
+      name: "${bms1_name} charging overtemperature protection recovery"
+    discharging_overtemperature_protection:
+      name: "${bms1_name} discharging overtemperature protection"
+    discharging_overtemperature_protection_recovery:
+      name: "${bms1_name} discharging overtemperature protection recovery"       
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms2
@@ -1206,6 +1222,14 @@ sensor:
       name: "${bms2_name} discharging overcurrent protection recovery delay"  
     short_circuit_protection_recovery_delay:
       name: "${bms2_name} short circuit protection recovery delay"   
+    charging_overtemperature_protection:
+      name: "${bms2_name} charging overtemperature protection"
+    charging_overtemperature_protection_recovery:
+      name: "${bms2_name} charging overtemperature protection recovery"
+    discharging_overtemperature_protection:
+      name: "${bms2_name} discharging overtemperature protection"
+    discharging_overtemperature_protection_recovery:
+      name: "${bms2_name} discharging overtemperature protection recovery" 
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms3
@@ -1397,6 +1421,15 @@ sensor:
       name: "${bms3_name} discharging overcurrent protection recovery delay"  
     short_circuit_protection_recovery_delay:
       name: "${bms3_name} short circuit protection recovery delay"   
+    charging_overtemperature_protection:
+      name: "${bms3_name} charging overtemperature protection"
+    charging_overtemperature_protection_recovery:
+      name: "${bms3_name} charging overtemperature protection recovery"
+    discharging_overtemperature_protection:
+      name: "${bms3_name} discharging overtemperature protection"
+    discharging_overtemperature_protection_recovery:
+      name: "${bms3_name} discharging overtemperature protection recovery" 
+
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms4
@@ -1588,6 +1621,15 @@ sensor:
       name: "${bms4_name} discharging overcurrent protection recovery delay"  
     short_circuit_protection_recovery_delay:
       name: "${bms4_name} short circuit protection recovery delay"   
+    charging_overtemperature_protection:
+      name: "${bms4_name} charging overtemperature protection"
+    charging_overtemperature_protection_recovery:
+      name: "${bms4_name} charging overtemperature protection recovery"
+    discharging_overtemperature_protection:
+      name: "${bms4_name} discharging overtemperature protection"
+    discharging_overtemperature_protection_recovery:
+      name: "${bms4_name} discharging overtemperature protection recovery" 
+
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms5
@@ -1779,7 +1821,14 @@ sensor:
       name: "${bms5_name} discharging overcurrent protection recovery delay"  
     short_circuit_protection_recovery_delay:
       name: "${bms5_name} short circuit protection recovery delay"   
-
+    charging_overtemperature_protection:
+      name: "${bms5_name} charging overtemperature protection"
+    charging_overtemperature_protection_recovery:
+      name: "${bms5_name} charging overtemperature protection recovery"
+    discharging_overtemperature_protection:
+      name: "${bms5_name} discharging overtemperature protection"
+    discharging_overtemperature_protection_recovery:
+      name: "${bms5_name} discharging overtemperature protection recovery" 
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms6
@@ -1971,6 +2020,16 @@ sensor:
       name: "${bms6_name} discharging overcurrent protection recovery delay"  
     short_circuit_protection_recovery_delay:
       name: "${bms6_name} short circuit protection recovery delay"   
+    charging_overtemperature_protection:
+      name: "${bms6_name} charging overtemperature protection"
+    charging_overtemperature_protection_recovery:
+      name: "${bms6_name} charging overtemperature protection recovery"
+    discharging_overtemperature_protection:
+      name: "${bms6_name} discharging overtemperature protection"
+    discharging_overtemperature_protection_recovery:
+      name: "${bms6_name} discharging overtemperature protection recovery" 
+
+
 
 switch:
   - platform: jk_rs485_bms

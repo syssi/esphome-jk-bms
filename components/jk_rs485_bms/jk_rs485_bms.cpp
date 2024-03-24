@@ -617,14 +617,20 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   ESP_LOGV(TAG, "  Max. balance current: %f A", (float) jk_get_32bit(78) * 0.001f);
   this->publish_state_(this->max_balancing_current_sensor_, (float) jk_get_32bit(78) * 0.001f);
 
-  // 82    4   0xBC 0x02 0x00 0x00    Charge OTP                          
-  ESP_LOGV(TAG, "  Charge OTP: %f °C", (float) jk_get_32bit(82) * 0.1f);
-  // 86    4   0x58 0x02 0x00 0x00    Charge OTP Recovery
+  // 82    4   0xBC 0x02 0x00 0x00    Charge OTP                          TMPBatCOT        Charging Over Temperature Protection
+  ESP_LOGV(TAG, "  Charging OTP: %f °C", (float) jk_get_32bit(82) * 0.1f);
+  this->publish_state_(this->charging_overtemperature_protection_sensor_, (float) jk_get_32bit(82) * 0.1f);
+  // 86    4   0x58 0x02 0x00 0x00    Charge OTP Recovery                 TMPBatCOTPR      Charging Over Temperature Protection Recovery
   ESP_LOGV(TAG, "  Charge OTP recovery: %f °C", (float) jk_get_32bit(86) * 0.1f);
+  this->publish_state_(this->charging_overtemperature_protection_recovery_sensor_, (float) jk_get_32bit(86) * 0.1f);
   // 90    4   0xBC 0x02 0x00 0x00    Discharge OTP
   ESP_LOGV(TAG, "  Discharge OTP: %f °C", (float) jk_get_32bit(90) * 0.1f);
+  this->publish_state_(this->discharging_overtemperature_protection_sensor_, (float) jk_get_32bit(90) * 0.1f);  
   // 94    4   0x58 0x02 0x00 0x00    Discharge OTP Recovery
   ESP_LOGV(TAG, "  Discharge OTP recovery: %f °C", (float) jk_get_32bit(94) * 0.1f);
+  this->publish_state_(this->discharging_overtemperature_protection_recovery_sensor_, (float) jk_get_32bit(86) * 0.1f);  
+
+
   // 98    4   0x38 0xFF 0xFF 0xFF    Charge UTP   TMPBatCUT
   ESP_LOGV(TAG, "  Charge UTP: %f °C", (float) ((int32_t) jk_get_32bit(98)) * 0.1f);
   // 102   4   0x9C 0xFF 0xFF 0xFF    Charge UTP Recovery
