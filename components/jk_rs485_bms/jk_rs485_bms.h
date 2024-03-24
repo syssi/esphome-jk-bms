@@ -129,11 +129,11 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   void set_discharging_power_sensor(sensor::Sensor *discharging_power_sensor) {
     discharging_power_sensor_ = discharging_power_sensor;
   }
-  void set_capacity_remaining_sensor(sensor::Sensor *capacity_remaining_sensor) {
-    capacity_remaining_sensor_ = capacity_remaining_sensor;
+  void set_battery_capacity_remaining_sensor(sensor::Sensor *battery_capacity_remaining_sensor) {
+    battery_capacity_remaining_sensor_ = battery_capacity_remaining_sensor;
   }
-  void set_capacity_remaining_derived_sensor(sensor::Sensor *capacity_remaining_derived_sensor) {
-    capacity_remaining_derived_sensor_ = capacity_remaining_derived_sensor;
+  void set_battery_capacity_remaining_derived_sensor(sensor::Sensor *battery_capacity_remaining_derived_sensor) {
+    battery_capacity_remaining_derived_sensor_ = battery_capacity_remaining_derived_sensor;
   }
   void set_temperature_sensors_sensor(sensor::Sensor *temperature_sensors_sensor) {
     temperature_sensors_sensor_ = temperature_sensors_sensor;
@@ -141,8 +141,8 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   void set_charging_cycles_sensor(sensor::Sensor *charging_cycles_sensor) {
     charging_cycles_sensor_ = charging_cycles_sensor;
   }
-  void set_total_charging_cycle_capacity_sensor(sensor::Sensor *total_charging_cycle_capacity_sensor) {
-    total_charging_cycle_capacity_sensor_ = total_charging_cycle_capacity_sensor;
+  void set_battery_capacity_total_charging_cycle_sensor(sensor::Sensor *battery_capacity_total_charging_cycle_sensor) {
+    battery_capacity_total_charging_cycle_sensor_ = battery_capacity_total_charging_cycle_sensor;
   }
   void set_battery_strings_sensor(sensor::Sensor *battery_strings_sensor) {
     battery_strings_sensor_ = battery_strings_sensor;
@@ -290,8 +290,8 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   void set_discharging_low_temperature_recovery_sensor(sensor::Sensor *discharging_low_temperature_recovery_sensor) {
     discharging_low_temperature_recovery_sensor_ = discharging_low_temperature_recovery_sensor;
   }
-  void set_total_battery_capacity_setting_sensor(sensor::Sensor *total_battery_capacity_setting_sensor) {
-    total_battery_capacity_setting_sensor_ = total_battery_capacity_setting_sensor;
+  void set_battery_capacity_total_setting_sensor(sensor::Sensor *battery_capacity_total_setting_sensor) {
+    battery_capacity_total_setting_sensor_ = battery_capacity_total_setting_sensor;
   }
   void set_current_calibration_sensor(sensor::Sensor *current_calibration_sensor) {
     current_calibration_sensor_ = current_calibration_sensor;
@@ -586,11 +586,11 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   sensor::Sensor *power_sensor_;
   sensor::Sensor *charging_power_sensor_;
   sensor::Sensor *discharging_power_sensor_;
-  sensor::Sensor *capacity_remaining_sensor_;
-  sensor::Sensor *capacity_remaining_derived_sensor_;
+  sensor::Sensor *battery_capacity_remaining_sensor_;
+  sensor::Sensor *battery_capacity_remaining_derived_sensor_;
   sensor::Sensor *temperature_sensors_sensor_;
   sensor::Sensor *charging_cycles_sensor_;
-  sensor::Sensor *total_charging_cycle_capacity_sensor_;
+  sensor::Sensor *battery_capacity_total_charging_cycle_sensor_;
   sensor::Sensor *battery_strings_sensor_;
   sensor::Sensor *errors_bitmask_sensor_;
   sensor::Sensor *operation_mode_bitmask_sensor_;
@@ -616,7 +616,7 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   sensor::Sensor *charging_low_temperature_recovery_sensor_;
   sensor::Sensor *discharging_low_temperature_protection_sensor_;
   sensor::Sensor *discharging_low_temperature_recovery_sensor_;
-  sensor::Sensor *total_battery_capacity_setting_sensor_;
+  sensor::Sensor *battery_capacity_total_setting_sensor_;
 
   sensor::Sensor *charging_sensor_;
   sensor::Sensor *discharging_sensor_;

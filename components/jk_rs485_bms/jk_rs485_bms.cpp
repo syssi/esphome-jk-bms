@@ -374,16 +374,16 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->state_of_charge_sensor_, (float) data[141 + offset]);
 
   // 142   4   0x8E 0x0B 0x01 0x00    Capacity_Remain      0.001         Ah
-  this->publish_state_(this->capacity_remaining_sensor_, (float) jk_get_32bit(142 + offset) * 0.001f);
+  this->publish_state_(this->battery_capacity_remaining_sensor_, (float) jk_get_32bit(142 + offset) * 0.001f);
 
   // 146   4   0x68 0x3C 0x01 0x00    Nominal_Capacity     0.001         Ah
-  this->publish_state_(this->total_battery_capacity_setting_sensor_, (float) jk_get_32bit(146 + offset) * 0.001f);
+  this->publish_state_(this->battery_capacity_total_setting_sensor_, (float) jk_get_32bit(146 + offset) * 0.001f);
 
   // 150   4   0x00 0x00 0x00 0x00    Cycle_Count          1.0
   this->publish_state_(this->charging_cycles_sensor_, (float) jk_get_32bit(150 + offset));
 
   // 154   4   0x3D 0x04 0x00 0x00    Cycle_Capacity       0.001         Ah
-  this->publish_state_(this->total_charging_cycle_capacity_sensor_, (float) jk_get_32bit(154 + offset) * 0.001f);
+  this->publish_state_(this->battery_capacity_total_charging_cycle_sensor_, (float) jk_get_32bit(154 + offset) * 0.001f);
 
   // 158   1   0x64                   SOCSOH
   ESP_LOGV(TAG, "SOCSOH: 0x%02X (always 0x64?)", data[158 + offset]);
@@ -633,10 +633,10 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
 
   // 98    4   0x38 0xFF 0xFF 0xFF    Charge UTP                          TMPBatCUT        Charging Low Temperature Protection
   ESP_LOGV(TAG, "  Charge UTP: %f °C", (float) ((int32_t) jk_get_32bit(98)) * 0.1f);
-  this->publish_state_(this->charging_lowtemperature_protection_sensor_, (float) jk_get_32bit(98) * 0.1f);  
+  this->publish_state_(this->charging_lowtemperature_protection_sensor_, (float) ((int32_t) jk_get_32bit(98)) * 0.1f);  
   // 102   4   0x9C 0xFF 0xFF 0xFF    Charge UTP Recovery                 TMPBatCUTPR      Charging Low Temperature Protection Recovery
   ESP_LOGV(TAG, "  Charge UTP recovery: %f °C", (float) ((int32_t) jk_get_32bit(102)) * 0.1f);
-  this->publish_state_(this->charging_lowtemperature_protection_recovery_sensor_, (float) jk_get_32bit(102) * 0.1f);
+  this->publish_state_(this->charging_lowtemperature_protection_recovery_sensor_, (float) ((int32_t) jk_get_32bit(102)) * 0.1f);
   // 106   4   0x84 0x03 0x00 0x00    MOS OTP                             TMPMosOT         MOS Overtemperature Protection
   ESP_LOGV(TAG, "  MOS OTP: %f °C", (float) ((int32_t) jk_get_32bit(106)) * 0.1f);
   this->publish_state_(this->mos_overtemperature_protection_sensor_, (float) jk_get_32bit(106) * 0.1f);
@@ -881,11 +881,11 @@ void JkRS485Bms::publish_device_unavailable_() {
   this->publish_state_(power_sensor_, NAN);
   this->publish_state_(charging_power_sensor_, NAN);
   this->publish_state_(discharging_power_sensor_, NAN);
-  this->publish_state_(capacity_remaining_sensor_, NAN);
-  this->publish_state_(capacity_remaining_derived_sensor_, NAN);
+  this->publish_state_(battery_capacity_remaining_sensor_, NAN);
+  this->publish_state_(battery_capacity_remaining_derived_sensor_, NAN);
   this->publish_state_(temperature_sensors_sensor_, NAN);
   this->publish_state_(charging_cycles_sensor_, NAN);
-  this->publish_state_(total_charging_cycle_capacity_sensor_, NAN);
+  this->publish_state_(battery_capacity_total_charging_cycle_sensor_, NAN);
   this->publish_state_(battery_strings_sensor_, NAN);
   this->publish_state_(errors_bitmask_sensor_, NAN);
   this->publish_state_(operation_mode_bitmask_sensor_, NAN);
@@ -915,7 +915,7 @@ void JkRS485Bms::publish_device_unavailable_() {
   this->publish_state_(charging_low_temperature_recovery_sensor_, NAN);
   this->publish_state_(discharging_low_temperature_protection_sensor_, NAN);
   this->publish_state_(discharging_low_temperature_recovery_sensor_, NAN);
-  this->publish_state_(total_battery_capacity_setting_sensor_, NAN);
+  this->publish_state_(battery_capacity_total_setting_sensor_, NAN);
   this->publish_state_(charging_sensor_, NAN);
   this->publish_state_(discharging_sensor_, NAN);
   this->publish_state_(current_calibration_sensor_, NAN);
@@ -1043,11 +1043,11 @@ void JkRS485Bms::dump_config() {  // NOLINT(google-readability-function-size,rea
   LOG_SENSOR("", "Power", this->power_sensor_);
   LOG_SENSOR("", "Charging Power", this->charging_power_sensor_);
   LOG_SENSOR("", "Discharging Power", this->discharging_power_sensor_);
-  LOG_SENSOR("", "Capacity Remaining", this->capacity_remaining_sensor_);
-  LOG_SENSOR("", "Capacity Remaining Derived", this->capacity_remaining_derived_sensor_);
+  LOG_SENSOR("", "Battery capacity remaining", this->battery_capacity_remaining_sensor_);
+  LOG_SENSOR("", "Battery capacity remaining Derived", this->battery_capacity_remaining_derived_sensor_);
   LOG_SENSOR("", "Temperature Sensors", this->temperature_sensors_sensor_);
   LOG_SENSOR("", "Charging Cycles", this->charging_cycles_sensor_);
-  LOG_SENSOR("", "Total Charging Cycle Capacity", this->total_charging_cycle_capacity_sensor_);
+  LOG_SENSOR("", "Battery capacity total charging cycle", this->battery_capacity_total_charging_cycle_sensor_);
   LOG_SENSOR("", "Battery Strings", this->battery_strings_sensor_);
   LOG_SENSOR("", "Errors Bitmask", this->errors_bitmask_sensor_);
   LOG_SENSOR("", "Operation Mode Bitmask", this->operation_mode_bitmask_sensor_);
@@ -1078,7 +1078,7 @@ void JkRS485Bms::dump_config() {  // NOLINT(google-readability-function-size,rea
   LOG_SENSOR("", "Charging Low Temperature Recovery", this->charging_low_temperature_recovery_sensor_);
   LOG_SENSOR("", "Discharging Low Temperature Protection", this->discharging_low_temperature_protection_sensor_);
   LOG_SENSOR("", "Discharging Low Temperature Recovery", this->discharging_low_temperature_recovery_sensor_);
-  LOG_SENSOR("", "Total Battery Capacity Setting", this->total_battery_capacity_setting_sensor_);
+  LOG_SENSOR("", "Battery capacity total setting", this->battery_capacity_total_setting_sensor_);
   LOG_SENSOR("", "Current Calibration", this->current_calibration_sensor_);
   LOG_SENSOR("", "Device Address", this->device_address_sensor_);
   LOG_TEXT_SENSOR("", "Battery Type", this->battery_type_text_sensor_);

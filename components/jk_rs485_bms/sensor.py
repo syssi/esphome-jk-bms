@@ -108,10 +108,10 @@ CONF_TEMPERATURE_SENSORS = "temperature_sensors"
 CONF_TOTAL_VOLTAGE = "total_voltage"
 CONF_CHARGING_POWER = "charging_power"
 CONF_DISCHARGING_POWER = "discharging_power"
-CONF_CAPACITY_REMAINING = "capacity_remaining"
-CONF_CAPACITY_REMAINING_DERIVED = "capacity_remaining_derived"
+CONF_BATTERY_CAPACITY_REMAINING = "battery_capacity_remaining"
+CONF_BATTERY_CAPACITY_REMAINING_DERIVED = "battery_capacity_remaining_derived"
 CONF_CHARGING_CYCLES = "charging_cycles"
-CONF_TOTAL_CHARGING_CYCLE_CAPACITY = "total_charging_cycle_capacity"
+CONF_BATTERY_CAPACITY_TOTAL_CHARGING_CYCLE = "battery_capacity_total_charging_cycle"
 CONF_BATTERY_STRINGS = "battery_strings"
 CONF_STATE_OF_CHARGE = "state_of_charge"
 
@@ -156,7 +156,7 @@ CONF_DISCHARGING_LOW_TEMPERATURE_RECOVERY = "discharging_low_temperature_recover
 
 # r/w
 # CONF_BATTERY_STRINGS = "battery_strings"
-CONF_TOTAL_BATTERY_CAPACITY_SETTING = "total_battery_capacity_setting"
+CONF_BATTERY_CAPACITY_TOTAL_SETTING = "battery_capacity_total_setting"
 
 CONF_BALANCING_DIRECTION = "balancing_direction"
 CONF_CURRENT_CALIBRATION = "current_calibration"
@@ -192,10 +192,10 @@ ICON_CELL_VOLTAGE_MIN_CELL_NUMBER = "mdi:battery-minus-outline"
 ICON_CELL_VOLTAGE_MAX_CELL_NUMBER = "mdi:battery-plus-outline"
 
 ICON_BATTERY_STRINGS = "mdi:car-battery"
-ICON_CAPACITY_REMAINING = "mdi:battery-50"
-ICON_CAPACITY_REMAINING_DERIVED = "mdi:battery-50"
+ICON_BATTERY_CAPACITY_REMAINING = "mdi:battery-50"
+ICON_BATTERY_CAPACITY_REMAINING_DERIVED = "mdi:battery-50"
 ICON_ACTUAL_BATTERY_CAPACITY = "mdi:battery-50"
-ICON_TOTAL_BATTERY_CAPACITY_SETTING = "mdi:battery-sync"
+ICON_BATTERY_CAPACITY_TOTAL_SETTING = "mdi:battery-sync"
 
 ICON_DEVICE_ADDRESS = "mdi:identifier"
 ICON_ERRORS_BITMASK = "mdi:alert-circle-outline"
@@ -298,11 +298,11 @@ SENSORS = [
     CONF_POWER,
     CONF_CHARGING_POWER,
     CONF_DISCHARGING_POWER,
-    CONF_CAPACITY_REMAINING,
-    CONF_CAPACITY_REMAINING_DERIVED,
+    CONF_BATTERY_CAPACITY_REMAINING,
+    CONF_BATTERY_CAPACITY_REMAINING_DERIVED,
     CONF_TEMPERATURE_SENSORS,
     CONF_CHARGING_CYCLES,
-    CONF_TOTAL_CHARGING_CYCLE_CAPACITY,
+    CONF_BATTERY_CAPACITY_TOTAL_CHARGING_CYCLE,
     CONF_BATTERY_STRINGS,
     CONF_ERRORS_BITMASK,
     CONF_OPERATION_MODE_BITMASK,
@@ -342,7 +342,7 @@ SENSORS = [
     CONF_CHARGING_LOW_TEMPERATURE_RECOVERY,
     CONF_DISCHARGING_LOW_TEMPERATURE_PROTECTION,
     CONF_DISCHARGING_LOW_TEMPERATURE_RECOVERY,
-    CONF_TOTAL_BATTERY_CAPACITY_SETTING,
+    CONF_BATTERY_CAPACITY_TOTAL_SETTING,
     CONF_CURRENT_CALIBRATION,
     CONF_DEVICE_ADDRESS,
     CONF_SLEEP_WAIT_TIME,
@@ -873,16 +873,16 @@ CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
             device_class=DEVICE_CLASS_POWER,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_CAPACITY_REMAINING): sensor.sensor_schema(
+        cv.Optional(CONF_BATTERY_CAPACITY_REMAINING): sensor.sensor_schema(
             unit_of_measurement=UNIT_AMPERE_HOURS,
-            icon=ICON_CAPACITY_REMAINING,
+            icon=ICON_BATTERY_CAPACITY_REMAINING,
             accuracy_decimals=3,
             device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_CAPACITY_REMAINING_DERIVED): sensor.sensor_schema(
+        cv.Optional(CONF_BATTERY_CAPACITY_REMAINING_DERIVED): sensor.sensor_schema(
             unit_of_measurement=UNIT_AMPERE_HOURS,
-            icon=ICON_CAPACITY_REMAINING_DERIVED,
+            icon=ICON_BATTERY_CAPACITY_REMAINING_DERIVED,
             accuracy_decimals=1,
             device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
@@ -901,7 +901,7 @@ CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
             device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_TOTAL_CHARGING_CYCLE_CAPACITY): sensor.sensor_schema(
+        cv.Optional(CONF_BATTERY_CAPACITY_TOTAL_CHARGING_CYCLE): sensor.sensor_schema(
             unit_of_measurement=UNIT_AMPERE_HOURS,
             icon=ICON_COUNTER,
             accuracy_decimals=0,
@@ -1185,9 +1185,9 @@ CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
             device_class=DEVICE_CLASS_TEMPERATURE,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_TOTAL_BATTERY_CAPACITY_SETTING): sensor.sensor_schema(
+        cv.Optional(CONF_BATTERY_CAPACITY_TOTAL_SETTING): sensor.sensor_schema(
             unit_of_measurement=UNIT_AMPERE_HOURS,
-            icon=ICON_TOTAL_BATTERY_CAPACITY_SETTING,
+            icon=ICON_BATTERY_CAPACITY_TOTAL_SETTING,
             accuracy_decimals=0,
             device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
@@ -1256,17 +1256,17 @@ CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
             state_class=STATE_CLASS_MEASUREMENT,
         ),    
         cv.Optional(CONF_MAX_DISCHARGING_CURRENT): sensor.sensor_schema(
-            unit_of_measurement=UNIT_EMPTY,
-            icon=ICON_EMPTY,
-            accuracy_decimals=0,
-            device_class=DEVICE_CLASS_EMPTY,
+            unit_of_measurement=UNIT_AMPERE,
+            icon=ICON_CURRENT_DC,
+            accuracy_decimals=3,
+            device_class=DEVICE_CLASS_CURRENT,
             state_class=STATE_CLASS_MEASUREMENT,
         ),                  
         cv.Optional(CONF_START_CURRENT_CALIBRATION): sensor.sensor_schema(
-            unit_of_measurement=UNIT_EMPTY,
-            icon=ICON_EMPTY,
-            accuracy_decimals=0,
-            device_class=DEVICE_CLASS_EMPTY,
+            unit_of_measurement=UNIT_AMPERE,
+            icon=ICON_CURRENT_DC,
+            accuracy_decimals=3,
+            device_class=DEVICE_CLASS_CURRENT,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
         cv.Optional(CONF_ACTUAL_BATTERY_CAPACITY): sensor.sensor_schema(

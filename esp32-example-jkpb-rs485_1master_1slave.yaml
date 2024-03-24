@@ -369,14 +369,14 @@ sensor:
       name: "${bms0_name} power tube temperature"
     state_of_charge:
       name: "${bms0_name} state of charge"
-    capacity_remaining:
-      name: "${bms0_name} capacity remaining"
-    total_battery_capacity_setting:
-      name: "${bms0_name} total battery capacity setting"
+    battery_capacity_remaining:
+      name: "${bms0_name} battery capacity remaining"
+    battery_capacity_total_setting:
+      name: "${bms0_name} battery capacity total setting"
     charging_cycles:
       name: "${bms0_name} charging cycles"
-    total_charging_cycle_capacity:
-      name: "${bms0_name} total charging cycle capacity"
+    battery_capacity_total_charging_cycle:
+      name: "${bms0_name} battery capacity total charging cycle"
     total_runtime:
       name: "${bms0_name} total runtime"
     balancing_current:
@@ -578,14 +578,14 @@ sensor:
       name: "${bms1_name} power tube temperature"
     state_of_charge:
       name: "${bms1_name} state of charge"
-    capacity_remaining:
-      name: "${bms1_name} capacity remaining"
-    total_battery_capacity_setting:
-      name: "${bms1_name} total battery capacity setting"
+    battery_capacity_remaining:
+      name: "${bms1_name} battery capacity remaining"
+    battery_capacity_total_setting:
+      name: "${bms1_name} battery capacity total setting"
     charging_cycles:
       name: "${bms1_name} charging cycles"
-    total_charging_cycle_capacity:
-      name: "${bms1_name} total charging cycle capacity"
+    battery_capacity_total_charging_cycle:
+      name: "${bms1_name} battery capacity total charging cycle"
     total_runtime:
       name: "${bms1_name} total runtime"
     balancing_current:
