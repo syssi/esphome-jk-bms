@@ -831,6 +831,14 @@ sensor:
       name: "${bms0_name} discharging overtemperature protection"
     discharging_overtemperature_protection_recovery:
       name: "${bms0_name} discharging overtemperature protection recovery"       
+    charging_lowtemperature_protection:
+      name: "${bms0_name} charging lowtemperature protection"
+    charging_lowtemperature_protection_recovery:
+      name: "${bms0_name} charging lowtemperature protection recovery"
+    mos_overtemperature_protection:
+      name: "${bms0_name} mos overtemperature protection"
+    mos_overtemperature_protection_recovery:
+      name: "${bms0_name} mos overtemperature protection recovery"   
 
 
   - platform: jk_rs485_bms
@@ -1031,6 +1039,14 @@ sensor:
       name: "${bms1_name} discharging overtemperature protection"
     discharging_overtemperature_protection_recovery:
       name: "${bms1_name} discharging overtemperature protection recovery"       
+    charging_lowtemperature_protection:
+      name: "${bms1_name} charging lowtemperature protection"
+    charging_lowtemperature_protection_recovery:
+      name: "${bms1name} charging lowtemperature protection recovery"
+    mos_overtemperature_protection:
+      name: "${bms1_name} mos overtemperature protection"
+    mos_overtemperature_protection_recovery:
+      name: "${bms1_name} mos overtemperature protection recovery"   
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms2
@@ -1230,6 +1246,14 @@ sensor:
       name: "${bms2_name} discharging overtemperature protection"
     discharging_overtemperature_protection_recovery:
       name: "${bms2_name} discharging overtemperature protection recovery" 
+    charging_lowtemperature_protection:
+      name: "${bms2_name} charging lowtemperature protection"
+    charging_lowtemperature_protection_recovery:
+      name: "${bms2_name} charging lowtemperature protection recovery"
+    mos_overtemperature_protection:
+      name: "${bms2_name} mos overtemperature protection"
+    mos_overtemperature_protection_recovery:
+      name: "${bms2_name} mos overtemperature protection recovery"   
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms3
@@ -1429,6 +1453,14 @@ sensor:
       name: "${bms3_name} discharging overtemperature protection"
     discharging_overtemperature_protection_recovery:
       name: "${bms3_name} discharging overtemperature protection recovery" 
+    charging_lowtemperature_protection:
+      name: "${bms3_name} charging lowtemperature protection"
+    charging_lowtemperature_protection_recovery:
+      name: "${bms3_name} charging lowtemperature protection recovery"
+    mos_overtemperature_protection:
+      name: "${bms3_name} mos overtemperature protection"
+    mos_overtemperature_protection_recovery:
+      name: "${bms3_name} mos overtemperature protection recovery"   
 
 
   - platform: jk_rs485_bms
@@ -1629,7 +1661,14 @@ sensor:
       name: "${bms4_name} discharging overtemperature protection"
     discharging_overtemperature_protection_recovery:
       name: "${bms4_name} discharging overtemperature protection recovery" 
-
+    charging_lowtemperature_protection:
+      name: "${bms4_name} charging lowtemperature protection"
+    charging_lowtemperature_protection_recovery:
+      name: "${bms4_name} charging lowtemperature protection recovery"
+    mos_overtemperature_protection:
+      name: "${bms4_name} mos overtemperature protection"
+    mos_overtemperature_protection_recovery:
+      name: "${bms4_name} mos overtemperature protection recovery"   
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms5
@@ -1829,6 +1868,14 @@ sensor:
       name: "${bms5_name} discharging overtemperature protection"
     discharging_overtemperature_protection_recovery:
       name: "${bms5_name} discharging overtemperature protection recovery" 
+    charging_lowtemperature_protection:
+      name: "${bms5_name} charging lowtemperature protection"
+    charging_lowtemperature_protection_recovery:
+      name: "${bms5_name} charging lowtemperature protection recovery"
+    mos_overtemperature_protection:
+      name: "${bms5_name} mos overtemperature protection"
+    mos_overtemperature_protection_recovery:
+      name: "${bms5_name} mos overtemperature protection recovery"   
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms6
@@ -2028,9 +2075,14 @@ sensor:
       name: "${bms6_name} discharging overtemperature protection"
     discharging_overtemperature_protection_recovery:
       name: "${bms6_name} discharging overtemperature protection recovery" 
-
-
-
+    charging_lowtemperature_protection:
+      name: "${bms6_name} charging lowtemperature protection"
+    charging_lowtemperature_protection_recovery:
+      name: "${bms6_name} charging lowtemperature protection recovery"
+    mos_overtemperature_protection:
+      name: "${bms6_name} mos overtemperature protection"
+    mos_overtemperature_protection_recovery:
+      name: "${bms6_name} mos overtemperature protection recovery"         
 switch:
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms0

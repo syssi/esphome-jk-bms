@@ -229,7 +229,18 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   void set_discharging_overtemperature_protection_recovery_sensor(sensor::Sensor *discharging_overtemperature_protection_recovery_sensor) {
     discharging_overtemperature_protection_recovery_sensor_ = discharging_overtemperature_protection_recovery_sensor;
   }
-
+  void set_charging_lowtemperature_protection_sensor(sensor::Sensor *charging_lowtemperature_protection_sensor) {
+    charging_lowtemperature_protection_sensor_ = charging_lowtemperature_protection_sensor;
+  }
+  void set_charging_lowtemperature_protection_recovery_sensor(sensor::Sensor *charging_lowtemperature_protection_recovery_sensor) {
+    charging_lowtemperature_protection_recovery_sensor_ = charging_lowtemperature_protection_recovery_sensor;
+  }  
+  void set_mos_overtemperature_protection_sensor(sensor::Sensor *mos_overtemperature_protection_sensor) {
+    mos_overtemperature_protection_sensor_ = mos_overtemperature_protection_sensor;
+  }
+  void set_mos_overtemperature_protection_recovery_sensor(sensor::Sensor *mos_overtemperature_protection_recovery_sensor) {
+    mos_overtemperature_protection_recovery_sensor_ = mos_overtemperature_protection_recovery_sensor;
+  }
 
   void set_balancing_starting_voltage_sensor(sensor::Sensor *balance_starting_voltage_sensor) {
     balance_starting_voltage_sensor_ = balance_starting_voltage_sensor;
@@ -551,6 +562,10 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   sensor::Sensor *charging_overtemperature_protection_recovery_sensor_;
   sensor::Sensor *discharging_overtemperature_protection_sensor_;
   sensor::Sensor *discharging_overtemperature_protection_recovery_sensor_;
+  sensor::Sensor *charging_lowtemperature_protection_sensor_;
+  sensor::Sensor *charging_lowtemperature_protection_recovery_sensor_;
+  sensor::Sensor *mos_overtemperature_protection_sensor_;
+  sensor::Sensor *mos_overtemperature_protection_recovery_sensor_;  
   sensor::Sensor *scp_recovery_time_number_;    
   sensor::Sensor *total_battery_capacity_number_;  
 
@@ -602,7 +617,7 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   sensor::Sensor *discharging_low_temperature_protection_sensor_;
   sensor::Sensor *discharging_low_temperature_recovery_sensor_;
   sensor::Sensor *total_battery_capacity_setting_sensor_;
- 
+
   sensor::Sensor *charging_sensor_;
   sensor::Sensor *discharging_sensor_;
   sensor::Sensor *current_calibration_sensor_;

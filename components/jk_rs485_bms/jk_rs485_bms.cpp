@@ -595,7 +595,7 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->max_charging_current_sensor_, (float) jk_get_32bit(50) * 0.001f);
 
   // 54    4   0x1E 0x00 0x00 0x00    Charge OCP delay                    TIMBatCOCPDly   Charging Overcurrent Protection Delay (s)
-  ESP_LOGI(TAG, "  Charge OCP delay: %f s", (float) jk_get_32bit(54));
+  ESP_LOGV(TAG, "  Charge OCP delay: %f s", (float) jk_get_32bit(54));
   this->publish_state_(this->charging_overcurrent_protection_delay_sensor_, (float) jk_get_32bit(54) * 0.001f);
   // 58    4   0x3C 0x00 0x00 0x00    Charge OCP recovery time            TIMBatCOCPRDly  Charging Overcurrent Protection Release Delay (s)
   ESP_LOGV(TAG, "  Charge OCP recovery delay: %f s", (float) jk_get_32bit(58));
@@ -623,22 +623,28 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   // 86    4   0x58 0x02 0x00 0x00    Charge OTP Recovery                 TMPBatCOTPR      Charging Over Temperature Protection Recovery
   ESP_LOGV(TAG, "  Charge OTP recovery: %f °C", (float) jk_get_32bit(86) * 0.1f);
   this->publish_state_(this->charging_overtemperature_protection_recovery_sensor_, (float) jk_get_32bit(86) * 0.1f);
-  // 90    4   0xBC 0x02 0x00 0x00    Discharge OTP
+  // 90    4   0xBC 0x02 0x00 0x00    Discharge OTP                       TMPBatDcOT
   ESP_LOGV(TAG, "  Discharge OTP: %f °C", (float) jk_get_32bit(90) * 0.1f);
   this->publish_state_(this->discharging_overtemperature_protection_sensor_, (float) jk_get_32bit(90) * 0.1f);  
-  // 94    4   0x58 0x02 0x00 0x00    Discharge OTP Recovery
+  // 94    4   0x58 0x02 0x00 0x00    Discharge OTP Recovery              TMPBatDcOTPR
   ESP_LOGV(TAG, "  Discharge OTP recovery: %f °C", (float) jk_get_32bit(94) * 0.1f);
-  this->publish_state_(this->discharging_overtemperature_protection_recovery_sensor_, (float) jk_get_32bit(86) * 0.1f);  
+  this->publish_state_(this->discharging_overtemperature_protection_recovery_sensor_, (float) jk_get_32bit(94) * 0.1f);  
 
 
-  // 98    4   0x38 0xFF 0xFF 0xFF    Charge UTP   TMPBatCUT
+  // 98    4   0x38 0xFF 0xFF 0xFF    Charge UTP                          TMPBatCUT        Charging Low Temperature Protection
   ESP_LOGV(TAG, "  Charge UTP: %f °C", (float) ((int32_t) jk_get_32bit(98)) * 0.1f);
-  // 102   4   0x9C 0xFF 0xFF 0xFF    Charge UTP Recovery
+  this->publish_state_(this->charging_lowtemperature_protection_sensor_, (float) jk_get_32bit(98) * 0.1f);  
+  // 102   4   0x9C 0xFF 0xFF 0xFF    Charge UTP Recovery                 TMPBatCUTPR      Charging Low Temperature Protection Recovery
   ESP_LOGV(TAG, "  Charge UTP recovery: %f °C", (float) ((int32_t) jk_get_32bit(102)) * 0.1f);
-  // 106   4   0x84 0x03 0x00 0x00    MOS OTP
+  this->publish_state_(this->charging_lowtemperature_protection_recovery_sensor_, (float) jk_get_32bit(102) * 0.1f);
+  // 106   4   0x84 0x03 0x00 0x00    MOS OTP                             TMPMosOT         MOS Overtemperature Protection
   ESP_LOGV(TAG, "  MOS OTP: %f °C", (float) ((int32_t) jk_get_32bit(106)) * 0.1f);
+  this->publish_state_(this->mos_overtemperature_protection_sensor_, (float) jk_get_32bit(106) * 0.1f);
   // 110   4   0xBC 0x02 0x00 0x00    MOS OTP Recovery
   ESP_LOGV(TAG, "  MOS OTP recovery: %f °C", (float) ((int32_t) jk_get_32bit(110)) * 0.1f);
+  this->publish_state_(this->mos_overtemperature_protection_recovery_sensor_, (float) jk_get_32bit(110) * 0.1f);  
+
+
   // 114   4   0x0D 0x00 0x00 0x00    Cell count
   ESP_LOGV(TAG, "  Cell count: %f", (float) jk_get_32bit(114));
   this->publish_state_(this->cell_count_sensor_, (float) data[114]);
