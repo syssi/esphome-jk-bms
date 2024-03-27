@@ -647,10 +647,10 @@ sensor:
       name: "${bms0_name} cell voltage min cell number"
     cell_voltage_max_cell_number:
       name: "${bms0_name} cell voltage max cell number"
-    delta_cell_voltage:
-      name: "${bms0_name} delta cell voltage"
-    average_cell_voltage:
-      name: "${bms0_name} average cell voltage"
+    cell_delta_voltage:
+      name: "${bms0_name} cell delta voltage"
+    cell_average_voltage:
+      name: "${bms0_name} cell average voltage"
     cell_voltage_01:
       name: "${bms0_name} cell voltage 01"
     cell_voltage_02:
@@ -858,10 +858,10 @@ sensor:
       name: "${bms1_name} cell voltage min cell number"
     cell_voltage_max_cell_number:
       name: "${bms1_name} cell voltage max cell number"
-    delta_cell_voltage:
-      name: "${bms1_name} delta cell voltage"
-    average_cell_voltage:
-      name: "${bms1_name} average cell voltage"
+    cell_delta_voltage:
+      name: "${bms1_name} cell delta voltage"
+    cell_average_voltage:
+      name: "${bms1_name} cell average voltage"
     cell_voltage_01:
       name: "${bms1_name} cell voltage 01"
     cell_voltage_02:
@@ -1070,10 +1070,10 @@ sensor:
       name: "${bms2_name} cell voltage min cell number"
     cell_voltage_max_cell_number:
       name: "${bms2_name} cell voltage max cell number"
-    delta_cell_voltage:
-      name: "${bms2_name} delta cell voltage"
-    average_cell_voltage:
-      name: "${bms2_name} average cell voltage"
+    cell_delta_voltage:
+      name: "${bms2_name} cell delta voltage"
+    cell_average_voltage:
+      name: "${bms2_name} cell average voltage"
     cell_voltage_01:
       name: "${bms2_name} cell voltage 01"
     cell_voltage_02:
@@ -1282,10 +1282,10 @@ sensor:
       name: "${bms3_name} cell voltage min cell number"
     cell_voltage_max_cell_number:
       name: "${bms3_name} cell voltage max cell number"
-    delta_cell_voltage:
-      name: "${bms3_name} delta cell voltage"
-    average_cell_voltage:
-      name: "${bms3_name} average cell voltage"
+    cell_delta_voltage:
+      name: "${bms3_name} cell delta voltage"
+    cell_average_voltage:
+      name: "${bms3_name} cell average voltage"
     cell_voltage_01:
       name: "${bms3_name} cell voltage 01"
     cell_voltage_02:
@@ -1494,10 +1494,10 @@ sensor:
       name: "${bms4_name} cell voltage min cell number"
     cell_voltage_max_cell_number:
       name: "${bms4_name} cell voltage max cell number"
-    delta_cell_voltage:
-      name: "${bms4_name} delta cell voltage"
-    average_cell_voltage:
-      name: "${bms4_name} average cell voltage"
+    cell_delta_voltage:
+      name: "${bms4_name} cell delta voltage"
+    cell_average_voltage:
+      name: "${bms4_name} cell average voltage"
     cell_voltage_01:
       name: "${bms4_name} cell voltage 01"
     cell_voltage_02:
@@ -1706,10 +1706,10 @@ sensor:
       name: "${bms5_name} cell voltage min cell number"
     cell_voltage_max_cell_number:
       name: "${bms5_name} cell voltage max cell number"
-    delta_cell_voltage:
-      name: "${bms5_name} delta cell voltage"
-    average_cell_voltage:
-      name: "${bms5_name} average cell voltage"
+    cell_delta_voltage:
+      name: "${bms5_name} cell delta voltage"
+    cell_average_voltage:
+      name: "${bms5_name} cell average voltage"
     cell_voltage_01:
       name: "${bms5_name} cell voltage 01"
     cell_voltage_02:
@@ -1918,10 +1918,10 @@ sensor:
       name: "${bms6_name} cell voltage min cell number"
     cell_voltage_max_cell_number:
       name: "${bms6_name} cell voltage max cell number"
-    delta_cell_voltage:
-      name: "${bms6_name} delta cell voltage"
-    average_cell_voltage:
-      name: "${bms6_name} average cell voltage"
+    cell_delta_voltage:
+      name: "${bms6_name} cell delta voltage"
+    cell_average_voltage:
+      name: "${bms6_name} cell average voltage"
     cell_voltage_01:
       name: "${bms6_name} cell voltage 01"
     cell_voltage_02:

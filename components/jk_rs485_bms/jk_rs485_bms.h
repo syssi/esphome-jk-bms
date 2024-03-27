@@ -94,11 +94,11 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   void set_cell_voltage_max_cell_number_sensor(sensor::Sensor *cell_voltage_max_cell_number_sensor) {
     cell_voltage_max_cell_number_sensor_ = cell_voltage_max_cell_number_sensor;
   }
-  void set_delta_cell_voltage_sensor(sensor::Sensor *delta_cell_voltage_sensor) {
-    delta_cell_voltage_sensor_ = delta_cell_voltage_sensor;
+  void set_cell_delta_voltage_sensor(sensor::Sensor *cell_delta_voltage_sensor) {
+    cell_delta_voltage_sensor_ = cell_delta_voltage_sensor;
   }
-  void set_average_cell_voltage_sensor(sensor::Sensor *average_cell_voltage_sensor) {
-    average_cell_voltage_sensor_ = average_cell_voltage_sensor;
+  void set_cell_average_voltage_sensor(sensor::Sensor *cell_average_voltage_sensor) {
+    cell_average_voltage_sensor_ = cell_average_voltage_sensor;
   }
   void set_cell_voltage_sensor(uint8_t cell, sensor::Sensor *cell_voltage_sensor) {
     this->cells_[cell].cell_voltage_sensor_ = cell_voltage_sensor;
@@ -636,8 +636,8 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   sensor::Sensor *cell_voltage_max_sensor_;
   sensor::Sensor *cell_voltage_min_cell_number_sensor_;
   sensor::Sensor *cell_voltage_max_cell_number_sensor_;
-  sensor::Sensor *delta_cell_voltage_sensor_;
-  sensor::Sensor *average_cell_voltage_sensor_;
+  sensor::Sensor *cell_delta_voltage_sensor_;
+  sensor::Sensor *cell_average_voltage_sensor_;
   sensor::Sensor *temperature_powertube_sensor_;
   sensor::Sensor *temperature_sensor_1_sensor_;
   sensor::Sensor *temperature_sensor_2_sensor_;

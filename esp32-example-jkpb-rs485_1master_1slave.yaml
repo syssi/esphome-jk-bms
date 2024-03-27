@@ -24,10 +24,10 @@ esp32:
 #  board: d1_mini
 
 external_components:
- - source: ${external_components_source}
-    refresh: 0s
-#  - source: ./components
+# - source: ${external_components_source}
 #    refresh: 0s
+  - source: ./components
+    refresh: 0s
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
@@ -247,10 +247,10 @@ sensor:
       name: "${bms0_name} cell voltage min cell number"
     cell_voltage_max_cell_number:
       name: "${bms0_name} cell voltage max cell number"
-    delta_cell_voltage:
-      name: "${bms0_name} delta cell voltage"
-    average_cell_voltage:
-      name: "${bms0_name} average cell voltage"
+    cell_delta_voltage:
+      name: "${bms0_name} cell delta voltage"
+    cell_average_voltage:
+      name: "${bms0_name} cell average voltage"
     cell_voltage_01:
       name: "${bms0_name} cell voltage 01"
     cell_voltage_02:
@@ -464,10 +464,10 @@ sensor:
       name: "${bms1_name} cell voltage min cell number"
     cell_voltage_max_cell_number:
       name: "${bms1_name} cell voltage max cell number"
-    delta_cell_voltage:
-      name: "${bms1_name} delta cell voltage"
-    average_cell_voltage:
-      name: "${bms1_name} average cell voltage"
+    cell_delta_voltage:
+      name: "${bms1_name} cell delta voltage"
+    cell_average_voltage:
+      name: "${bms1_name} cell average voltage"
     cell_voltage_01:
       name: "${bms1_name} cell voltage 01"
     cell_voltage_02:

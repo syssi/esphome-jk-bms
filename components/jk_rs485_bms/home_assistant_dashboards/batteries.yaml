@@ -277,7 +277,7 @@ views:
                       %}  
 
                       {%- set delta =
-                      (states('sensor.rs485_bms0_delta_cell_voltage')|float)
+                      (states('sensor.rs485_bms0_cell_delta_voltage')|float)
                       %}  
 
                       <table> <tr><td colspan=4><b>CELL
@@ -617,7 +617,7 @@ views:
                       %}  
 
                       {%- set delta =
-                      (states('sensor.rs485_bms1_delta_cell_voltage')|float)
+                      (states('sensor.rs485_bms1_cell_delta_voltage')|float)
                       %}  
 
                       <table> <tr><td colspan=4><b>CELL

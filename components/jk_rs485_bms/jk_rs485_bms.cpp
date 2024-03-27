@@ -178,11 +178,11 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   ESP_LOGV(TAG, "Enabled cells bitmask: 0x%02X 0x%02X 0x%02X 0x%02X", data[54 + offset], data[55 + offset],
            data[56 + offset], data[57 + offset]);
 
-  // 58    2   0x00 0x0D              Average Cell Voltage  0.001        V
-  this->publish_state_(this->average_cell_voltage_sensor_, (float) jk_get_16bit(58 + offset) * 0.001f);
+  // 58    2   0x00 0x0D              cell average voltage  0.001        V
+  this->publish_state_(this->cell_average_voltage_sensor_, (float) jk_get_16bit(58 + offset) * 0.001f);
 
-  // 60    2   0x00 0x00              Delta Cell Voltage    0.001        V
-  this->publish_state_(this->delta_cell_voltage_sensor_, (float) jk_get_16bit(60 + offset) * 0.001f);
+  // 60    2   0x00 0x00              cell delta voltage    0.001        V
+  this->publish_state_(this->cell_delta_voltage_sensor_, (float) jk_get_16bit(60 + offset) * 0.001f);
 
   // 62    1   0x00                   Cell voltage max cell number      1
   this->publish_state_(this->cell_voltage_max_cell_number_sensor_, (float) data[62 + offset] + 1);
@@ -901,8 +901,8 @@ void JkRS485Bms::publish_device_unavailable_() {
   this->publish_state_(cell_voltage_max_sensor_, NAN);
   this->publish_state_(cell_voltage_min_cell_number_sensor_, NAN);
   this->publish_state_(cell_voltage_max_cell_number_sensor_, NAN);
-  this->publish_state_(delta_cell_voltage_sensor_, NAN);
-  this->publish_state_(average_cell_voltage_sensor_, NAN);
+  this->publish_state_(cell_delta_voltage_sensor_, NAN);
+  this->publish_state_(cell_average_voltage_sensor_, NAN);
   this->publish_state_(temperature_powertube_sensor_, NAN);
   this->publish_state_(temperature_sensor_1_sensor_, NAN);
   this->publish_state_(temperature_sensor_2_sensor_, NAN);
@@ -1049,8 +1049,8 @@ void JkRS485Bms::dump_config() {  // NOLINT(google-readability-function-size,rea
   LOG_SENSOR("", "Maximum Cell Voltage", this->cell_voltage_max_sensor_);
   LOG_SENSOR("", "Minimum Voltage Cell", this->cell_voltage_min_cell_number_sensor_);
   LOG_SENSOR("", "Maximum Voltage Cell", this->cell_voltage_max_cell_number_sensor_);
-  LOG_SENSOR("", "Delta Cell Voltage", this->delta_cell_voltage_sensor_);
-  LOG_SENSOR("", "Average Cell Voltage", this->average_cell_voltage_sensor_);
+  LOG_SENSOR("", "cell delta voltage", this->cell_delta_voltage_sensor_);
+  LOG_SENSOR("", "cell average voltage", this->cell_average_voltage_sensor_);
   LOG_SENSOR("", "Cell Voltage 1", this->cells_[0].cell_voltage_sensor_);
   LOG_SENSOR("", "Cell Voltage 2", this->cells_[1].cell_voltage_sensor_);
   LOG_SENSOR("", "Cell Voltage 3", this->cells_[2].cell_voltage_sensor_);

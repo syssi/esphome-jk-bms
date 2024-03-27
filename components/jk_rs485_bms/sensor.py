@@ -36,8 +36,8 @@ CONF_CELL_VOLTAGE_MIN = "cell_voltage_min"
 CONF_CELL_VOLTAGE_MAX = "cell_voltage_max"
 CONF_CELL_VOLTAGE_MIN_CELL_NUMBER = "cell_voltage_min_cell_number"
 CONF_CELL_VOLTAGE_MAX_CELL_NUMBER = "cell_voltage_max_cell_number"
-CONF_DELTA_CELL_VOLTAGE = "delta_cell_voltage"
-CONF_AVERAGE_CELL_VOLTAGE = "average_cell_voltage"
+CONF_cell_delta_voltage = "cell_delta_voltage"
+CONF_cell_average_voltage = "cell_average_voltage"
 CONF_CELL_COUNT = "cell_count"
 CONF_CELL_REQUEST_CHARGE_VOLTAGE = "cell_request_charge_voltage"
 CONF_CELL_REQUEST_FLOAT_VOLTAGE = "cell_request_float_voltage"
@@ -287,8 +287,8 @@ SENSORS = [
     CONF_CELL_VOLTAGE_MAX,
     CONF_CELL_VOLTAGE_MIN_CELL_NUMBER,
     CONF_CELL_VOLTAGE_MAX_CELL_NUMBER,
-    CONF_DELTA_CELL_VOLTAGE,
-    CONF_AVERAGE_CELL_VOLTAGE,
+    CONF_cell_delta_voltage,
+    CONF_cell_average_voltage,
     CONF_CELL_COUNT,
     CONF_CELL_REQUEST_CHARGE_VOLTAGE,
     CONF_CELL_REQUEST_FLOAT_VOLTAGE,    
@@ -410,14 +410,14 @@ CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
             device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_DELTA_CELL_VOLTAGE): sensor.sensor_schema(
+        cv.Optional(CONF_cell_delta_voltage): sensor.sensor_schema(
             unit_of_measurement=UNIT_VOLT,
             icon=ICON_EMPTY,
             accuracy_decimals=3,
             device_class=DEVICE_CLASS_VOLTAGE,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_AVERAGE_CELL_VOLTAGE): sensor.sensor_schema(
+        cv.Optional(CONF_cell_average_voltage): sensor.sensor_schema(
             unit_of_measurement=UNIT_VOLT,
             icon=ICON_EMPTY,
             accuracy_decimals=3,
