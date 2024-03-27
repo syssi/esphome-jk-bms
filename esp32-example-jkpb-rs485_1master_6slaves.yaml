@@ -747,16 +747,16 @@ sensor:
       name: "${bms0_name} cell resistance 23"
     cell_resistance_24:
       name: "${bms0_name} cell resistance 24"
-    total_voltage:
-      name: "${bms0_name} total voltage"
-    current:
-      name: "${bms0_name} current"
-    power:
-      name: "${bms0_name} power"
-    charging_power:
-      name: "${bms0_name} charging power"
-    discharging_power:
-      name: "${bms0_name} discharging power"
+    battery_voltage:
+      name: "${bms0_name} battery voltage"
+    battery_current:
+      name: "${bms0_name} battery current"
+    battery_power:
+      name: "${bms0_name} battery power"
+    battery_power_charging:
+      name: "${bms0_name} battery power charging"
+    battery_power_discharging:
+      name: "${bms0_name} battery power discharging"
     temperature_sensor_1:
       name: "${bms0_name} temperature sensor 1"
     temperature_sensor_2:
@@ -765,10 +765,10 @@ sensor:
       name: "${bms0_name} temperature sensor 3"
     temperature_sensor_4:
       name: "${bms0_name} temperature sensor 4"
-    power_tube_temperature:
-      name: "${bms0_name} power tube temperature"
-    state_of_charge:
-      name: "${bms0_name} state of charge"
+    temperature_powertube:
+      name: "${bms0_name} temperature powertube"
+    battery_capacity_state_of_charge:
+      name: "${bms0_name} battery capacity state of charge"
     battery_capacity_remaining:
       name: "${bms0_name} battery capacity remaining"
     battery_capacity_total_setting:
@@ -777,8 +777,8 @@ sensor:
       name: "${bms0_name} charging cycles"
     battery_capacity_total_charging_cycle:
       name: "${bms0_name} battery capacity total charging cycle"
-    total_runtime:
-      name: "${bms0_name} total runtime"
+    battery_total_runtime:
+      name: "${bms0_name} battery total runtime"
     balancing_current:
       name: "${bms0_name} balancing current"
     errors_bitmask:
@@ -839,7 +839,10 @@ sensor:
       name: "${bms0_name} mos overtemperature protection"
     mos_overtemperature_protection_recovery:
       name: "${bms0_name} mos overtemperature protection recovery"   
-
+    powertube_temperature_protection:
+      name: "${bms0_name} powertube temperature protection" 
+    powertube_temperature_protection_recovery:
+      name: "${bms0_name} powertube temperature protection recovery"     
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms1
@@ -955,16 +958,16 @@ sensor:
       name: "${bms1_name} cell resistance 23"
     cell_resistance_24:
       name: "${bms1_name} cell resistance 24"
-    total_voltage:
-      name: "${bms1_name} total voltage"
-    current:
-      name: "${bms1_name} current"
-    power:
-      name: "${bms1_name} power"
-    charging_power:
-      name: "${bms1_name} charging power"
-    discharging_power:
-      name: "${bms1_name} discharging power"
+    battery_voltage:
+      name: "${bms1_name} battery voltage"
+    battery_current:
+      name: "${bms1_name} battery current"
+    battery_power:
+      name: "${bms1_name} battery power"
+    battery_power_charging:
+      name: "${bms1_name} battery power charging"
+    battery_power_discharging:
+      name: "${bms1_name} battery power discharging"
     temperature_sensor_1:
       name: "${bms1_name} temperature sensor 1"
     temperature_sensor_2:
@@ -973,10 +976,10 @@ sensor:
       name: "${bms1_name} temperature sensor 3"
     temperature_sensor_4:
       name: "${bms1_name} temperature sensor 4"
-    power_tube_temperature:
-      name: "${bms1_name} power tube temperature"
-    state_of_charge:
-      name: "${bms1_name} state of charge"
+    temperature_powertube:
+      name: "${bms1_name} temperature powertube"
+    battery_capacity_state_of_charge:
+      name: "${bms1_name} battery capacity state of charge"
     battery_capacity_remaining:
       name: "${bms1_name} battery capacity remaining"
     battery_capacity_total_setting:
@@ -985,8 +988,8 @@ sensor:
       name: "${bms1_name} charging cycles"
     battery_capacity_total_charging_cycle:
       name: "${bms1_name} battery capacity total charging cycle"
-    total_runtime:
-      name: "${bms1_name} total runtime"
+    battery_total_runtime:
+      name: "${bms1_name} battery total runtime"
     balancing_current:
       name: "${bms1_name} balancing current"
     errors_bitmask:
@@ -1047,6 +1050,11 @@ sensor:
       name: "${bms1_name} mos overtemperature protection"
     mos_overtemperature_protection_recovery:
       name: "${bms1_name} mos overtemperature protection recovery"   
+    powertube_temperature_protection:
+      name: "${bms1_name} powertube temperature protection" 
+    powertube_temperature_protection_recovery:
+      name: "${bms1_name} powertube temperature protection recovery"     
+
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms2
@@ -1162,16 +1170,16 @@ sensor:
       name: "${bms2_name} cell resistance 23"
     cell_resistance_24:
       name: "${bms2_name} cell resistance 24"
-    total_voltage:
-      name: "${bms2_name} total voltage"
-    current:
-      name: "${bms2_name} current"
-    power:
-      name: "${bms2_name} power"
-    charging_power:
-      name: "${bms2_name} charging power"
-    discharging_power:
-      name: "${bms2_name} discharging power"
+    battery_voltage:
+      name: "${bms2_name} battery voltage"
+    battery_current:
+      name: "${bms2_name} battery current"
+    battery_power:
+      name: "${bms2_name} battery power"
+    battery_power_charging:
+      name: "${bms2_name} battery power charging"
+    battery_power_discharging:
+      name: "${bms2_name} battery power discharging"
     temperature_sensor_1:
       name: "${bms2_name} temperature sensor 1"
     temperature_sensor_2:
@@ -1180,10 +1188,10 @@ sensor:
       name: "${bms2_name} temperature sensor 3"
     temperature_sensor_4:
       name: "${bms2_name} temperature sensor 4"
-    power_tube_temperature:
-      name: "${bms2_name} power tube temperature"
-    state_of_charge:
-      name: "${bms2_name} state of charge"
+    temperature_powertube:
+      name: "${bms2_name} temperature powertube"
+    battery_capacity_state_of_charge:
+      name: "${bms2_name} battery capacity state of charge"
     battery_capacity_remaining:
       name: "${bms2_name} battery capacity remaining"
     battery_capacity_total_setting:
@@ -1192,8 +1200,8 @@ sensor:
       name: "${bms2_name} charging cycles"
     battery_capacity_total_charging_cycle:
       name: "${bms2_name} battery capacity total charging cycle"
-    total_runtime:
-      name: "${bms2_name} total runtime"
+    battery_total_runtime:
+      name: "${bms2_name} battery total runtime"
     balancing_current:
       name: "${bms2_name} balancing current"
     errors_bitmask:
@@ -1254,6 +1262,11 @@ sensor:
       name: "${bms2_name} mos overtemperature protection"
     mos_overtemperature_protection_recovery:
       name: "${bms2_name} mos overtemperature protection recovery"   
+    powertube_temperature_protection:
+      name: "${bms2_name} powertube temperature protection" 
+    powertube_temperature_protection_recovery:
+      name: "${bms2_name} powertube temperature protection recovery"     
+
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms3
@@ -1369,16 +1382,16 @@ sensor:
       name: "${bms3_name} cell resistance 23"
     cell_resistance_24:
       name: "${bms3_name} cell resistance 24"
-    total_voltage:
-      name: "${bms3_name} total voltage"
-    current:
-      name: "${bms3_name} current"
-    power:
-      name: "${bms3_name} power"
-    charging_power:
-      name: "${bms3_name} charging power"
-    discharging_power:
-      name: "${bms3_name} discharging power"
+    battery_voltage:
+      name: "${bms3_name} battery voltage"
+    battery_current:
+      name: "${bms3_name} battery current"
+    battery_power:
+      name: "${bms3_name} battery power"
+    battery_power_charging:
+      name: "${bms3_name} battery power charging"
+    battery_power_discharging:
+      name: "${bms3_name} battery power discharging"
     temperature_sensor_1:
       name: "${bms3_name} temperature sensor 1"
     temperature_sensor_2:
@@ -1387,10 +1400,10 @@ sensor:
       name: "${bms3_name} temperature sensor 3"
     temperature_sensor_4:
       name: "${bms3_name} temperature sensor 4"
-    power_tube_temperature:
-      name: "${bms3_name} power tube temperature"
-    state_of_charge:
-      name: "${bms3_name} state of charge"
+    temperature_powertube:
+      name: "${bms3_name} temperature powertube"
+    battery_capacity_state_of_charge:
+      name: "${bms3_name} battery capacity state of charge"
     battery_capacity_remaining:
       name: "${bms3_name} battery capacity remaining"
     battery_capacity_total_setting:
@@ -1399,8 +1412,8 @@ sensor:
       name: "${bms3_name} charging cycles"
     battery_capacity_total_charging_cycle:
       name: "${bms3_name} battery capacity total charging cycle"
-    total_runtime:
-      name: "${bms3_name} total runtime"
+    battery_total_runtime:
+      name: "${bms3_name} battery total runtime"
     balancing_current:
       name: "${bms3_name} balancing current"
     errors_bitmask:
@@ -1461,6 +1474,10 @@ sensor:
       name: "${bms3_name} mos overtemperature protection"
     mos_overtemperature_protection_recovery:
       name: "${bms3_name} mos overtemperature protection recovery"   
+    powertube_temperature_protection:
+      name: "${bms3_name} powertube temperature protection" 
+    powertube_temperature_protection_recovery:
+      name: "${bms3_name} powertube temperature protection recovery"     
 
 
   - platform: jk_rs485_bms
@@ -1577,16 +1594,16 @@ sensor:
       name: "${bms4_name} cell resistance 23"
     cell_resistance_24:
       name: "${bms4_name} cell resistance 24"
-    total_voltage:
-      name: "${bms4_name} total voltage"
-    current:
-      name: "${bms4_name} current"
-    power:
-      name: "${bms4_name} power"
-    charging_power:
-      name: "${bms4_name} charging power"
-    discharging_power:
-      name: "${bms4_name} discharging power"
+    battery_voltage:
+      name: "${bms4_name} battery voltage"
+    battery_current:
+      name: "${bms4_name} battery current"
+    battery_power:
+      name: "${bms4_name} battery power"
+    battery_power_charging:
+      name: "${bms4_name} battery power charging"
+    battery_power_discharging:
+      name: "${bms4_name} battery power discharging"
     temperature_sensor_1:
       name: "${bms4_name} temperature sensor 1"
     temperature_sensor_2:
@@ -1595,10 +1612,10 @@ sensor:
       name: "${bms4_name} temperature sensor 3"
     temperature_sensor_4:
       name: "${bms4_name} temperature sensor 4"
-    power_tube_temperature:
-      name: "${bms4_name} power tube temperature"
-    state_of_charge:
-      name: "${bms4_name} state of charge"
+    temperature_powertube:
+      name: "${bms4_name} temperature powertube"
+    battery_capacity_state_of_charge:
+      name: "${bms4_name} battery capacity state of charge"
     battery_capacity_remaining:
       name: "${bms4_name} battery capacity remaining"
     battery_capacity_total_setting:
@@ -1607,8 +1624,8 @@ sensor:
       name: "${bms4_name} charging cycles"
     battery_capacity_total_charging_cycle:
       name: "${bms4_name} battery capacity total charging cycle"
-    total_runtime:
-      name: "${bms4_name} total runtime"
+    battery_total_runtime:
+      name: "${bms4_name} battery total runtime"
     balancing_current:
       name: "${bms4_name} balancing current"
     errors_bitmask:
@@ -1669,6 +1686,11 @@ sensor:
       name: "${bms4_name} mos overtemperature protection"
     mos_overtemperature_protection_recovery:
       name: "${bms4_name} mos overtemperature protection recovery"   
+    powertube_temperature_protection:
+      name: "${bms4_name} powertube temperature protection" 
+    powertube_temperature_protection_recovery:
+      name: "${bms4_name} powertube temperature protection recovery"     
+
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms5
@@ -1784,16 +1806,16 @@ sensor:
       name: "${bms5_name} cell resistance 23"
     cell_resistance_24:
       name: "${bms5_name} cell resistance 24"
-    total_voltage:
-      name: "${bms5_name} total voltage"
-    current:
-      name: "${bms5_name} current"
-    power:
-      name: "${bms5_name} power"
-    charging_power:
-      name: "${bms5_name} charging power"
-    discharging_power:
-      name: "${bms5_name} discharging power"
+    battery_voltage:
+      name: "${bms5_name} battery voltage"
+    battery_current:
+      name: "${bms5_name} battery current"
+    battery_power:
+      name: "${bms5_name} battery power"
+    battery_power_charging:
+      name: "${bms5_name} battery power charging"
+    battery_power_discharging:
+      name: "${bms5_name} battery power discharging"
     temperature_sensor_1:
       name: "${bms5_name} temperature sensor 1"
     temperature_sensor_2:
@@ -1802,10 +1824,10 @@ sensor:
       name: "${bms5_name} temperature sensor 3"
     temperature_sensor_4:
       name: "${bms5_name} temperature sensor 4"
-    power_tube_temperature:
-      name: "${bms5_name} power tube temperature"
-    state_of_charge:
-      name: "${bms5_name} state of charge"
+    temperature_powertube:
+      name: "${bms5_name} temperature powertube"
+    battery_capacity_state_of_charge:
+      name: "${bms5_name} battery capacity state of charge"
     battery_capacity_remaining:
       name: "${bms5_name} battery capacity remaining"
     battery_capacity_total_setting:
@@ -1814,8 +1836,8 @@ sensor:
       name: "${bms5_name} charging cycles"
     battery_capacity_total_charging_cycle:
       name: "${bms5_name} battery capacity total charging cycle"
-    total_runtime:
-      name: "${bms5_name} total runtime"
+    battery_total_runtime:
+      name: "${bms5_name} battery total runtime"
     balancing_current:
       name: "${bms5_name} balancing current"
     errors_bitmask:
@@ -1876,6 +1898,11 @@ sensor:
       name: "${bms5_name} mos overtemperature protection"
     mos_overtemperature_protection_recovery:
       name: "${bms5_name} mos overtemperature protection recovery"   
+    powertube_temperature_protection:
+      name: "${bms5_name} powertube temperature protection" 
+    powertube_temperature_protection_recovery:
+      name: "${bms5_name} powertube temperature protection recovery"     
+
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms6
@@ -1991,16 +2018,16 @@ sensor:
       name: "${bms6_name} cell resistance 23"
     cell_resistance_24:
       name: "${bms6_name} cell resistance 24"
-    total_voltage:
-      name: "${bms6_name} total voltage"
-    current:
-      name: "${bms6_name} current"
-    power:
-      name: "${bms6_name} power"
-    charging_power:
-      name: "${bms6_name} charging power"
-    discharging_power:
-      name: "${bms6_name} discharging power"
+    battery_voltage:
+      name: "${bms6_name} battery voltage"
+    battery_current:
+      name: "${bms6_name} battery current"
+    battery_power:
+      name: "${bms6_name} battery power"
+    battery_power_charging:
+      name: "${bms6_name} battery power charging"
+    battery_power_discharging:
+      name: "${bms6_name} battery power discharging"
     temperature_sensor_1:
       name: "${bms6_name} temperature sensor 1"
     temperature_sensor_2:
@@ -2009,10 +2036,10 @@ sensor:
       name: "${bms6_name} temperature sensor 3"
     temperature_sensor_4:
       name: "${bms6_name} temperature sensor 4"
-    power_tube_temperature:
-      name: "${bms6_name} power tube temperature"
-    state_of_charge:
-      name: "${bms6_name} state of charge"
+    temperature_powertube:
+      name: "${bms6_name} temperature powertube"
+    battery_capacity_state_of_charge:
+      name: "${bms6_name} battery capacity state of charge"
     battery_capacity_remaining:
       name: "${bms6_name} battery capacity remaining"
     battery_capacity_total_setting:
@@ -2021,8 +2048,8 @@ sensor:
       name: "${bms6_name} charging cycles"
     battery_capacity_total_charging_cycle:
       name: "${bms6_name} battery capacity total charging cycle"
-    total_runtime:
-      name: "${bms6_name} total runtime"
+    battery_total_runtime:
+      name: "${bms6_name} battery total runtime"
     balancing_current:
       name: "${bms6_name} balancing current"
     errors_bitmask:
@@ -2082,7 +2109,12 @@ sensor:
     mos_overtemperature_protection:
       name: "${bms6_name} mos overtemperature protection"
     mos_overtemperature_protection_recovery:
-      name: "${bms6_name} mos overtemperature protection recovery"         
+      name: "${bms6_name} mos overtemperature protection recovery"   
+    powertube_temperature_protection:
+      name: "${bms6_name} powertube temperature protection" 
+    powertube_temperature_protection_recovery:
+      name: "${bms6_name} powertube temperature protection recovery"           
+
 switch:
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms0
@@ -2110,6 +2142,12 @@ switch:
       name: "${bms0_name} smart sleep on"
     disable_pcl_module:
       name: "${bms0_name} disable pcl module"
+    gps_heartbeat:
+      name: "${bms0_name} gps heartbeat"
+    port_selection:
+      name: "${bms0_name} port selection"
+    special_charger:
+      name: "${bms0_name} special charger"       
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms1
@@ -2137,6 +2175,12 @@ switch:
       name: "${bms1_name} smart sleep on"
     disable_pcl_module:
       name: "${bms1_name} disable pcl module"
+    gps_heartbeat:
+      name: "${bms1_name} gps heartbeat"
+    port_selection:
+      name: "${bms1_name} port selection"
+    special_charger:
+      name: "${bms1_name} special charger"       
 
 
   - platform: jk_rs485_bms
@@ -2165,7 +2209,12 @@ switch:
       name: "${bms2_name} smart sleep on"
     disable_pcl_module:
       name: "${bms2_name} disable pcl module"
-
+    gps_heartbeat:
+      name: "${bms2_name} gps heartbeat"
+    port_selection:
+      name: "${bms2_name} port selection"
+    special_charger:
+      name: "${bms2_name} special charger" 
 
 
 
@@ -2197,7 +2246,12 @@ switch:
       name: "${bms3_name} smart sleep on"
     disable_pcl_module:
       name: "${bms3_name} disable pcl module"
-
+    gps_heartbeat:
+      name: "${bms3_name} gps heartbeat"
+    port_selection:
+      name: "${bms3_name} port selection"
+    special_charger:
+      name: "${bms3_name} special charger" 
 
 
 
@@ -2229,7 +2283,12 @@ switch:
       name: "${bms4_name} smart sleep on"
     disable_pcl_module:
       name: "${bms4_name} disable pcl module"
-
+    gps_heartbeat:
+      name: "${bms4_name} gps heartbeat"
+    port_selection:
+      name: "${bms4_name} port selection"
+    special_charger:
+      name: "${bms4_name} special charger" 
 
 
 
@@ -2260,7 +2319,12 @@ switch:
       name: "${bms5_name} smart sleep on"
     disable_pcl_module:
       name: "${bms5_name} disable pcl module"
-
+    gps_heartbeat:
+      name: "${bms5_name} gps heartbeat"
+    port_selection:
+      name: "${bms5_name} port selection"
+    special_charger:
+      name: "${bms5_name} special charger" 
 
 
 
@@ -2292,6 +2356,13 @@ switch:
       name: "${bms6_name} smart sleep on"
     disable_pcl_module:
       name: "${bms6_name} disable pcl module"
+    gps_heartbeat:
+      name: "${bms6_name} gps heartbeat"
+    port_selection:
+      name: "${bms6_name} port selection"
+    special_charger:
+      name: "${bms6_name} special charger" 
+
 
 text_sensor:
   - platform: jk_rs485_bms
@@ -2301,7 +2372,7 @@ text_sensor:
     operation_mode:
       name: "${bms0_name} operation mode"
     total_runtime_formatted:
-      name: "${bms0_name} total runtime formatted"
+      name: "${bms0_name} battery total runtime formatted"
     battery_type:
       name: "${bms0_name} battery type"
 
@@ -2313,7 +2384,7 @@ text_sensor:
     operation_mode:
       name: "${bms1_name} operation mode"
     total_runtime_formatted:
-      name: "${bms1_name} total runtime formatted"
+      name: "${bms1_name} battery total runtime formatted"
     battery_type:
       name: "${bms1_name} battery type"
     # ...
@@ -2325,7 +2396,7 @@ text_sensor:
     operation_mode:
       name: "${bms2_name} operation mode"
     total_runtime_formatted:
-      name: "${bms2_name} total runtime formatted"
+      name: "${bms2_name} battery total runtime formatted"
     battery_type:
       name: "${bms2_name} battery type"
     # ...
@@ -2339,7 +2410,7 @@ text_sensor:
     operation_mode:
       name: "${bms3_name} operation mode"
     total_runtime_formatted:
-      name: "${bms3_name} total runtime formatted"
+      name: "${bms3_name} battery total runtime formatted"
     battery_type:
       name: "${bms3_name} battery type"
     # ...
@@ -2351,7 +2422,7 @@ text_sensor:
     operation_mode:
       name: "${bms4_name} operation mode"
     total_runtime_formatted:
-      name: "${bms4_name} total runtime formatted"
+      name: "${bms4_name} battery total runtime formatted"
     battery_type:
       name: "${bms4_name} battery type"
     # ...
@@ -2363,7 +2434,7 @@ text_sensor:
     operation_mode:
       name: "${bms5_name} operation mode"
     total_runtime_formatted:
-      name: "${bms5_name} total runtime formatted"
+      name: "${bms5_name} battery total runtime formatted"
     battery_type:
       name: "${bms5_name} battery type"
     # ...
@@ -2375,7 +2446,7 @@ text_sensor:
     operation_mode:
       name: "${bms6_name} operation mode"
     total_runtime_formatted:
-      name: "${bms6_name} total runtime formatted"
+      name: "${bms6_name} battery total runtime formatted"
     battery_type:
       name: "${bms6_name} battery type"
     # ...

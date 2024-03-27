@@ -19,7 +19,7 @@ static const uint8_t FRAME_VERSION_JK02_32S = 0x03;
 static const uint8_t ERRORS_SIZE = 14;
 static const char *const ERRORS[ERRORS_SIZE] = {
     "Low capacity",                              // Byte 0.0, warning
-    "Power tube overtemperature",                // Byte 0.1, alarm
+    "Powertube overtemperature",                // Byte 0.1, alarm
     "Charging overvoltage",                      // Byte 0.2, alarm
     "Discharging undervoltage",                  // Byte 0.3, alarm
     "Battery over temperature",                  // Byte 0.4, alarm
@@ -198,7 +198,7 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
 
   // 112   2   0x00 0x00              Unknown112
   if (frame_version == FRAME_VERSION_JK02_32S) {
-    this->publish_state_(this->power_tube_temperature_sensor_, (float) ((int16_t) jk_get_16bit(112 + offset)) * 0.1f);
+    this->publish_state_(this->temperature_powertube_sensor_, (float) ((int16_t) jk_get_16bit(112 + offset)) * 0.1f);
   } else {
     ESP_LOGD(TAG, "Unknown112: 0x%02X 0x%02X", data[112 + offset], data[113 + offset]);
   }
@@ -208,20 +208,20 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
            data[116 + offset], data[117 + offset]);
 
   // 118   4   0x03 0xD0 0x00 0x00    Battery voltage       0.001        V
-  float total_voltage = (float) jk_get_32bit(118 + offset) * 0.001f;
-  this->publish_state_(this->total_voltage_sensor_, total_voltage);
+  float battery_voltage = (float) jk_get_32bit(118 + offset) * 0.001f;
+  this->publish_state_(this->battery_voltage_sensor_, battery_voltage);
 
   // 122   4   0x00 0x00 0x00 0x00    Battery power         0.001        W
   // 126   4   0x00 0x00 0x00 0x00    Charge current        0.001        A
   float current = (float) ((int32_t) jk_get_32bit(126 + offset)) * 0.001f;
-  this->publish_state_(this->current_sensor_, (float) ((int32_t) jk_get_32bit(126 + offset)) * 0.001f);
+  this->publish_state_(this->battery_current_sensor_, (float) ((int32_t) jk_get_32bit(126 + offset)) * 0.001f);
 
   // Don't use byte 122 because it's unsigned
   // float power = (float) ((int32_t) jk_get_32bit(122 + offset)) * 0.001f;
-  float power = total_voltage * current;
-  this->publish_state_(this->power_sensor_, power);
-  this->publish_state_(this->charging_power_sensor_, std::max(0.0f, power));               // 500W vs 0W -> 500W
-  this->publish_state_(this->discharging_power_sensor_, std::abs(std::min(0.0f, power)));  // -500W vs 0W -> 500W
+  float power = battery_voltage * current;
+  this->publish_state_(this->battery_power_sensor_, power);
+  this->publish_state_(this->battery_power_charging_sensor_, std::max(0.0f, power));               // 500W vs 0W -> 500W
+  this->publish_state_(this->battery_power_discharging_sensor_, std::abs(std::min(0.0f, power)));  // -500W vs 0W -> 500W
 
   // 130   2   0xBE 0x00              Temperature Sensor 1  0.1          °C
   this->publish_state_(this->temperatures_[0].temperature_sensor_,
@@ -241,14 +241,17 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // AlarmChOCP                  64  (0:normal | 1:alarm)
   // AlarmChSCP                  128 (0:normal | 1:alarm)
   if (frame_version == FRAME_VERSION_JK02_32S) {
-    this->publish_state_(this->alarm_wireres_binary_sensor_, (bool) check_bit_(data[134], 1));
-    this->publish_state_(this->alarm_mosotp_binary_sensor_, (bool) check_bit_(data[134], 2));
-    this->publish_state_(this->alarm_cellquantity_binary_sensor_, (bool) check_bit_(data[134], 4));
-    this->publish_state_(this->alarm_cursensorerr_binary_sensor_, (bool) check_bit_(data[134], 8));
-    this->publish_state_(this->alarm_cellovp_binary_sensor_, (bool) check_bit_(data[134], 16));
-    this->publish_state_(this->alarm_batovp_binary_sensor_, (bool) check_bit_(data[134], 32));
-    this->publish_state_(this->alarm_chocp_binary_sensor_, (bool) check_bit_(data[134], 64));
-    this->publish_state_(this->alarm_chscp_binary_sensor_, (bool) check_bit_(data[134], 128));
+    this->battery_total_alarms_count_ = 0;
+    this->battery_total_alarms_active_ = 0;
+    this->publish_alarm_state_(this->alarm_wireres_binary_sensor_, (bool) check_bit_(data[134], 1));
+    this->publish_alarm_state_(this->alarm_mosotp_binary_sensor_, (bool) check_bit_(data[134], 2));
+    this->publish_alarm_state_(this->alarm_cellquantity_binary_sensor_, (bool) check_bit_(data[134], 4));
+    this->publish_alarm_state_(this->alarm_cursensorerr_binary_sensor_, (bool) check_bit_(data[134], 8));
+    this->publish_alarm_state_(this->alarm_cellovp_binary_sensor_, (bool) check_bit_(data[134], 16));
+    this->publish_alarm_state_(this->alarm_batovp_binary_sensor_, (bool) check_bit_(data[134], 32));
+    this->publish_alarm_state_(this->alarm_chocp_binary_sensor_, (bool) check_bit_(data[134], 64));
+    this->publish_alarm_state_(this->alarm_chscp_binary_sensor_, (bool) check_bit_(data[134], 128));
+
     /*    ESP_LOGI(TAG, "alarm_WireRes_binary_sensor_:                  %d", (bool) check_bit_(data[134], 1));
         ESP_LOGI(TAG, "alarm_MosOTP_binary_sensor_:                   %d", (bool) check_bit_(data[134], 2));
         ESP_LOGI(TAG, "alarm_CellQuantity_binary_sensor_:             %d", (bool) check_bit_(data[134], 4));
@@ -265,7 +268,7 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
     this->publish_state_(this->errors_bitmask_sensor_, (float) raw_errors_bitmask);
     this->publish_state_(this->errors_text_sensor_, this->error_bits_to_string_(raw_errors_bitmask));
   } else {
-    this->publish_state_(this->power_tube_temperature_sensor_, (float) ((int16_t) jk_get_16bit(134 + offset)) * 0.1f);
+    this->publish_state_(this->temperature_powertube_sensor_, (float) ((int16_t) jk_get_16bit(134 + offset)) * 0.1f);
   }
 
   // 135   2   0xD2        Alarms      bit
@@ -278,14 +281,14 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // AlarmDchSCP                 64  (0:normal | 1:alarm)
   // AlarmDchOTP                 128 (0:normal | 1:alarm)
   if (frame_version == FRAME_VERSION_JK02_32S) {
-    this->publish_state_(this->alarm_chotp_binary_sensor_, (bool) check_bit_(data[135], 1));
-    this->publish_state_(this->alarm_chutp_binary_sensor_, (bool) check_bit_(data[135], 2));
-    this->publish_state_(this->alarm_cpuauxcommuerr_binary_sensor_, (bool) check_bit_(data[135], 4));
-    this->publish_state_(this->alarm_celluvp_binary_sensor_, (bool) check_bit_(data[135], 8));
-    this->publish_state_(this->alarm_batuvp_binary_sensor_, (bool) check_bit_(data[135], 16));
-    this->publish_state_(this->alarm_dchocp_binary_sensor_, (bool) check_bit_(data[135], 32));
-    this->publish_state_(this->alarm_dchscp_binary_sensor_, (bool) check_bit_(data[135], 64));
-    this->publish_state_(this->alarm_dchotp_binary_sensor_, (bool) check_bit_(data[135], 128));
+    this->publish_alarm_state_(this->alarm_chotp_binary_sensor_, (bool) check_bit_(data[135], 1));
+    this->publish_alarm_state_(this->alarm_chutp_binary_sensor_, (bool) check_bit_(data[135], 2));
+    this->publish_alarm_state_(this->alarm_cpuauxcommuerr_binary_sensor_, (bool) check_bit_(data[135], 4));
+    this->publish_alarm_state_(this->alarm_celluvp_binary_sensor_, (bool) check_bit_(data[135], 8));
+    this->publish_alarm_state_(this->alarm_batuvp_binary_sensor_, (bool) check_bit_(data[135], 16));
+    this->publish_alarm_state_(this->alarm_dchocp_binary_sensor_, (bool) check_bit_(data[135], 32));
+    this->publish_alarm_state_(this->alarm_dchscp_binary_sensor_, (bool) check_bit_(data[135], 64));
+    this->publish_alarm_state_(this->alarm_dchotp_binary_sensor_, (bool) check_bit_(data[135], 128));
     /*    ESP_LOGI(TAG, "alarm_ChOTP_binary_sensor_:                    %d", (bool) check_bit_(data[135], 1));
         ESP_LOGI(TAG, "alarm_ChUTP_binary_sensor_:                    %d", (bool) check_bit_(data[135], 2));
         ESP_LOGI(TAG, "alarm_CPUAuxCommuErr_binary_sensor_:           %d", (bool) check_bit_(data[135], 4));
@@ -305,14 +308,14 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // TemperatureSensorAnomaly    64  (0:normal | 1:alarm)
   // PLCModuleAnomaly            128 (0:normal | 1:alarm)
   if (frame_version == FRAME_VERSION_JK02_32S) {
-    this->publish_state_(this->alarm_chargemos_binary_sensor_, (bool) check_bit_(data[136], 1));
-    this->publish_state_(this->alarm_dischargemos_binary_sensor_, (bool) check_bit_(data[136], 2));
-    this->publish_state_(this->alarm_gpsdisconneted_binary_sensor_, (bool) check_bit_(data[136], 4));
-    this->publish_state_(this->alarm_modifypwdintime_binary_sensor_, (bool) check_bit_(data[136], 8));
-    this->publish_state_(this->alarm_dischargeonfailed_binary_sensor_, (bool) check_bit_(data[136], 16));
-    this->publish_state_(this->alarm_batteryovertemp_binary_sensor_, (bool) check_bit_(data[136], 32));
-    this->publish_state_(this->alarm_temperaturesensoranomaly_binary_sensor_, (bool) check_bit_(data[136], 64));
-    this->publish_state_(this->alarm_plcmoduleanomaly_binary_sensor_, (bool) check_bit_(data[136], 128));
+    this->publish_alarm_state_(this->alarm_chargemos_binary_sensor_, (bool) check_bit_(data[136], 1));
+    this->publish_alarm_state_(this->alarm_dischargemos_binary_sensor_, (bool) check_bit_(data[136], 2));
+    this->publish_alarm_state_(this->alarm_gpsdisconneted_binary_sensor_, (bool) check_bit_(data[136], 4));
+    this->publish_alarm_state_(this->alarm_modifypwdintime_binary_sensor_, (bool) check_bit_(data[136], 8));
+    this->publish_alarm_state_(this->alarm_dischargeonfailed_binary_sensor_, (bool) check_bit_(data[136], 16));
+    this->publish_alarm_state_(this->alarm_batteryovertemp_binary_sensor_, (bool) check_bit_(data[136], 32));
+    this->publish_alarm_state_(this->alarm_temperaturesensoranomaly_binary_sensor_, (bool) check_bit_(data[136], 64));
+    this->publish_alarm_state_(this->alarm_plcmoduleanomaly_binary_sensor_, (bool) check_bit_(data[136], 128));
     /*    ESP_LOGI(TAG, "alarm_ChargeMOS_binary_sensor_:                %d", (bool) check_bit_(data[136], 1));
         ESP_LOGI(TAG, "alarm_DischargeMOS_binary_sensor_:             %d", (bool) check_bit_(data[136], 2));
         ESP_LOGI(TAG, "alarm_GPSDisconneted_binary_sensor_:           %d", (bool) check_bit_(data[136], 4));
@@ -321,6 +324,8 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
         ESP_LOGI(TAG, "alarm_BatteryOverTemp_binary_sensor_:          %d", (bool) check_bit_(data[136], 32));
         ESP_LOGI(TAG, "alarm_TemperatureSensorAnomaly_binary_sensor_: %d", (bool) check_bit_(data[136], 64));
         ESP_LOGI(TAG, "alarm_PLCModuleAnomaly_binary_sensor_:         %d", (bool) check_bit_(data[136], 128));*/
+    //this->increase_or_reset_total_count_alarms(0);
+    //this->increase_or_reset_total_active_alarms(0);        
   }
 
   // 136   2   0x00 0x00              System alarms
@@ -370,8 +375,8 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // this->publish_state_(this->balancing_binary_sensor_, (data[140 + offset] != 0x00));
   this->publish_state_(this->balancing_direction_sensor_, (data[140 + offset]));
 
-  // 141   1   0x54                   State of charge in   1.0           %
-  this->publish_state_(this->state_of_charge_sensor_, (float) data[141 + offset]);
+  // 141   1   0x54                   Battery capacity state of charge in   1.0           %
+  this->publish_state_(this->battery_capacity_state_of_charge_sensor_, (float) data[141 + offset]);
 
   // 142   4   0x8E 0x0B 0x01 0x00    Capacity_Remain      0.001         Ah
   this->publish_state_(this->battery_capacity_remaining_sensor_, (float) jk_get_32bit(142 + offset) * 0.001f);
@@ -393,8 +398,8 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // 160   2   0x79 0x04              UserAlarm
   ESP_LOGD(TAG, "UserAlarm: 0x%02X 0x%02X (always 0xC5 0x09?)", data[160 + offset], data[161 + offset]);
 
-  // 162   4   0xCA 0x03 0x10 0x00    Total runtime in seconds           s
-  this->publish_state_(this->total_runtime_sensor_, (float) jk_get_32bit(162 + offset));
+  // 162   4   0xCA 0x03 0x10 0x00    Battery total runtime in seconds           s
+  this->publish_state_(this->battery_total_runtime_sensor_, (float) jk_get_32bit(162 + offset));
   this->publish_state_(this->total_runtime_formatted_text_sensor_, format_total_runtime_(jk_get_32bit(162 + offset)));
 
   // 166   1   0x01                   Charging mosfet enabled                      0x00: off, 0x01: on
@@ -466,10 +471,27 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // ESP_LOGI(TAG, "HEATING CURRENT:  %f", (float) ((int16_t) jk_get_16bit(236 + offset)) * 0.001f);
 
   if (frame_version == FRAME_VERSION_JK02_32S) {
+    // 176 [208]
+  // ** [JK-PB2A16S-20P v14]
+  //    bit0: MOSTempSensorAbsent                    1
+  //    bit1: BATTempSensor1Absent                   2
+  //    bit2: BATTempSensor2Absent                   4
+  //    bit3: BATTempSensor3Absent                   8
+  //    bit4: BATTempSensor4Absent                   16
+  //    bit5: BATTempSensor5Absent                   32
+  //    bit6:                                        64
+  //    bit7:                                        128
+  this->publish_alarm_state_(this->alarm_mostempsensorabsent_binary_sensor_, (bool) this->check_bit_(data[(176+offset)], 1));
+  this->publish_alarm_state_(this->alarm_battempsensor1absent_binary_sensor_, (bool) this->check_bit_(data[(176+offset)], 2));
+  this->publish_alarm_state_(this->alarm_battempsensor2absent_binary_sensor_, (bool) this->check_bit_(data[(176+offset)], 4));
+  this->publish_alarm_state_(this->alarm_battempsensor3absent_binary_sensor_, (bool) this->check_bit_(data[(176+offset)], 8));
+  this->publish_alarm_state_(this->alarm_battempsensor4absent_binary_sensor_, (bool) this->check_bit_(data[(176+offset)], 16));
+  this->publish_alarm_state_(this->alarm_battempsensor5absent_binary_sensor_, (bool) this->check_bit_(data[(176+offset)], 32));
+
     ESP_LOGV(TAG, "  TimeOVPR??:  %d", ((int16_t) jk_get_16bit(180 + offset)));
     ESP_LOGV(TAG, "  TimeUVPR??:  %d", ((int16_t) jk_get_16bit(178 + offset)));
-    // 186
-    uint16_t raw_emergency_time_countdown = jk_get_16bit(186 + offset);
+    // 186 [212]
+    uint16_t raw_emergency_time_countdown = jk_get_16bit(186 + offset);                               
     ESP_LOGV(TAG, "  Emergency switch: %s", (raw_emergency_time_countdown > 0) ? "on" : "off");
     this->publish_state_(this->emergency_switch_, (bool) (raw_emergency_time_countdown > 0));
     this->publish_state_(this->emergency_time_countdown_sensor_, (float) raw_emergency_time_countdown * 1.0f);
@@ -480,8 +502,9 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
     this->publish_state_(this->temperatures_[2].temperature_sensor_,
                          (float) ((int16_t) jk_get_16bit(226 + offset)) * 0.1f);
 
+    // 207 [239] ChargerPlugged
     ESP_LOGV(TAG, "  Charger plugged: %d", (data[207 + offset]));
-    // 208 SysRunTicks ???
+    // 208 [240] SysRunTicks
     ESP_LOGV(TAG, "  SysRunTicks:  %d", ((int32_t) jk_get_32bit(208 + offset)));
   }
 
@@ -511,13 +534,17 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   //                 print("BALANCE WORKING:" + str((result['discard8'][4])))                   [NOT CONFIRMED]
 
   // 286   4                          RUNTIME??
-  // this->publish_state_(this->total_runtime_sensor_, (float) jk_get_32bit(286));
+  // this->publish_state_(this->battery_total_runtime_sensor_, (float) jk_get_32bit(286));
   // this->publish_state_(this->total_runtime_formatted_text_sensor_, format_total_runtime_(jk_get_32bit(286)));
 
   // ESP_LOGI(TAG, "RUNTIME SENSOR:          %f", (float) jk_get_32bit(286));
   // ESP_LOGI(TAG, "RUNTIME SENSOR FORMATED: %s", this->total_runtime_formatted_text_sensor_);
   //  299   1   0xCD                   CHECKSUM
 
+  if (frame_version == FRAME_VERSION_JK02_32S) {
+    this->publish_state_(this->battery_total_alarms_count_sensor_, (float) this->battery_total_alarms_count_);
+    this->publish_state_(this->battery_total_alarms_active_sensor_, (float) this->battery_total_alarms_active_);
+  }
   this->status_notification_received_ = true;
 }
 
@@ -663,14 +690,14 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
 
   // 130   4   0x88 0x13 0x00 0x00    Nominal battery capacity CapBatCell
   // ESP_LOGI(TAG, "  Nominal battery capacity: %f Ah", (float) jk_get_32bit(130) * 0.001f);
-  this->publish_state_(this->total_battery_capacity_number_, (float) jk_get_32bit(130) * 0.001f);
+  //this->publish_state_(this->total_battery_capacity_number_, (float) jk_get_32bit(130) * 0.001f);
 
   // 134   4   0xDC 0x05 0x00 0x00    SCP DELAY (us)
   // ESP_LOGI(TAG, "  SCP DELAY??: %f us", (float) jk_get_32bit(134) * 0.001f);
   // this->publish_state_(this->scp_delay_number_, (float) jk_get_32bit(134) * 0.001f);
   // 138   4   0xE4 0x0C 0x00 0x00    Start balance voltage
   // ESP_LOGI(TAG, "  Start balance voltage: %f V", (float) jk_get_32bit(138) * 0.001f);
-  this->publish_state_(this->balance_starting_voltage_sensor_, (float) jk_get_32bit(138) * 0.001f);
+  this->publish_state_(this->cell_balancing_starting_voltage_sensor_, (float) jk_get_32bit(138) * 0.001f);
 
   // 142   4   0x00 0x00 0x00 0x00
   // ESP_LOGI(TAG, "         142: %02X%02X%02X%02X",data[142],data[143],data[144],data[145]);
@@ -737,8 +764,11 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->heating_switch_, (bool) this->check_bit_(data[282], 1));
   // ESP_LOGI(TAG, "  heating switch: %s", ( this->check_bit_(data[282], 1)) ? "on" : "off");
   this->publish_state_(this->disable_temperature_sensors_switch_, this->check_bit_(data[282], 2));
+  this->publish_state_(this->gps_heartbeat_switch_, this->check_bit_(data[282], 4));  
+  this->publish_state_(this->port_selection_switch_, this->check_bit_(data[282], 8));    
   // ESP_LOGI(TAG, "  Port switch: %s", this->check_bit_(data[282], 8) ? "RS485" : "CAN");
   this->publish_state_(this->display_always_on_switch_, this->check_bit_(data[282], 16));
+  this->publish_state_(this->special_charger_switch_, this->check_bit_(data[282], 32));  
   this->publish_state_(this->smart_sleep_on_switch_, check_bit_(data[282], 64));
   this->publish_state_(this->disable_pcl_module_switch_, check_bit_(data[282], 128));
 
@@ -873,14 +903,14 @@ void JkRS485Bms::publish_device_unavailable_() {
   this->publish_state_(cell_voltage_max_cell_number_sensor_, NAN);
   this->publish_state_(delta_cell_voltage_sensor_, NAN);
   this->publish_state_(average_cell_voltage_sensor_, NAN);
-  this->publish_state_(power_tube_temperature_sensor_, NAN);
+  this->publish_state_(temperature_powertube_sensor_, NAN);
   this->publish_state_(temperature_sensor_1_sensor_, NAN);
   this->publish_state_(temperature_sensor_2_sensor_, NAN);
-  this->publish_state_(total_voltage_sensor_, NAN);
-  this->publish_state_(current_sensor_, NAN);
-  this->publish_state_(power_sensor_, NAN);
-  this->publish_state_(charging_power_sensor_, NAN);
-  this->publish_state_(discharging_power_sensor_, NAN);
+  this->publish_state_(battery_voltage_sensor_, NAN);
+  this->publish_state_(battery_current_sensor_, NAN);
+  this->publish_state_(battery_power_sensor_, NAN);
+  this->publish_state_(battery_power_charging_sensor_, NAN);
+  this->publish_state_(battery_power_discharging_sensor_, NAN);
   this->publish_state_(battery_capacity_remaining_sensor_, NAN);
   this->publish_state_(battery_capacity_remaining_derived_sensor_, NAN);
   this->publish_state_(temperature_sensors_sensor_, NAN);
@@ -902,10 +932,10 @@ void JkRS485Bms::publish_device_unavailable_() {
   this->publish_state_(discharging_overcurrent_delay_sensor_, NAN);
   this->publish_state_(charging_overcurrent_protection_sensor_, NAN);
   this->publish_state_(charging_overcurrent_delay_sensor_, NAN);
-  this->publish_state_(balance_starting_voltage_sensor_, NAN);
+  this->publish_state_(cell_balancing_starting_voltage_sensor_, NAN);
   this->publish_state_(balancing_opening_pressure_difference_sensor_, NAN);
-  this->publish_state_(power_tube_temperature_protection_sensor_, NAN);
-  this->publish_state_(power_tube_temperature_recovery_sensor_, NAN);
+  this->publish_state_(powertube_temperature_protection_sensor_, NAN);
+  this->publish_state_(powertube_temperature_protection_recovery_sensor_, NAN);
   this->publish_state_(temperature_sensor_temperature_protection_sensor_, NAN);
   this->publish_state_(temperature_sensor_temperature_recovery_sensor_, NAN);
   this->publish_state_(temperature_sensor_temperature_difference_protection_sensor_, NAN);
@@ -924,7 +954,7 @@ void JkRS485Bms::publish_device_unavailable_() {
   this->publish_state_(alarm_low_volume_sensor_, NAN);
   this->publish_state_(password_sensor_, NAN);
   this->publish_state_(manufacturing_date_sensor_, NAN);
-  this->publish_state_(total_runtime_sensor_, NAN);
+  this->publish_state_(battery_total_runtime_sensor_, NAN);
   this->publish_state_(start_current_calibration_sensor_, NAN);
   this->publish_state_(actual_battery_capacity_sensor_, NAN);
   this->publish_state_(protocol_version_sensor_, NAN);
@@ -962,6 +992,16 @@ void JkRS485Bms::publish_state_(text_sensor::TextSensor *text_sensor, const std:
   text_sensor->publish_state(state);
 }
 
+void JkRS485Bms::publish_alarm_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state) {
+  if (binary_sensor == nullptr)
+    return;
+  battery_total_alarms_count_++;
+  if (state){
+    battery_total_alarms_active_++;
+  }
+  binary_sensor->publish_state(state);
+
+}
 std::string JkRS485Bms::error_bits_to_string_(const uint16_t mask) {
   bool first = true;
   std::string errors_list = "";
@@ -1035,14 +1075,14 @@ void JkRS485Bms::dump_config() {  // NOLINT(google-readability-function-size,rea
   LOG_SENSOR("", "Cell Voltage 22", this->cells_[21].cell_voltage_sensor_);
   LOG_SENSOR("", "Cell Voltage 23", this->cells_[22].cell_voltage_sensor_);
   LOG_SENSOR("", "Cell Voltage 24", this->cells_[23].cell_voltage_sensor_);
-  LOG_SENSOR("", "Power Tube Temperature", this->power_tube_temperature_sensor_);
+  LOG_SENSOR("", "Temperature powertube", this->temperature_powertube_sensor_);
   LOG_SENSOR("", "Temperature Sensor 1", this->temperature_sensor_1_sensor_);
   LOG_SENSOR("", "Temperature Sensor 2", this->temperature_sensor_2_sensor_);
-  LOG_SENSOR("", "Total Voltage", this->total_voltage_sensor_);
-  LOG_SENSOR("", "Current", this->current_sensor_);
-  LOG_SENSOR("", "Power", this->power_sensor_);
-  LOG_SENSOR("", "Charging Power", this->charging_power_sensor_);
-  LOG_SENSOR("", "Discharging Power", this->discharging_power_sensor_);
+  LOG_SENSOR("", "Battery voltage", this->battery_voltage_sensor_);
+  LOG_SENSOR("", "Current", this->battery_current_sensor_);
+  LOG_SENSOR("", "Power", this->battery_power_sensor_);
+  LOG_SENSOR("", "Battery power charging", this->battery_power_charging_sensor_);
+  LOG_SENSOR("", "Battery power discharging", this->battery_power_discharging_sensor_);
   LOG_SENSOR("", "Battery capacity remaining", this->battery_capacity_remaining_sensor_);
   LOG_SENSOR("", "Battery capacity remaining Derived", this->battery_capacity_remaining_derived_sensor_);
   LOG_SENSOR("", "Temperature Sensors", this->temperature_sensors_sensor_);
@@ -1051,8 +1091,8 @@ void JkRS485Bms::dump_config() {  // NOLINT(google-readability-function-size,rea
   LOG_SENSOR("", "Battery Strings", this->battery_strings_sensor_);
   LOG_SENSOR("", "Errors Bitmask", this->errors_bitmask_sensor_);
   LOG_SENSOR("", "Operation Mode Bitmask", this->operation_mode_bitmask_sensor_);
-  LOG_SENSOR("", "Total Voltage Overvoltage Protection", this->total_voltage_overvoltage_protection_sensor_);
-  LOG_SENSOR("", "Total Voltage Undervoltage Protection", this->total_voltage_undervoltage_protection_sensor_);
+  LOG_SENSOR("", "Battery voltage Overvoltage Protection", this->total_voltage_overvoltage_protection_sensor_);
+  LOG_SENSOR("", "Battery voltage Undervoltage Protection", this->total_voltage_undervoltage_protection_sensor_);
   LOG_SENSOR("", "Cell Overvoltage Protection", this->cell_overvoltage_protection_sensor_);
   LOG_SENSOR("", "Cell Overvoltage Protection Recovery", this->cell_overvoltage_protection_recovery_sensor_);
   LOG_SENSOR("", "Cell Voltage Overvoltage Delay", this->cell_voltage_overvoltage_delay_sensor_);
@@ -1064,10 +1104,10 @@ void JkRS485Bms::dump_config() {  // NOLINT(google-readability-function-size,rea
   LOG_SENSOR("", "Discharging Overcurrent Delay", this->discharging_overcurrent_delay_sensor_);
   LOG_SENSOR("", "Charging Overcurrent Protection", this->charging_overcurrent_protection_sensor_);
   LOG_SENSOR("", "Charging Overcurrent Delay", this->charging_overcurrent_delay_sensor_);
-  LOG_SENSOR("", "Balance Starting Voltage", this->balance_starting_voltage_sensor_);
+  LOG_SENSOR("", "Balance Starting Voltage", this->cell_balancing_starting_voltage_sensor_);
   LOG_SENSOR("", "BALANCING OPENING PRESSURE DIFFERENCE", this->balancing_opening_pressure_difference_sensor_);
-  LOG_SENSOR("", "Power Tube Temperature Protection", this->power_tube_temperature_protection_sensor_);
-  LOG_SENSOR("", "Power Tube Temperature Recovery", this->power_tube_temperature_recovery_sensor_);
+  LOG_SENSOR("", "Temperature powertube Protection", this->powertube_temperature_protection_sensor_);
+  LOG_SENSOR("", "Powertube temperature protection recovery", this->powertube_temperature_protection_recovery_sensor_);
   LOG_SENSOR("", "Temperature Sensor Temperature Protection", this->temperature_sensor_temperature_protection_sensor_);
   LOG_SENSOR("", "Temperature Sensor Temperature Recovery", this->temperature_sensor_temperature_recovery_sensor_);
   LOG_SENSOR("", "Temperature Sensor Temperature Difference Protection",
@@ -1087,7 +1127,7 @@ void JkRS485Bms::dump_config() {  // NOLINT(google-readability-function-size,rea
   LOG_TEXT_SENSOR("", "Password", this->password_text_sensor_);
   LOG_TEXT_SENSOR("", "Device Type", this->device_type_text_sensor_);
   LOG_SENSOR("", "Manufacturing Date", this->manufacturing_date_sensor_);
-  LOG_SENSOR("", "Total Runtime", this->total_runtime_sensor_);
+  LOG_SENSOR("", "Battery total runtime", this->battery_total_runtime_sensor_);
   LOG_TEXT_SENSOR("", "Software Version", this->software_version_text_sensor_);
   LOG_SENSOR("", "Start Current Calibration", this->start_current_calibration_sensor_);
   LOG_TEXT_SENSOR("", "Manufacturer", this->manufacturer_text_sensor_);
@@ -1099,7 +1139,7 @@ void JkRS485Bms::dump_config() {  // NOLINT(google-readability-function-size,rea
   LOG_BINARY_SENSOR("", "Status Discharging", this->status_discharging_binary_sensor_);
   LOG_BINARY_SENSOR("", "Discharging Switch", this->discharging_switch_binary_sensor_);
   LOG_BINARY_SENSOR("", "Dedicated Charger Switch", this->dedicated_charger_switch_binary_sensor_);
-  LOG_TEXT_SENSOR("", "Total Runtime Formatted", this->total_runtime_formatted_text_sensor_);
+  LOG_TEXT_SENSOR("", "Battery total runtime Formatted", this->total_runtime_formatted_text_sensor_);
 }
 
 }  // namespace jk_rs485_bms

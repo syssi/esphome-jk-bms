@@ -2,8 +2,6 @@ import esphome.codegen as cg
 from esphome.components import sensor
 import esphome.config_validation as cv
 from esphome.const import (
-    CONF_CURRENT,
-    CONF_POWER,
     DEVICE_CLASS_BATTERY,
     DEVICE_CLASS_CURRENT,
     DEVICE_CLASS_EMPTY,
@@ -102,18 +100,20 @@ CONF_TEMPERATURE_SENSOR_1 = "temperature_sensor_1"
 CONF_TEMPERATURE_SENSOR_2 = "temperature_sensor_2"
 CONF_TEMPERATURE_SENSOR_3 = "temperature_sensor_3"
 CONF_TEMPERATURE_SENSOR_4 = "temperature_sensor_4"
-CONF_POWER_TUBE_TEMPERATURE = "power_tube_temperature"
+CONF_TEMPERATURE_POWERTUBE = "temperature_powertube"
 CONF_TEMPERATURE_SENSORS = "temperature_sensors"
 
-CONF_TOTAL_VOLTAGE = "total_voltage"
-CONF_CHARGING_POWER = "charging_power"
-CONF_DISCHARGING_POWER = "discharging_power"
+CONF_BATTERY_VOLTAGE = "battery_voltage"
+CONF_BATTERY_CURRENT = "battery_current"
+CONF_BATTERY_POWER = "battery_power"
+CONF_BATTERY_POWER_CHARGING = "battery_power_charging"
+CONF_BATTERY_POWER_DISCHARGING = "battery_power_discharging"
 CONF_BATTERY_CAPACITY_REMAINING = "battery_capacity_remaining"
 CONF_BATTERY_CAPACITY_REMAINING_DERIVED = "battery_capacity_remaining_derived"
 CONF_CHARGING_CYCLES = "charging_cycles"
 CONF_BATTERY_CAPACITY_TOTAL_CHARGING_CYCLE = "battery_capacity_total_charging_cycle"
 CONF_BATTERY_STRINGS = "battery_strings"
-CONF_STATE_OF_CHARGE = "state_of_charge"
+CONF_BATTERY_CAPACITY_STATE_OF_CHARGE = "battery_capacity_state_of_charge"
 
 CONF_ERRORS_BITMASK = "errors_bitmask"
 CONF_OPERATION_MODE_BITMASK = "operation_mode_bitmask"
@@ -132,11 +132,11 @@ CONF_CELL_VOLTAGE_UNDERVOLTAGE_DELAY = "cell_undervoltage_delay"
 CONF_CELL_PRESSURE_DIFFERENCE_PROTECTION = "cell_pressure_difference_protection"
 
 CONF_BALANCING_TRIGGER_VOLTAGE = "balancing_trigger_voltage"
-CONF_BALANCING_STARTING_VOLTAGE = "balancing_starting_voltage"
+CONF_CELL_BALANCING_STARTING_VOLTAGE = "cell_balancing_starting_voltage"
 CONF_BALANCING_OPENING_PRESSURE_DIFFERENCE = "balancing_opening_pressure_difference"
 
-CONF_POWER_TUBE_TEMPERATURE_PROTECTION = "power_tube_temperature_protection"
-CONF_POWER_TUBE_TEMPERATURE_RECOVERY = "power_tube_temperature_recovery"
+CONF_POWERTUBE_TEMPERATURE_PROTECTION = "powertube_temperature_protection"
+CONF_POWERTUBE_TEMPERATURE_PROTECTION_RECOVERY = "powertube_temperature_protection_recovery"
 
 CONF_TEMPERATURE_SENSOR_TEMPERATURE_PROTECTION = (
     "temperature_sensor_temperature_protection"
@@ -164,7 +164,7 @@ CONF_DEVICE_ADDRESS = "device_address"
 CONF_SLEEP_WAIT_TIME = "sleep_wait_time"
 CONF_ALARM_LOW_VOLUME = "alarm_low_volume"
 CONF_MANUFACTURING_DATE = "manufacturing_date"
-CONF_TOTAL_RUNTIME = "total_runtime"
+CONF_TOTAL_RUNTIME = "battery_total_runtime"
 CONF_BALANCING_CURRENT = "balancing_current"
 CONF_MAX_BALANCING_CURRENT = "max_balancing_current"
 CONF_MAX_CHARGING_CURRENT ="max_charging_current"
@@ -186,6 +186,9 @@ CONF_CHARGING_LOWTEMPERATURE_PROTECION = "charging_lowtemperature_protection"
 CONF_CHARGING_LOWTEMPERATURE_PROTECION_RECOVERY = "charging_lowtemperature_protection_recovery"
 CONF_MOS_OVERTEMPERATURE_PROTECION = "mos_overtemperature_protection"
 CONF_MOS_OVERTEMPERATURE_PROTECION_RECOVERY = "mos_overtemperature_protection_recovery"
+
+CONF_BATTERY_TOTAL_ALARMS_COUNT = "battery_total_alarms_count"
+CONF_BATTERY_TOTAL_ALARMS_ACTIVE = "battery_total_alarms_active"
 
 ICON_CURRENT_DC = "mdi:current-dc"
 ICON_CELL_VOLTAGE_MIN_CELL_NUMBER = "mdi:battery-minus-outline"
@@ -292,12 +295,12 @@ SENSORS = [
     CONF_CELL_SOC100_VOLTAGE,
     CONF_CELL_SOC0_VOLTAGE,
     CONF_CELL_POWER_OFF_VOLTAGE,
-    CONF_POWER_TUBE_TEMPERATURE,
-    CONF_TOTAL_VOLTAGE,
-    CONF_CURRENT,
-    CONF_POWER,
-    CONF_CHARGING_POWER,
-    CONF_DISCHARGING_POWER,
+    CONF_TEMPERATURE_POWERTUBE,
+    CONF_BATTERY_VOLTAGE,
+    CONF_BATTERY_CURRENT,
+    CONF_BATTERY_POWER,
+    CONF_BATTERY_POWER_CHARGING,
+    CONF_BATTERY_POWER_DISCHARGING,
     CONF_BATTERY_CAPACITY_REMAINING,
     CONF_BATTERY_CAPACITY_REMAINING_DERIVED,
     CONF_TEMPERATURE_SENSORS,
@@ -329,10 +332,10 @@ SENSORS = [
     CONF_MOS_OVERTEMPERATURE_PROTECION,
     CONF_MOS_OVERTEMPERATURE_PROTECION_RECOVERY,         
     CONF_BALANCING_TRIGGER_VOLTAGE,
-    CONF_BALANCING_STARTING_VOLTAGE,
+    CONF_CELL_BALANCING_STARTING_VOLTAGE,
     CONF_BALANCING_OPENING_PRESSURE_DIFFERENCE,
-    CONF_POWER_TUBE_TEMPERATURE_PROTECTION,
-    CONF_POWER_TUBE_TEMPERATURE_RECOVERY,
+    CONF_POWERTUBE_TEMPERATURE_PROTECTION,
+    CONF_POWERTUBE_TEMPERATURE_PROTECTION_RECOVERY,
     CONF_TEMPERATURE_SENSOR_TEMPERATURE_PROTECTION,
     CONF_TEMPERATURE_SENSOR_TEMPERATURE_RECOVERY,
     CONF_TEMPERATURE_SENSOR_TEMPERATURE_DIFFERENCE_PROTECTION,
@@ -356,8 +359,10 @@ SENSORS = [
     CONF_START_CURRENT_CALIBRATION,
     CONF_ACTUAL_BATTERY_CAPACITY,
     CONF_PROTOCOL_VERSION,
-    CONF_STATE_OF_CHARGE,
+    CONF_BATTERY_CAPACITY_STATE_OF_CHARGE,
     CONF_SMART_SLEEP_TIME,
+    CONF_BATTERY_TOTAL_ALARMS_COUNT,
+    CONF_BATTERY_TOTAL_ALARMS_ACTIVE,
 ]
 
 # pylint: disable=too-many-function-args
@@ -825,48 +830,48 @@ CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
             device_class=DEVICE_CLASS_TEMPERATURE,
             state_class=STATE_CLASS_MEASUREMENT,
         ),        
-        cv.Optional(CONF_POWER_TUBE_TEMPERATURE): sensor.sensor_schema(
+        cv.Optional(CONF_TEMPERATURE_POWERTUBE): sensor.sensor_schema(
             unit_of_measurement=UNIT_CELSIUS,
             icon=ICON_EMPTY,
             accuracy_decimals=0,
             device_class=DEVICE_CLASS_TEMPERATURE,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_STATE_OF_CHARGE): sensor.sensor_schema(
+        cv.Optional(CONF_BATTERY_CAPACITY_STATE_OF_CHARGE): sensor.sensor_schema(
             unit_of_measurement=UNIT_PERCENT,
             accuracy_decimals=0,
             device_class=DEVICE_CLASS_BATTERY,
             state_class=STATE_CLASS_MEASUREMENT,
         ),        
-        cv.Optional(CONF_TOTAL_VOLTAGE): sensor.sensor_schema(
+        cv.Optional(CONF_BATTERY_VOLTAGE): sensor.sensor_schema(
             unit_of_measurement=UNIT_VOLT,
             icon=ICON_EMPTY,
             accuracy_decimals=2,
             device_class=DEVICE_CLASS_VOLTAGE,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_CURRENT): sensor.sensor_schema(
+        cv.Optional(CONF_BATTERY_CURRENT): sensor.sensor_schema(
             unit_of_measurement=UNIT_AMPERE,
             icon=ICON_CURRENT_DC,
             accuracy_decimals=2,
             device_class=DEVICE_CLASS_CURRENT,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_POWER): sensor.sensor_schema(
+        cv.Optional(CONF_BATTERY_POWER): sensor.sensor_schema(
             unit_of_measurement=UNIT_WATT,
             icon=ICON_EMPTY,
             accuracy_decimals=2,
             device_class=DEVICE_CLASS_POWER,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_CHARGING_POWER): sensor.sensor_schema(
+        cv.Optional(CONF_BATTERY_POWER_CHARGING): sensor.sensor_schema(
             unit_of_measurement=UNIT_WATT,
             icon=ICON_EMPTY,
             accuracy_decimals=2,
             device_class=DEVICE_CLASS_POWER,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_DISCHARGING_POWER): sensor.sensor_schema(
+        cv.Optional(CONF_BATTERY_POWER_DISCHARGING): sensor.sensor_schema(
             unit_of_measurement=UNIT_WATT,
             icon=ICON_EMPTY,
             accuracy_decimals=2,
@@ -1090,7 +1095,7 @@ CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
             device_class=DEVICE_CLASS_VOLTAGE,
             state_class=STATE_CLASS_MEASUREMENT,
         ),        
-        cv.Optional(CONF_BALANCING_STARTING_VOLTAGE): sensor.sensor_schema(
+        cv.Optional(CONF_CELL_BALANCING_STARTING_VOLTAGE): sensor.sensor_schema(
             unit_of_measurement=UNIT_VOLT,
             icon=ICON_EMPTY,
             accuracy_decimals=3,
@@ -1104,14 +1109,14 @@ CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
             device_class=DEVICE_CLASS_VOLTAGE,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_POWER_TUBE_TEMPERATURE_PROTECTION): sensor.sensor_schema(
+        cv.Optional(CONF_POWERTUBE_TEMPERATURE_PROTECTION): sensor.sensor_schema(
             unit_of_measurement=UNIT_CELSIUS,
             icon=ICON_EMPTY,
             accuracy_decimals=0,
             device_class=DEVICE_CLASS_TEMPERATURE,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_POWER_TUBE_TEMPERATURE_RECOVERY): sensor.sensor_schema(
+        cv.Optional(CONF_POWERTUBE_TEMPERATURE_PROTECTION_RECOVERY): sensor.sensor_schema(
             unit_of_measurement=UNIT_CELSIUS,
             icon=ICON_EMPTY,
             accuracy_decimals=0,
@@ -1290,7 +1295,20 @@ CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
             device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
         ),        
-       
+        cv.Optional(CONF_BATTERY_TOTAL_ALARMS_COUNT): sensor.sensor_schema(
+            unit_of_measurement=UNIT_EMPTY,
+            icon=ICON_ALARM_LOW_VOLUME,
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),         
+        cv.Optional(CONF_BATTERY_TOTAL_ALARMS_ACTIVE): sensor.sensor_schema(
+            unit_of_measurement=UNIT_EMPTY,
+            icon=ICON_ALARM_LOW_VOLUME,
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),         
     }
 )
 

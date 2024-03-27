@@ -12,6 +12,9 @@ CONF_PRECHARGING = "precharging"
 CONF_CHARGING = "charging"
 CONF_DISCHARGING = "discharging"
 CONF_HEATING = "heating"
+CONF_GPS_HEARTBEAT ="gps_heartbeat"
+CONF_PORT_SELECTION = "port_selection"
+CONF_SPECIAL_CHARGER = "special_charger"
 
 
 CONF_CHARGING_FLOAT_MODE = "charging_float_mode"

@@ -6,7 +6,8 @@ from esphome.const import CONF_ICON, CONF_ID
 from .. import CONF_JK_RS485_BMS_ID, JK_RS485_BMS_COMPONENT_SCHEMA, jk_rs485_bms_ns
 from ..const import (
     CONF_BALANCING, CONF_PRECHARGING, CONF_CHARGING, CONF_DISCHARGING, CONF_DISPLAY_ALWAYS_ON, CONF_EMERGENCY, CONF_HEATING, CONF_CHARGING_FLOAT_MODE, 
-    CONF_SMART_SLEEP_ON, CONF_DISABLE_PCL_MODULE,CONF_DISABLE_TEMPERATURE_SENSORS, CONF_TIMED_STORED_DATA    
+    CONF_SMART_SLEEP_ON, CONF_DISABLE_PCL_MODULE,CONF_DISABLE_TEMPERATURE_SENSORS, CONF_TIMED_STORED_DATA,
+    CONF_GPS_HEARTBEAT,CONF_PORT_SELECTION,CONF_SPECIAL_CHARGER
 )
 
 DEPENDENCIES = ["jk_rs485_bms"]
@@ -39,6 +40,9 @@ SWITCHES = {
     CONF_SMART_SLEEP_ON: 0x2D,
     CONF_DISABLE_PCL_MODULE: 0x2E,
     CONF_TIMED_STORED_DATA: 0x2F,
+    CONF_GPS_HEARTBEAT: 0x00,
+    CONF_PORT_SELECTION: 0x00,
+    CONF_SPECIAL_CHARGER:0x00,
 }
 
 JkRS485BmsSwitch = jk_rs485_bms_ns.class_("JkRS485BmsSwitch", switch.Switch, cg.Component)
@@ -118,7 +122,25 @@ CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
                 cv.GenerateID(): cv.declare_id(JkRS485BmsSwitch),
                 cv.Optional(CONF_ICON, default=ICON_DISABLE_PCL_MODULE): cv.icon,
             }
-        ).extend(cv.COMPONENT_SCHEMA),                    
+        ).extend(cv.COMPONENT_SCHEMA),    
+        cv.Optional(CONF_GPS_HEARTBEAT): switch.SWITCH_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(JkRS485BmsSwitch),
+                cv.Optional(CONF_ICON, default=ICON_DISABLE_PCL_MODULE): cv.icon,
+            }
+        ).extend(cv.COMPONENT_SCHEMA),  
+        cv.Optional(CONF_PORT_SELECTION): switch.SWITCH_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(JkRS485BmsSwitch),
+                cv.Optional(CONF_ICON, default=ICON_DISABLE_PCL_MODULE): cv.icon,
+            }
+        ).extend(cv.COMPONENT_SCHEMA), 
+        cv.Optional(CONF_SPECIAL_CHARGER): switch.SWITCH_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(JkRS485BmsSwitch),
+                cv.Optional(CONF_ICON, default=ICON_DISABLE_PCL_MODULE): cv.icon,
+            }
+        ).extend(cv.COMPONENT_SCHEMA),         
     }
 )
 

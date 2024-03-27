@@ -20,6 +20,7 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
  public:
   void set_address(uint8_t address) { address_ = address; }
 
+
   void set_smart_sleep_time_sensor(sensor::Sensor *smart_sleep_time_sensor) {
     smart_sleep_time_sensor_ = smart_sleep_time_sensor;
   }
@@ -111,8 +112,8 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   void set_temperature_sensor(uint8_t i, sensor::Sensor *temperature_sensor) {
     this->temperatures_[i].temperature_sensor_ = temperature_sensor;
   }    
-  void set_power_tube_temperature_sensor(sensor::Sensor *power_tube_temperature_sensor) {
-    power_tube_temperature_sensor_ = power_tube_temperature_sensor;
+  void set_temperature_powertube_sensor(sensor::Sensor *temperature_powertube_sensor) {
+    temperature_powertube_sensor_ = temperature_powertube_sensor;
   }
   void set_temperature_sensor_1_sensor(sensor::Sensor *temperature_sensor_1_sensor) {
     temperature_sensor_1_sensor_ = temperature_sensor_1_sensor;
@@ -120,14 +121,14 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   void set_temperature_sensor_2_sensor(sensor::Sensor *temperature_sensor_2_sensor) {
     temperature_sensor_2_sensor_ = temperature_sensor_2_sensor;
   }
-  void set_total_voltage_sensor(sensor::Sensor *total_voltage_sensor) { total_voltage_sensor_ = total_voltage_sensor; }
-  void set_current_sensor(sensor::Sensor *current_sensor) { current_sensor_ = current_sensor; }
-  void set_power_sensor(sensor::Sensor *power_sensor) { power_sensor_ = power_sensor; }
-  void set_charging_power_sensor(sensor::Sensor *charging_power_sensor) {
-    charging_power_sensor_ = charging_power_sensor;
+  void set_battery_voltage_sensor(sensor::Sensor *battery_voltage_sensor) { battery_voltage_sensor_ = battery_voltage_sensor; }
+  void set_battery_current_sensor(sensor::Sensor *battery_current_sensor) { battery_current_sensor_ = battery_current_sensor; }
+  void set_battery_power_sensor(sensor::Sensor *battery_power_sensor) { battery_power_sensor_ = battery_power_sensor; }
+  void set_battery_power_charging_sensor(sensor::Sensor *battery_power_charging_sensor) {
+    battery_power_charging_sensor_ = battery_power_charging_sensor;
   }
-  void set_discharging_power_sensor(sensor::Sensor *discharging_power_sensor) {
-    discharging_power_sensor_ = discharging_power_sensor;
+  void set_battery_power_discharging_sensor(sensor::Sensor *battery_power_discharging_sensor) {
+    battery_power_discharging_sensor_ = battery_power_discharging_sensor;
   }
   void set_battery_capacity_remaining_sensor(sensor::Sensor *battery_capacity_remaining_sensor) {
     battery_capacity_remaining_sensor_ = battery_capacity_remaining_sensor;
@@ -242,17 +243,17 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
     mos_overtemperature_protection_recovery_sensor_ = mos_overtemperature_protection_recovery_sensor;
   }
 
-  void set_balancing_starting_voltage_sensor(sensor::Sensor *balance_starting_voltage_sensor) {
-    balance_starting_voltage_sensor_ = balance_starting_voltage_sensor;
+  void set_cell_balancing_starting_voltage_sensor(sensor::Sensor *cell_balancing_starting_voltage_sensor) {
+    cell_balancing_starting_voltage_sensor_ = cell_balancing_starting_voltage_sensor;
   }
   void set_balancing_opening_pressure_difference_sensor(sensor::Sensor *balancing_opening_pressure_difference_sensor) {
     balancing_opening_pressure_difference_sensor_ = balancing_opening_pressure_difference_sensor;
   }
-  void set_power_tube_temperature_protection_sensor(sensor::Sensor *power_tube_temperature_protection_sensor) {
-    power_tube_temperature_protection_sensor_ = power_tube_temperature_protection_sensor;
+  void set_powertube_temperature_protection_sensor(sensor::Sensor *powertube_temperature_protection_sensor) {
+    powertube_temperature_protection_sensor_ = powertube_temperature_protection_sensor;
   }
-  void set_power_tube_temperature_recovery_sensor(sensor::Sensor *power_tube_temperature_recovery_sensor) {
-    power_tube_temperature_recovery_sensor_ = power_tube_temperature_recovery_sensor;
+  void set_powertube_temperature_protection_recovery_sensor(sensor::Sensor *powertube_temperature_protection_recovery_sensor) {
+    powertube_temperature_protection_recovery_sensor_ = powertube_temperature_protection_recovery_sensor;
   }
   void set_temperature_sensor_temperature_protection_sensor(
       sensor::Sensor *temperature_sensor_temperature_protection_sensor) {
@@ -267,8 +268,8 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
     temperature_sensor_temperature_difference_protection_sensor_ =
         temperature_sensor_temperature_difference_protection_sensor;
   }
-  void set_state_of_charge_sensor(sensor::Sensor *state_of_charge_sensor) {
-    state_of_charge_sensor_ = state_of_charge_sensor;
+  void set_battery_capacity_state_of_charge_sensor(sensor::Sensor *battery_capacity_state_of_charge_sensor) {
+    battery_capacity_state_of_charge_sensor_ = battery_capacity_state_of_charge_sensor;
   }
   void set_charging_high_temperature_protection_sensor(sensor::Sensor *charging_high_temperature_protection_sensor) {
     charging_high_temperature_protection_sensor_ = charging_high_temperature_protection_sensor;
@@ -308,7 +309,7 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   void set_manufacturing_date_sensor(sensor::Sensor *manufacturing_date_sensor) {
     manufacturing_date_sensor_ = manufacturing_date_sensor;
   }
-  void set_total_runtime_sensor(sensor::Sensor *total_runtime_sensor) { total_runtime_sensor_ = total_runtime_sensor; }
+  void set_battery_total_runtime_sensor(sensor::Sensor *battery_total_runtime_sensor) { battery_total_runtime_sensor_ = battery_total_runtime_sensor; }
   void set_start_current_calibration_sensor(sensor::Sensor *start_current_calibration_sensor) {
     start_current_calibration_sensor_ = start_current_calibration_sensor;
   }
@@ -329,99 +330,146 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   void set_max_discharging_current_sensor(sensor::Sensor *max_discharging_current_sensor) {
     max_discharging_current_sensor_ = max_discharging_current_sensor;
   }   
-  
+
+  void set_battery_total_alarms_count_sensor(sensor::Sensor *battery_total_alarms_count_sensor){
+    battery_total_alarms_count_sensor_ = battery_total_alarms_count_sensor;
+  }
+  void set_battery_total_alarms_active_sensor(sensor::Sensor *battery_total_alarms_active_sensor){
+    battery_total_alarms_active_sensor_ = battery_total_alarms_active_sensor;
+  }
+
+  //void set_battery_total_alarms_count(uint8_t battery_total_alarms_count) { battery_total_alarms_count_ = battery_total_alarms_count; }
+  //void set_battery_total_alarms_active(uint8_t battery_total_alarms_active) { battery_total_alarms_active_ = battery_total_alarms_active; }  
 
   // ALARMS
   void set_alarm_wireres_binary_sensor(binary_sensor::BinarySensor *alarm_wireres_binary_sensor) {
     alarm_wireres_binary_sensor_ = alarm_wireres_binary_sensor;
   }
+
   void set_alarm_mosotp_binary_sensor(binary_sensor::BinarySensor *alarm_mosotp_binary_sensor) {
     alarm_mosotp_binary_sensor_ = alarm_mosotp_binary_sensor;
   }
+
   void set_alarm_cellquantity_binary_sensor(binary_sensor::BinarySensor *alarm_cellquantity_binary_sensor) {
     alarm_cellquantity_binary_sensor_ = alarm_cellquantity_binary_sensor;
   }
+
   void set_alarm_cursensorerr_binary_sensor(binary_sensor::BinarySensor *alarm_cursensorerr_binary_sensor) {
     alarm_cursensorerr_binary_sensor_ = alarm_cursensorerr_binary_sensor;
   }
+
   void set_alarm_cellovp_binary_sensor(binary_sensor::BinarySensor *alarm_cellovp_binary_sensor) {
     alarm_cellovp_binary_sensor_ = alarm_cellovp_binary_sensor;
+
   }
+
   void set_alarm_batovp_binary_sensor(binary_sensor::BinarySensor *alarm_batovp_binary_sensor) {
     alarm_batovp_binary_sensor_ = alarm_batovp_binary_sensor;
   }
+
   void set_alarm_chocp_binary_sensor(binary_sensor::BinarySensor *alarm_chocp_binary_sensor) {
     alarm_chocp_binary_sensor_ = alarm_chocp_binary_sensor;
   }
+
   void set_alarm_chscp_binary_sensor(binary_sensor::BinarySensor *alarm_chscp_binary_sensor) {
     alarm_chscp_binary_sensor_ = alarm_chscp_binary_sensor;
   }
+
   void set_alarm_chotp_binary_sensor(binary_sensor::BinarySensor *alarm_chotp_binary_sensor) {
     alarm_chotp_binary_sensor_ = alarm_chotp_binary_sensor;
   }
+
   void set_alarm_chutp_binary_sensor(binary_sensor::BinarySensor *alarm_chutp_binary_sensor) {
     alarm_chutp_binary_sensor_ = alarm_chutp_binary_sensor;
+    battery_total_alarms_count_=battery_total_alarms_count_+1;
+    if (alarm_chutp_binary_sensor->state){
+      battery_total_alarms_active_=battery_total_alarms_active_+1;
+    }
   }
+
   void set_alarm_cpuauxcommuerr_binary_sensor(binary_sensor::BinarySensor *alarm_cpuauxcommuerr_binary_sensor) {
     alarm_cpuauxcommuerr_binary_sensor_ = alarm_cpuauxcommuerr_binary_sensor;
   }
+
   void set_alarm_celluvp_binary_sensor(binary_sensor::BinarySensor *alarm_celluvp_binary_sensor) {
     alarm_celluvp_binary_sensor_ = alarm_celluvp_binary_sensor;
+
   }
+
   void set_alarm_batuvp_binary_sensor(binary_sensor::BinarySensor *alarm_batuvp_binary_sensor) {
     alarm_batuvp_binary_sensor_ = alarm_batuvp_binary_sensor;
   }
+
   void set_alarm_dchocp_binary_sensor(binary_sensor::BinarySensor *alarm_dchocp_binary_sensor) {
     alarm_dchocp_binary_sensor_ = alarm_dchocp_binary_sensor;
   }
+
   void set_alarm_dchscp_binary_sensor(binary_sensor::BinarySensor *alarm_dchscp_binary_sensor) {
     alarm_dchscp_binary_sensor_ = alarm_dchscp_binary_sensor;
   }
+  
   void set_alarm_dchotp_binary_sensor(binary_sensor::BinarySensor *alarm_dchotp_binary_sensor) {
     alarm_dchotp_binary_sensor_ = alarm_dchotp_binary_sensor;
   }
+
   void set_alarm_chargemos_binary_sensor(binary_sensor::BinarySensor *alarm_chargemos_binary_sensor) {
     alarm_chargemos_binary_sensor_ = alarm_chargemos_binary_sensor;
   }
+
   void set_alarm_dischargemos_binary_sensor(binary_sensor::BinarySensor *alarm_dischargemos_binary_sensor) {
     alarm_dischargemos_binary_sensor_ = alarm_dischargemos_binary_sensor;
   }
+
   void set_alarm_gpsdisconneted_binary_sensor(binary_sensor::BinarySensor *alarm_gpsdisconneted_binary_sensor) {
     alarm_gpsdisconneted_binary_sensor_ = alarm_gpsdisconneted_binary_sensor;
   }
+  
   void set_alarm_modifypwdintime_binary_sensor(binary_sensor::BinarySensor *alarm_modifypwdintime_binary_sensor) {
     alarm_modifypwdintime_binary_sensor_ = alarm_modifypwdintime_binary_sensor;
   }
+  
   void set_alarm_dischargeonfailed_binary_sensor(binary_sensor::BinarySensor *alarm_dischargeonfailed_binary_sensor) {
     alarm_dischargeonfailed_binary_sensor_ = alarm_dischargeonfailed_binary_sensor;
   }
+  
   void set_alarm_batteryovertemp_binary_sensor(binary_sensor::BinarySensor *alarm_batteryovertemp_binary_sensor) {
     alarm_batteryovertemp_binary_sensor_ = alarm_batteryovertemp_binary_sensor;
   }
+
   void set_alarm_temperaturesensoranomaly_binary_sensor(binary_sensor::BinarySensor *alarm_temperaturesensoranomaly_binary_sensor) {
     alarm_temperaturesensoranomaly_binary_sensor_ = alarm_temperaturesensoranomaly_binary_sensor;
   }
+
   void set_alarm_plcmoduleanomaly_binary_sensor(binary_sensor::BinarySensor *alarm_plcmoduleanomaly_binary_sensor) {
     alarm_plcmoduleanomaly_binary_sensor_ = alarm_plcmoduleanomaly_binary_sensor;
   }
+
   void set_alarm_mostempsensorabsent_binary_sensor(binary_sensor::BinarySensor *alarm_mostempsensorabsent_binary_sensor) {
     alarm_mostempsensorabsent_binary_sensor_ = alarm_mostempsensorabsent_binary_sensor;
   }
+
   void set_alarm_battempsensor1absent_binary_sensor(binary_sensor::BinarySensor *alarm_battempsensor1absent_binary_sensor) {
     alarm_battempsensor1absent_binary_sensor_ = alarm_battempsensor1absent_binary_sensor;
   }
+
   void set_alarm_battempsensor2absent_binary_sensor(binary_sensor::BinarySensor *alarm_battempsensor2absent_binary_sensor) {
     alarm_battempsensor2absent_binary_sensor_ = alarm_battempsensor2absent_binary_sensor;
   }
+
   void set_alarm_battempsensor3absent_binary_sensor(binary_sensor::BinarySensor *alarm_battempsensor3absent_binary_sensor) {
     alarm_battempsensor3absent_binary_sensor_ = alarm_battempsensor3absent_binary_sensor;
   }
+
   void set_alarm_battempsensor4absent_binary_sensor(binary_sensor::BinarySensor *alarm_battempsensor4absent_binary_sensor) {
     alarm_battempsensor4absent_binary_sensor_ = alarm_battempsensor4absent_binary_sensor;
   }
+
   void set_alarm_battempsensor5absent_binary_sensor(binary_sensor::BinarySensor *alarm_battempsensor5absent_binary_sensor) {
     alarm_battempsensor5absent_binary_sensor_ = alarm_battempsensor5absent_binary_sensor;
   }
+
+
+
 
 
 
@@ -444,6 +492,15 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   
   void set_disable_pcl_module_switch(switch_::Switch *disable_pcl_module_switch) {
     disable_pcl_module_switch_ = disable_pcl_module_switch;
+  }
+  void set_gps_heartbeat_switch(switch_::Switch *gps_heartbeat_switch) {
+    gps_heartbeat_switch_ = gps_heartbeat_switch;
+  }
+  void set_port_selection_switch(switch_::Switch *port_selection_switch) {
+    port_selection_switch_ = port_selection_switch;
+  }
+  void set_special_charger_switch(switch_::Switch *special_charger_switch) {
+    special_charger_switch_ = special_charger_switch;
   }
 
   void set_smart_sleep_on_switch(switch_::Switch *smart_sleep_on_switch) { smart_sleep_on_switch_ = smart_sleep_on_switch; }
@@ -483,6 +540,8 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
  protected:
   ProtocolVersion protocol_version_{PROTOCOL_VERSION_JK02_32S};
   uint8_t address_;
+  uint8_t battery_total_alarms_count_;
+  uint8_t battery_total_alarms_active_;
 
   //binary_sensor::BinarySensor *balancing_binary_sensor_;
   binary_sensor::BinarySensor *balancing_switch_binary_sensor_;
@@ -533,7 +592,8 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   binary_sensor::BinarySensor *alarm_battempsensor4absent_binary_sensor_;
   binary_sensor::BinarySensor *alarm_battempsensor5absent_binary_sensor_;
 
-
+  sensor::Sensor *battery_total_alarms_count_sensor_;
+  sensor::Sensor *battery_total_alarms_active_sensor_;
   sensor::Sensor *smart_sleep_time_sensor_;
   sensor::Sensor *cell_undervoltage_protection_sensor_;  
   sensor::Sensor *cell_undervoltage_protection_recovery_sensor_;
@@ -578,14 +638,14 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   sensor::Sensor *cell_voltage_max_cell_number_sensor_;
   sensor::Sensor *delta_cell_voltage_sensor_;
   sensor::Sensor *average_cell_voltage_sensor_;
-  sensor::Sensor *power_tube_temperature_sensor_;
+  sensor::Sensor *temperature_powertube_sensor_;
   sensor::Sensor *temperature_sensor_1_sensor_;
   sensor::Sensor *temperature_sensor_2_sensor_;
-  sensor::Sensor *total_voltage_sensor_;
-  sensor::Sensor *current_sensor_;
-  sensor::Sensor *power_sensor_;
-  sensor::Sensor *charging_power_sensor_;
-  sensor::Sensor *discharging_power_sensor_;
+  sensor::Sensor *battery_voltage_sensor_;
+  sensor::Sensor *battery_current_sensor_;
+  sensor::Sensor *battery_power_sensor_;
+  sensor::Sensor *battery_power_charging_sensor_;
+  sensor::Sensor *battery_power_discharging_sensor_;
   sensor::Sensor *battery_capacity_remaining_sensor_;
   sensor::Sensor *battery_capacity_remaining_derived_sensor_;
   sensor::Sensor *temperature_sensors_sensor_;
@@ -603,10 +663,10 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   sensor::Sensor *discharging_overcurrent_delay_sensor_;
   sensor::Sensor *charging_overcurrent_protection_sensor_;
   sensor::Sensor *charging_overcurrent_delay_sensor_;
-  sensor::Sensor *balance_starting_voltage_sensor_;
+  sensor::Sensor *cell_balancing_starting_voltage_sensor_;
   sensor::Sensor *balancing_opening_pressure_difference_sensor_;
-  sensor::Sensor *power_tube_temperature_protection_sensor_;
-  sensor::Sensor *power_tube_temperature_recovery_sensor_;
+  sensor::Sensor *powertube_temperature_protection_sensor_;
+  sensor::Sensor *powertube_temperature_protection_recovery_sensor_;
   sensor::Sensor *temperature_sensor_temperature_protection_sensor_;
   sensor::Sensor *temperature_sensor_temperature_recovery_sensor_;
   sensor::Sensor *temperature_sensor_temperature_difference_protection_sensor_;
@@ -626,12 +686,12 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   sensor::Sensor *alarm_low_volume_sensor_;
   sensor::Sensor *password_sensor_;
   sensor::Sensor *manufacturing_date_sensor_;
-  sensor::Sensor *total_runtime_sensor_;
+  sensor::Sensor *battery_total_runtime_sensor_;
   sensor::Sensor *start_current_calibration_sensor_;
   sensor::Sensor *actual_battery_capacity_sensor_;
   sensor::Sensor *protocol_version_sensor_;
 
-  sensor::Sensor *state_of_charge_sensor_;
+  sensor::Sensor *battery_capacity_state_of_charge_sensor_;
   sensor::Sensor *heating_current_sensor_;
   sensor::Sensor *balancing_current_sensor_;
   sensor::Sensor *emergency_time_countdown_sensor_;
@@ -648,6 +708,9 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   switch_::Switch *smart_sleep_on_switch_;
   switch_::Switch *timed_stored_data_switch_;
   switch_::Switch *disable_pcl_module_switch_;
+  switch_::Switch *gps_heartbeat_switch_;
+  switch_::Switch *port_selection_switch_;
+  switch_::Switch *special_charger_switch_;
 
   text_sensor::TextSensor *errors_text_sensor_;
   text_sensor::TextSensor *operation_mode_text_sensor_;
@@ -680,6 +743,7 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   void publish_state_(sensor::Sensor *sensor, float value);
   void publish_state_(switch_::Switch *obj, const bool &state);
   void publish_state_(text_sensor::TextSensor *text_sensor, const std::string &state);
+  void publish_alarm_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state);  
   void publish_device_unavailable_();
   void reset_status_online_tracker_();
   void track_status_online_();
@@ -688,6 +752,7 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
 
   uint32_t last_cell_info_{0};
   uint32_t throttle_;
+
   void decode_jk02_cell_info_(const std::vector<uint8_t> &data);
   void decode_jk02_settings_(const std::vector<uint8_t> &data);
   void decode_jk04_cell_info_(const std::vector<uint8_t> &data);
