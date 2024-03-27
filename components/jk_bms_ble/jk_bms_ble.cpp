@@ -596,6 +596,12 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   //                                                                     0x02: Discharging balancer
   //this->publish_state_(this->balancing_binary_sensor_, (data[140 + offset] != 0x00));
   this->publish_state_(this->balancing_direction_sensor_, (data[140 + offset]));
+  if (data[140+offset]==1 or data[140+offset]==2){
+    this->publish_state_(this->status_balancing_binary_sensor_, (bool) 1);    
+  } else {
+    this->publish_state_(this->status_balancing_binary_sensor_, (bool) 0);
+  }
+  ESP_LOGI(TAG, "BALANCER WORKING STATUS 140:  0x%02X", data[140 + offset]);
 
   // 141   1   0x54                   State of charge in   1.0           %
   this->publish_state_(this->state_of_charge_sensor_, (float) data[141 + offset]);
@@ -635,8 +641,8 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->status_precharging_binary_sensor_, (bool) data[168 + offset]);
   ESP_LOGI(TAG, "PRECHARGE WORKING STATUS: 0x%02X", data[168 + offset]);
   // 169   1   0x01                   Balancer working                             0x00: off, 0x01: on
-  this->publish_state_(this->status_balancing_binary_sensor_, (bool) data[169 + offset]);
-  ESP_LOGI(TAG, "BALANCER WORKING STATUS:  0x%02X", data[169 + offset]);
+  //this->publish_state_(this->status_balancing_binary_sensor_, (bool) data[169 + offset]);
+  ESP_LOGI(TAG, "BALANCER WORKING STATUS 169:  0x%02X", data[169 + offset]);
 
   // 171   2   0x00 0x00              Unknown171
   // 173   2   0x00 0x00              Unknown173
@@ -861,7 +867,7 @@ void JkBmsBle::decode_jk04_cell_info_(const std::vector<uint8_t> &data) {
 
   // 220   1   0x00                  Blink cells (0x00: Off, 0x01: Charging balancer, 0x02: Discharging balancer)
   bool balancing = (data[220] != 0x00);
-  //this->publish_state_(this->status_balancing_binary_sensor_, balancing);
+  this->publish_state_(this->status_balancing_binary_sensor_, balancing);
   //this->publish_state_(this->operation_status_text_sensor_, (balancing) ? "Balancing" : "Idle");
 
   // 221   1   0x01                  Unknown221
