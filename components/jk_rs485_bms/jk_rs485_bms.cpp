@@ -374,6 +374,12 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   //                                                                     0x02: Discharging balancer
   // this->publish_state_(this->balancing_binary_sensor_, (data[140 + offset] != 0x00));
   this->publish_state_(this->balancing_direction_sensor_, (data[140 + offset]));
+  if (data[140+offset]==1 or data[140+offset]==2){
+    this->publish_state_(this->status_balancing_binary_sensor_, (bool) 1);    
+  } else {
+    this->publish_state_(this->status_balancing_binary_sensor_, (bool) 0);
+  }
+  ESP_LOGI(TAG, "BALANCER WORKING STATUS 140:  0x%02X", data[140 + offset]);
 
   // 141   1   0x54                   Battery capacity state of charge in   1.0           %
   this->publish_state_(this->battery_capacity_state_of_charge_sensor_, (float) data[141 + offset]);
@@ -412,7 +418,8 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->status_precharging_binary_sensor_, (bool) check_bit_(data[168+ offset], 1));
   ESP_LOGV(TAG, "PRECHARGE WORKING STATUS: 0x%02X", data[168 + offset]);
   // 169   1   0x01                   Balancer working                             0x00: off, 0x01: on
-  this->publish_state_(this->status_balancing_binary_sensor_, (bool) check_bit_(data[169+ offset], 1));
+  //this->publish_state_(this->status_balancing_binary_sensor_, (bool) data[169 + offset]);
+  ESP_LOGI(TAG, "BALANCER WORKING STATUS 169:  0x%02X", data[169 + offset]);
 
   // 168   1   0xAA                   Unknown168
   // 169   2   0x06 0x00              Unknown169
@@ -492,15 +499,24 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
     ESP_LOGV(TAG, "  TimeUVPR??:  %d", ((int16_t) jk_get_16bit(178 + offset)));
     // 186 [212]
     uint16_t raw_emergency_time_countdown = jk_get_16bit(186 + offset);                               
-    ESP_LOGV(TAG, "  Emergency switch: %s", (raw_emergency_time_countdown > 0) ? "on" : "off");
+    //ESP_LOGV(TAG, "  Emergency switch: %s", (raw_emergency_time_countdown > 0) ? "on" : "off");
     this->publish_state_(this->emergency_switch_, (bool) (raw_emergency_time_countdown > 0));
-    this->publish_state_(this->emergency_time_countdown_sensor_, (float) raw_emergency_time_countdown * 1.0f);
+
 
     // 202 Battery Voltage (better 118 measurement --> more decimals)
+  if (frame_version == FRAME_VERSION_JK02_32S) {
+    uint16_t raw_emergency_time_countdown = jk_get_16bit(186 + offset);
+    ESP_LOGI(TAG, "  Emergency switch: %s", (raw_emergency_time_countdown > 0) ? "on" : "off");
+    this->publish_state_(this->emergency_switch_, raw_emergency_time_countdown > 0);
+    this->publish_state_(this->emergency_time_countdown_sensor_, (float) raw_emergency_time_countdown * 1.0f);
+
     this->publish_state_(this->temperatures_[3].temperature_sensor_,
                          (float) ((int16_t) jk_get_16bit(224 + offset)) * 0.1f);
     this->publish_state_(this->temperatures_[2].temperature_sensor_,
                          (float) ((int16_t) jk_get_16bit(226 + offset)) * 0.1f);
+  }
+
+
 
     // 207 [239] ChargerPlugged
     ESP_LOGV(TAG, "  Charger plugged: %d", (data[207 + offset]));
