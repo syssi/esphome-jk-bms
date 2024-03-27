@@ -238,20 +238,20 @@ void JkBmsBle::update() {
     ESP_LOGW(TAG, "[%s] Not connected", this->parent_->address_str().c_str());
     return;
   }
-
-  if (!this->status_notification_received_) {
-    ESP_LOGI(TAG, "Request status notification");
-    this->write_register(COMMAND_CELL_INFO, 0x00000000, 0x00);
-  }
-
-  if (this->cell_count_number_->state==0){
+ 
+  if (this->cell_request_float_voltage_time_number_->state==0){
     const uint32_t now = millis();
-    if (now - this->last_device_info_ < 60000) {   //testing
+    if (now - this->last_device_info_ < 2000) {   //testing
       return;
     }
     this->last_device_info_ = now;
     ESP_LOGI(TAG, "Request device info");
     this->write_register(COMMAND_DEVICE_INFO, 0x00000000, 0x00);
+  } else {
+    if (!this->status_notification_received_) {
+      ESP_LOGI(TAG, "Request status notification");
+      this->write_register(COMMAND_CELL_INFO, 0x00000000, 0x00);
+    }
   }
 
 }
@@ -861,8 +861,8 @@ void JkBmsBle::decode_jk04_cell_info_(const std::vector<uint8_t> &data) {
 
   // 220   1   0x00                  Blink cells (0x00: Off, 0x01: Charging balancer, 0x02: Discharging balancer)
   bool balancing = (data[220] != 0x00);
-  this->publish_state_(this->status_balancing_binary_sensor_, balancing);
-  this->publish_state_(this->operation_status_text_sensor_, (balancing) ? "Balancing" : "Idle");
+  //this->publish_state_(this->status_balancing_binary_sensor_, balancing);
+  //this->publish_state_(this->operation_status_text_sensor_, (balancing) ? "Balancing" : "Idle");
 
   // 221   1   0x01                  Unknown221
   ESP_LOGD(TAG, "Unknown221: 0x%02X", data[221]);

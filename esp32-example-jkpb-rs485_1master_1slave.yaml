@@ -25,7 +25,7 @@ esp32:
 
 external_components:
  - source: ${external_components_source}
-    refresh: 0s
+   refresh: 0s
 #  - source: ./components
 #    refresh: 0s
 wifi:

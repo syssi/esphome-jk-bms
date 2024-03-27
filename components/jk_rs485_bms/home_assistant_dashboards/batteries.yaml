@@ -118,9 +118,10 @@ views:
                       {%- set balancing_direction =
                       states('sensor.rs485_bms0_balancing_direction')%}   {%-
                       set is_working = "charging" if
-                      (balancing_direction|int)>0 
-                            else "discharging" if (balancing_direction|int)<0 
-                            else 'idle' %} 
+                      (balancing_direction|int)==1 
+                            else "discharging" if (balancing_direction|int)==2 
+                            else "idle" if (balancing_direction|int)==0
+                            else 'unknown' %} 
                       {%- set font_start = '<b><font size=2 color="#41CD52">' if
                       (balancing_direction|int)>0 
                             else '<b><font size=2 color=#3090C7>' if (balancing_direction|int)<0 
