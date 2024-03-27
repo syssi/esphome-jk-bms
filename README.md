@@ -13,12 +13,15 @@ ESPHome components to monitor Jikong Battery Management Systems (JK-BMS) via UAR
 **NEW:** monitor your new JK-PBx BMSs via internal RS485 network using 1 only ESP. [Click here](https://github.com/txubelaxu/esphome-jk-bms/blob/main/components/jk_rs485_bms/README.md) for more info. Home Assistant dashboards inside as well.
 
 Last: new parameters added and new dashboards
++ New Dashboards (summary, cells, settings, protection) available [here](https://github.com/txubelaxu/esphome-jk-bms/tree/main/components/jk_rs485_bms/home_assistant_dashboards)
 + Multiple alarm signals: BATTempSensor1Absent, BATTempSensor2Absent, BATTempSensor3Absent, BATTempSensor4Absent, BATTempSensor5Absent, BatOVP, BatUVP, BatteryOverTemp, CPUAuxCommuErr, CellOVP, CellQuantity, CellUVP, ChOCP, ChOTP, ChSCP, ChUTP, ChargeMOS, CurSensorErr, DchOCP, DchOTP, DchSCP, DischargeMOS, DischargeOnFailed, GPSDisconneted, MOSTempSensorAbsent, ModifyPWDinTime, MosOTP, PLCModuleAnomaly, TemperatureSensorAnomaly, WireRes (thanks to [@jblance and @jrventer](https://github.com/jblance/mpp-solar/issues/460)
 + difference between: "switch status" and "real working status". Useful for balancing, for example: balancer could be ON, but balancing can be on or off, depending on conditions...
 
-![image](https://github.com/txubelaxu/esphome-jk-bms/assets/156140720/9c3f7466-5e62-4667-bb70-c573c3a344e2)
-![image](https://github.com/txubelaxu/esphome-jk-bms/assets/156140720/a02e1d83-54c4-4057-bf0d-d159917e52c8)
-![image](https://github.com/txubelaxu/esphome-jk-bms/assets/156140720/5187ac3f-950a-40f9-ba00-097275ffe9bf)
+![image](https://github.com/txubelaxu/esphome-jk-bms/assets/156140720/5d5197c8-dbb4-4b0e-ae9f-0a66b88c2f82)
+![image](https://github.com/txubelaxu/esphome-jk-bms/assets/156140720/b90b01e8-0833-444b-b122-b60c1fdcd92e)
+![image](https://github.com/txubelaxu/esphome-jk-bms/assets/156140720/b74549aa-a7c8-4540-9392-82b8bfc3864a)
+![image](https://github.com/txubelaxu/esphome-jk-bms/assets/156140720/9a295f65-4268-4769-8f47-146014cafacf)
+
 
 ## Via Bluetooth (BLE) or UART (best for controlling)
 
