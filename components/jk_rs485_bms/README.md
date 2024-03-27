@@ -134,13 +134,12 @@ logger:
 ```
 
 ## MUCH MORE
-Added some <a href="./home_assistant_dashboards/">Home Assistant Dashboards</a>
+Added a <a href="./home_assistant_dashboards/">Home Assistant Dashboard</a>
 
-![image](https://github.com/txubelaxu/esphome-jk-bms/assets/156140720/980697a4-7f6b-4e7b-b4dc-7f1b66efc464)
-
-![image](https://github.com/txubelaxu/esphome-jk-bms/assets/156140720/b149a2e8-6a82-483a-bee7-5636ae5881f0)
-
-![image](https://github.com/txubelaxu/esphome-jk-bms/assets/156140720/30ff5fba-97c9-4588-837c-597dcec06387)
+![image](https://github.com/txubelaxu/esphome-jk-bms/assets/156140720/5d5197c8-dbb4-4b0e-ae9f-0a66b88c2f82)
+![image](https://github.com/txubelaxu/esphome-jk-bms/assets/156140720/b90b01e8-0833-444b-b122-b60c1fdcd92e)
+![image](https://github.com/txubelaxu/esphome-jk-bms/assets/156140720/b74549aa-a7c8-4540-9392-82b8bfc3864a)
+![image](https://github.com/txubelaxu/esphome-jk-bms/assets/156140720/9a295f65-4268-4769-8f47-146014cafacf)
 
 
 
