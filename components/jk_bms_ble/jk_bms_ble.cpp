@@ -622,7 +622,9 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   ESP_LOGD(TAG, "SOCSOH: 0x%02X (always 0x64?)", data[158 + offset]);
   
   // 159   1   0x00                   Precharge
-  ESP_LOGI(TAG, "Precharge: 0x%02X (always 0x00?)", data[159 + offset]);
+
+  this->publish_state_(this->status_precharging_binary_sensor_, (bool) check_bit_(data[159+ offset], 1));
+  ESP_LOGV(TAG, "PRECHARGE WORKING STATUS: 0x%02X", data[159 + offset]);
 
   // 160   2   0x79 0x04              Unknown160 (Cycle capacity?)
   ESP_LOGD(TAG, "Unknown160: 0x%02X 0x%02X (always 0xC5 0x09?)", data[160 + offset], data[161 + offset]);
@@ -638,8 +640,9 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->status_discharging_binary_sensor_, (bool) data[167 + offset]);
   ESP_LOGI(TAG, "DISCHARGE WORKING STATUS: 0x%02X", data[167 + offset]);
   // 168   1   0x01                   PRE Discharging                              0x00: off, 0x01: on
-  this->publish_state_(this->status_precharging_binary_sensor_, (bool) data[168 + offset]);
-  ESP_LOGI(TAG, "PRECHARGE WORKING STATUS: 0x%02X", data[168 + offset]);
+  //this->publish_state_(this->status_precharging_binary_sensor_, (bool) data[168 + offset]);
+  //ESP_LOGI(TAG, "PRECHARGE WORKING STATUS: 0x%02X", data[168 + offset]);
+  
   // 169   1   0x01                   Balancer working                             0x00: off, 0x01: on
   //this->publish_state_(this->status_balancing_binary_sensor_, (bool) data[169 + offset]);
   ESP_LOGI(TAG, "BALANCER WORKING STATUS 169:  0x%02X", data[169 + offset]);
