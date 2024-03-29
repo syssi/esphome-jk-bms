@@ -24,9 +24,9 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   void set_smart_sleep_time_sensor(sensor::Sensor *smart_sleep_time_sensor) {
     smart_sleep_time_sensor_ = smart_sleep_time_sensor;
   }
-  //void set_balancing_binary_sensor(binary_sensor::BinarySensor *balancing_binary_sensor) {
-  //  balancing_binary_sensor_ = balancing_binary_sensor;
-  //}
+  void set_emergency_time_countdown_sensor(sensor::Sensor *emergency_time_countdown_sensor) {
+    emergency_time_countdown_sensor_ = emergency_time_countdown_sensor;
+  }
   void set_balancing_direction_sensor(sensor::Sensor *balancing_direction_sensor) {
     balancing_direction_sensor_ = balancing_direction_sensor;
   } 
@@ -595,6 +595,7 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   sensor::Sensor *battery_total_alarms_count_sensor_;
   sensor::Sensor *battery_total_alarms_active_sensor_;
   sensor::Sensor *smart_sleep_time_sensor_;
+  sensor::Sensor *emergency_time_countdown_sensor_;
   sensor::Sensor *cell_undervoltage_protection_sensor_;  
   sensor::Sensor *cell_undervoltage_protection_recovery_sensor_;
   sensor::Sensor *cell_overvoltage_protection_sensor_; 
@@ -694,7 +695,7 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   sensor::Sensor *battery_capacity_state_of_charge_sensor_;
   sensor::Sensor *heating_current_sensor_;
   sensor::Sensor *balancing_current_sensor_;
-  sensor::Sensor *emergency_time_countdown_sensor_;
+
 
   switch_::Switch *precharging_switch_;
   switch_::Switch *charging_switch_;

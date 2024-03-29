@@ -80,6 +80,8 @@ void JkRS485Bms::on_jk_rs485_sniffer_data(const uint8_t &origin_address, const u
         break;
       default:
         ESP_LOGW(TAG, "Unsupported FRAME TYPE (0x%02X)", frame_type);
+        ESP_LOGI(TAG, "Decoding cell info frame.... [ADDRESS: %02X] %d bytes received", origin_address, data.size());
+        ESP_LOGI(TAG, "  %s", format_hex_pretty(&data.front(), 150).c_str());
     }
   } else {
     ESP_LOGD(TAG, "This BMS address is: %d  and address received %d ==> IDLE", this->address_, origin_address);
@@ -105,7 +107,7 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
     offset = 16;
   }
 
-  ESP_LOGI(TAG, "Decoding cell info frame.... [ADDRESS: %02X] %d bytes received", this->address_, data.size());
+  ESP_LOGD(TAG, "Decoding cell info frame.... [ADDRESS: %02X] %d bytes received", this->address_, data.size());
   ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front(), 150).c_str());
   ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front() + 150, data.size() - 150).c_str());
 
@@ -379,7 +381,7 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   } else {
     this->publish_state_(this->status_balancing_binary_sensor_, (bool) 0);
   }
-  ESP_LOGI(TAG, "BALANCER WORKING STATUS 140:  0x%02X", data[140 + offset]);
+  //ESP_LOGI(TAG, "BALANCER WORKING STATUS 140:  0x%02X", data[140 + offset]);
 
   // 141   1   0x54                   Battery capacity state of charge in   1.0           %
   this->publish_state_(this->battery_capacity_state_of_charge_sensor_, (float) data[141 + offset]);
@@ -421,7 +423,7 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   //ESP_LOGV(TAG, "PRECHARGE WORKING STATUS: 0x%02X", data[168 + offset]);
   // 169   1   0x01                   Balancer working                             0x00: off, 0x01: on  ????????? --> TimeDcOCPR
   //this->publish_state_(this->status_balancing_binary_sensor_, (bool) data[169 + offset]);
-  ESP_LOGI(TAG, "BALANCER WORKING STATUS 169:  0x%02X", data[169 + offset]);
+  //ESP_LOGI(TAG, "BALANCER WORKING STATUS 169:  0x%02X", data[169 + offset]);
 
   // 168   1   0xAA                   Unknown168
   // 169   2   0x06 0x00              Unknown169
@@ -500,15 +502,15 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
     ESP_LOGV(TAG, "  TimeOVPR??:  %d", ((int16_t) jk_get_16bit(180 + offset)));
     ESP_LOGV(TAG, "  TimeUVPR??:  %d", ((int16_t) jk_get_16bit(178 + offset)));
     // 186 [212]
-    uint16_t raw_emergency_time_countdown = jk_get_16bit(186 + offset);                               
+    //uint16_t raw_emergency_time_countdown = jk_get_16bit(186 + offset);                               
     //ESP_LOGV(TAG, "  Emergency switch: %s", (raw_emergency_time_countdown > 0) ? "on" : "off");
-    this->publish_state_(this->emergency_switch_, (bool) (raw_emergency_time_countdown > 0));
+    //this->publish_state_(this->emergency_switch_, (bool) (raw_emergency_time_countdown > 0));
 
 
     // 202 Battery Voltage (better 118 measurement --> more decimals)
   if (frame_version == FRAME_VERSION_JK02_32S) {
     uint16_t raw_emergency_time_countdown = jk_get_16bit(186 + offset);
-    ESP_LOGI(TAG, "  Emergency switch: %s", (raw_emergency_time_countdown > 0) ? "on" : "off");
+    //ESP_LOGI(TAG, "  Emergency switch: %s", (raw_emergency_time_countdown > 0) ? "on" : "off");
     this->publish_state_(this->emergency_switch_, raw_emergency_time_countdown > 0);
     this->publish_state_(this->emergency_time_countdown_sensor_, (float) raw_emergency_time_countdown * 1.0f);
 
@@ -571,7 +573,7 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   auto jk_get_32bit = [&](size_t i) -> uint32_t {
     return (uint32_t(jk_get_16bit(i + 2)) << 16) | (uint32_t(jk_get_16bit(i + 0)) << 0);
   };
-  ESP_LOGI(TAG, "Decoding settings  frame.... [ADDRESS: %02X] %d bytes received", this->address_, data.size());
+  ESP_LOGD(TAG, "Decoding settings  frame.... [ADDRESS: %02X] %d bytes received", this->address_, data.size());
   ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front(), 160).c_str());
   ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front() + 160, data.size() - 160).c_str());
 
