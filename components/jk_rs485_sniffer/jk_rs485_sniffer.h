@@ -2,6 +2,7 @@
 
 #include "esphome/core/component.h"
 #include "esphome/components/uart/uart.h"
+//#include "esphome/components/gpio/output/gpio_binary_output.h"
 
 namespace esphome {
 namespace jk_rs485_sniffer {
@@ -15,6 +16,9 @@ enum ProtocolVersion {
 class JkRS485SnifferDevice;
 
 class JkRS485Sniffer : public uart::UARTDevice, public Component {
+//class JkRS485Sniffer : public uart::UARTDevice, public gpio::GPIOBinaryOutput {
+
+
  public:
   JkRS485Sniffer() = default;
 
@@ -30,7 +34,7 @@ class JkRS485Sniffer : public uart::UARTDevice, public Component {
 
  protected:
   ProtocolVersion protocol_version_{PROTOCOL_VERSION_JK02_32S};
-  void printBuffer(void);
+  void printBuffer(uint16_t max_length);
   bool parse_jk_rs485_sniffer_byte_(uint8_t byte);
 
   std::vector<uint8_t> rx_buffer_;
