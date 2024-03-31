@@ -12,6 +12,24 @@ except ImportError:
     print("To install use:")
     print("    python -m pip install 'construct'")
 
+def crc16_jk_modbus(data : bytearray):
+    crc = 0xFFFF
+    for i in range(len(data)):
+        crc ^= data[i]
+        for j in range(8):
+            if ((crc & 0x1) == 1):
+                crc = int((crc / 2)) ^ 40961
+            else:
+                crc = int(crc / 2)
+
+    # Invierte el orden de los bytes
+    crc_bytes = crc.to_bytes(2, byteorder='little')  # Convertir a bytes (little-endian)
+    crc_reversed = int.from_bytes(crc_bytes, byteorder='big')  # Convertir de nuevo a entero (big-endian)
+    return format(crc_reversed & 0xFFFF, '04X')
+
+    return format(crc & 0xFFFF,'04X')
+
+
 def get_bit_value(number, position):
     # Shift the bit we're interested in to the lowest position
     shifted_bit = number >> position
@@ -26,11 +44,16 @@ def read_serial_port(serial_port, baud_rate):
         data=""
         buffer_full=0
 
+        settings_asked=0
+        start_time = time.time()
+        address=0
+
         while True:
             if buffer_full==0:
                data=""
             # Read all available bytes from the serial port
             partial_data = ser.read_all()
+            now = time.time()
             while partial_data:
                  longitud_datos = len(partial_data)
                  if longitud_datos>=256:
@@ -55,7 +78,28 @@ def read_serial_port(serial_port, baud_rate):
                 first_byte = bytes_data[0]
                 if first_byte <= 0x0f:
                      address=first_byte
-                print("["+str(hex(address)) + "]:" + (str(hex_data)).upper())
+                print("("+str(now-start_time)+")["+str(hex(address)) + "]:" + (str(hex_data)).upper())
+                start_time=now
+            if (settings_asked==0 and time.time()-start_time>0.20):
+                print ("SOLICITANDO..........................................")
+                # Secuencia de bytes en hexadecimal
+                #byte_sequence_hex = "011016200001020000D6F1"
+                byte_sequence_hex = "0110161E0001020000"           #OK 01
+                byte_sequence_hex = "011016200001020000"           #OK 02
+                byte_sequence_hex = "0110161C0001020000"           #OK 03
+
+                byte_sequence_hex = byte_sequence_hex + crc16_jk_modbus(byte_sequence_hex)
+
+#                byte_sequence_hex = "011016200001020000D6F1"           #OK 02
+
+                # Convierte la secuencia de bytes hexadecimal a bytes
+                byte_sequence = bytes.fromhex(byte_sequence_hex)
+
+                # Escribe la secuencia de bytes en el puerto serie
+                ser.write(byte_sequence)
+
+                settings_asked=1
+
 
         # If there is no more data, exit the loop
         sys.stdout.flush()
@@ -95,3 +139,7 @@ if __name__ == "__main__":
                 address=first_byte
            print("["+str(hex(address)) + "]:" + str(line))
 
+
+
+
+#011016200001020000D6F1

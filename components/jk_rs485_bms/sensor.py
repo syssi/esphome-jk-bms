@@ -100,6 +100,7 @@ CONF_TEMPERATURE_SENSOR_1 = "temperature_sensor_1"
 CONF_TEMPERATURE_SENSOR_2 = "temperature_sensor_2"
 CONF_TEMPERATURE_SENSOR_3 = "temperature_sensor_3"
 CONF_TEMPERATURE_SENSOR_4 = "temperature_sensor_4"
+CONF_TEMPERATURE_SENSOR_5 = "temperature_sensor_5"
 CONF_TEMPERATURE_POWERTUBE = "temperature_powertube"
 CONF_TEMPERATURE_SENSORS = "temperature_sensors"
 
@@ -280,6 +281,7 @@ TEMPERATURES = [
     CONF_TEMPERATURE_SENSOR_2,
     CONF_TEMPERATURE_SENSOR_3,
     CONF_TEMPERATURE_SENSOR_4,
+    CONF_TEMPERATURE_SENSOR_5,
 ]
 
 SENSORS = [
@@ -833,6 +835,13 @@ CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
             device_class=DEVICE_CLASS_TEMPERATURE,
             state_class=STATE_CLASS_MEASUREMENT,
         ),        
+        cv.Optional(CONF_TEMPERATURE_SENSOR_5): sensor.sensor_schema(
+            unit_of_measurement=UNIT_CELSIUS,
+            icon=ICON_EMPTY,
+            accuracy_decimals=1,
+            device_class=DEVICE_CLASS_TEMPERATURE,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),    
         cv.Optional(CONF_TEMPERATURE_POWERTUBE): sensor.sensor_schema(
             unit_of_measurement=UNIT_CELSIUS,
             icon=ICON_EMPTY,

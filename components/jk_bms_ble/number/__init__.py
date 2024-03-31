@@ -65,6 +65,8 @@ CONF_CELL_REQUEST_CHARGE_VOLTAGE= "cell_request_charge_voltage"
 CONF_CELL_REQUEST_FLOAT_VOLTAGE= "cell_request_float_voltage"
 CONF_CELL_REQUEST_CHARGE_VOLTAGE_TIME= "cell_request_charge_voltage_time"
 CONF_CELL_REQUEST_FLOAT_VOLTAGE_TIME= "cell_request_float_voltage_time"
+CONF_UART1_PROTOCOL_NUMBER = "uart1_protocol_number"
+CONF_UART2_PROTOCOL_NUMBER = "uart2_protocol_number"
 
 CONF_CELL_COUNT = "cell_count"
 CONF_TOTAL_BATTERY_CAPACITY = "total_battery_capacity"
@@ -162,7 +164,8 @@ NUMBERS = {
     CONF_SMART_SLEEP_TIME : [0x00, 0x00, 0x00, 1.0],                 # What register number for address 0x0118?
     CONF_CELL_REQUEST_CHARGE_VOLTAGE_TIME: [0x00, 0x00, 0x00, 1.0],  # What register number for address 0x0104?  (0x1400 TYPE REGISTER)
     CONF_CELL_REQUEST_FLOAT_VOLTAGE_TIME: [0x00, 0x0a, 0x00, 1.0],   # What register number for address 0x0105?  (0x1400 TYPE REGISTER)
-
+    CONF_UART1_PROTOCOL_NUMBER: [0x00, 0x0a, 0x00, 1.0],             # What register number for address ???????  (0x1400 TYPE REGISTER)
+    CONF_UART2_PROTOCOL_NUMBER: [0x00, 0x0a, 0x00, 1.0],             # What register number for address ???????  (0x1400 TYPE REGISTER)    
 }
 
 JkNumber = jk_bms_ble_ns.class_("JkNumber", number.Number, cg.Component)
@@ -364,12 +367,33 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
                 cv.Optional(CONF_MIN_VALUE, default=0.0): cv.int_,
                 cv.Optional(CONF_MAX_VALUE, default=255.0): cv.int_,
                 cv.Optional(CONF_STEP, default=1.0): cv.int_,
-                cv.Optional(CONF_ICON, default=ICON_CLOCK): cv.icon,
                 cv.Optional(
                     CONF_UNIT_OF_MEASUREMENT, default=UNIT_HOURS
                 ): cv.string_strict,
             }
-        ),                 
+        ),  
+        cv.Optional(CONF_UART1_PROTOCOL_NUMBER): JK_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=0.0): cv.int_,
+                cv.Optional(CONF_MAX_VALUE, default=255.0): cv.int_,
+                cv.Optional(CONF_STEP, default=1.0): cv.int_,
+                cv.Optional(CONF_ICON, default=ICON_CLOCK): cv.icon,
+                cv.Optional(
+                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_EMPTY
+                ): cv.string_strict,
+            }
+        ),
+        cv.Optional(CONF_UART2_PROTOCOL_NUMBER): JK_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=0.0): cv.int_,
+                cv.Optional(CONF_MAX_VALUE, default=255.0): cv.int_,
+                cv.Optional(CONF_STEP, default=1.0): cv.int_,
+                cv.Optional(CONF_ICON, default=ICON_CLOCK): cv.icon,
+                cv.Optional(
+                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_EMPTY
+                ): cv.string_strict,
+            }
+        ),                                 
     }
 )
 

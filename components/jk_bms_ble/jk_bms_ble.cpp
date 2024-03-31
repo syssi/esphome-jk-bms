@@ -591,17 +591,17 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // 138   2   0x00 0x00              Balance current      0.001         A
   this->publish_state_(this->balancing_current_sensor_, (float) ((int16_t) jk_get_16bit(138 + offset)) * 0.001f);
 
-  // 140   1   0x00                   Balancing action                   0x00: Off
-  //                                                                     0x01: Charging balancer
-  //                                                                     0x02: Discharging balancer
-  //this->publish_state_(this->balancing_binary_sensor_, (data[140 + offset] != 0x00));
+  // 140 [166=140+26]  1   0x00                   Balancing action                   0x00: Off
+  //                                                                                 0x01: Charging balancer
+  //                                                                                 0x02: Discharging balancer
+  // this->publish_state_(this->balancing_binary_sensor_, (data[140 + offset] != 0x00));
   this->publish_state_(this->balancing_direction_sensor_, (data[140 + offset]));
-  if (data[140+offset]==1 or data[140+offset]==2){
-    this->publish_state_(this->status_balancing_binary_sensor_, (bool) 1);    
+  if (data[140 + offset] == 1 or data[140 + offset] == 2) {
+    this->publish_state_(this->status_balancing_binary_sensor_, (bool) 1);
   } else {
     this->publish_state_(this->status_balancing_binary_sensor_, (bool) 0);
   }
-  ESP_LOGI(TAG, "BALANCER WORKING STATUS 140:  0x%02X", data[140 + offset]);
+  // ESP_LOGI(TAG, "BALANCER WORKING STATUS 140:  0x%02X", data[140 + offset]);
 
   // 141   1   0x54                   State of charge in   1.0           %
   this->publish_state_(this->state_of_charge_sensor_, (float) data[141 + offset]);
@@ -639,11 +639,11 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // 167   1   0x01                   Discharging mosfet enabled                   0x00: off, 0x01: on
   this->publish_state_(this->status_discharging_binary_sensor_, (bool) data[167 + offset]);
   ESP_LOGI(TAG, "DISCHARGE WORKING STATUS: 0x%02X", data[167 + offset]);
-  // 168   1   0x01                   PRE Discharging                              0x00: off, 0x01: on
+  // 168   1   0x01                   PRE Discharging                              0x00: off, 0x01: on  ????????? --> UserAlarm2
   //this->publish_state_(this->status_precharging_binary_sensor_, (bool) data[168 + offset]);
-  //ESP_LOGI(TAG, "PRECHARGE WORKING STATUS: 0x%02X", data[168 + offset]);
   
-  // 169   1   0x01                   Balancer working                             0x00: off, 0x01: on
+  //ESP_LOGI(TAG, "PRECHARGE WORKING STATUS: 0x%02X", data[168 + offset]);
+  // 169   1   0x01                   Balancer working                             0x00: off, 0x01: on  ????????? --> TimeDcOCPR
   //this->publish_state_(this->status_balancing_binary_sensor_, (bool) data[169 + offset]);
   ESP_LOGI(TAG, "BALANCER WORKING STATUS 169:  0x%02X", data[169 + offset]);
 
@@ -676,18 +676,23 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
     ESP_LOGI(TAG, "BATTempSensor3Absent:          %d", (bool) check_bit_(data[182], 8));
     ESP_LOGI(TAG, "BATTempSensor4Absent:        %d", (bool) check_bit_(data[182], 16));
     ESP_LOGI(TAG, "BATTempSensor5Absent:          %d", (bool) check_bit_(data[182], 32));*/
+    
+    // 183 [209=183+26]   1   0x01                   Status heating          0x00: off, 0x01: on
+    this->publish_state_(this->status_heating_binary_sensor_, (bool) check_bit_(data[183 + offset], 1));
+    ESP_LOGD(TAG, "HEATING BINARY SENSOR STATUS:  0x%02X", data[183 + offset]);
   }         
 
   // 183   2   0x00 0x01              Unknown183 Heating working???
   //this->publish_state_(this->status_heating_binary_sensor_, (bool) data[183 + offset]);
+
+
   // 185   2   0x00 0x00              Unknown185
   // 187   2   0x00 0xD5              Unknown187
   // 189   2   0x02 0x00              Unknown189
   ESP_LOGD(TAG, "Unknown189: 0x%02X 0x%02X", data[189], data[190]);
   // 190   1   0x00                   Unknown190
   // 191   1   0x00                   Balancer status (working: 0x01, idle: 0x00)
-  this->publish_state_(this->status_heating_binary_sensor_, (bool) data[192 + offset]);
-  ESP_LOGI(TAG, "HEATING BINARY SENSOR STATUS:  0x%02X", data[192 + offset]);
+
 
   // 193   2   0x00 0xAE              Unknown193
   ESP_LOGD(TAG, "Unknown193: 0x%02X 0x%02X (0x00 0x8D)", data[193 + offset], data[194 + offset]);
@@ -1312,14 +1317,26 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
   ESP_LOGI(TAG, "  User data: %s", std::string(data.begin() + 102, data.begin() + 102 + 16).c_str());
   ESP_LOGI(TAG, "  Setup passcode: %s", std::string(data.begin() + 118, data.begin() + 118 + 16).c_str());
 
+  ESP_LOGI(TAG, "  UART1 Protocol Number:     0x%02X", ((uint8_t) data[178]));
+  ESP_LOGI(TAG, "  CAN   Protocol Number:     0x%02X", ((uint8_t) data[179]));  
+  ESP_LOGI(TAG, "  UART2 Protocol Number:     0x%02X", ((uint8_t) data[212]));
+  ESP_LOGI(TAG, "  UART2 Protocol Enabled[0]: 0x%02X", ((uint8_t) data[213]));
+
   ESP_LOGI(TAG, "  RCV Time: %f h", (float) ((uint8_t) data[266]) * 0.1f);
   ESP_LOGI(TAG, "  RFV Time: %f h", (float) ((uint8_t) data[267]) * 0.1f);
+  ESP_LOGI(TAG, "  CAN Protocol Library Version: %f", (float) ((uint8_t) data[268]));
+  ESP_LOGI(TAG, "  RVD: %f", (float) ((uint8_t) data[269]));
+  ESP_LOGI(TAG, "  ---------------------------------------");
 
   this->publish_state_(this->info_vendorid_text_sensor_, std::string(data.begin() + 6, data.begin() + 6 + 16).c_str());
   this->publish_state_(this->info_hardware_version_text_sensor_, std::string(data.begin() + 22, data.begin() + 22 + 8).c_str());
   this->publish_state_(this->info_software_version_text_sensor_, std::string(data.begin() + 30, data.begin() + 30 + 8).c_str());
   this->publish_state_(this->info_device_name_text_sensor_, std::string(data.begin() + 46, data.begin() + 46 + 16).c_str());
   this->publish_state_(this->info_device_password_text_sensor_, std::string(data.begin() + 62, data.begin() + 62 + 16).c_str());
+
+  this->publish_state_(this->uart1_protocol_number_number_, (uint8_t) data[178]);
+  this->publish_state_(this->uart2_protocol_number_number_, (uint8_t) data[212]);
+
   this->publish_state_(this->cell_request_charge_voltage_time_number_, (float) data[266]*0.1f);
   this->publish_state_(this->cell_request_float_voltage_time_number_, (float) data[267]*0.1f);
 

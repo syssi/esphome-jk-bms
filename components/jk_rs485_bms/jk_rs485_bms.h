@@ -506,6 +506,8 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   void set_smart_sleep_on_switch(switch_::Switch *smart_sleep_on_switch) { smart_sleep_on_switch_ = smart_sleep_on_switch; }
 
   void set_errors_text_sensor(text_sensor::TextSensor *errors_text_sensor) { errors_text_sensor_ = errors_text_sensor; }
+  void set_network_nodes_available_text_sensor(text_sensor::TextSensor *network_nodes_available_text_sensor) { network_nodes_available_text_sensor_ = network_nodes_available_text_sensor; }
+
   void set_operation_mode_text_sensor(text_sensor::TextSensor *operation_mode_text_sensor) {
     operation_mode_text_sensor_ = operation_mode_text_sensor;
   }
@@ -533,7 +535,7 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
 
   void dump_config() override;
 
-  void on_jk_rs485_sniffer_data(const uint8_t &origin_address, const uint8_t &frame_type, const std::vector<uint8_t> &data) override;
+  void on_jk_rs485_sniffer_data(const uint8_t &origin_address, const uint8_t &frame_type, const std::vector<uint8_t> &data,const std::string &nodes_available) override;
 
   void update() override;
 
@@ -542,6 +544,7 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   uint8_t address_;
   uint8_t battery_total_alarms_count_;
   uint8_t battery_total_alarms_active_;
+  std::string nodes_available;
 
   //binary_sensor::BinarySensor *balancing_binary_sensor_;
   binary_sensor::BinarySensor *balancing_switch_binary_sensor_;
@@ -723,6 +726,7 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   text_sensor::TextSensor *total_runtime_formatted_text_sensor_;
 
   text_sensor::TextSensor *operation_status_text_sensor_;
+  text_sensor::TextSensor *network_nodes_available_text_sensor_;
 
 //  struct Cell {
 //    sensor::Sensor *cell_voltage_sensor_{nullptr};
@@ -735,7 +739,7 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   } cells_[32];
   struct Temperature {
     sensor::Sensor *temperature_sensor_{nullptr};
-  } temperatures_[4];
+  } temperatures_[5];
 
   uint8_t no_response_count_{0};
 

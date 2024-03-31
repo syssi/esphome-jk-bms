@@ -216,7 +216,10 @@ number:
       name: "${bms_name} max discharge current"
     smart_sleep_time:
       name: "${bms_name} smart sleep time"        
-
+    uart1_protocol_number:
+      name: "${bms_name} uart1 protocol number"
+    uart2_protocol_number:
+      name: "${bms_name} uart2 protocol number"      
 sensor:
   - platform: jk_bms_ble
     jk_bms_ble_id: bms0

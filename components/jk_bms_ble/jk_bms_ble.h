@@ -36,6 +36,14 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   void set_smart_sleep_time_number(number::Number *smart_sleep_time_number) {
     smart_sleep_time_number_ = smart_sleep_time_number;
   }
+
+  void set_uart1_protocol_number_number(number::Number *uart1_protocol_number_number) {
+    uart1_protocol_number_number_ = uart1_protocol_number_number;
+  }
+  void set_uart2_protocol_number_number(number::Number *uart2_protocol_number_number) {
+    uart2_protocol_number_number_ = uart2_protocol_number_number;
+  }
+    
   void set_cell_smart_sleep_voltage_number(number::Number *cell_smart_sleep_voltage_number) {
     cell_smart_sleep_voltage_number_ = cell_smart_sleep_voltage_number;
   }
@@ -411,6 +419,8 @@ void set_alarm_battempsensor5absent_binary_sensor(binary_sensor::BinarySensor *a
   number::Number *max_charge_current_number_;
   number::Number *max_discharge_current_number_;
   number::Number *smart_sleep_time_number_;
+  number::Number *uart1_protocol_number_number_;
+  number::Number *uart2_protocol_number_number_;
 
   sensor::Sensor *balancing_direction_sensor_;
   sensor::Sensor *cell_voltage_min_sensor_;

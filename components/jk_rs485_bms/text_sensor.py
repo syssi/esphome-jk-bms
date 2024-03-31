@@ -16,11 +16,13 @@ CONF_DEVICE_TYPE = "device_type"
 CONF_SOFTWARE_VERSION = "software_version"
 CONF_MANUFACTURER = "manufacturer"
 CONF_TOTAL_RUNTIME_FORMATTED = "total_runtime_formatted"
+CONF_NETWORK_NODES_AVAILABLE = "network_nodes_available"
 
 ICON_BATTERY_TYPE = "mdi:car-battery"
 ICON_ERRORS = "mdi:alert-circle-outline"
 ICON_OPERATION_MODE = "mdi:heart-pulse"
 ICON_PASSWORD = "mdi:lock-outline"
+ICON_NETWORK = "mdi:lan"
 
 TEXT_SENSORS = [
     CONF_OPERATION_MODE,
@@ -31,6 +33,7 @@ TEXT_SENSORS = [
     CONF_SOFTWARE_VERSION,
     CONF_MANUFACTURER,
     CONF_TOTAL_RUNTIME_FORMATTED,
+    CONF_NETWORK_NODES_AVAILABLE,
 ]
 
 CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
@@ -77,14 +80,19 @@ CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
                 cv.Optional(CONF_ICON, default=ICON_EMPTY): cv.icon,
             }
         ),
-        cv.Optional(
-            CONF_TOTAL_RUNTIME_FORMATTED
-        ): text_sensor.TEXT_SENSOR_SCHEMA.extend(
+        cv.Optional(CONF_TOTAL_RUNTIME_FORMATTED): text_sensor.TEXT_SENSOR_SCHEMA.extend(
             {
                 cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
                 cv.Optional(CONF_ICON, default=ICON_TIMELAPSE): cv.icon,
             }
         ),
+        cv.Optional(CONF_NETWORK_NODES_AVAILABLE): text_sensor.TEXT_SENSOR_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
+                cv.Optional(CONF_ICON, default=ICON_NETWORK): cv.icon,
+            }
+        ),        
+        
     }
 )
 

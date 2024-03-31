@@ -11,6 +11,7 @@ substitutions:
   external_components_source: github://txubelaxu/esphome-jk-bms@main #github://syssi/esphome-jk-bms@main
   tx_pin_uart_0: GPIO17 #GPIO1 #GPIO16
   rx_pin_uart_0: GPIO16 #GPIO3 #GPIO17
+  sniffer0_talk_pin_rs485: GPIO14  
 
 esphome:
   name: ${esp_name}
@@ -73,6 +74,7 @@ jk_rs485_sniffer:
     protocol_version: "JK02_32S"
     rx_timeout: 500ms
     uart_id: uart_0
+    talk_pin: ${sniffer0_talk_pin_rs485}    
 
 jk_rs485_bms:
   - id: bms0
@@ -765,6 +767,8 @@ sensor:
       name: "${bms0_name} temperature sensor 3"
     temperature_sensor_4:
       name: "${bms0_name} temperature sensor 4"
+    temperature_sensor_5:
+      name: "${bms0_name} temperature sensor 5"      
     temperature_powertube:
       name: "${bms0_name} temperature powertube"
     battery_capacity_state_of_charge:
@@ -793,10 +797,10 @@ sensor:
       name: "${bms0_name} cell request charge voltage"      
     cell_request_float_voltage:
       name: "${bms0_name} cell request float voltage"    
-    balance_trigger_voltage:
-      name: "${bms0_name} balance trigger voltage" 
-    balance_starting_voltage:
-      name: "${bms0_name} balance starting voltage"   
+    balancing_trigger_voltage:
+      name: "${bms0_name} balancing trigger voltage" 
+    cell_balancing_starting_voltage:
+      name: "${bms0_name} cell balancing starting voltage"   
     cell_soc100_voltage:
       name: "${bms0_name} cell soc100 voltage" 
     cell_soc0_voltage:
@@ -976,6 +980,8 @@ sensor:
       name: "${bms1_name} temperature sensor 3"
     temperature_sensor_4:
       name: "${bms1_name} temperature sensor 4"
+    temperature_sensor_5:
+      name: "${bms1_name} temperature sensor 5"      
     temperature_powertube:
       name: "${bms1_name} temperature powertube"
     battery_capacity_state_of_charge:
@@ -1004,10 +1010,10 @@ sensor:
       name: "${bms1_name} cell request charge voltage"      
     cell_request_float_voltage:
       name: "${bms1_name} cell request float voltage" 
-    balance_trigger_voltage:
-      name: "${bms1_name} balance trigger voltage"         
-    balance_starting_voltage:
-      name: "${bms1_name} balance starting voltage"     
+    balancing_trigger_voltage:
+      name: "${bms1_name} balancing trigger voltage"         
+    cell_balancing_starting_voltage:
+      name: "${bms1_name} cell balancing starting voltage"     
     cell_soc100_voltage:
       name: "${bms1_name} cell soc100 voltage" 
     cell_soc0_voltage:
@@ -1045,7 +1051,7 @@ sensor:
     charging_lowtemperature_protection:
       name: "${bms1_name} charging lowtemperature protection"
     charging_lowtemperature_protection_recovery:
-      name: "${bms1name} charging lowtemperature protection recovery"
+      name: "${bms1_name} charging lowtemperature protection recovery"
     mos_overtemperature_protection:
       name: "${bms1_name} mos overtemperature protection"
     mos_overtemperature_protection_recovery:
@@ -1188,6 +1194,8 @@ sensor:
       name: "${bms2_name} temperature sensor 3"
     temperature_sensor_4:
       name: "${bms2_name} temperature sensor 4"
+    temperature_sensor_5:
+      name: "${bms2_name} temperature sensor 5"      
     temperature_powertube:
       name: "${bms2_name} temperature powertube"
     battery_capacity_state_of_charge:
@@ -1216,10 +1224,10 @@ sensor:
       name: "${bms2_name} cell request charge voltage"      
     cell_request_float_voltage:
       name: "${bms2_name} cell request float voltage"   
-    balance_trigger_voltage:
-      name: "${bms2_name} balance trigger voltage"       
-    balance_starting_voltage:
-      name: "${bms2_name} balance starting voltage"     
+    balancing_trigger_voltage:
+      name: "${bms2_name} balancing trigger voltage"       
+    cell_balancing_starting_voltage:
+      name: "${bms2_name} cell balancing starting voltage"     
     cell_soc100_voltage:
       name: "${bms2_name} cell soc100 voltage" 
     cell_soc0_voltage:
@@ -1400,6 +1408,8 @@ sensor:
       name: "${bms3_name} temperature sensor 3"
     temperature_sensor_4:
       name: "${bms3_name} temperature sensor 4"
+    temperature_sensor_5:
+      name: "${bms3_name} temperature sensor 5"      
     temperature_powertube:
       name: "${bms3_name} temperature powertube"
     battery_capacity_state_of_charge:
@@ -1428,10 +1438,10 @@ sensor:
       name: "${bms3_name} cell request charge voltage"      
     cell_request_float_voltage:
       name: "${bms3_name} cell request float voltage"   
-    balance_trigger_voltage:
-      name: "${bms3_name} balance trigger voltage"       
-    balance_starting_voltage:
-      name: "${bms3_name} balance starting voltage"     
+    balancing_trigger_voltage:
+      name: "${bms3_name} balancing trigger voltage"       
+    cell_balancing_starting_voltage:
+      name: "${bms3_name} cell balancing starting voltage"     
     cell_soc100_voltage:
       name: "${bms3_name} cell soc100 voltage" 
     cell_soc0_voltage:
@@ -1612,6 +1622,8 @@ sensor:
       name: "${bms4_name} temperature sensor 3"
     temperature_sensor_4:
       name: "${bms4_name} temperature sensor 4"
+    temperature_sensor_5:
+      name: "${bms4_name} temperature sensor 5"      
     temperature_powertube:
       name: "${bms4_name} temperature powertube"
     battery_capacity_state_of_charge:
@@ -1640,10 +1652,10 @@ sensor:
       name: "${bms4_name} cell request charge voltage"      
     cell_request_float_voltage:
       name: "${bms4_name} cell request float voltage"  
-    balance_trigger_voltage:
-      name: "${bms4_name} balance trigger voltage"        
-    balance_starting_voltage:
-      name: "${bms4_name} balance starting voltage"     
+    balancing_trigger_voltage:
+      name: "${bms4_name} balancing trigger voltage"        
+    cell_balancing_starting_voltage:
+      name: "${bms4_name} cell balancing starting voltage"     
     cell_soc100_voltage:
       name: "${bms4_name} cell soc100 voltage" 
     cell_soc0_voltage:
@@ -1824,6 +1836,8 @@ sensor:
       name: "${bms5_name} temperature sensor 3"
     temperature_sensor_4:
       name: "${bms5_name} temperature sensor 4"
+    temperature_sensor_5:
+      name: "${bms5_name} temperature sensor 5"      
     temperature_powertube:
       name: "${bms5_name} temperature powertube"
     battery_capacity_state_of_charge:
@@ -1852,10 +1866,10 @@ sensor:
       name: "${bms5_name} cell request charge voltage"      
     cell_request_float_voltage:
       name: "${bms5_name} cell request float voltage"   
-    balance_trigger_voltage:
-      name: "${bms5_name} balance trigger voltage"       
-    balance_starting_voltage:
-      name: "${bms5_name} balance starting voltage"     
+    balancing_trigger_voltage:
+      name: "${bms5_name} balancing trigger voltage"       
+    cell_balancing_starting_voltage:
+      name: "${bms5_name} cell balancing starting voltage"     
     cell_soc100_voltage:
       name: "${bms5_name} cell soc100 voltage" 
     cell_soc0_voltage:
@@ -2036,6 +2050,8 @@ sensor:
       name: "${bms6_name} temperature sensor 3"
     temperature_sensor_4:
       name: "${bms6_name} temperature sensor 4"
+    temperature_sensor_5:
+      name: "${bms6_name} temperature sensor 5"      
     temperature_powertube:
       name: "${bms6_name} temperature powertube"
     battery_capacity_state_of_charge:
@@ -2064,10 +2080,10 @@ sensor:
       name: "${bms6_name} cell request charge voltage"      
     cell_request_float_voltage:
       name: "${bms6_name} cell request float voltage"  
-    balance_trigger_voltage:
-      name: "${bms6_name} balance trigger voltage"        
-    balance_starting_voltage:
-      name: "${bms6_name} balance starting voltage"     
+    balancing_trigger_voltage:
+      name: "${bms6_name} balancing trigger voltage"        
+    cell_balancing_starting_voltage:
+      name: "${bms6_name} cell balancing starting voltage"     
     cell_soc100_voltage:
       name: "${bms6_name} cell soc100 voltage" 
     cell_soc0_voltage:
@@ -2124,8 +2140,8 @@ switch:
       name: "${bms0_name} charging"
     discharging:
       name: "${bms0_name} discharging"
-    balancer:
-      name: "${bms0_name} balancer"
+    balancing:
+      name: "${bms0_name} balancing"
     emergency:
       name: "${bms0_name} emergency"
     heating:
@@ -2157,8 +2173,8 @@ switch:
       name: "${bms1_name} charging"
     discharging:
       name: "${bms1_name} discharging"
-    balancer:
-      name: "${bms1_name} balancer"
+    balancing:
+      name: "${bms1_name} balancing"
     emergency:
       name: "${bms1_name} emergency"
     heating:
@@ -2191,8 +2207,8 @@ switch:
       name: "${bms2_name} charging"
     discharging:
       name: "${bms2_name} discharging"
-    balancer:
-      name: "${bms2_name} balancer"
+    balancing:
+      name: "${bms2_name} balancing"
     emergency:
       name: "${bms2_name} emergency"
     heating:
@@ -2228,8 +2244,8 @@ switch:
       name: "${bms3_name} charging"
     discharging:
       name: "${bms3_name} discharging"
-    balancer:
-      name: "${bms3_name} balancer"
+    balancing:
+      name: "${bms3_name} balancing"
     emergency:
       name: "${bms3_name} emergency"
     heating:
@@ -2265,8 +2281,8 @@ switch:
       name: "${bms4_name} charging"
     discharging:
       name: "${bms4_name} discharging"
-    balancer:
-      name: "${bms4_name} balancer"
+    balancing:
+      name: "${bms4_name} balancing"
     emergency:
       name: "${bms4_name} emergency"
     heating:
@@ -2301,8 +2317,8 @@ switch:
       name: "${bms5_name} charging"
     discharging:
       name: "${bms5_name} discharging"
-    balancer:
-      name: "${bms5_name} balancer"
+    balancing:
+      name: "${bms5_name} balancing"
     emergency:
       name: "${bms5_name} emergency"
     heating:
@@ -2338,8 +2354,8 @@ switch:
       name: "${bms6_name} charging"
     discharging:
       name: "${bms6_name} discharging"
-    balancer:
-      name: "${bms6_name} balancer"
+    balancing:
+      name: "${bms6_name} balancing"
     emergency:
       name: "${bms6_name} emergency"
     heating:
@@ -2375,6 +2391,8 @@ text_sensor:
       name: "${bms0_name} battery total runtime formatted"
     battery_type:
       name: "${bms0_name} battery type"
+    network_nodes_available:
+      name: "${bms0_name} network nodes available"      
 
     # ...
   - platform: jk_rs485_bms
@@ -2387,6 +2405,8 @@ text_sensor:
       name: "${bms1_name} battery total runtime formatted"
     battery_type:
       name: "${bms1_name} battery type"
+    network_nodes_available:
+      name: "${bms1_name} network nodes available"      
     # ...
 
   - platform: jk_rs485_bms
@@ -2399,6 +2419,8 @@ text_sensor:
       name: "${bms2_name} battery total runtime formatted"
     battery_type:
       name: "${bms2_name} battery type"
+    network_nodes_available:
+      name: "${bms2_name} network nodes available"      
     # ...
 
 
@@ -2413,6 +2435,8 @@ text_sensor:
       name: "${bms3_name} battery total runtime formatted"
     battery_type:
       name: "${bms3_name} battery type"
+    network_nodes_available:
+      name: "${bms3_name} network nodes available"      
     # ...
 
   - platform: jk_rs485_bms
@@ -2425,6 +2449,8 @@ text_sensor:
       name: "${bms4_name} battery total runtime formatted"
     battery_type:
       name: "${bms4_name} battery type"
+    network_nodes_available:
+      name: "${bms4_name} network nodes available"      
     # ...
 
   - platform: jk_rs485_bms
@@ -2437,6 +2463,8 @@ text_sensor:
       name: "${bms5_name} battery total runtime formatted"
     battery_type:
       name: "${bms5_name} battery type"
+    network_nodes_available:
+      name: "${bms5_name} network nodes available"      
     # ...
 
   - platform: jk_rs485_bms
@@ -2449,5 +2477,7 @@ text_sensor:
       name: "${bms6_name} battery total runtime formatted"
     battery_type:
       name: "${bms6_name} battery type"
+    network_nodes_available:
+      name: "${bms6_name} network nodes available"      
     # ...
 
