@@ -6,7 +6,7 @@
 //#include "gpio_binary_output.h"
 //#include "binary_output.h"
 //#include "esphome.h"
-#include "binary_output.h"
+#include "esphome/components/jk_rs485_sniffer/output/binary_output.h"
 
 
 namespace esphome {
