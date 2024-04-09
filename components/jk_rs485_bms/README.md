@@ -51,10 +51,6 @@ In any of the two modes ESP needs to SPEAK to the JK-RS485 internal network. Tha
 
 
 ## Schematics
-![image](https://github.com/txubelaxu/esphome-jk-bms/assets/156140720/bc6fa31c-2421-4f10-9604-e111d3943636)
-<BR>
-(<a href="https://www.google.com/url?sa=i&url=https%3A%2F%2Fforum.arduino.cc%2Ft%2Fcommunication-softwareserial-using-rs485-module-with-esp32%2F932789&psig=AOvVaw1k5Ukv6hEwIAS9I4HR-IlD&ust=1710240770923000&source=images&cd=vfe&opi=89978449&ved=0CBUQjhxqFwoTCMj-uNWF7IQDFQAAAAAdAAAAABAD">image source</a>)
-
 
 ```
                               CONVERTER                          UART-TTL
