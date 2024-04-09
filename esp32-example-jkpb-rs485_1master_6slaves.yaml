@@ -6,12 +6,12 @@ substitutions:
   bms3_name: rs485-bms3
   bms4_name: rs485-bms4
   bms5_name: rs485-bms5
-  bms6_name: rs485-bms6        
-  device_description: "Monitor 7x JK-BMS via RS485 internal"
+  bms6_name: rs485-bms6          
+  device_description: "Monitor two JK-BMS via RS485 internal"
   external_components_source: github://txubelaxu/esphome-jk-bms@main #github://syssi/esphome-jk-bms@main
   tx_pin_uart_0: GPIO17 #GPIO1 #GPIO16
   rx_pin_uart_0: GPIO16 #GPIO3 #GPIO17
-  sniffer0_talk_pin_rs485: GPIO14  
+  talk_pin_rs485: GPIO4
 
 esphome:
   name: ${esp_name}
@@ -19,7 +19,9 @@ esphome:
   project:
     name: "txubelaxu.esphome-jk-bms"
     version: 1.0.0
-
+  #includes:
+    #- ./components/output/binary_output.h
+    #- ./components/jk_rs485_sniffer/gpio.h
 
 esp32:
   board: esp32dev #nodemcu-32s #wemos_d1_mini32
@@ -30,8 +32,8 @@ esp32:
 #  board: d1_mini
 
 external_components:
-  - source: ${external_components_source}
-    refresh: 0s
+ - source: ${external_components_source}
+   refresh: 0s
 #  - source: ./components
 #    refresh: 0s
 wifi:
@@ -68,13 +70,12 @@ uart:
     rx_buffer_size: 1000
     tx_pin: ${tx_pin_uart_0}
     rx_pin: ${rx_pin_uart_0}
-
 jk_rs485_sniffer:
   - id: sniffer0
     protocol_version: "JK02_32S"
     rx_timeout: 500ms
     uart_id: uart_0
-    talk_pin: ${sniffer0_talk_pin_rs485}    
+    talk_pin: ${talk_pin_rs485}
 
 jk_rs485_bms:
   - id: bms0
@@ -104,7 +105,7 @@ jk_rs485_bms:
   - id: bms6
     rs485_address: 0x06
     jk_rs485_sniffer_id: sniffer0
-    update_interval: 5s
+    update_interval: 5s                
 
 binary_sensor:
   - platform: jk_rs485_bms
@@ -181,7 +182,6 @@ binary_sensor:
       name: "${bms0_name} alarm BATTempSensor4Absent"
     alarm_battempsensor5absent:
       name: "${bms0_name} alarm BATTempSensor5Absent"
-
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms1
     status_balancing:
@@ -330,8 +330,6 @@ binary_sensor:
       name: "${bms2_name} alarm BATTempSensor4Absent"
     alarm_battempsensor5absent:
       name: "${bms2_name} alarm BATTempSensor5Absent"
-
-
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms3
     status_balancing:
@@ -406,8 +404,6 @@ binary_sensor:
       name: "${bms3_name} alarm BATTempSensor4Absent"
     alarm_battempsensor5absent:
       name: "${bms3_name} alarm BATTempSensor5Absent"
-
-
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms4
     status_balancing:
@@ -482,7 +478,6 @@ binary_sensor:
       name: "${bms4_name} alarm BATTempSensor4Absent"
     alarm_battempsensor5absent:
       name: "${bms4_name} alarm BATTempSensor5Absent"
-
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms5
     status_balancing:
@@ -557,7 +552,6 @@ binary_sensor:
       name: "${bms5_name} alarm BATTempSensor4Absent"
     alarm_battempsensor5absent:
       name: "${bms5_name} alarm BATTempSensor5Absent"
-
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms6
     status_balancing:
@@ -631,7 +625,7 @@ binary_sensor:
     alarm_battempsensor4absent:
       name: "${bms6_name} alarm BATTempSensor4Absent"
     alarm_battempsensor5absent:
-      name: "${bms6_name} alarm BATTempSensor5Absent"            
+      name: "${bms6_name} alarm BATTempSensor5Absent"
 
 
 sensor:
@@ -653,6 +647,14 @@ sensor:
       name: "${bms0_name} cell delta voltage"
     cell_average_voltage:
       name: "${bms0_name} cell average voltage"
+    cell_resistance_min:
+      name: "${bms0_name} cell resistance min"
+    cell_resistance_max:
+      name: "${bms0_name} cell resistance max"      
+    cell_resistance_min_cell_number:
+      name: "${bms0_name} cell resistance min cell number"
+    cell_resistance_max_cell_number:
+      name: "${bms0_name} cell resistance max cell number"      
     cell_voltage_01:
       name: "${bms0_name} cell voltage 01"
     cell_voltage_02:
@@ -768,7 +770,7 @@ sensor:
     temperature_sensor_4:
       name: "${bms0_name} temperature sensor 4"
     temperature_sensor_5:
-      name: "${bms0_name} temperature sensor 5"      
+      name: "${bms0_name} temperature sensor 5"
     temperature_powertube:
       name: "${bms0_name} temperature powertube"
     battery_capacity_state_of_charge:
@@ -787,20 +789,28 @@ sensor:
       name: "${bms0_name} balancing current"
     errors_bitmask:
       name: "${bms0_name} errors bitmask"
-    cell_count:
-      name: "${bms0_name} cell count"
+    cell_count_settings:
+      name: "${bms0_name} cell count settings"
+    cell_count_real:
+      name: "${bms0_name} cell count real"      
     cell_overvoltage_protection:
       name: "${bms0_name} cell overvoltage protection"
     cell_overvoltage_protection_recovery:
       name: "${bms0_name} cell overvoltage protection recovery"
     cell_request_charge_voltage:
       name: "${bms0_name} cell request charge voltage"      
+    cell_request_charge_voltage_time:
+      name: "${bms0_name} cell request charge voltage time"    
     cell_request_float_voltage:
-      name: "${bms0_name} cell request float voltage"    
+      name: "${bms0_name} cell request float voltage"   
+    cell_request_float_voltage_time:
+      name: "${bms0_name} cell request float voltage time"        
     balancing_trigger_voltage:
-      name: "${bms0_name} balancing trigger voltage" 
+      name: "${bms0_name} balancing trigger voltage"         
     cell_balancing_starting_voltage:
-      name: "${bms0_name} cell balancing starting voltage"   
+      name: "${bms0_name} cell balancing starting voltage"  
+    max_balancing_current:
+      name: "${bms0_name} max balancing current"          
     cell_soc100_voltage:
       name: "${bms0_name} cell soc100 voltage" 
     cell_soc0_voltage:
@@ -814,9 +824,9 @@ sensor:
     smart_sleep_time:
       name: "${bms0_name} smart sleep time"
     max_charging_current:
-      name: "${bms0_name} max charging current"
+      name: "${bms0_name} max charging current"      
     max_discharging_current:
-      name: "${bms0_name} max discharging current" 
+      name: "${bms0_name} max discharging current"   
     charging_overcurrent_protection_delay:
       name: "${bms0_name} charging overcurrent protection delay"
     charging_overcurrent_protection_recovery_delay:
@@ -824,9 +834,9 @@ sensor:
     discharging_overcurrent_protection_delay:
       name: "${bms0_name} discharging overcurrent protection delay"
     discharging_overcurrent_protection_recovery_delay:
-      name: "${bms0_name} discharging overcurrent protection recovery delay"  
+      name: "${bms0_name} discharging overcurrent protection recovery delay"   
     short_circuit_protection_recovery_delay:
-      name: "${bms0_name} short circuit protection recovery delay"   
+      name: "${bms0_name} short circuit protection recovery delay"                     
     charging_overtemperature_protection:
       name: "${bms0_name} charging overtemperature protection"
     charging_overtemperature_protection_recovery:
@@ -834,7 +844,7 @@ sensor:
     discharging_overtemperature_protection:
       name: "${bms0_name} discharging overtemperature protection"
     discharging_overtemperature_protection_recovery:
-      name: "${bms0_name} discharging overtemperature protection recovery"       
+      name: "${bms0_name} discharging overtemperature protection recovery" 
     charging_lowtemperature_protection:
       name: "${bms0_name} charging lowtemperature protection"
     charging_lowtemperature_protection_recovery:
@@ -846,8 +856,17 @@ sensor:
     powertube_temperature_protection:
       name: "${bms0_name} powertube temperature protection" 
     powertube_temperature_protection_recovery:
-      name: "${bms0_name} powertube temperature protection recovery"     
-
+      name: "${bms0_name} powertube temperature protection recovery"  
+    battery_total_alarms_count:     
+      name: "${bms0_name} battery total alarms count"  
+    battery_total_alarms_active:     
+      name: "${bms0_name} battery total alarms active"  
+    emergency_time_countdown:
+      name: "${bms0_name} emergency time countdown"      
+    uart1_protocol_number:
+      name: "${bms0_name} uart1 protocol number"
+    uart2_protocol_number:
+      name: "${bms0_name} uart2 protocol number"      
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms1
     balancing_direction:
@@ -866,6 +885,14 @@ sensor:
       name: "${bms1_name} cell delta voltage"
     cell_average_voltage:
       name: "${bms1_name} cell average voltage"
+    cell_resistance_min:
+      name: "${bms1_name} cell resistance min"
+    cell_resistance_max:
+      name: "${bms1_name} cell resistance max"      
+    cell_resistance_min_cell_number:
+      name: "${bms1_name} cell resistance min cell number"
+    cell_resistance_max_cell_number:
+      name: "${bms1_name} cell resistance max cell number"        
     cell_voltage_01:
       name: "${bms1_name} cell voltage 01"
     cell_voltage_02:
@@ -1000,20 +1027,28 @@ sensor:
       name: "${bms1_name} balancing current"
     errors_bitmask:
       name: "${bms1_name} errors bitmask"
-    cell_count:
-      name: "${bms1_name} cell count"
+    cell_count_settings:
+      name: "${bms1_name} cell count settings"
+    cell_count_real:
+      name: "${bms1_name} cell count real"        
     cell_overvoltage_protection:
       name: "${bms1_name} cell overvoltage protection"
     cell_overvoltage_protection_recovery:
       name: "${bms1_name} cell overvoltage protection recovery"
     cell_request_charge_voltage:
       name: "${bms1_name} cell request charge voltage"      
+    cell_request_charge_voltage_time:
+      name: "${bms1_name} cell request charge voltage time"    
     cell_request_float_voltage:
-      name: "${bms1_name} cell request float voltage" 
+      name: "${bms1_name} cell request float voltage"   
+    cell_request_float_voltage_time:
+      name: "${bms1_name} cell request float voltage time"        
     balancing_trigger_voltage:
       name: "${bms1_name} balancing trigger voltage"         
     cell_balancing_starting_voltage:
-      name: "${bms1_name} cell balancing starting voltage"     
+      name: "${bms1_name} cell balancing starting voltage"   
+    max_balancing_current:
+      name: "${bms1_name} max balancing current"        
     cell_soc100_voltage:
       name: "${bms1_name} cell soc100 voltage" 
     cell_soc0_voltage:
@@ -1025,11 +1060,11 @@ sensor:
     cell_power_off_voltage:
       name: "${bms1_name} cell power off voltage"   
     smart_sleep_time:
-      name: "${bms1_name} smart sleep time"              
+      name: "${bms1_name} smart sleep time" 
     max_charging_current:
-      name: "${bms1_name} max charging current"
+      name: "${bms1_name} max_charging_current" 
     max_discharging_current:
-      name: "${bms1_name} max discharging current" 
+      name: "${bms1_name} max discharging current"                       
     charging_overcurrent_protection_delay:
       name: "${bms1_name} charging overcurrent protection delay"
     charging_overcurrent_protection_recovery_delay:
@@ -1037,7 +1072,7 @@ sensor:
     discharging_overcurrent_protection_delay:
       name: "${bms1_name} discharging overcurrent protection delay"
     discharging_overcurrent_protection_recovery_delay:
-      name: "${bms1_name} discharging overcurrent protection recovery delay"  
+      name: "${bms1_name} discharging overcurrent protection recovery delay"   
     short_circuit_protection_recovery_delay:
       name: "${bms1_name} short circuit protection recovery delay"   
     charging_overtemperature_protection:
@@ -1047,7 +1082,7 @@ sensor:
     discharging_overtemperature_protection:
       name: "${bms1_name} discharging overtemperature protection"
     discharging_overtemperature_protection_recovery:
-      name: "${bms1_name} discharging overtemperature protection recovery"       
+      name: "${bms1_name} discharging overtemperature protection recovery"        
     charging_lowtemperature_protection:
       name: "${bms1_name} charging lowtemperature protection"
     charging_lowtemperature_protection_recovery:
@@ -1055,13 +1090,21 @@ sensor:
     mos_overtemperature_protection:
       name: "${bms1_name} mos overtemperature protection"
     mos_overtemperature_protection_recovery:
-      name: "${bms1_name} mos overtemperature protection recovery"   
+      name: "${bms1_name} mos overtemperature protection recovery"      
     powertube_temperature_protection:
       name: "${bms1_name} powertube temperature protection" 
     powertube_temperature_protection_recovery:
-      name: "${bms1_name} powertube temperature protection recovery"     
-
-
+      name: "${bms1_name} powertube temperature protection recovery"  
+    battery_total_alarms_count:     
+      name: "${bms1_name} battery total alarms count"  
+    battery_total_alarms_active:     
+      name: "${bms1_name} battery total alarms active"           
+    emergency_time_countdown:
+      name: "${bms1_name} emergency time countdown"
+    uart1_protocol_number:
+      name: "${bms1_name} uart1 protocol number"
+    uart2_protocol_number:
+      name: "${bms1_name} uart2 protocol number"
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms2
     balancing_direction:
@@ -1080,6 +1123,14 @@ sensor:
       name: "${bms2_name} cell delta voltage"
     cell_average_voltage:
       name: "${bms2_name} cell average voltage"
+    cell_resistance_min:
+      name: "${bms2_name} cell resistance min"
+    cell_resistance_max:
+      name: "${bms2_name} cell resistance max"      
+    cell_resistance_min_cell_number:
+      name: "${bms2_name} cell resistance min cell number"
+    cell_resistance_max_cell_number:
+      name: "${bms2_name} cell resistance max cell number"        
     cell_voltage_01:
       name: "${bms2_name} cell voltage 01"
     cell_voltage_02:
@@ -1214,20 +1265,28 @@ sensor:
       name: "${bms2_name} balancing current"
     errors_bitmask:
       name: "${bms2_name} errors bitmask"
-    cell_count:
-      name: "${bms2_name} cell count"
+    cell_count_settings:
+      name: "${bms2_name} cell count settings"
+    cell_count_real:
+      name: "${bms2_name} cell count real"        
     cell_overvoltage_protection:
       name: "${bms2_name} cell overvoltage protection"
     cell_overvoltage_protection_recovery:
       name: "${bms2_name} cell overvoltage protection recovery"
     cell_request_charge_voltage:
       name: "${bms2_name} cell request charge voltage"      
+    cell_request_charge_voltage_time:
+      name: "${bms2_name} cell request charge voltage time"    
     cell_request_float_voltage:
       name: "${bms2_name} cell request float voltage"   
+    cell_request_float_voltage_time:
+      name: "${bms2_name} cell request float voltage time"        
     balancing_trigger_voltage:
-      name: "${bms2_name} balancing trigger voltage"       
+      name: "${bms2_name} balancing trigger voltage"         
     cell_balancing_starting_voltage:
-      name: "${bms2_name} cell balancing starting voltage"     
+      name: "${bms2_name} cell balancing starting voltage"   
+    max_balancing_current:
+      name: "${bms2_name} max balancing current"        
     cell_soc100_voltage:
       name: "${bms2_name} cell soc100 voltage" 
     cell_soc0_voltage:
@@ -1239,11 +1298,11 @@ sensor:
     cell_power_off_voltage:
       name: "${bms2_name} cell power off voltage"   
     smart_sleep_time:
-      name: "${bms2_name} smart sleep time"              
+      name: "${bms2_name} smart sleep time" 
     max_charging_current:
-      name: "${bms2_name} max charging current"
+      name: "${bms2_name} max_charging_current" 
     max_discharging_current:
-      name: "${bms2_name} max discharging current" 
+      name: "${bms2_name} max discharging current"                       
     charging_overcurrent_protection_delay:
       name: "${bms2_name} charging overcurrent protection delay"
     charging_overcurrent_protection_recovery_delay:
@@ -1251,7 +1310,7 @@ sensor:
     discharging_overcurrent_protection_delay:
       name: "${bms2_name} discharging overcurrent protection delay"
     discharging_overcurrent_protection_recovery_delay:
-      name: "${bms2_name} discharging overcurrent protection recovery delay"  
+      name: "${bms2_name} discharging overcurrent protection recovery delay"   
     short_circuit_protection_recovery_delay:
       name: "${bms2_name} short circuit protection recovery delay"   
     charging_overtemperature_protection:
@@ -1261,7 +1320,7 @@ sensor:
     discharging_overtemperature_protection:
       name: "${bms2_name} discharging overtemperature protection"
     discharging_overtemperature_protection_recovery:
-      name: "${bms2_name} discharging overtemperature protection recovery" 
+      name: "${bms2_name} discharging overtemperature protection recovery"        
     charging_lowtemperature_protection:
       name: "${bms2_name} charging lowtemperature protection"
     charging_lowtemperature_protection_recovery:
@@ -1269,13 +1328,21 @@ sensor:
     mos_overtemperature_protection:
       name: "${bms2_name} mos overtemperature protection"
     mos_overtemperature_protection_recovery:
-      name: "${bms2_name} mos overtemperature protection recovery"   
+      name: "${bms2_name} mos overtemperature protection recovery"      
     powertube_temperature_protection:
       name: "${bms2_name} powertube temperature protection" 
     powertube_temperature_protection_recovery:
-      name: "${bms2_name} powertube temperature protection recovery"     
-
-
+      name: "${bms2_name} powertube temperature protection recovery"  
+    battery_total_alarms_count:     
+      name: "${bms2_name} battery total alarms count"  
+    battery_total_alarms_active:     
+      name: "${bms2_name} battery total alarms active"           
+    emergency_time_countdown:
+      name: "${bms2_name} emergency time countdown"
+    uart1_protocol_number:
+      name: "${bms2_name} uart1 protocol number"
+    uart2_protocol_number:
+      name: "${bms2_name} uart2 protocol number"
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms3
     balancing_direction:
@@ -1294,6 +1361,14 @@ sensor:
       name: "${bms3_name} cell delta voltage"
     cell_average_voltage:
       name: "${bms3_name} cell average voltage"
+    cell_resistance_min:
+      name: "${bms3_name} cell resistance min"
+    cell_resistance_max:
+      name: "${bms3_name} cell resistance max"      
+    cell_resistance_min_cell_number:
+      name: "${bms3_name} cell resistance min cell number"
+    cell_resistance_max_cell_number:
+      name: "${bms3_name} cell resistance max cell number"        
     cell_voltage_01:
       name: "${bms3_name} cell voltage 01"
     cell_voltage_02:
@@ -1428,20 +1503,28 @@ sensor:
       name: "${bms3_name} balancing current"
     errors_bitmask:
       name: "${bms3_name} errors bitmask"
-    cell_count:
-      name: "${bms3_name} cell count"
+    cell_count_settings:
+      name: "${bms3_name} cell count settings"
+    cell_count_real:
+      name: "${bms3_name} cell count real"        
     cell_overvoltage_protection:
       name: "${bms3_name} cell overvoltage protection"
     cell_overvoltage_protection_recovery:
       name: "${bms3_name} cell overvoltage protection recovery"
     cell_request_charge_voltage:
       name: "${bms3_name} cell request charge voltage"      
+    cell_request_charge_voltage_time:
+      name: "${bms3_name} cell request charge voltage time"    
     cell_request_float_voltage:
       name: "${bms3_name} cell request float voltage"   
+    cell_request_float_voltage_time:
+      name: "${bms3_name} cell request float voltage time"        
     balancing_trigger_voltage:
-      name: "${bms3_name} balancing trigger voltage"       
+      name: "${bms3_name} balancing trigger voltage"         
     cell_balancing_starting_voltage:
-      name: "${bms3_name} cell balancing starting voltage"     
+      name: "${bms3_name} cell balancing starting voltage"   
+    max_balancing_current:
+      name: "${bms3_name} max balancing current"        
     cell_soc100_voltage:
       name: "${bms3_name} cell soc100 voltage" 
     cell_soc0_voltage:
@@ -1453,11 +1536,11 @@ sensor:
     cell_power_off_voltage:
       name: "${bms3_name} cell power off voltage"   
     smart_sleep_time:
-      name: "${bms3_name} smart sleep time"              
+      name: "${bms3_name} smart sleep time" 
     max_charging_current:
-      name: "${bms3_name} max charging current"
+      name: "${bms3_name} max_charging_current" 
     max_discharging_current:
-      name: "${bms3_name} max discharging current" 
+      name: "${bms3_name} max discharging current"                       
     charging_overcurrent_protection_delay:
       name: "${bms3_name} charging overcurrent protection delay"
     charging_overcurrent_protection_recovery_delay:
@@ -1465,7 +1548,7 @@ sensor:
     discharging_overcurrent_protection_delay:
       name: "${bms3_name} discharging overcurrent protection delay"
     discharging_overcurrent_protection_recovery_delay:
-      name: "${bms3_name} discharging overcurrent protection recovery delay"  
+      name: "${bms3_name} discharging overcurrent protection recovery delay"   
     short_circuit_protection_recovery_delay:
       name: "${bms3_name} short circuit protection recovery delay"   
     charging_overtemperature_protection:
@@ -1475,7 +1558,7 @@ sensor:
     discharging_overtemperature_protection:
       name: "${bms3_name} discharging overtemperature protection"
     discharging_overtemperature_protection_recovery:
-      name: "${bms3_name} discharging overtemperature protection recovery" 
+      name: "${bms3_name} discharging overtemperature protection recovery"        
     charging_lowtemperature_protection:
       name: "${bms3_name} charging lowtemperature protection"
     charging_lowtemperature_protection_recovery:
@@ -1483,13 +1566,21 @@ sensor:
     mos_overtemperature_protection:
       name: "${bms3_name} mos overtemperature protection"
     mos_overtemperature_protection_recovery:
-      name: "${bms3_name} mos overtemperature protection recovery"   
+      name: "${bms3_name} mos overtemperature protection recovery"      
     powertube_temperature_protection:
       name: "${bms3_name} powertube temperature protection" 
     powertube_temperature_protection_recovery:
-      name: "${bms3_name} powertube temperature protection recovery"     
-
-
+      name: "${bms3_name} powertube temperature protection recovery"  
+    battery_total_alarms_count:     
+      name: "${bms3_name} battery total alarms count"  
+    battery_total_alarms_active:     
+      name: "${bms3_name} battery total alarms active"           
+    emergency_time_countdown:
+      name: "${bms3_name} emergency time countdown"
+    uart1_protocol_number:
+      name: "${bms3_name} uart1 protocol number"
+    uart2_protocol_number:
+      name: "${bms3_name} uart2 protocol number"
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms4
     balancing_direction:
@@ -1508,6 +1599,14 @@ sensor:
       name: "${bms4_name} cell delta voltage"
     cell_average_voltage:
       name: "${bms4_name} cell average voltage"
+    cell_resistance_min:
+      name: "${bms4_name} cell resistance min"
+    cell_resistance_max:
+      name: "${bms4_name} cell resistance max"      
+    cell_resistance_min_cell_number:
+      name: "${bms4_name} cell resistance min cell number"
+    cell_resistance_max_cell_number:
+      name: "${bms4_name} cell resistance max cell number"        
     cell_voltage_01:
       name: "${bms4_name} cell voltage 01"
     cell_voltage_02:
@@ -1642,20 +1741,28 @@ sensor:
       name: "${bms4_name} balancing current"
     errors_bitmask:
       name: "${bms4_name} errors bitmask"
-    cell_count:
-      name: "${bms4_name} cell count"
+    cell_count_settings:
+      name: "${bms4_name} cell count settings"
+    cell_count_real:
+      name: "${bms4_name} cell count real"        
     cell_overvoltage_protection:
       name: "${bms4_name} cell overvoltage protection"
     cell_overvoltage_protection_recovery:
       name: "${bms4_name} cell overvoltage protection recovery"
     cell_request_charge_voltage:
       name: "${bms4_name} cell request charge voltage"      
+    cell_request_charge_voltage_time:
+      name: "${bms4_name} cell request charge voltage time"    
     cell_request_float_voltage:
-      name: "${bms4_name} cell request float voltage"  
+      name: "${bms4_name} cell request float voltage"   
+    cell_request_float_voltage_time:
+      name: "${bms4_name} cell request float voltage time"        
     balancing_trigger_voltage:
-      name: "${bms4_name} balancing trigger voltage"        
+      name: "${bms4_name} balancing trigger voltage"         
     cell_balancing_starting_voltage:
-      name: "${bms4_name} cell balancing starting voltage"     
+      name: "${bms4_name} cell balancing starting voltage"   
+    max_balancing_current:
+      name: "${bms4_name} max balancing current"        
     cell_soc100_voltage:
       name: "${bms4_name} cell soc100 voltage" 
     cell_soc0_voltage:
@@ -1667,11 +1774,11 @@ sensor:
     cell_power_off_voltage:
       name: "${bms4_name} cell power off voltage"   
     smart_sleep_time:
-      name: "${bms4_name} smart sleep time"              
+      name: "${bms4_name} smart sleep time" 
     max_charging_current:
-      name: "${bms4_name} max charging current"
+      name: "${bms4_name} max_charging_current" 
     max_discharging_current:
-      name: "${bms4_name} max discharging current" 
+      name: "${bms4_name} max discharging current"                       
     charging_overcurrent_protection_delay:
       name: "${bms4_name} charging overcurrent protection delay"
     charging_overcurrent_protection_recovery_delay:
@@ -1679,7 +1786,7 @@ sensor:
     discharging_overcurrent_protection_delay:
       name: "${bms4_name} discharging overcurrent protection delay"
     discharging_overcurrent_protection_recovery_delay:
-      name: "${bms4_name} discharging overcurrent protection recovery delay"  
+      name: "${bms4_name} discharging overcurrent protection recovery delay"   
     short_circuit_protection_recovery_delay:
       name: "${bms4_name} short circuit protection recovery delay"   
     charging_overtemperature_protection:
@@ -1689,7 +1796,7 @@ sensor:
     discharging_overtemperature_protection:
       name: "${bms4_name} discharging overtemperature protection"
     discharging_overtemperature_protection_recovery:
-      name: "${bms4_name} discharging overtemperature protection recovery" 
+      name: "${bms4_name} discharging overtemperature protection recovery"        
     charging_lowtemperature_protection:
       name: "${bms4_name} charging lowtemperature protection"
     charging_lowtemperature_protection_recovery:
@@ -1697,13 +1804,21 @@ sensor:
     mos_overtemperature_protection:
       name: "${bms4_name} mos overtemperature protection"
     mos_overtemperature_protection_recovery:
-      name: "${bms4_name} mos overtemperature protection recovery"   
+      name: "${bms4_name} mos overtemperature protection recovery"      
     powertube_temperature_protection:
       name: "${bms4_name} powertube temperature protection" 
     powertube_temperature_protection_recovery:
-      name: "${bms4_name} powertube temperature protection recovery"     
-
-
+      name: "${bms4_name} powertube temperature protection recovery"  
+    battery_total_alarms_count:     
+      name: "${bms4_name} battery total alarms count"  
+    battery_total_alarms_active:     
+      name: "${bms4_name} battery total alarms active"           
+    emergency_time_countdown:
+      name: "${bms4_name} emergency time countdown"
+    uart1_protocol_number:
+      name: "${bms4_name} uart1 protocol number"
+    uart2_protocol_number:
+      name: "${bms4_name} uart2 protocol number"
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms5
     balancing_direction:
@@ -1722,6 +1837,14 @@ sensor:
       name: "${bms5_name} cell delta voltage"
     cell_average_voltage:
       name: "${bms5_name} cell average voltage"
+    cell_resistance_min:
+      name: "${bms5_name} cell resistance min"
+    cell_resistance_max:
+      name: "${bms5_name} cell resistance max"      
+    cell_resistance_min_cell_number:
+      name: "${bms5_name} cell resistance min cell number"
+    cell_resistance_max_cell_number:
+      name: "${bms5_name} cell resistance max cell number"        
     cell_voltage_01:
       name: "${bms5_name} cell voltage 01"
     cell_voltage_02:
@@ -1856,20 +1979,28 @@ sensor:
       name: "${bms5_name} balancing current"
     errors_bitmask:
       name: "${bms5_name} errors bitmask"
-    cell_count:
-      name: "${bms5_name} cell count"
+    cell_count_settings:
+      name: "${bms5_name} cell count settings"
+    cell_count_real:
+      name: "${bms5_name} cell count real"        
     cell_overvoltage_protection:
       name: "${bms5_name} cell overvoltage protection"
     cell_overvoltage_protection_recovery:
       name: "${bms5_name} cell overvoltage protection recovery"
     cell_request_charge_voltage:
       name: "${bms5_name} cell request charge voltage"      
+    cell_request_charge_voltage_time:
+      name: "${bms5_name} cell request charge voltage time"    
     cell_request_float_voltage:
       name: "${bms5_name} cell request float voltage"   
+    cell_request_float_voltage_time:
+      name: "${bms5_name} cell request float voltage time"        
     balancing_trigger_voltage:
-      name: "${bms5_name} balancing trigger voltage"       
+      name: "${bms5_name} balancing trigger voltage"         
     cell_balancing_starting_voltage:
-      name: "${bms5_name} cell balancing starting voltage"     
+      name: "${bms5_name} cell balancing starting voltage"   
+    max_balancing_current:
+      name: "${bms5_name} max balancing current"        
     cell_soc100_voltage:
       name: "${bms5_name} cell soc100 voltage" 
     cell_soc0_voltage:
@@ -1881,11 +2012,11 @@ sensor:
     cell_power_off_voltage:
       name: "${bms5_name} cell power off voltage"   
     smart_sleep_time:
-      name: "${bms5_name} smart sleep time"              
+      name: "${bms5_name} smart sleep time" 
     max_charging_current:
-      name: "${bms5_name} max charging current"
+      name: "${bms5_name} max_charging_current" 
     max_discharging_current:
-      name: "${bms5_name} max discharging current"       
+      name: "${bms5_name} max discharging current"                       
     charging_overcurrent_protection_delay:
       name: "${bms5_name} charging overcurrent protection delay"
     charging_overcurrent_protection_recovery_delay:
@@ -1893,7 +2024,7 @@ sensor:
     discharging_overcurrent_protection_delay:
       name: "${bms5_name} discharging overcurrent protection delay"
     discharging_overcurrent_protection_recovery_delay:
-      name: "${bms5_name} discharging overcurrent protection recovery delay"  
+      name: "${bms5_name} discharging overcurrent protection recovery delay"   
     short_circuit_protection_recovery_delay:
       name: "${bms5_name} short circuit protection recovery delay"   
     charging_overtemperature_protection:
@@ -1903,7 +2034,7 @@ sensor:
     discharging_overtemperature_protection:
       name: "${bms5_name} discharging overtemperature protection"
     discharging_overtemperature_protection_recovery:
-      name: "${bms5_name} discharging overtemperature protection recovery" 
+      name: "${bms5_name} discharging overtemperature protection recovery"        
     charging_lowtemperature_protection:
       name: "${bms5_name} charging lowtemperature protection"
     charging_lowtemperature_protection_recovery:
@@ -1911,13 +2042,21 @@ sensor:
     mos_overtemperature_protection:
       name: "${bms5_name} mos overtemperature protection"
     mos_overtemperature_protection_recovery:
-      name: "${bms5_name} mos overtemperature protection recovery"   
+      name: "${bms5_name} mos overtemperature protection recovery"      
     powertube_temperature_protection:
       name: "${bms5_name} powertube temperature protection" 
     powertube_temperature_protection_recovery:
-      name: "${bms5_name} powertube temperature protection recovery"     
-
-
+      name: "${bms5_name} powertube temperature protection recovery"  
+    battery_total_alarms_count:     
+      name: "${bms5_name} battery total alarms count"  
+    battery_total_alarms_active:     
+      name: "${bms5_name} battery total alarms active"           
+    emergency_time_countdown:
+      name: "${bms5_name} emergency time countdown"
+    uart1_protocol_number:
+      name: "${bms5_name} uart1 protocol number"
+    uart2_protocol_number:
+      name: "${bms5_name} uart2 protocol number"
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms6
     balancing_direction:
@@ -1936,6 +2075,14 @@ sensor:
       name: "${bms6_name} cell delta voltage"
     cell_average_voltage:
       name: "${bms6_name} cell average voltage"
+    cell_resistance_min:
+      name: "${bms6_name} cell resistance min"
+    cell_resistance_max:
+      name: "${bms6_name} cell resistance max"      
+    cell_resistance_min_cell_number:
+      name: "${bms6_name} cell resistance min cell number"
+    cell_resistance_max_cell_number:
+      name: "${bms6_name} cell resistance max cell number"        
     cell_voltage_01:
       name: "${bms6_name} cell voltage 01"
     cell_voltage_02:
@@ -2070,20 +2217,28 @@ sensor:
       name: "${bms6_name} balancing current"
     errors_bitmask:
       name: "${bms6_name} errors bitmask"
-    cell_count:
-      name: "${bms6_name} cell count"
+    cell_count_settings:
+      name: "${bms6_name} cell count settings"
+    cell_count_real:
+      name: "${bms6_name} cell count real"        
     cell_overvoltage_protection:
       name: "${bms6_name} cell overvoltage protection"
     cell_overvoltage_protection_recovery:
       name: "${bms6_name} cell overvoltage protection recovery"
     cell_request_charge_voltage:
       name: "${bms6_name} cell request charge voltage"      
+    cell_request_charge_voltage_time:
+      name: "${bms6_name} cell request charge voltage time"    
     cell_request_float_voltage:
-      name: "${bms6_name} cell request float voltage"  
+      name: "${bms6_name} cell request float voltage"   
+    cell_request_float_voltage_time:
+      name: "${bms6_name} cell request float voltage time"        
     balancing_trigger_voltage:
-      name: "${bms6_name} balancing trigger voltage"        
+      name: "${bms6_name} balancing trigger voltage"         
     cell_balancing_starting_voltage:
-      name: "${bms6_name} cell balancing starting voltage"     
+      name: "${bms6_name} cell balancing starting voltage"   
+    max_balancing_current:
+      name: "${bms6_name} max balancing current"        
     cell_soc100_voltage:
       name: "${bms6_name} cell soc100 voltage" 
     cell_soc0_voltage:
@@ -2095,11 +2250,11 @@ sensor:
     cell_power_off_voltage:
       name: "${bms6_name} cell power off voltage"   
     smart_sleep_time:
-      name: "${bms6_name} smart sleep time"              
+      name: "${bms6_name} smart sleep time" 
     max_charging_current:
-      name: "${bms6_name} max charging current"
+      name: "${bms6_name} max_charging_current" 
     max_discharging_current:
-      name: "${bms6_name} max discharging current"       
+      name: "${bms6_name} max discharging current"                       
     charging_overcurrent_protection_delay:
       name: "${bms6_name} charging overcurrent protection delay"
     charging_overcurrent_protection_recovery_delay:
@@ -2107,7 +2262,7 @@ sensor:
     discharging_overcurrent_protection_delay:
       name: "${bms6_name} discharging overcurrent protection delay"
     discharging_overcurrent_protection_recovery_delay:
-      name: "${bms6_name} discharging overcurrent protection recovery delay"  
+      name: "${bms6_name} discharging overcurrent protection recovery delay"   
     short_circuit_protection_recovery_delay:
       name: "${bms6_name} short circuit protection recovery delay"   
     charging_overtemperature_protection:
@@ -2117,7 +2272,7 @@ sensor:
     discharging_overtemperature_protection:
       name: "${bms6_name} discharging overtemperature protection"
     discharging_overtemperature_protection_recovery:
-      name: "${bms6_name} discharging overtemperature protection recovery" 
+      name: "${bms6_name} discharging overtemperature protection recovery"        
     charging_lowtemperature_protection:
       name: "${bms6_name} charging lowtemperature protection"
     charging_lowtemperature_protection_recovery:
@@ -2125,11 +2280,22 @@ sensor:
     mos_overtemperature_protection:
       name: "${bms6_name} mos overtemperature protection"
     mos_overtemperature_protection_recovery:
-      name: "${bms6_name} mos overtemperature protection recovery"   
+      name: "${bms6_name} mos overtemperature protection recovery"      
     powertube_temperature_protection:
       name: "${bms6_name} powertube temperature protection" 
     powertube_temperature_protection_recovery:
-      name: "${bms6_name} powertube temperature protection recovery"           
+      name: "${bms6_name} powertube temperature protection recovery"  
+    battery_total_alarms_count:     
+      name: "${bms6_name} battery total alarms count"  
+    battery_total_alarms_active:     
+      name: "${bms6_name} battery total alarms active"           
+    emergency_time_countdown:
+      name: "${bms6_name} emergency time countdown"
+    uart1_protocol_number:
+      name: "${bms6_name} uart1 protocol number"
+    uart2_protocol_number:
+      name: "${bms6_name} uart2 protocol number"
+
 
 switch:
   - platform: jk_rs485_bms
@@ -2163,8 +2329,7 @@ switch:
     port_selection:
       name: "${bms0_name} port selection"
     special_charger:
-      name: "${bms0_name} special charger"       
-
+      name: "${bms0_name} special charger"            
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms1
     precharging:
@@ -2196,9 +2361,7 @@ switch:
     port_selection:
       name: "${bms1_name} port selection"
     special_charger:
-      name: "${bms1_name} special charger"       
-
-
+      name: "${bms1_name} special charger" 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms2
     precharging:
@@ -2231,11 +2394,6 @@ switch:
       name: "${bms2_name} port selection"
     special_charger:
       name: "${bms2_name} special charger" 
-
-
-
-
-
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms3
     precharging:
@@ -2268,11 +2426,6 @@ switch:
       name: "${bms3_name} port selection"
     special_charger:
       name: "${bms3_name} special charger" 
-
-
-
-
-
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms4
     precharging:
@@ -2305,10 +2458,6 @@ switch:
       name: "${bms4_name} port selection"
     special_charger:
       name: "${bms4_name} special charger" 
-
-
-
-
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms5
     precharging:
@@ -2341,11 +2490,6 @@ switch:
       name: "${bms5_name} port selection"
     special_charger:
       name: "${bms5_name} special charger" 
-
-
-
-
-
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms6
     precharging:
@@ -2385,99 +2529,171 @@ text_sensor:
     jk_rs485_bms_id: bms0
     errors:
       name: "${bms0_name} errors"
-    operation_mode:
-      name: "${bms0_name} operation mode"
-    total_runtime_formatted:
-      name: "${bms0_name} battery total runtime formatted"
+    operation_status:
+      name: "${bms0_name} operation status"
     battery_type:
       name: "${bms0_name} battery type"
+
+    total_runtime_formatted:
+      name: "${bms0_name} total runtime formatted"
+    info_vendorid:
+      name: "${bms0_name} info vendorid"
+    info_hardware_version:
+      name: "${bms0_name} info hardware version"
+    info_software_version:
+      name: "${bms0_name} info software version"
+    info_device_name:
+      name: "${bms0_name} info device name"
+    info_device_password:
+      name: "${bms0_name} info device password"   
     network_nodes_available:
-      name: "${bms0_name} network nodes available"      
+      name: "${bms0_name} network nodes available"  
+    info_device_serial_number:
+      name: "${bms0_name} info device serial number"  
 
     # ...
   - platform: jk_rs485_bms
-    jk_rs485_bms_id: bms1
+    jk_rs485_bms_id: bms1            
     errors:
       name: "${bms1_name} errors"
-    operation_mode:
-      name: "${bms1_name} operation mode"
-    total_runtime_formatted:
-      name: "${bms1_name} battery total runtime formatted"
+    operation_status:
+      name: "${bms1_name} operation status"
     battery_type:
       name: "${bms1_name} battery type"
+    total_runtime_formatted:
+      name: "${bms1_name} total runtime formatted"
+    info_vendorid:
+      name: "${bms1_name} info vendorid"
+    info_hardware_version:
+      name: "${bms1_name} info hardware version"
+    info_software_version:
+      name: "${bms1_name} info software version"
+    info_device_name:
+      name: "${bms1_name} info device name"
+    info_device_password:
+      name: "${bms1_name} info device password"   
     network_nodes_available:
-      name: "${bms1_name} network nodes available"      
-    # ...
-
+      name: "${bms1_name} network nodes available"  
+    info_device_serial_number:
+      name: "${bms1_name} info device serial number"        
   - platform: jk_rs485_bms
-    jk_rs485_bms_id: bms2
+    jk_rs485_bms_id: bms2            
     errors:
       name: "${bms2_name} errors"
-    operation_mode:
-      name: "${bms2_name} operation mode"
-    total_runtime_formatted:
-      name: "${bms2_name} battery total runtime formatted"
+    operation_status:
+      name: "${bms2_name} operation status"
     battery_type:
       name: "${bms2_name} battery type"
+    total_runtime_formatted:
+      name: "${bms2_name} total runtime formatted"
+    info_vendorid:
+      name: "${bms2_name} info vendorid"
+    info_hardware_version:
+      name: "${bms2_name} info hardware version"
+    info_software_version:
+      name: "${bms2_name} info software version"
+    info_device_name:
+      name: "${bms2_name} info device name"
+    info_device_password:
+      name: "${bms2_name} info device password"   
     network_nodes_available:
-      name: "${bms2_name} network nodes available"      
-    # ...
-
-
-
+      name: "${bms2_name} network nodes available"  
+    info_device_serial_number:
+      name: "${bms2_name} info device serial number"        
   - platform: jk_rs485_bms
-    jk_rs485_bms_id: bms3
+    jk_rs485_bms_id: bms3            
     errors:
       name: "${bms3_name} errors"
-    operation_mode:
-      name: "${bms3_name} operation mode"
-    total_runtime_formatted:
-      name: "${bms3_name} battery total runtime formatted"
+    operation_status:
+      name: "${bms3_name} operation status"
     battery_type:
       name: "${bms3_name} battery type"
+    total_runtime_formatted:
+      name: "${bms3_name} total runtime formatted"
+    info_vendorid:
+      name: "${bms3_name} info vendorid"
+    info_hardware_version:
+      name: "${bms3_name} info hardware version"
+    info_software_version:
+      name: "${bms3_name} info software version"
+    info_device_name:
+      name: "${bms3_name} info device name"
+    info_device_password:
+      name: "${bms3_name} info device password"   
     network_nodes_available:
-      name: "${bms3_name} network nodes available"      
-    # ...
-
+      name: "${bms3_name} network nodes available"  
+    info_device_serial_number:
+      name: "${bms3_name} info device serial number"        
   - platform: jk_rs485_bms
-    jk_rs485_bms_id: bms4
+    jk_rs485_bms_id: bms4            
     errors:
       name: "${bms4_name} errors"
-    operation_mode:
-      name: "${bms4_name} operation mode"
-    total_runtime_formatted:
-      name: "${bms4_name} battery total runtime formatted"
+    operation_status:
+      name: "${bms4_name} operation status"
     battery_type:
       name: "${bms4_name} battery type"
+    total_runtime_formatted:
+      name: "${bms4_name} total runtime formatted"
+    info_vendorid:
+      name: "${bms4_name} info vendorid"
+    info_hardware_version:
+      name: "${bms4_name} info hardware version"
+    info_software_version:
+      name: "${bms4_name} info software version"
+    info_device_name:
+      name: "${bms4_name} info device name"
+    info_device_password:
+      name: "${bms4_name} info device password"   
     network_nodes_available:
-      name: "${bms4_name} network nodes available"      
-    # ...
-
+      name: "${bms4_name} network nodes available"  
+    info_device_serial_number:
+      name: "${bms4_name} info device serial number"        
   - platform: jk_rs485_bms
-    jk_rs485_bms_id: bms5
+    jk_rs485_bms_id: bms5            
     errors:
       name: "${bms5_name} errors"
-    operation_mode:
-      name: "${bms5_name} operation mode"
-    total_runtime_formatted:
-      name: "${bms5_name} battery total runtime formatted"
+    operation_status:
+      name: "${bms5_name} operation status"
     battery_type:
       name: "${bms5_name} battery type"
+    total_runtime_formatted:
+      name: "${bms5_name} total runtime formatted"
+    info_vendorid:
+      name: "${bms5_name} info vendorid"
+    info_hardware_version:
+      name: "${bms5_name} info hardware version"
+    info_software_version:
+      name: "${bms5_name} info software version"
+    info_device_name:
+      name: "${bms5_name} info device name"
+    info_device_password:
+      name: "${bms5_name} info device password"   
     network_nodes_available:
-      name: "${bms5_name} network nodes available"      
-    # ...
-
+      name: "${bms5_name} network nodes available"  
+    info_device_serial_number:
+      name: "${bms5_name} info device serial number"        
   - platform: jk_rs485_bms
-    jk_rs485_bms_id: bms6
+    jk_rs485_bms_id: bms6            
     errors:
       name: "${bms6_name} errors"
-    operation_mode:
-      name: "${bms6_name} operation mode"
-    total_runtime_formatted:
-      name: "${bms6_name} battery total runtime formatted"
+    operation_status:
+      name: "${bms6_name} operation status"
     battery_type:
       name: "${bms6_name} battery type"
+    total_runtime_formatted:
+      name: "${bms6_name} total runtime formatted"
+    info_vendorid:
+      name: "${bms6_name} info vendorid"
+    info_hardware_version:
+      name: "${bms6_name} info hardware version"
+    info_software_version:
+      name: "${bms6_name} info software version"
+    info_device_name:
+      name: "${bms6_name} info device name"
+    info_device_password:
+      name: "${bms6_name} info device password"   
     network_nodes_available:
-      name: "${bms6_name} network nodes available"      
-    # ...
-
+      name: "${bms6_name} network nodes available"  
+    info_device_serial_number:
+      name: "${bms6_name} info device serial number"        
+                                    

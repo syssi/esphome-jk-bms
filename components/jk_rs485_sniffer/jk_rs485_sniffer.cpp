@@ -487,8 +487,9 @@ uint8_t JkRS485Sniffer::manage_rx_buffer_(void) {
         ESP_LOGV(TAG, "CHECKSUM failed! 0x%04X != 0x%04X", computed_checksum, remote_checksum);
         //NO, OR THERE WAS A COMM. ERROR
       } else {
-        ESP_LOGI(TAG, "REAL master is speaking (short request)");
         address=raw[0];
+        ESP_LOGI(TAG, "REAL master is speaking to address 0x%02X (short request)",address);
+
         this->rs485_network_node[0].last_message_received=now;
         this->detected_master_activity_now();
         
@@ -527,8 +528,8 @@ uint8_t JkRS485Sniffer::manage_rx_buffer_(void) {
         ESP_LOGV(TAG, "CHECKSUM failed! 0x%04X != 0x%04X", computed_checksum, remote_checksum);
         //NO, OR THERE WAS A COMM. ERROR
       } else {
-        ESP_LOGI(TAG, "REAL master is speaking (request)");
         address=raw[0];
+        ESP_LOGI(TAG, "REAL master is speaking to address 0x%02X (request)",address);
         this->rs485_network_node[0].last_message_received=now;
         this->detected_master_activity_now();
         this->set_node_availability(0,1);
