@@ -7,25 +7,35 @@ from . import CONF_JK_RS485_BMS_ID, JK_RS485_BMS_COMPONENT_SCHEMA
 
 DEPENDENCIES = ["jk_rs485_bms"]
 
-CODEOWNERS = ["@syssi"]
+CODEOWNERS = ["@syssi","@txubelaxu"]
 
 CONF_BATTERY_TYPE = "battery_type"
 CONF_ERRORS = "errors"
-CONF_OPERATION_MODE = "operation_mode"
+CONF_OPERATION_STATUS = "operation_status"
 CONF_DEVICE_TYPE = "device_type"
 CONF_SOFTWARE_VERSION = "software_version"
 CONF_MANUFACTURER = "manufacturer"
 CONF_TOTAL_RUNTIME_FORMATTED = "total_runtime_formatted"
 CONF_NETWORK_NODES_AVAILABLE = "network_nodes_available"
 
+CONF_INFO_VENDORID = "info_vendorid"
+CONF_INFO_HARDWARE_VERSION = "info_hardware_version";
+CONF_INFO_SOFTWARE_VERSION = "info_software_version";
+CONF_INFO_DEVICE_NAME = "info_device_name";
+CONF_INFO_DEVICE_PASSWORD = "info_device_password";
+CONF_INFO_DEVICE_SERIAL_NUMBER = "info_device_serial_number";
+
+
 ICON_BATTERY_TYPE = "mdi:car-battery"
 ICON_ERRORS = "mdi:alert-circle-outline"
 ICON_OPERATION_MODE = "mdi:heart-pulse"
 ICON_PASSWORD = "mdi:lock-outline"
 ICON_NETWORK = "mdi:lan"
+ICON_OPERATION_STATUS = "mdi:heart-pulse"
+ICON_INFORMATION = "mdi:information"
 
 TEXT_SENSORS = [
-    CONF_OPERATION_MODE,
+    CONF_OPERATION_STATUS,
     CONF_ERRORS,
     CONF_BATTERY_TYPE,
     CONF_PASSWORD,
@@ -34,11 +44,18 @@ TEXT_SENSORS = [
     CONF_MANUFACTURER,
     CONF_TOTAL_RUNTIME_FORMATTED,
     CONF_NETWORK_NODES_AVAILABLE,
+
+    CONF_INFO_VENDORID,
+    CONF_INFO_HARDWARE_VERSION,
+    CONF_INFO_SOFTWARE_VERSION,
+    CONF_INFO_DEVICE_NAME,
+    CONF_INFO_DEVICE_PASSWORD,
+    CONF_INFO_DEVICE_SERIAL_NUMBER,    
 ]
 
 CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
     {
-        cv.Optional(CONF_OPERATION_MODE): text_sensor.TEXT_SENSOR_SCHEMA.extend(
+        cv.Optional(CONF_OPERATION_STATUS): text_sensor.TEXT_SENSOR_SCHEMA.extend(
             {
                 cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
                 cv.Optional(CONF_ICON, default=ICON_OPERATION_MODE): cv.icon,
@@ -91,7 +108,55 @@ CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
                 cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
                 cv.Optional(CONF_ICON, default=ICON_NETWORK): cv.icon,
             }
-        ),        
+        ),    
+        cv.Optional(
+            CONF_INFO_VENDORID
+        ): text_sensor.TEXT_SENSOR_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
+                cv.Optional(CONF_ICON, default=ICON_INFORMATION): cv.icon,
+            }
+        ),
+        cv.Optional(
+            CONF_INFO_HARDWARE_VERSION
+        ): text_sensor.TEXT_SENSOR_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
+                cv.Optional(CONF_ICON, default=ICON_INFORMATION): cv.icon,
+            }
+        ),
+        cv.Optional(
+            CONF_INFO_SOFTWARE_VERSION
+        ): text_sensor.TEXT_SENSOR_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
+                cv.Optional(CONF_ICON, default=ICON_INFORMATION): cv.icon,
+            }
+        ),
+        cv.Optional(
+            CONF_INFO_DEVICE_NAME
+        ): text_sensor.TEXT_SENSOR_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
+                cv.Optional(CONF_ICON, default=ICON_INFORMATION): cv.icon,
+            }
+        ),
+        cv.Optional(
+            CONF_INFO_DEVICE_PASSWORD
+        ): text_sensor.TEXT_SENSOR_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
+                cv.Optional(CONF_ICON, default=ICON_INFORMATION): cv.icon,
+            }
+        ),   
+        cv.Optional(
+            CONF_INFO_DEVICE_SERIAL_NUMBER
+        ): text_sensor.TEXT_SENSOR_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
+                cv.Optional(CONF_ICON, default=ICON_INFORMATION): cv.icon,
+            }
+        ),                    
         
     }
 )

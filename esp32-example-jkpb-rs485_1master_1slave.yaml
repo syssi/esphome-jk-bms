@@ -6,7 +6,7 @@ substitutions:
   external_components_source: github://txubelaxu/esphome-jk-bms@main #github://syssi/esphome-jk-bms@main
   tx_pin_uart_0: GPIO17 #GPIO1 #GPIO16
   rx_pin_uart_0: GPIO16 #GPIO3 #GPIO17
-  sniffer0_talk_pin_rs485: GPIO14
+  talk_pin_rs485: GPIO4
 
 esphome:
   name: ${esp_name}
@@ -14,8 +14,9 @@ esphome:
   project:
     name: "txubelaxu.esphome-jk-bms"
     version: 1.0.0
-#  includes:
-#    - ./components/output/binary_output.h
+  #includes:
+    #- ./components/output/binary_output.h
+    #- ./components/jk_rs485_sniffer/gpio.h
 
 
 esp32:
@@ -70,7 +71,7 @@ jk_rs485_sniffer:
     protocol_version: "JK02_32S"
     rx_timeout: 500ms
     uart_id: uart_0
-    talk_pin: ${sniffer0_talk_pin_rs485}
+    talk_pin: ${talk_pin_rs485}
 
 jk_rs485_bms:
   - id: bms0
@@ -254,6 +255,14 @@ sensor:
       name: "${bms0_name} cell delta voltage"
     cell_average_voltage:
       name: "${bms0_name} cell average voltage"
+    cell_resistance_min:
+      name: "${bms0_name} cell resistance min"
+    cell_resistance_max:
+      name: "${bms0_name} cell resistance max"      
+    cell_resistance_min_cell_number:
+      name: "${bms0_name} cell resistance min cell number"
+    cell_resistance_max_cell_number:
+      name: "${bms0_name} cell resistance max cell number"      
     cell_voltage_01:
       name: "${bms0_name} cell voltage 01"
     cell_voltage_02:
@@ -388,16 +397,22 @@ sensor:
       name: "${bms0_name} balancing current"
     errors_bitmask:
       name: "${bms0_name} errors bitmask"
-    cell_count:
-      name: "${bms0_name} cell count"
+    cell_count_settings:
+      name: "${bms0_name} cell count settings"
+    cell_count_real:
+      name: "${bms0_name} cell count real"      
     cell_overvoltage_protection:
       name: "${bms0_name} cell overvoltage protection"
     cell_overvoltage_protection_recovery:
       name: "${bms0_name} cell overvoltage protection recovery"
     cell_request_charge_voltage:
       name: "${bms0_name} cell request charge voltage"      
+    cell_request_charge_voltage_time:
+      name: "${bms0_name} cell request charge voltage time"    
     cell_request_float_voltage:
       name: "${bms0_name} cell request float voltage"   
+    cell_request_float_voltage_time:
+      name: "${bms0_name} cell request float voltage time"        
     balancing_trigger_voltage:
       name: "${bms0_name} balancing trigger voltage"         
     cell_balancing_starting_voltage:
@@ -456,6 +471,10 @@ sensor:
       name: "${bms0_name} battery total alarms active"  
     emergency_time_countdown:
       name: "${bms0_name} emergency time countdown"      
+    uart1_protocol_number:
+      name: "${bms0_name} uart1 protocol number"
+    uart2_protocol_number:
+      name: "${bms0_name} uart2 protocol number"      
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms1
@@ -475,6 +494,14 @@ sensor:
       name: "${bms1_name} cell delta voltage"
     cell_average_voltage:
       name: "${bms1_name} cell average voltage"
+    cell_resistance_min:
+      name: "${bms1_name} cell resistance min"
+    cell_resistance_max:
+      name: "${bms1_name} cell resistance max"      
+    cell_resistance_min_cell_number:
+      name: "${bms1_name} cell resistance min cell number"
+    cell_resistance_max_cell_number:
+      name: "${bms1_name} cell resistance max cell number"        
     cell_voltage_01:
       name: "${bms1_name} cell voltage 01"
     cell_voltage_02:
@@ -609,16 +636,22 @@ sensor:
       name: "${bms1_name} balancing current"
     errors_bitmask:
       name: "${bms1_name} errors bitmask"
-    cell_count:
-      name: "${bms1_name} cell count"
+    cell_count_settings:
+      name: "${bms1_name} cell count settings"
+    cell_count_real:
+      name: "${bms1_name} cell count real"        
     cell_overvoltage_protection:
       name: "${bms1_name} cell overvoltage protection"
     cell_overvoltage_protection_recovery:
       name: "${bms1_name} cell overvoltage protection recovery"
     cell_request_charge_voltage:
       name: "${bms1_name} cell request charge voltage"      
+    cell_request_charge_voltage_time:
+      name: "${bms1_name} cell request charge voltage time"    
     cell_request_float_voltage:
-      name: "${bms1_name} cell request float voltage" 
+      name: "${bms1_name} cell request float voltage"   
+    cell_request_float_voltage_time:
+      name: "${bms1_name} cell request float voltage time"        
     balancing_trigger_voltage:
       name: "${bms1_name} balancing trigger voltage"         
     cell_balancing_starting_voltage:
@@ -677,6 +710,10 @@ sensor:
       name: "${bms1_name} battery total alarms active"           
     emergency_time_countdown:
       name: "${bms1_name} emergency time countdown"
+    uart1_protocol_number:
+      name: "${bms1_name} uart1 protocol number"
+    uart2_protocol_number:
+      name: "${bms1_name} uart2 protocol number"
 
 switch:
   - platform: jk_rs485_bms
@@ -751,25 +788,50 @@ text_sensor:
     jk_rs485_bms_id: bms0
     errors:
       name: "${bms0_name} errors"
-    operation_mode:
-      name: "${bms0_name} operation mode"
-    total_runtime_formatted:
-      name: "${bms0_name} battery total runtime formatted"
+    operation_status:
+      name: "${bms0_name} operation status"
     battery_type:
       name: "${bms0_name} battery type"
+
+    total_runtime_formatted:
+      name: "${bms0_name} total runtime formatted"
+    info_vendorid:
+      name: "${bms0_name} info vendorid"
+    info_hardware_version:
+      name: "${bms0_name} info hardware version"
+    info_software_version:
+      name: "${bms0_name} info software version"
+    info_device_name:
+      name: "${bms0_name} info device name"
+    info_device_password:
+      name: "${bms0_name} info device password"   
     network_nodes_available:
-      name: "${bms0_name} network nodes available"
+      name: "${bms0_name} network nodes available"  
+    info_device_serial_number:
+      name: "${bms0_name} info device serial number"  
+
     # ...
   - platform: jk_rs485_bms
-    jk_rs485_bms_id: bms1
+    jk_rs485_bms_id: bms1            
     errors:
       name: "${bms1_name} errors"
-    operation_mode:
-      name: "${bms1_name} operation mode"
-    total_runtime_formatted:
-      name: "${bms1_name} battery total runtime formatted"
+    operation_status:
+      name: "${bms1_name} operation status"
     battery_type:
       name: "${bms1_name} battery type"
+    total_runtime_formatted:
+      name: "${bms1_name} total runtime formatted"
+    info_vendorid:
+      name: "${bms1_name} info vendorid"
+    info_hardware_version:
+      name: "${bms1_name} info hardware version"
+    info_software_version:
+      name: "${bms1_name} info software version"
+    info_device_name:
+      name: "${bms1_name} info device name"
+    info_device_password:
+      name: "${bms1_name} info device password"   
     network_nodes_available:
-      name: "${bms1_name} network nodes available"      
-    # ...
+      name: "${bms1_name} network nodes available"  
+    info_device_serial_number:
+      name: "${bms1_name} info device serial number"        

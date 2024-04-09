@@ -32,15 +32,22 @@ DEPENDENCIES = ["jk_rs485_bms"]
 CODEOWNERS = ["@syssi","txubelaxu"]
 
 CONF_CELL_SMART_SLEEP_VOLTAGE = "cell_smart_sleep_voltage"
+CONF_CELL_COUNT_REAL = "cell_count_real"
 CONF_CELL_VOLTAGE_MIN = "cell_voltage_min"
 CONF_CELL_VOLTAGE_MAX = "cell_voltage_max"
 CONF_CELL_VOLTAGE_MIN_CELL_NUMBER = "cell_voltage_min_cell_number"
 CONF_CELL_VOLTAGE_MAX_CELL_NUMBER = "cell_voltage_max_cell_number"
 CONF_CELL_DELTA_VOLTAGE = "cell_delta_voltage"
 CONF_CELL_AVERAGE_VOLTAGE = "cell_average_voltage"
-CONF_CELL_COUNT = "cell_count"
+CONF_CELL_COUNT_SETTINGS = "cell_count_settings"
+CONF_CELL_RESISTANCE_MIN = "cell_resistance_min"
+CONF_CELL_RESISTANCE_MAX = "cell_resistance_max"
+CONF_CELL_RESISTANCE_MIN_CELL_NUMBER = "cell_resistance_min_cell_number"
+CONF_CELL_RESISTANCE_MAX_CELL_NUMBER = "cell_resistance_max_cell_number"
 CONF_CELL_REQUEST_CHARGE_VOLTAGE = "cell_request_charge_voltage"
+CONF_CELL_REQUEST_CHARGE_VOLTAGE_TIME = "cell_request_charge_voltage_time"
 CONF_CELL_REQUEST_FLOAT_VOLTAGE = "cell_request_float_voltage"
+CONF_CELL_REQUEST_FLOAT_VOLTAGE_TIME = "cell_request_float_voltage_time"
 CONF_CELL_SOC100_VOLTAGE = "cell_soc100_voltage"
 CONF_CELL_SOC0_VOLTAGE = "cell_soc0_voltage"
 CONF_CELL_POWER_OFF_VOLTAGE = "cell_power_off_voltage"
@@ -193,6 +200,9 @@ CONF_BATTERY_TOTAL_ALARMS_ACTIVE = "battery_total_alarms_active"
 
 CONF_EMERGENCY_TIME_COUNTDOWN = "emergency_time_countdown"
 
+CONF_UART1_PROTOCOL_NUMBER ="uart1_protocol_number"
+CONF_UART2_PROTOCOL_NUMBER ="uart2_protocol_number"
+
 ICON_CURRENT_DC = "mdi:current-dc"
 ICON_CELL_VOLTAGE_MIN_CELL_NUMBER = "mdi:battery-minus-outline"
 ICON_CELL_VOLTAGE_MAX_CELL_NUMBER = "mdi:battery-plus-outline"
@@ -293,9 +303,16 @@ SENSORS = [
     CONF_CELL_VOLTAGE_MAX_CELL_NUMBER,
     CONF_CELL_DELTA_VOLTAGE,
     CONF_CELL_AVERAGE_VOLTAGE,
-    CONF_CELL_COUNT,
+    CONF_CELL_RESISTANCE_MIN,
+    CONF_CELL_RESISTANCE_MAX,
+    CONF_CELL_RESISTANCE_MIN_CELL_NUMBER,
+    CONF_CELL_RESISTANCE_MAX_CELL_NUMBER,    
+    CONF_CELL_COUNT_SETTINGS,
+    CONF_CELL_COUNT_REAL,    
     CONF_CELL_REQUEST_CHARGE_VOLTAGE,
+    CONF_CELL_REQUEST_CHARGE_VOLTAGE_TIME,
     CONF_CELL_REQUEST_FLOAT_VOLTAGE,    
+    CONF_CELL_REQUEST_FLOAT_VOLTAGE_TIME,    
     CONF_CELL_SOC100_VOLTAGE,
     CONF_CELL_SOC0_VOLTAGE,
     CONF_CELL_POWER_OFF_VOLTAGE,
@@ -368,6 +385,9 @@ SENSORS = [
     CONF_BATTERY_TOTAL_ALARMS_COUNT,
     CONF_BATTERY_TOTAL_ALARMS_ACTIVE,
     CONF_EMERGENCY_TIME_COUNTDOWN,
+    CONF_UART1_PROTOCOL_NUMBER,
+    CONF_UART2_PROTOCOL_NUMBER,
+
 ]
 
 # pylint: disable=too-many-function-args
@@ -385,6 +405,13 @@ CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
             icon=ICON_EMPTY,
             accuracy_decimals=3,
             device_class=DEVICE_CLASS_VOLTAGE,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),        
+        cv.Optional(CONF_CELL_COUNT_REAL): sensor.sensor_schema(
+            unit_of_measurement=UNIT_EMPTY,
+            icon=ICON_EMPTY,
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
         ),        
         cv.Optional(CONF_CELL_VOLTAGE_MIN): sensor.sensor_schema(
@@ -429,7 +456,35 @@ CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
             device_class=DEVICE_CLASS_VOLTAGE,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_CELL_COUNT): sensor.sensor_schema(
+        cv.Optional(CONF_CELL_RESISTANCE_MIN): sensor.sensor_schema(
+            unit_of_measurement=UNIT_OHM,
+            icon=ICON_EMPTY,
+            accuracy_decimals=3,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_CELL_RESISTANCE_MAX): sensor.sensor_schema(
+            unit_of_measurement=UNIT_OHM,
+            icon=ICON_EMPTY,
+            accuracy_decimals=3,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_CELL_RESISTANCE_MIN_CELL_NUMBER): sensor.sensor_schema(
+            unit_of_measurement=UNIT_EMPTY,
+            icon=ICON_CELL_RESISTANCE,
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_CELL_RESISTANCE_MAX_CELL_NUMBER): sensor.sensor_schema(
+            unit_of_measurement=UNIT_EMPTY,
+            icon=ICON_CELL_RESISTANCE,
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),              
+        cv.Optional(CONF_CELL_COUNT_SETTINGS): sensor.sensor_schema(
             unit_of_measurement=UNIT_EMPTY,
             icon=ICON_EMPTY,
             accuracy_decimals=0,
@@ -442,7 +497,14 @@ CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
             accuracy_decimals=3,
             device_class=DEVICE_CLASS_VOLTAGE,
             state_class=STATE_CLASS_MEASUREMENT,
-        ),         
+        ),  
+        cv.Optional(CONF_CELL_REQUEST_CHARGE_VOLTAGE_TIME): sensor.sensor_schema(
+            unit_of_measurement=UNIT_HOURS,
+            icon=ICON_EMPTY,
+            accuracy_decimals=3,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),                 
         cv.Optional(CONF_CELL_REQUEST_FLOAT_VOLTAGE): sensor.sensor_schema(
             unit_of_measurement=UNIT_VOLT,
             icon=ICON_EMPTY,
@@ -450,6 +512,13 @@ CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
             device_class=DEVICE_CLASS_VOLTAGE,
             state_class=STATE_CLASS_MEASUREMENT,
         ),   
+        cv.Optional(CONF_CELL_REQUEST_FLOAT_VOLTAGE_TIME): sensor.sensor_schema(
+            unit_of_measurement=UNIT_HOURS,
+            icon=ICON_EMPTY,
+            accuracy_decimals=3,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),            
         cv.Optional(CONF_CELL_SOC100_VOLTAGE): sensor.sensor_schema(
             unit_of_measurement=UNIT_VOLT,
             icon=ICON_EMPTY,
@@ -1327,7 +1396,22 @@ CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
             accuracy_decimals=0,
             device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
-        ),               
+        ),        
+        cv.Optional(CONF_UART1_PROTOCOL_NUMBER): sensor.sensor_schema(
+            unit_of_measurement=UNIT_EMPTY,
+            icon=ICON_EMPTY,
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+            cv.Optional(CONF_UART2_PROTOCOL_NUMBER): sensor.sensor_schema(
+            unit_of_measurement=UNIT_EMPTY,
+            icon=ICON_EMPTY,
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),            
+        
     }
 )
 

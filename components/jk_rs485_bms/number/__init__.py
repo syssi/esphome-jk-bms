@@ -30,7 +30,7 @@ DEFAULT_STEP = 1
 # JK02_24S
 #
 # 06 04 03000000  Set balance trig voltage to 0.003
-# 1c 04 10000000  Set cell count to 16
+# 1c 04 10000000  Set cell count settings to 16
 # 20 04 f0ba0400  Set battery cap to 310
 # 04 04 420e0000  Set Cell OVP to 3.65
 # 05 04 b0040000  Set Cell OVPR to 1.2
@@ -45,7 +45,7 @@ DEFAULT_STEP = 1
 # 0f 04 e8030000  Set Max discharge Current to 1.0
 
 CONF_BALANCE_TRIGGER_VOLTAGE = "balance_trigger_voltage"
-CONF_CELL_COUNT = "cell_count"
+CONF_CELL_COUNT_SETTINGS = "cell_count_settings"
 CONF_TOTAL_BATTERY_CAPACITY = "total_battery_capacity"
 CONF_CELL_VOLTAGE_OVERVOLTAGE_PROTECTION = "cell_voltage_overvoltage_protection"
 CONF_CELL_VOLTAGE_OVERVOLTAGE_RECOVERY = "cell_voltage_overvoltage_recovery"
@@ -104,7 +104,7 @@ CONF_MAX_DISCHARGE_CURRENT = "max_discharge_current"
 # 19 04 a6ffffff  Charge UTPR                    -9.0 °C (-90)
 # 1a 04 de030000  MOS OTP                        99.0 °C (990)
 # 1b 04 0c030000  MOS OTPR                       78.0 °C (780)
-# 1c 04 06000000  Set cell count to                    6 (6)
+# 1c 04 06000000  Set cell count settings to                    6 (6)
 # 20 04 b0360000  Set battery capacity             14 Ah (14)
 # 21 04 d0070000  SCP Delay                      2000 uS (2000)
 # 22 04 04100000  Start Balance voltage            4.1 V (4100)
@@ -118,7 +118,7 @@ UNIT_AMPERE_HOUR = "Ah"
 NUMBERS = {
     # JK04, JK02, JK02_32S, factor
     CONF_BALANCE_TRIGGER_VOLTAGE: [0x00, 0x06, 0x06, 1000.0],
-    CONF_CELL_COUNT: [0x00, 0x1C, 0x1C, 1.0],
+    CONF_CELL_COUNT_SETTINGS: [0x00, 0x1C, 0x1C, 1.0],
     CONF_TOTAL_BATTERY_CAPACITY: [0x00, 0x20, 0x20, 1000.0],
     CONF_CELL_VOLTAGE_OVERVOLTAGE_PROTECTION: [0x00, 0x04, 0x04, 1000.0],
     CONF_CELL_VOLTAGE_OVERVOLTAGE_RECOVERY: [0x00, 0x05, 0x05, 1000.0],
@@ -157,7 +157,7 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
                 cv.Optional(CONF_STEP, default=0.001): cv.float_,
             }
         ),
-        cv.Optional(CONF_CELL_COUNT): JK_RS485_NUMBER_SCHEMA.extend(
+        cv.Optional(CONF_CELL_COUNT_SETTINGS): JK_RS485_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=3): cv.float_,
                 cv.Optional(CONF_MAX_VALUE, default=24): cv.float_,

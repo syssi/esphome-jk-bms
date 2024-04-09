@@ -8,6 +8,10 @@ ESPHome component to monitor a Jikong Battery Management System (JK-PB) via ESP 
 In theory 1 ESP can gather information of every BMS in the RS485 network: MAX 16
 The BMS bluetooth remains free to use with your mobile.
 
+## REMINDER
+
+* Use this at your own risk
+
 ## Supported devices
 
 JK-PBx models with software version `>=14.0` are using the implemented protocol and should be supported.
@@ -21,10 +25,30 @@ JK-PBx models with software version `>=14.0` are using the implemented protocol 
 
 ## Requirements
 
-* [ESPHome 2022.11.0 or higher](https://github.com/esphome/esphome/releases).
+* [ESPHome 2022.11.0 or higher] (https://github.com/esphome/esphome/releases).
 * Generic ESP32 or ESP8266 board
 * SERIAL TTL to RS485 converter
 * Ethernet type cable (one side with RJ45, the other side 3 wires: A, B and GND)
+
+
+# IMPORTANT THINGS ABOUT RS485:
+  * IN THEORY, IN A RS485 NETWORK ONE (ONLY ONE) DEVICE CAN BE THE MASTER.
+  * In a JK-RS485 internal netwok:
+     + the MASTER is the one that has 0x00 (address) Use DIP switches to assign this address.
+     + other BMSs connected to the JK-RS485 internal network need a different address. So: 0x01 or 0x02 or 0x03... or 0x0F
+     + each BMS in the network must have a different address. Use DIP switches to assign these addresses.
+
+The ESP with this code needs NO RS485 address to work.. But it needs a yaml file configured properly. The yaml content must be equal to the real situation of the amount of BMSs and their addresses in the network. How does ESP code work?
+
+MODE 1. If there a JK-BMS acting as REAL MASTER (i.e. it has set 0x00 address), the code will be sniffing all the traffic in the network. The problem is that there is some information that is NEVER in the sniffed traffic information (device info frame type 03): device-name, hw version, sw version, password, RCV Time, RFV Time...
+So, periodically, ESP code will act as a PSEUDO-MASTER to try to get this information. It works for every slave device, but not for master device. At this moment, master device does broadcast by itself the "frame type 03" info. And it does not answer to a "frame type 03" request sent by PSEUDO MASTER.
+
+MODE 2. If every JK-BMS are set as SLAVES (all of them), the ESP code will act as MASTER. So, if ESP code does not detect any REAL MASTER in the network, it will act as a MASTER. Remember to adapt DIP switches and the YAML (addresses) as well. Changing the addreses of the devices does not affect to the historic data gather from that device, because the config is based on the NAME of the device and not on the address of the device. So, change the address, but not the name. In this mode, ESP will gather all the information (cell info, device settings and device info). If anytime, a REAL MASTER arrives to the network, ESP will detect it and will stop acting as MASTER.
+
+In any of the two modes ESP needs to SPEAK to the JK-RS485 internal network. That is why it needs a "SPEAKING PIN OUT" to direct a signal to the "TTL to RS485" converter. There are schematics below. It is not mandatory to connect this pin to gather some info. But if it is not connected it could not ask for some information, and it can not act as a MASTER. But the code should work in the same way until this version. Any way, connected or not, it must be a "talk pin" in the config.
+
+
+
 
 ## Schematics
 ![image](https://github.com/txubelaxu/esphome-jk-bms/assets/156140720/bc6fa31c-2421-4f10-9604-e111d3943636)
@@ -32,27 +56,32 @@ JK-PBx models with software version `>=14.0` are using the implemented protocol 
 (<a href="https://www.google.com/url?sa=i&url=https%3A%2F%2Fforum.arduino.cc%2Ft%2Fcommunication-softwareserial-using-rs485-module-with-esp32%2F932789&psig=AOvVaw1k5Ukv6hEwIAS9I4HR-IlD&ust=1710240770923000&source=images&cd=vfe&opi=89978449&ved=0CBUQjhxqFwoTCMj-uNWF7IQDFQAAAAAdAAAAABAD">image source</a>)
 
 
-
 ```
-                              CONVERTER                    UART-TTL
-┌──────────┐                ┌───────────┐                ┌─────────┐
-│          │<----- A  ----->│  SERIAL   │<----- Vcc------│         │<--Vcc
-│  JK-BMS  │<----- B  ----->│  TTL TO   │                │ ESP32/  │
-│          │                │  RS485    │-RO---------RX->│ ESP8266 │
-│          │                │ CONVERTER │                │         │
-|          |<------GND----->|           |<------GND----->|         |<--GND
-└──────────┘                └───────────┘                └─────────┘      
-                                 ||
-# ESP32 UART-TTL                 |└--DE: must be connected to GND 
-┌─── ─────── ────┐               └---RE: must be connected to GND
-│                │
-│ O   O   O   O  │
-│GND  RX  TX Vcc │
-└────────────────┘
-  │   │       |   
-  │   │       └Vcc
-  │   └─────── GPIO16
-  └─────────── GND
+                              CONVERTER                          UART-TTL
+┌──────────┐                ┌───────────┐                       ┌─────────┐
+│          │<----- A  ----->│  SERIAL   │<-----------------Vcc--│         │<--Vcc
+│  JK-BMS  │<----- B  ----->│  TTL TO   │                       │ ESP32/  │
+│          │                │  RS485    │--DI---------------RX->│ ESP8266 │
+│          │                │           │<-RO---------------TX--│         │
+│          │                │ CONVERTER │<-DE-----+             │         │
+│          │                │           │<-RE-----└---TALK PIN--│         │
+│          │                │           │                       │         │
+|          |<------GND----->|           |<----------GND-------->|         |<--GND
+└──────────┘                └───────────┘                       └─────────┘      
+                                  
+
+# ESP32 UART-TTL (PINOUT ASIGNMENT EXAMPLE)
+┌──────────────────────────────┐                
+│                              │
+│ O     O     O     O     O    │
+│ GND   RX    TX    talk  Vcc  │
+└──────────────────────────────┘
+  ^     ^     ^     ^     ^   
+  │     │     │     |     └──── Vcc
+  │     │     |     └────────── GPIO16
+  │     │     └──────────────── GPIO17
+  │     └────────────────────── GPIO4
+  └──────────────────────────── GND
 
 # HOW TO CONNECT RS485-2 BUS:
 FIRST: CONNECT ALL THE BMSs IN CHAIN
@@ -66,15 +95,15 @@ pinout:
 
 ```
 Usable any of the two connectors:
-┌─────────────────────────┐       ┌─────────────────────────┐
-│                         │       │                         │
-│ O  O  O  O  O  O  O  O  │       │ O  O  O  O  O  O  O  O  │
-│ 1  2  3  4  5  6  7  8  │       │ 9  10 11 12 13 14 15 16 │
-└─────────────────────────┘       └─────────────────────────┘
-  │  │  │                           │  │  │   
-  │  │  └──── GND                   │  │  └──── GND 
-  │  └─────── A                     │  └─────── A
-  └────────── B                     └────────── B
+┌─────────────────────────┐           ┌─────────────────────────┐           ┌─────────────────────────┐           ┌─────────────────────────┐
+│                         │           │                         │           │                         │           │                         │
+│ O  O  O  O  O  O  O  O  │    OR     │ O  O  O  O  O  O  O  O  │    OR     │ O  O  O  O  O  O  O  O  │    OR     │ O  O  O  O  O  O  O  O  │
+│ 1  2  3  4  5  6  7  8  │           │ 9  10 11 12 13 14 15 16 │           │ 1  2  3  4  5  6  7  8  │           │ 9  10 11 12 13 14 15 16 │
+└─────────────────────────┘           └─────────────────────────┘           └─────────────────────────┘           └─────────────────────────┘
+  │  │  │                               │  │  │                                              │  │  │                               │  │  │   
+  │  │  └──── GND                       │  │  └──── GND                               GND ───┘  │  │                          GND ─┘  │  │
+  │  └─────── A                         │  └─────── A                                   A ──────┘  │                            A ────┘  │
+  └────────── B                         └────────── B                                   B ─────────┘                            B ───────┘
 ```
 
 
@@ -98,11 +127,12 @@ wifi_ssid: MY_WIFI_SSID
 wifi_password: MY_WIFI_PASSWORD
 EOF
 
+There is 2 example configurations that you can change to your needs:
+- esp32-example-jkpb-rs485_1master_1slave.yaml    <>  a config of 1 master and 1 slave  (total: 2 JK-PB BMSs)
+- esp32-example-jkpb-rs485_1master_6slaves.yaml   <>  a config of 1 master and 6 slaves (total: 7 JK-PB BMSs)
 
-# Configure all the BMS in this yaml, assigning a name and the address of each one
-- IMPORTANT THINGS:
-  * 1 (ONLY ONE) BMS MUST BE THE MASTER IN THE RS485 NETWORK --> 0x00 (addressed) Use DIP switches to assign this address.
-  * OTHER BMS ARE SLAVE IN THE RS485 NETWORK. What address for each slave? Anyone different to 0x00. Each slave one different address, of course. Use DIP switches to assign the selected address.
+
+# Configure every BMS you have in this yaml, assigning a name and the address of each one.
 
 
 
@@ -116,7 +146,12 @@ esphome run esp32-example-jkpb-rs485_1master_1slave.yaml
 
 ## Known issues
 
-* The sensor configuration is in progress.
+* ??
+
+## TO DO
+
+* Communication to INVERTER SYSTEM.
+
 
 ## Goodies
 

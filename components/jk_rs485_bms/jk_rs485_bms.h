@@ -48,7 +48,7 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   void set_status_heating_binary_sensor(binary_sensor::BinarySensor *status_heating_binary_sensor) {
     status_heating_binary_sensor_ = status_heating_binary_sensor;
   }   
-  void set_cell_count_sensor(sensor::Sensor *cell_count_sensor) { cell_count_sensor_ = cell_count_sensor; }
+  void set_cell_count_settings_sensor(sensor::Sensor *cell_count_settings_sensor) { cell_count_settings_sensor_ = cell_count_settings_sensor; }
 
   void set_balancing_switch_binary_sensor(binary_sensor::BinarySensor *balancing_switch_binary_sensor) {
     balancing_switch_binary_sensor_ = balancing_switch_binary_sensor;
@@ -82,17 +82,36 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   void set_cell_smart_sleep_voltage_sensor(sensor::Sensor *cell_smart_sleep_voltage_sensor) {
     cell_smart_sleep_voltage_sensor_ = cell_smart_sleep_voltage_sensor;
   }
+
+
+  
+  void set_cell_count_real_sensor(sensor::Sensor *cell_count_real_sensor) {
+    cell_count_real_sensor_ = cell_count_real_sensor;
+  }
+
   void set_cell_voltage_min_sensor(sensor::Sensor *cell_voltage_min_sensor) {
     cell_voltage_min_sensor_ = cell_voltage_min_sensor;
   }
   void set_cell_voltage_max_sensor(sensor::Sensor *cell_voltage_max_sensor) {
     cell_voltage_max_sensor_ = cell_voltage_max_sensor;
   }
+  void set_cell_resistance_min_sensor(sensor::Sensor *cell_resistance_min_sensor) {
+    cell_resistance_min_sensor_ = cell_resistance_min_sensor;
+  }
+  void set_cell_resistance_max_sensor(sensor::Sensor *cell_resistance_max_sensor) {
+    cell_resistance_max_sensor_ = cell_resistance_max_sensor;
+  }
   void set_cell_voltage_min_cell_number_sensor(sensor::Sensor *cell_voltage_min_cell_number_sensor) {
     cell_voltage_min_cell_number_sensor_ = cell_voltage_min_cell_number_sensor;
   }
   void set_cell_voltage_max_cell_number_sensor(sensor::Sensor *cell_voltage_max_cell_number_sensor) {
     cell_voltage_max_cell_number_sensor_ = cell_voltage_max_cell_number_sensor;
+  }  
+  void set_cell_resistance_min_cell_number_sensor(sensor::Sensor *cell_resistance_min_cell_number_sensor) {
+    cell_resistance_min_cell_number_sensor_ = cell_resistance_min_cell_number_sensor;
+  }
+  void set_cell_resistance_max_cell_number_sensor(sensor::Sensor *cell_resistance_max_cell_number_sensor) {
+    cell_resistance_max_cell_number_sensor_ = cell_resistance_max_cell_number_sensor;
   }
   void set_cell_delta_voltage_sensor(sensor::Sensor *cell_delta_voltage_sensor) {
     cell_delta_voltage_sensor_ = cell_delta_voltage_sensor;
@@ -338,6 +357,21 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
     battery_total_alarms_active_sensor_ = battery_total_alarms_active_sensor;
   }
 
+  void set_uart1_protocol_number_sensor(sensor::Sensor *uart1_protocol_number_sensor) {
+    uart1_protocol_number_sensor_ = uart1_protocol_number_sensor;
+  }
+  void set_uart2_protocol_number_sensor(sensor::Sensor *uart2_protocol_number_sensor) {
+    uart2_protocol_number_sensor_ = uart2_protocol_number_sensor;
+  }
+
+  void set_cell_request_charge_voltage_time_sensor(sensor::Sensor *cell_request_charge_voltage_time_sensor) {
+    cell_request_charge_voltage_time_sensor_ = cell_request_charge_voltage_time_sensor;
+  }
+  void set_cell_request_float_voltage_time_sensor(sensor::Sensor *cell_request_float_voltage_time_sensor) {
+    cell_request_float_voltage_time_sensor_ = cell_request_float_voltage_time_sensor;
+  }
+
+
   //void set_battery_total_alarms_count(uint8_t battery_total_alarms_count) { battery_total_alarms_count_ = battery_total_alarms_count; }
   //void set_battery_total_alarms_active(uint8_t battery_total_alarms_active) { battery_total_alarms_active_ = battery_total_alarms_active; }  
 
@@ -506,11 +540,40 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   void set_smart_sleep_on_switch(switch_::Switch *smart_sleep_on_switch) { smart_sleep_on_switch_ = smart_sleep_on_switch; }
 
   void set_errors_text_sensor(text_sensor::TextSensor *errors_text_sensor) { errors_text_sensor_ = errors_text_sensor; }
+  void set_operation_status_text_sensor(text_sensor::TextSensor *operation_status_text_sensor) {
+    operation_status_text_sensor_ = operation_status_text_sensor;
+  }
+
+  void set_info_vendorid_text_sensor(text_sensor::TextSensor *info_vendorid_text_sensor) {
+    info_vendorid_text_sensor_ = info_vendorid_text_sensor;
+  }
+
+
+  void set_info_hardware_version_text_sensor(text_sensor::TextSensor *info_hardware_version_text_sensor) {
+      info_hardware_version_text_sensor_ = info_hardware_version_text_sensor;
+  }
+
+  void set_info_software_version_text_sensor(text_sensor::TextSensor *info_software_version_text_sensor) {
+      info_software_version_text_sensor_ = info_software_version_text_sensor;
+  }
+
+  void set_info_device_name_text_sensor(text_sensor::TextSensor *info_device_name_text_sensor) {
+      info_device_name_text_sensor_ = info_device_name_text_sensor;
+  }
+
+  void set_info_device_password_text_sensor(text_sensor::TextSensor *info_device_password_text_sensor) {
+      info_device_password_text_sensor_ = info_device_password_text_sensor;
+  }
+  void set_info_device_serial_number_text_sensor(text_sensor::TextSensor *info_device_serial_number_text_sensor) {
+      info_device_serial_number_text_sensor_ = info_device_serial_number_text_sensor;
+  }
+  
+
+
+
+
   void set_network_nodes_available_text_sensor(text_sensor::TextSensor *network_nodes_available_text_sensor) { network_nodes_available_text_sensor_ = network_nodes_available_text_sensor; }
 
-  void set_operation_mode_text_sensor(text_sensor::TextSensor *operation_mode_text_sensor) {
-    operation_mode_text_sensor_ = operation_mode_text_sensor;
-  }
   void set_battery_type_text_sensor(text_sensor::TextSensor *battery_type_text_sensor) {
     battery_type_text_sensor_ = battery_type_text_sensor;
   }
@@ -532,6 +595,7 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   void set_balancing_current_sensor(sensor::Sensor *balancing_current_sensor) {
     balancing_current_sensor_ = balancing_current_sensor;
   }  
+
 
   void dump_config() override;
 
@@ -612,7 +676,7 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   sensor::Sensor *cell_power_off_voltage_sensor_;
 
   sensor::Sensor *balancing_direction_sensor_; 
-  sensor::Sensor *cell_count_sensor_;  
+  sensor::Sensor *cell_count_settings_sensor_;  
   sensor::Sensor *cell_smart_sleep_voltage_sensor_;
   sensor::Sensor *max_balancing_current_sensor_; 
   sensor::Sensor *max_charging_current_sensor_;
@@ -636,10 +700,15 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
 
 
 
+  sensor::Sensor *cell_count_real_sensor_;
   sensor::Sensor *cell_voltage_min_sensor_;
   sensor::Sensor *cell_voltage_max_sensor_;
+  sensor::Sensor *cell_resistance_min_sensor_;
+  sensor::Sensor *cell_resistance_max_sensor_;  
   sensor::Sensor *cell_voltage_min_cell_number_sensor_;
   sensor::Sensor *cell_voltage_max_cell_number_sensor_;
+  sensor::Sensor *cell_resistance_min_cell_number_sensor_;
+  sensor::Sensor *cell_resistance_max_cell_number_sensor_;  
   sensor::Sensor *cell_delta_voltage_sensor_;
   sensor::Sensor *cell_average_voltage_sensor_;
   sensor::Sensor *temperature_powertube_sensor_;
@@ -698,6 +767,11 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   sensor::Sensor *battery_capacity_state_of_charge_sensor_;
   sensor::Sensor *heating_current_sensor_;
   sensor::Sensor *balancing_current_sensor_;
+  sensor::Sensor *uart1_protocol_number_sensor_;
+  sensor::Sensor *uart2_protocol_number_sensor_;  
+  sensor::Sensor *cell_request_charge_voltage_time_sensor_;
+  sensor::Sensor *cell_request_float_voltage_time_sensor_; 
+
 
 
   switch_::Switch *precharging_switch_;
@@ -716,17 +790,23 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   switch_::Switch *port_selection_switch_;
   switch_::Switch *special_charger_switch_;
 
-  text_sensor::TextSensor *errors_text_sensor_;
-  text_sensor::TextSensor *operation_mode_text_sensor_;
   text_sensor::TextSensor *battery_type_text_sensor_;
   text_sensor::TextSensor *password_text_sensor_;
+  text_sensor::TextSensor *info_device_serial_number_text_sensor_;
   text_sensor::TextSensor *device_type_text_sensor_;
   text_sensor::TextSensor *software_version_text_sensor_;
   text_sensor::TextSensor *manufacturer_text_sensor_;
-  text_sensor::TextSensor *total_runtime_formatted_text_sensor_;
 
-  text_sensor::TextSensor *operation_status_text_sensor_;
   text_sensor::TextSensor *network_nodes_available_text_sensor_;
+  text_sensor::TextSensor *errors_text_sensor_;
+  text_sensor::TextSensor *operation_status_text_sensor_;
+  text_sensor::TextSensor *total_runtime_formatted_text_sensor_;
+  text_sensor::TextSensor *info_vendorid_text_sensor_;
+  text_sensor::TextSensor *info_hardware_version_text_sensor_;
+  text_sensor::TextSensor *info_software_version_text_sensor_;
+  text_sensor::TextSensor *info_device_name_text_sensor_;
+  text_sensor::TextSensor *info_device_password_text_sensor_;
+
 
 //  struct Cell {
 //    sensor::Sensor *cell_voltage_sensor_{nullptr};

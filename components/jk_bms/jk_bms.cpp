@@ -80,7 +80,7 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
   //
   // Address Content: Description      Decoded content                         Coeff./Unit
   // 0x79: Individual Cell voltage
-  // 0x2A: Cell count               42 / 3 bytes = 14 cells
+  // 0x2A: cell count settings               42 / 3 bytes = 14 cells
   // 0x01 0x0E 0xED: Cell 1         3821 * 0.001 = 3.821V                        0.001 V
   // 0x02 0x0E 0xFA: Cell 2         3834 * 0.001 = 3.834V                        0.001 V
   // 0x03 0x0E 0xF7: Cell 3         3831 * 0.001 = 3.831V                        0.001 V

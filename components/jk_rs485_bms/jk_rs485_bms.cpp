@@ -61,7 +61,7 @@ void JkRS485Bms::on_jk_rs485_sniffer_data(const uint8_t &origin_address, const u
 
   if (origin_address == this->address_) {
     this->reset_status_online_tracker_();
-    ESP_LOGI(TAG, "This BMS address is: %d  and address received %d ==> WORKING (frame type:%d)",
+    ESP_LOGD(TAG, "This BMS address is: %d  and address received %d ==> WORKING (frame type:%d)",
              this->address_, origin_address, frame_type);
     switch (frame_type) {
       case 0x01:
@@ -86,8 +86,8 @@ void JkRS485Bms::on_jk_rs485_sniffer_data(const uint8_t &origin_address, const u
         break;
       default:
         ESP_LOGW(TAG, "Unsupported FRAME TYPE (0x%02X)", frame_type);
-        ESP_LOGI(TAG, "Decoding cell info frame.... [ADDRESS: %02X] %d bytes received", origin_address, data.size());
-        ESP_LOGI(TAG, "  %s", format_hex_pretty(&data.front(), 150).c_str());
+        ESP_LOGD(TAG, "Decoding cell info frame.... [ADDRESS: %02X] %d bytes received", origin_address, data.size());
+        ESP_LOGD(TAG, "  %s", format_hex_pretty(&data.front(), 150).c_str());
     }
   } else {
     ESP_LOGD(TAG, "This BMS address is: %d  and address received %d ==> IDLE", this->address_, origin_address);
@@ -155,22 +155,51 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   uint8_t cells = 24 + (offset / 2);
   float cell_voltage_min = 100.0f;
   float cell_voltage_max = -100.0f;
+  float cell_resistance_min = 1000.0f;
+  float cell_resistance_max = -1000.0f;
+  uint8_t cell_count_real = 0;
+  uint8_t cell_voltage_min_cell_number = 0;
+  uint8_t cell_voltage_max_cell_number = 0;
+  uint8_t cell_resistance_min_cell_number = 0;
+  uint8_t cell_resistance_max_cell_number = 0;  
   for (uint8_t i = 0; i < cells; i++) {
     float cell_voltage = (float) jk_get_16bit(i * 2 + 6) * 0.001f;
     float cell_resistance = (float) jk_get_16bit(i * 2 + 64 + offset) * 0.001f;
-    if (cell_voltage > 0 && cell_voltage < cell_voltage_min) {
-      cell_voltage_min = cell_voltage;
+    if (cell_voltage > 0){
+      cell_count_real++;
+      if (cell_voltage < cell_voltage_min) {
+        cell_voltage_min = cell_voltage;
+      }
+      if (cell_voltage > cell_voltage_max) {
+        cell_voltage_max = cell_voltage;
+      }
+
+      if (cell_resistance < cell_resistance_min) {
+        cell_resistance_min = cell_resistance;
+        cell_resistance_min_cell_number=i;
+      }
+      if (cell_resistance > cell_resistance_max) {
+        cell_resistance_max = cell_resistance;
+        cell_resistance_max_cell_number=i;
+      } 
     }
-    if (cell_voltage > cell_voltage_max) {
-      cell_voltage_max = cell_voltage;
-    }
+
+
+
     this->publish_state_(this->cells_[i].cell_voltage_sensor_, cell_voltage);
     this->publish_state_(this->cells_[i].cell_resistance_sensor_, cell_resistance);
     ESP_LOGV(TAG, "Cell %02d voltage:    %f", i, cell_voltage);
     ESP_LOGV(TAG, "Cell %02d resistance: %f", i, cell_resistance);
   }
+  
+  this->publish_state_(this->cell_count_real_sensor_, (float) cell_count_real);
   this->publish_state_(this->cell_voltage_min_sensor_, cell_voltage_min);
   this->publish_state_(this->cell_voltage_max_sensor_, cell_voltage_max);
+  this->publish_state_(this->cell_resistance_min_sensor_, cell_resistance_min);
+  this->publish_state_(this->cell_resistance_max_sensor_, cell_resistance_max);
+  this->publish_state_(this->cell_resistance_max_cell_number_sensor_, (float) cell_resistance_max_cell_number+1);
+  this->publish_state_(this->cell_resistance_min_cell_number_sensor_, (float) cell_resistance_min_cell_number+1);
+  
 
   ESP_LOGV(TAG, "Cell MAX voltage:    %f", cell_voltage_max);
   ESP_LOGV(TAG, "Cell MAX voltage:    %f", cell_voltage_min);
@@ -349,7 +378,7 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   //           0x00 0x80                                                     0000 0000 1000 0000
   //           0x01 0x00                                                     0000 0001 0000 0000
   //           0x02 0x00                                                     0000 0010 0000 0000
-  //           0x04 0x00                Cell count is not equal to settings  0000 0100 0000 0000
+  //           0x04 0x00                cell count settings is not equal to settings  0000 0100 0000 0000
   //           0x08 0x00                Current sensor anomaly               0000 1000 0000 0000
   //           0x10 0x00                Cell Over Voltage                    0001 0000 0000 0000
   //           0x20 0x00                                                     0010 0000 0000 0000
@@ -357,9 +386,9 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   //           0x80 0x00                                                     1000 0000 0000 0000
   //
   //           0x14 0x00                Cell Over Voltage +                  0001 0100 0000 0000
-  //                                    Cell count is not equal to settings
+  //                                    cell count settings is not equal to settings
   //           0x04 0x08                Cell Undervoltage +                  0000 0100 0000 1000
-  //                                    Cell count is not equal to settings
+  //                                    cell count settings is not equal to settings
   if (frame_version != FRAME_VERSION_JK02_32S) {
     uint16_t raw_errors_bitmask = (uint16_t(data[136 + offset]) << 8) | (uint16_t(data[136 + 1 + offset]) << 0);
     this->publish_state_(this->errors_bitmask_sensor_, (float) raw_errors_bitmask);
@@ -731,9 +760,9 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   ESP_LOGV(TAG, "  MOS OTP recovery: %f °C", (float) ((int32_t) jk_get_32bit(110)) * 0.1f);
   this->publish_state_(this->mos_overtemperature_protection_recovery_sensor_, (float) jk_get_32bit(110) * 0.1f);
 
-  // 114   4   0x0D 0x00 0x00 0x00    Cell count
-  ESP_LOGV(TAG, "  Cell count: %f", (float) jk_get_32bit(114));
-  this->publish_state_(this->cell_count_sensor_, (float) data[114]);
+  // 114   4   0x0D 0x00 0x00 0x00    cell count settings
+  ESP_LOGV(TAG, "  cell count settings: %f", (float) jk_get_32bit(114));
+  this->publish_state_(this->cell_count_settings_sensor_, (float) data[114]);
 
   // 118   4   0x01 0x00 0x00 0x00    Charge switch BatChargeEN
   //  ESP_LOGI(TAG, "  Charge switch: %s", ((bool) data[118]) ? "on" : "off");
@@ -947,17 +976,19 @@ void JkRS485Bms::decode_device_info_(const std::vector<uint8_t> &data) {
   ESP_LOGI(TAG, "  RVD: %f", (float) ((uint8_t) data[269]));
   ESP_LOGI(TAG, "  ---------------------------------------");
 
-  //this->publish_state_(this->info_vendorid_text_sensor_, std::string(data.begin() + 6, data.begin() + 6 + 16).c_str());
-  //this->publish_state_(this->info_hardware_version_text_sensor_, std::string(data.begin() + 22, data.begin() + 22 + 8).c_str());
-  //this->publish_state_(this->info_software_version_text_sensor_, std::string(data.begin() + 30, data.begin() + 30 + 8).c_str());
-  //this->publish_state_(this->info_device_name_text_sensor_, std::string(data.begin() + 46, data.begin() + 46 + 16).c_str());
-  //this->publish_state_(this->info_device_password_text_sensor_, std::string(data.begin() + 62, data.begin() + 62 + 16).c_str());
 
-  //this->publish_state_(this->uart1_protocol_number_number_, (uint8_t) data[178]);
-  //this->publish_state_(this->uart2_protocol_number_number_, (uint8_t) data[212]);
+  this->publish_state_(this->info_vendorid_text_sensor_, std::string(data.begin() + 6, data.begin() + 6 + 16).c_str());
+  this->publish_state_(this->info_hardware_version_text_sensor_, std::string(data.begin() + 22, data.begin() + 22 + 8).c_str());
+  this->publish_state_(this->info_software_version_text_sensor_, std::string(data.begin() + 30, data.begin() + 30 + 8).c_str());
+  this->publish_state_(this->info_device_name_text_sensor_, std::string(data.begin() + 46, data.begin() + 46 + 16).c_str());
+  this->publish_state_(this->info_device_password_text_sensor_, std::string(data.begin() + 62, data.begin() + 62 + 16).c_str());
+  this->publish_state_(this->info_device_serial_number_text_sensor_, std::string(data.begin() + 86, data.begin() + 86 + 11).c_str());
 
-  //this->publish_state_(this->cell_request_charge_voltage_time_number_, (float) data[266]*0.1f);
-  //this->publish_state_(this->cell_request_float_voltage_time_number_, (float) data[267]*0.1f);
+  this->publish_state_(this->uart1_protocol_number_sensor_, (uint8_t) data[178]);
+  this->publish_state_(this->uart2_protocol_number_sensor_, (uint8_t) data[212]);
+
+  this->publish_state_(this->cell_request_charge_voltage_time_sensor_, (float) data[266]*0.1f);
+  this->publish_state_(this->cell_request_float_voltage_time_sensor_, (float) data[267]*0.1f);
 
 
 }
