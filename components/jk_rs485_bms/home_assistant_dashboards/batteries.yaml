@@ -17,12 +17,20 @@ views:
                 columns: 1
                 cards:
                   - type: markdown
-                    content: <CENTER><b><font size=5>GLOBAL</font></b></CENTER>
-                    style: |
-                      ha-card {
-                        height: 10px;  /* Ajusta el valor según tu preferencia */
-                        overflow: hidden;
-                      }
+                    content: >-
+
+                      {%- set total_bms = namespace(value=0) %} {%- set
+                      total_online_bms = namespace(value=0) %} {% for idx in
+                      range(0, 16)-%} 
+                        {% if states('binary_sensor.rs485_bms%d_status_online' % idx)=='on' or states('binary_sensor.rs485_bms%d_status_online' % idx)=='off' %}
+                         {% set total_bms.value = total_bms.value +1 %}
+                         {% if states('binary_sensor.rs485_bms%d_status_online' % idx)=='on' %}
+                            {% set total_online_bms.value = total_online_bms.value +1 %}
+                         {% endif %}
+                        {%- endif %}
+                         
+                      {% endfor %} <CENTER><b><font size=5>ONLINE BMSs:</B>
+                      {{total_online_bms.value}}/{{total_bms.value}}</font></CENTER>
               - type: grid
                 square: false
                 columns: 1
