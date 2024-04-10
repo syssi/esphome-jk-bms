@@ -523,13 +523,18 @@ views:
                       uvp =
                       states('sensor.rs485_bms0_cell_undervoltage_protection')
                       %}  {%- set poff =
-                      states('sensor.rs485_bms0_cell_power_off_voltage') %} 
-
-                      {%- set rcvt =
+                      states('sensor.rs485_bms0_cell_power_off_voltage') %}  {%-
+                      set rcvt =
                       states('sensor.rs485_bms0_cell_request_charge_voltage_time')
                       %}     {%- set rfvt =
                       states('sensor.rs485_bms0_cell_request_float_voltage_time') 
-                      %}   
+                      %}    {%- set TimeOVPR =
+                      states('sensor.rs485_bms0_cell_overvoltage_protection_release_time') 
+                      %}  {%- set TimeUVPR =
+                      states('sensor.rs485_bms0_cell_undervoltage_protection_release_time') 
+                      %} 
+
+
 
                       {%- set rcvt = 'N/D' if rcvt == 'unknown' 
                           else "%.1f" % rcvt|float %}   
@@ -537,16 +542,16 @@ views:
                           else "%.1f" % rfvt|float %}   
 
                       <table> <tr><td colspan=2><b>VOLTAGE
-                      SETTINGS</b></td></tr> <tr><td>OVP</td><td>{{ovp}}V</tr>
-                      <tr><td>Smart Sleep </td><td>{{slv}}V</tr>
-                      <tr><td>RCV</td><td>{{rcv}}V @{{rcvt}} h</tr>
-                      <tr><td>Bal.Start.</td><td>{{bsv}}V</tr>  <tr><td>SOC
-                      100%</td><td>{{soc100}}V</tr> 
+                      SETTINGS</b></td></tr> <tr><td>OVP</td><td>{{ovp}}V
+                      @{{TimeOVPR}}s</tr> <tr><td>Smart Sleep
+                      </td><td>{{slv}}V</tr> <tr><td>RCV</td><td>{{rcv}}V
+                      @{{rcvt}}h</tr> <tr><td>Bal.Start.</td><td>{{bsv}}V</tr> 
+                      <tr><td>SOC 100%</td><td>{{soc100}}V</tr> 
                       <tr><td>OVPR</td><td>{{ovpr}}V</tr> 
                       <tr><td>RFV</td><td>{{rfv}}V @{{rfvt}}h</tr> 
                       <tr><td>UVPR</td><td>{{uvpr}}V</tr>  <tr><td>SOC
-                      0%</td><td>{{soc0}}V</tr>  
-                      <tr><td>UVP</td><td>{{uvp}}V</tr>  <tr><td>Power
+                      0%</td><td>{{soc0}}V</tr>   <tr><td>UVP</td><td>{{uvp}}V
+                      @{{TimeUVPR}}s</tr>  <tr><td>Power
                       OFF</td><td>{{poff}}V</tr></table></div><br>         
 
                       <div><b>TEMPERATURES</b> {% macro pad_right(w, s) %}  {{ s
@@ -892,13 +897,18 @@ views:
                       uvp =
                       states('sensor.rs485_bms1_cell_undervoltage_protection')
                       %}  {%- set poff =
-                      states('sensor.rs485_bms1_cell_power_off_voltage') %} 
-
-                      {%- set rcvt =
+                      states('sensor.rs485_bms1_cell_power_off_voltage') %}  {%-
+                      set rcvt =
                       states('sensor.rs485_bms1_cell_request_charge_voltage_time')
                       %}     {%- set rfvt =
                       states('sensor.rs485_bms1_cell_request_float_voltage_time') 
-                      %}   
+                      %}    {%- set TimeOVPR =
+                      states('sensor.rs485_bms1_cell_overvoltage_protection_release_time') 
+                      %}  {%- set TimeUVPR =
+                      states('sensor.rs485_bms1_cell_undervoltage_protection_release_time') 
+                      %} 
+
+
 
                       {%- set rcvt = 'N/D' if rcvt == 'unknown' 
                           else "%.1f" % rcvt|float %}   
@@ -906,16 +916,16 @@ views:
                           else "%.1f" % rfvt|float %}   
 
                       <table> <tr><td colspan=2><b>VOLTAGE
-                      SETTINGS</b></td></tr> <tr><td>OVP</td><td>{{ovp}}V</tr>
-                      <tr><td>Smart Sleep </td><td>{{slv}}V</tr>
-                      <tr><td>RCV</td><td>{{rcv}}V @{{rcvt}} h</tr>
-                      <tr><td>Bal.Start.</td><td>{{bsv}}V</tr>  <tr><td>SOC
-                      100%</td><td>{{soc100}}V</tr> 
+                      SETTINGS</b></td></tr> <tr><td>OVP</td><td>{{ovp}}V
+                      @{{TimeOVPR}}s</tr> <tr><td>Smart Sleep
+                      </td><td>{{slv}}V</tr> <tr><td>RCV</td><td>{{rcv}}V
+                      @{{rcvt}}h</tr> <tr><td>Bal.Start.</td><td>{{bsv}}V</tr> 
+                      <tr><td>SOC 100%</td><td>{{soc100}}V</tr> 
                       <tr><td>OVPR</td><td>{{ovpr}}V</tr> 
                       <tr><td>RFV</td><td>{{rfv}}V @{{rfvt}}h</tr> 
                       <tr><td>UVPR</td><td>{{uvpr}}V</tr>  <tr><td>SOC
-                      0%</td><td>{{soc0}}V</tr>  
-                      <tr><td>UVP</td><td>{{uvp}}V</tr>  <tr><td>Power
+                      0%</td><td>{{soc0}}V</tr>   <tr><td>UVP</td><td>{{uvp}}V
+                      @{{TimeUVPR}}s</tr>  <tr><td>Power
                       OFF</td><td>{{poff}}V</tr></table></div><br>         
 
                       <div><b>TEMPERATURES</b> {% macro pad_right(w, s) %}  {{ s
@@ -2110,6 +2120,11 @@ views:
               sensor.rs485_bms0_discharging_overcurrent_protection_recovery_delay
           - entity: sensor.rs485_bms0_short_circuit_protection_recovery_delay
           - entity: sensor.rs485_bms0_max_balancing_current
+          - entity: sensor.rs485_bms0_charging_overcurrent_protection_release_time
+          - entity: sensor.rs485_bms0_charging_short_circuit_protection_release_time
+          - entity: sensor.rs485_bms0_discharging_overcurrent_protection_release_time
+          - entity: >-
+              sensor.rs485_bms0_discharging_short_circuit_protection_release_time
         title: CURRENT
   - title: BMS1 (PROTECTION)
     path: protection1
@@ -2137,4 +2152,9 @@ views:
               sensor.rs485_bms1_discharging_overcurrent_protection_recovery_delay
           - entity: sensor.rs485_bms1_short_circuit_protection_recovery_delay
           - entity: sensor.rs485_bms1_max_balancing_current
+          - entity: sensor.rs485_bms1_charging_overcurrent_protection_release_time
+          - entity: sensor.rs485_bms1_charging_short_circuit_protection_release_time
+          - entity: sensor.rs485_bms1_discharging_overcurrent_protection_release_time
+          - entity: >-
+              sensor.rs485_bms1_discharging_short_circuit_protection_release_time
         title: CURRENT
