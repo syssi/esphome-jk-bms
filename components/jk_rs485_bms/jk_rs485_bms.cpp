@@ -1075,6 +1075,9 @@ void JkRS485Bms::publish_device_unavailable_() {
   this->publish_state_(start_current_calibration_sensor_, NAN);
   this->publish_state_(actual_battery_capacity_sensor_, NAN);
   this->publish_state_(protocol_version_sensor_, NAN);
+  this->publish_state_(cell_request_float_voltage_time_sensor_, NAN);
+  this->publish_state_(cell_request_charge_voltage_time_sensor_, NAN);
+  
 
   for (auto &cell : this->cells_) {
     this->publish_state_(cell.cell_voltage_sensor_, NAN);
@@ -1248,6 +1251,8 @@ void JkRS485Bms::dump_config() {  // NOLINT(google-readability-function-size,rea
   LOG_SENSOR("", "Start Current Calibration", this->start_current_calibration_sensor_);
   LOG_TEXT_SENSOR("", "Manufacturer", this->manufacturer_text_sensor_);
   LOG_SENSOR("", "Protocol Version", this->protocol_version_sensor_);
+  LOG_SENSOR("", "Protocol Version", this->cell_request_charge_voltage_time_sensor_);
+  LOG_SENSOR("", "Protocol Version", this->cell_request_float_voltage_time_sensor_);
   LOG_BINARY_SENSOR("", "Status Balancing", this->status_balancing_binary_sensor_);
   LOG_BINARY_SENSOR("", "Balancing Switch", this->balancing_switch_binary_sensor_);
   LOG_BINARY_SENSOR("", "Status Charging", this->status_charging_binary_sensor_);
