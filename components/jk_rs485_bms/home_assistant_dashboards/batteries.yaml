@@ -203,7 +203,7 @@ views:
                 columns: 1
                 cards:
                   - type: markdown
-                    content: <CENTER><b><font size=5>BMS 00</font></b></CENTER>
+                    content: <CENTER><b><font size=5>BMS 01</font></b></CENTER>
                     style: |
                       ha-card {
                         height: 10px;  /* Ajusta el valor según tu preferencia */
