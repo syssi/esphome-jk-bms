@@ -139,6 +139,13 @@ CONF_CELL_UNDERVOLTAGE_PROTECTION = "cell_undervoltage_protection"
 CONF_CELL_UNDERVOLTAGE_RECOVERY = "cell_undervoltage_protection_recovery"
 CONF_CELL_VOLTAGE_UNDERVOLTAGE_DELAY = "cell_undervoltage_delay"
 
+CONF_DISCHARGING_OVERCURRENT_PROTECTION_RELEASE_TIME = "discharging_overcurrent_protection_release_time";
+CONF_DISCHARGING_SHORT_CIRCUIT_PROTECTION_RELEASE_TIME = "discharging_short_circuit_protection_release_time";
+CONF_CHARGING_OVERCURRENT_PROTECTION_RELEASE_TIME = "charging_overcurrent_protection_release_time";
+CONF_CHARGING_SHORT_CIRCUIT_PROTECTION_RELEASE_TIME = "charging_short_circuit_protection_release_time";
+CONF_CELL_UNDERVOLTAGE_PROTECTION_RELEASE_TIME = "cell_undervoltage_protection_release_time";
+CONF_CELL_OVERVOLTAGE_PROTECTION_RELEASE_TIME = "cell_overvoltage_protection_release_time";
+
 CONF_CELL_PRESSURE_DIFFERENCE_PROTECTION = "cell_pressure_difference_protection"
 
 CONF_BALANCING_TRIGGER_VOLTAGE = "balancing_trigger_voltage"
@@ -390,6 +397,12 @@ SENSORS = [
     CONF_EMERGENCY_TIME_COUNTDOWN,
     CONF_UART1_PROTOCOL_NUMBER,
     CONF_UART2_PROTOCOL_NUMBER,
+    CONF_DISCHARGING_OVERCURRENT_PROTECTION_RELEASE_TIME,
+    CONF_DISCHARGING_SHORT_CIRCUIT_PROTECTION_RELEASE_TIME,
+    CONF_CHARGING_OVERCURRENT_PROTECTION_RELEASE_TIME,
+    CONF_CHARGING_SHORT_CIRCUIT_PROTECTION_RELEASE_TIME,
+    CONF_CELL_UNDERVOLTAGE_PROTECTION_RELEASE_TIME,
+    CONF_CELL_OVERVOLTAGE_PROTECTION_RELEASE_TIME,
 
 ]
 
@@ -1413,14 +1426,55 @@ CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
             device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-            cv.Optional(CONF_UART2_PROTOCOL_NUMBER): sensor.sensor_schema(
+        cv.Optional(CONF_UART2_PROTOCOL_NUMBER): sensor.sensor_schema(
             unit_of_measurement=UNIT_EMPTY,
             icon=ICON_EMPTY,
             accuracy_decimals=0,
             device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
-        ),            
-        
+        ),  
+        cv.Optional(CONF_DISCHARGING_OVERCURRENT_PROTECTION_RELEASE_TIME): sensor.sensor_schema(
+            unit_of_measurement=UNIT_SECONDS,
+            icon=ICON_CLOCK,
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),   
+        cv.Optional(CONF_DISCHARGING_SHORT_CIRCUIT_PROTECTION_RELEASE_TIME): sensor.sensor_schema(
+            unit_of_measurement=UNIT_SECONDS,
+            icon=ICON_CLOCK,
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),     
+        cv.Optional(CONF_CHARGING_OVERCURRENT_PROTECTION_RELEASE_TIME): sensor.sensor_schema(
+            unit_of_measurement=UNIT_SECONDS,
+            icon=ICON_CLOCK,
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),     
+        cv.Optional(CONF_CHARGING_SHORT_CIRCUIT_PROTECTION_RELEASE_TIME): sensor.sensor_schema(
+            unit_of_measurement=UNIT_SECONDS,
+            icon=ICON_CLOCK,
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),     
+        cv.Optional(CONF_CELL_UNDERVOLTAGE_PROTECTION_RELEASE_TIME): sensor.sensor_schema(
+            unit_of_measurement=UNIT_SECONDS,
+            icon=ICON_CLOCK,
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),     
+        cv.Optional(CONF_CELL_OVERVOLTAGE_PROTECTION_RELEASE_TIME): sensor.sensor_schema(
+            unit_of_measurement=UNIT_SECONDS,
+            icon=ICON_CLOCK,
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),                              
     }
 )
 

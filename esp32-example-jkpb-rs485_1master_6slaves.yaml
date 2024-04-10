@@ -869,6 +869,18 @@ sensor:
       name: "${bms0_name} uart2 protocol number"      
     battery_soh_valuation:    
       name: "${bms0_name} battery soh valuation"
+    discharging_overcurrent_protection_release_time:    
+      name: "${bms0_name} discharging overcurrent protection release time"
+    discharging_short_circuit_protection_release_time:    
+      name: "${bms0_name} discharging short circuit protection release time"
+    charging_overcurrent_protection_release_time:    
+      name: "${bms0_name} charging overcurrent protection release time"
+    charging_short_circuit_protection_release_time:    
+      name: "${bms0_name} charging short circuit protection release time"
+    cell_undervoltage_protection_release_time:    
+      name: "${bms0_name} cell undervoltage protection release time"
+    cell_overvoltage_protection_release_time:    
+      name: "${bms0_name} cell overvoltage protection release time"
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms1
@@ -1110,6 +1122,19 @@ sensor:
       name: "${bms1_name} uart2 protocol number"
     battery_soh_valuation:    
       name: "${bms1_name} battery soh valuation"
+    discharging_overcurrent_protection_release_time:    
+      name: "${bms1_name} discharging overcurrent protection release time"
+    discharging_short_circuit_protection_release_time:    
+      name: "${bms1_name} discharging short circuit protection release time"
+    charging_overcurrent_protection_release_time:    
+      name: "${bms1_name} charging overcurrent protection release time"
+    charging_short_circuit_protection_release_time:    
+      name: "${bms1_name} charging short circuit protection release time"
+    cell_undervoltage_protection_release_time:    
+      name: "${bms1_name} cell undervoltage protection release time"
+    cell_overvoltage_protection_release_time:    
+      name: "${bms1_name} cell overvoltage protection release time"
+
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms2
@@ -1351,6 +1376,18 @@ sensor:
       name: "${bms2_name} uart2 protocol number"
     battery_soh_valuation:    
       name: "${bms2_name} battery soh valuation"
+    discharging_overcurrent_protection_release_time:    
+      name: "${bms2_name} discharging overcurrent protection release time"
+    discharging_short_circuit_protection_release_time:    
+      name: "${bms2_name} discharging short circuit protection release time"
+    charging_overcurrent_protection_release_time:    
+      name: "${bms2_name} charging overcurrent protection release time"
+    charging_short_circuit_protection_release_time:    
+      name: "${bms2_name} charging short circuit protection release time"
+    cell_undervoltage_protection_release_time:    
+      name: "${bms2_name} cell undervoltage protection release time"
+    cell_overvoltage_protection_release_time:    
+      name: "${bms2_name} cell overvoltage protection release time"
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms3
@@ -1592,6 +1629,18 @@ sensor:
       name: "${bms3_name} uart2 protocol number"
     battery_soh_valuation:    
       name: "${bms3_name} battery soh valuation"
+    discharging_overcurrent_protection_release_time:    
+      name: "${bms3_name} discharging overcurrent protection release time"
+    discharging_short_circuit_protection_release_time:    
+      name: "${bms3_name} discharging short circuit protection release time"
+    charging_overcurrent_protection_release_time:    
+      name: "${bms3_name} charging overcurrent protection release time"
+    charging_short_circuit_protection_release_time:    
+      name: "${bms3_name} charging short circuit protection release time"
+    cell_undervoltage_protection_release_time:    
+      name: "${bms3_name} cell undervoltage protection release time"
+    cell_overvoltage_protection_release_time:    
+      name: "${bms3_name} cell overvoltage protection release time"
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms4
@@ -1833,6 +1882,18 @@ sensor:
       name: "${bms4_name} uart2 protocol number"
     battery_soh_valuation:    
       name: "${bms4_name} battery soh valuation"
+    discharging_overcurrent_protection_release_time:    
+      name: "${bms4_name} discharging overcurrent protection release time"
+    discharging_short_circuit_protection_release_time:    
+      name: "${bms4_name} discharging short circuit protection release time"
+    charging_overcurrent_protection_release_time:    
+      name: "${bms4_name} charging overcurrent protection release time"
+    charging_short_circuit_protection_release_time:    
+      name: "${bms4_name} charging short circuit protection release time"
+    cell_undervoltage_protection_release_time:    
+      name: "${bms4_name} cell undervoltage protection release time"
+    cell_overvoltage_protection_release_time:    
+      name: "${bms4_name} cell overvoltage protection release time"
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms5
@@ -2074,6 +2135,18 @@ sensor:
       name: "${bms5_name} uart2 protocol number"
     battery_soh_valuation:    
       name: "${bms5_name} battery soh valuation"
+    discharging_overcurrent_protection_release_time:    
+      name: "${bms5_name} discharging overcurrent protection release time"
+    discharging_short_circuit_protection_release_time:    
+      name: "${bms5_name} discharging short circuit protection release time"
+    charging_overcurrent_protection_release_time:    
+      name: "${bms5_name} charging overcurrent protection release time"
+    charging_short_circuit_protection_release_time:    
+      name: "${bms5_name} charging short circuit protection release time"
+    cell_undervoltage_protection_release_time:    
+      name: "${bms5_name} cell undervoltage protection release time"
+    cell_overvoltage_protection_release_time:    
+      name: "${bms5_name} cell overvoltage protection release time"
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms6
@@ -2315,7 +2388,18 @@ sensor:
       name: "${bms6_name} uart2 protocol number"
     battery_soh_valuation:    
       name: "${bms6_name} battery soh valuation"
-
+    discharging_overcurrent_protection_release_time:    
+      name: "${bms6_name} discharging overcurrent protection release time"
+    discharging_short_circuit_protection_release_time:    
+      name: "${bms6_name} discharging short circuit protection release time"
+    charging_overcurrent_protection_release_time:    
+      name: "${bms6_name} charging overcurrent protection release time"
+    charging_short_circuit_protection_release_time:    
+      name: "${bms6_name} charging short circuit protection release time"
+    cell_undervoltage_protection_release_time:    
+      name: "${bms6_name} cell undervoltage protection release time"
+    cell_overvoltage_protection_release_time:    
+      name: "${bms6_name} cell overvoltage protection release time"
 
 switch:
   - platform: jk_rs485_bms

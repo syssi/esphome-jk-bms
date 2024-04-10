@@ -267,6 +267,29 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
     mos_overtemperature_protection_recovery_sensor_ = mos_overtemperature_protection_recovery_sensor;
   }
 
+
+
+  void set_discharging_overcurrent_protection_release_time_sensor(sensor::Sensor *discharging_overcurrent_protection_release_time_sensor) {
+    discharging_overcurrent_protection_release_time_sensor_ = discharging_overcurrent_protection_release_time_sensor;
+  }
+  void set_discharging_short_circuit_protection_release_time_sensor(sensor::Sensor *discharging_short_circuit_protection_release_time_sensor) {
+    discharging_short_circuit_protection_release_time_sensor_ = discharging_short_circuit_protection_release_time_sensor;
+  }
+  void set_charging_overcurrent_protection_release_time_sensor(sensor::Sensor *charging_overcurrent_protection_release_time_sensor) {
+    charging_overcurrent_protection_release_time_sensor_ = charging_overcurrent_protection_release_time_sensor;
+  }
+  void set_charging_short_circuit_protection_release_time_sensor(sensor::Sensor *charging_short_circuit_protection_release_time_sensor) {
+    charging_short_circuit_protection_release_time_sensor_ = charging_short_circuit_protection_release_time_sensor;
+  }
+  void set_cell_undervoltage_protection_release_time_sensor(sensor::Sensor *cell_undervoltage_protection_release_time_sensor) {
+    cell_undervoltage_protection_release_time_sensor_ = cell_undervoltage_protection_release_time_sensor;
+  }
+  void set_cell_overvoltage_protection_release_time_sensor(sensor::Sensor *cell_overvoltage_protection_release_time_sensor) {
+    cell_overvoltage_protection_release_time_sensor_ = cell_overvoltage_protection_release_time_sensor;
+  }
+
+
+
   void set_cell_balancing_starting_voltage_sensor(sensor::Sensor *cell_balancing_starting_voltage_sensor) {
     cell_balancing_starting_voltage_sensor_ = cell_balancing_starting_voltage_sensor;
   }
@@ -702,6 +725,12 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   sensor::Sensor *scp_recovery_time_number_;    
   sensor::Sensor *total_battery_capacity_number_;  
 
+  sensor::Sensor *discharging_overcurrent_protection_release_time_sensor_;
+  sensor::Sensor *discharging_short_circuit_protection_release_time_sensor_;
+  sensor::Sensor *charging_overcurrent_protection_release_time_sensor_;
+  sensor::Sensor *charging_short_circuit_protection_release_time_sensor_;
+  sensor::Sensor *cell_undervoltage_protection_release_time_sensor_;
+  sensor::Sensor *cell_overvoltage_protection_release_time_sensor_;
 
 
 
