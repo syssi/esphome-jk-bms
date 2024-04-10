@@ -50,6 +50,7 @@ CONF_CELL_REQUEST_FLOAT_VOLTAGE = "cell_request_float_voltage"
 CONF_CELL_REQUEST_FLOAT_VOLTAGE_TIME = "cell_request_float_voltage_time"
 CONF_CELL_SOC100_VOLTAGE = "cell_soc100_voltage"
 CONF_CELL_SOC0_VOLTAGE = "cell_soc0_voltage"
+
 CONF_CELL_POWER_OFF_VOLTAGE = "cell_power_off_voltage"
 
 CONF_CELL_VOLTAGE_01 = "cell_voltage_01"
@@ -122,6 +123,7 @@ CONF_CHARGING_CYCLES = "charging_cycles"
 CONF_BATTERY_CAPACITY_TOTAL_CHARGING_CYCLE = "battery_capacity_total_charging_cycle"
 CONF_BATTERY_STRINGS = "battery_strings"
 CONF_BATTERY_CAPACITY_STATE_OF_CHARGE = "battery_capacity_state_of_charge"
+CONF_BATTERY_SOH_VALUATION= "battery_soh_valuation"
 
 CONF_ERRORS_BITMASK = "errors_bitmask"
 CONF_OPERATION_MODE_BITMASK = "operation_mode_bitmask"
@@ -381,6 +383,7 @@ SENSORS = [
     CONF_ACTUAL_BATTERY_CAPACITY,
     CONF_PROTOCOL_VERSION,
     CONF_BATTERY_CAPACITY_STATE_OF_CHARGE,
+    CONF_BATTERY_SOH_VALUATION,
     CONF_SMART_SLEEP_TIME,
     CONF_BATTERY_TOTAL_ALARMS_COUNT,
     CONF_BATTERY_TOTAL_ALARMS_ACTIVE,
@@ -919,6 +922,12 @@ CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
             state_class=STATE_CLASS_MEASUREMENT,
         ),
         cv.Optional(CONF_BATTERY_CAPACITY_STATE_OF_CHARGE): sensor.sensor_schema(
+            unit_of_measurement=UNIT_PERCENT,
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_BATTERY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),  
+        cv.Optional(CONF_BATTERY_SOH_VALUATION): sensor.sensor_schema(
             unit_of_measurement=UNIT_PERCENT,
             accuracy_decimals=0,
             device_class=DEVICE_CLASS_BATTERY,

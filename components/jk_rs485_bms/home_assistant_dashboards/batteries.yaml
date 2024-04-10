@@ -143,10 +143,24 @@ views:
                       ' °C') }}           <br>  {{ pad_right(15, 'Battery T5:')
                       }}  {{
                       green(states('sensor.rs485_bms0_temperature_sensor_5') + 
-                      ' °C') }}</div>
+                      ' °C') }}</div><br>
+
+                      <div> {%- set alarm_active =
+                      states('sensor.rs485_bms0_battery_total_alarms_active')|int
+                      %} {%- set alarm_active = 0 %}                
+                        {%- set alarm_count = states('sensor.rs485_bms0_battery_total_alarms_count')|int %}
+                        {%- set alarm_label = '<font size=2>ALARMS</font>' if alarm_active==0
+                            else '<b><font size=5 color=red>ALARMS</font></b>' %}
+                        {{alarm_label}} ({{ alarm_active }}/{{ alarm_count -}})
                   - type: markdown
                     content: >-
-                      {%- set min_idx =
+                      {%- set soc =
+                        states('sensor.rs485_bms0_battery_capacity_state_of_charge') %} 
+                      {%- set soh =
+                        states('sensor.rs485_bms0_battery_soh_valuation') %}   {%- set
+                      max_idx =
+                      states('sensor.rs485_bms0_cell_voltage_max_cell_number')
+                      %} {%- set min_idx =
                       states('sensor.rs485_bms0_cell_voltage_min_cell_number')
                       %}   {%- set max_idx =
                       states('sensor.rs485_bms0_cell_voltage_max_cell_number')
@@ -167,6 +181,8 @@ views:
                       %}  {%- set min_resistance =
                       (states('sensor.rs485_bms0_cell_resistance_min')|float)
                       %}            <table>  
+                        <tr><td><b>SOC:</b></td><td width=125px>{{soc}} %</td></tr>              
+                        <tr><td><b>SOH:</b></td><td width=125px>{{soh}} %</td></tr>              
                         <tr><td><b>delta:</b></td><td width=125px>{{delta_voltage}} V</td></tr>              
                         <tr><td>avg:</b></td><td width=125px>{{average_voltage}} V</td></tr>                              
                         <tr><td>Vmax:</td><td width=125px>{{max_voltage}} V [cell {{max_idx}}] </td></tr>
@@ -187,7 +203,7 @@ views:
                 columns: 1
                 cards:
                   - type: markdown
-                    content: <CENTER><b><font size=5>BMS 01</font></b></CENTER>
+                    content: <CENTER><b><font size=5>BMS 00</font></b></CENTER>
                     style: |
                       ha-card {
                         height: 10px;  /* Ajusta el valor según tu preferencia */
@@ -216,10 +232,24 @@ views:
                       ' °C') }}           <br>  {{ pad_right(15, 'Battery T5:')
                       }}  {{
                       green(states('sensor.rs485_bms1_temperature_sensor_5') + 
-                      ' °C') }}</div>
+                      ' °C') }}</div><br>
+
+                      <div> {%- set alarm_active =
+                      states('sensor.rs485_bms1_battery_total_alarms_active')|int
+                      %} {%- set alarm_active = 0 %}                
+                        {%- set alarm_count = states('sensor.rs485_bms1_battery_total_alarms_count')|int %}
+                        {%- set alarm_label = '<font size=2>ALARMS</font>' if alarm_active==0
+                            else '<b><font size=5 color=red>ALARMS</font></b>' %}
+                        {{alarm_label}} ({{ alarm_active }}/{{ alarm_count -}})
                   - type: markdown
                     content: >-
-                      {%- set min_idx =
+                      {%- set soc =
+                        states('sensor.rs485_bms1_battery_capacity_state_of_charge') %} 
+                      {%- set soh =
+                        states('sensor.rs485_bms1_battery_soh_valuation') %}   {%- set
+                      max_idx =
+                      states('sensor.rs485_bms1_cell_voltage_max_cell_number')
+                      %} {%- set min_idx =
                       states('sensor.rs485_bms1_cell_voltage_min_cell_number')
                       %}   {%- set max_idx =
                       states('sensor.rs485_bms1_cell_voltage_max_cell_number')
@@ -240,6 +270,8 @@ views:
                       %}  {%- set min_resistance =
                       (states('sensor.rs485_bms1_cell_resistance_min')|float)
                       %}            <table>  
+                        <tr><td><b>SOC:</b></td><td width=125px>{{soc}} %</td></tr>              
+                        <tr><td><b>SOH:</b></td><td width=125px>{{soh}} %</td></tr>              
                         <tr><td><b>delta:</b></td><td width=125px>{{delta_voltage}} V</td></tr>              
                         <tr><td>avg:</b></td><td width=125px>{{average_voltage}} V</td></tr>                              
                         <tr><td>Vmax:</td><td width=125px>{{max_voltage}} V [cell {{max_idx}}] </td></tr>
@@ -247,114 +279,6 @@ views:
                         <tr><td>Rmax:</td><td width=125px>{{max_resistance}} Ω [cell {{max_idxr}}]</td></tr>
                         <tr><td>Rmin:</td><td width=125px>{{min_resistance}} Ω [cell {{min_idxr}}]</td></tr>
                       </table>
-      - type: vertical-stack
-        cards:
-          - type: custom:stack-in-card
-            keep:
-              margin: false
-              box_shadow: false
-              background: false
-            cards:
-              - type: grid
-                square: false
-                columns: 1
-                cards:
-                  - type: markdown
-                    content: |-
-                      <center>
-                        {%- set alarm_active = states('sensor.rs485_bms0_battery_total_alarms_active')|int %}
-                        {%- set alarm_active = 0 %}                
-                        {%- set alarm_count = states('sensor.rs485_bms0_battery_total_alarms_count')|int %}
-                        {%- set alarm_label = '<font size=4>ALARMS BMS_00</font>' if alarm_active==0
-                            else '<b><font size=5 color=red>ALARMS BMS_00</font></b>' %}
-                        {{alarm_label}} ({{ alarm_active }}/{{ alarm_count -}})<br></center>
-              - type: grid
-                square: false
-                columns: 1
-                cards:
-                  - type: markdown
-                    content: >-
-                      {%- set alarm_active =
-                      states('sensor.rs485_bms0_battery_total_alarms_active')|int
-                      %}
-
-                      {%- set alarm_count =
-                      states('sensor.rs485_bms0_battery_total_alarms_count')|int
-                      %}
-
-                      {%- set alarm_active = 0 %} 
-
-                      {%- set alarms_label = '<center>No alarms found. Working
-                      well</center>' if (alarm_active==0)
-                          else 'ALARMS FOUND:' %} 
-                      {{ alarms_label }}    
-
-                      <center>  {% for state in states -%} 
-                        {% if state.entity_id.startswith('binary_sensor.rs485_bms0_alarm_') and state.state!="off" %}
-                          {% set last_word = state.name.split()[-1] | string %}
-                          {% set last_status = state.state %}
-                          {%- set font_start = '<font color="#3090C7">' if last_status=="off"
-                              else '<font color="red">' if last_status=="on"  
-                              else '<font color="gray">' %} 
-                          {%- set font_end = '</font>' if last_status 
-                              else '' %} 
-                         {{ font_start }} {{ last_word }} (status: {{last_status}}) {{ font_end -}}<br>
-                        {% endif %}
-                      {% endfor %} </center>
-      - type: vertical-stack
-        cards:
-          - type: custom:stack-in-card
-            keep:
-              margin: false
-              box_shadow: false
-              background: false
-            cards:
-              - type: grid
-                square: false
-                columns: 1
-                cards:
-                  - type: markdown
-                    content: |-
-                      <center>
-                         {%- set alarm_active = states('sensor.rs485_bms1_battery_total_alarms_active')|int %}
-                         {%- set alarm_active = 0 %}                
-                         {%- set alarm_count = states('sensor.rs485_bms1_battery_total_alarms_count')|int %}
-                         {%- set alarm_label = '<font size=4>ALARMS BMS_01</font>' if alarm_active==0
-                             else '<b><font size=5 color=red>ALARMS BMS_01</font></b>' %}
-                         {{alarm_label}} ({{ alarm_active }}/{{ alarm_count -}})<br></center>
-              - type: grid
-                square: false
-                columns: 1
-                cards:
-                  - type: markdown
-                    content: >-
-                      {%- set alarm_active =
-                      states('sensor.rs485_bms1_battery_total_alarms_active')|int
-                      %}
-
-                      {%- set alarm_count =
-                      states('sensor.rs485_bms1_battery_total_alarms_count')|int
-                      %}
-
-                      {%- set alarm_active = 0 %} 
-
-                      {%- set alarms_label = '<center>No alarms found. Working
-                      well</center>' if (alarm_active==0)
-                          else 'ALARMS FOUND:' %} 
-                      {{ alarms_label }}    
-
-                      <center>  {% for state in states -%} 
-                        {% if state.entity_id.startswith('binary_sensor.rs485_bms1_alarm_') and state.state!="off" %}
-                          {% set last_word = state.name.split()[-1] | string %}
-                          {% set last_status = state.state %}
-                          {%- set font_start = '<font color="#3090C7">' if last_status=="off"
-                              else '<font color="red">' if last_status=="on"  
-                              else '<font color="gray">' %} 
-                          {%- set font_end = '</font>' if last_status 
-                              else '' %} 
-                         {{ font_start }} {{ last_word }} (status: {{last_status}}) {{ font_end -}}<br>
-                        {% endif %}
-                      {% endfor %} </center>
   - title: BMS Summary
     path: bmss-summary
     badges: []

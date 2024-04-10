@@ -867,6 +867,9 @@ sensor:
       name: "${bms0_name} uart1 protocol number"
     uart2_protocol_number:
       name: "${bms0_name} uart2 protocol number"      
+    battery_soh_valuation:    
+      name: "${bms0_name} battery soh valuation"
+
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms1
     balancing_direction:
@@ -1105,6 +1108,9 @@ sensor:
       name: "${bms1_name} uart1 protocol number"
     uart2_protocol_number:
       name: "${bms1_name} uart2 protocol number"
+    battery_soh_valuation:    
+      name: "${bms1_name} battery soh valuation"
+
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms2
     balancing_direction:
@@ -1343,6 +1349,9 @@ sensor:
       name: "${bms2_name} uart1 protocol number"
     uart2_protocol_number:
       name: "${bms2_name} uart2 protocol number"
+    battery_soh_valuation:    
+      name: "${bms2_name} battery soh valuation"
+
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms3
     balancing_direction:
@@ -1581,6 +1590,9 @@ sensor:
       name: "${bms3_name} uart1 protocol number"
     uart2_protocol_number:
       name: "${bms3_name} uart2 protocol number"
+    battery_soh_valuation:    
+      name: "${bms3_name} battery soh valuation"
+
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms4
     balancing_direction:
@@ -1819,6 +1831,9 @@ sensor:
       name: "${bms4_name} uart1 protocol number"
     uart2_protocol_number:
       name: "${bms4_name} uart2 protocol number"
+    battery_soh_valuation:    
+      name: "${bms4_name} battery soh valuation"
+
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms5
     balancing_direction:
@@ -2057,6 +2072,9 @@ sensor:
       name: "${bms5_name} uart1 protocol number"
     uart2_protocol_number:
       name: "${bms5_name} uart2 protocol number"
+    battery_soh_valuation:    
+      name: "${bms5_name} battery soh valuation"
+
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms6
     balancing_direction:
@@ -2295,6 +2313,8 @@ sensor:
       name: "${bms6_name} uart1 protocol number"
     uart2_protocol_number:
       name: "${bms6_name} uart2 protocol number"
+    battery_soh_valuation:    
+      name: "${bms6_name} battery soh valuation"
 
 
 switch:

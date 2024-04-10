@@ -433,11 +433,13 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->charging_cycles_sensor_, (float) jk_get_32bit(150 + offset));
 
   // 154 [180=154+26]  4   0x3D 0x04 0x00 0x00    Cycle_Capacity       0.001         Ah
-  this->publish_state_(this->battery_capacity_total_charging_cycle_sensor_,
-                       (float) jk_get_32bit(154 + offset) * 0.001f);
+  this->publish_state_(this->battery_capacity_total_charging_cycle_sensor_, (float) jk_get_32bit(154 + offset) * 0.001f);
 
   // 158 [184=158+26]  1   0x64                   SOCSOH
   ESP_LOGV(TAG, "SOCSOH: 0x%02X (always 0x64?)", data[158 + offset]);
+  this->publish_state_(this->battery_soh_valuation_sensor_, (float) jk_get_32bit(158 + offset));
+
+
   // 159 [185=159+26]  1   0x00                   Precharge
   // ESP_LOGV(TAG, "Precharge: 0x%02X (always 0x00?)", data[159 + offset]);
   this->publish_state_(this->status_precharging_binary_sensor_, (bool) check_bit_(data[159 + offset], 1));

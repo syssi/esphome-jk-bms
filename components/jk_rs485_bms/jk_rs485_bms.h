@@ -164,6 +164,11 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   void set_battery_capacity_total_charging_cycle_sensor(sensor::Sensor *battery_capacity_total_charging_cycle_sensor) {
     battery_capacity_total_charging_cycle_sensor_ = battery_capacity_total_charging_cycle_sensor;
   }
+  void set_battery_soh_valuation_sensor(sensor::Sensor *battery_soh_valuation_sensor) {
+    battery_soh_valuation_sensor_ = battery_soh_valuation_sensor;
+  }
+
+
   void set_battery_strings_sensor(sensor::Sensor *battery_strings_sensor) {
     battery_strings_sensor_ = battery_strings_sensor;
   }
@@ -750,6 +755,7 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   sensor::Sensor *discharging_low_temperature_protection_sensor_;
   sensor::Sensor *discharging_low_temperature_recovery_sensor_;
   sensor::Sensor *battery_capacity_total_setting_sensor_;
+  sensor::Sensor *battery_soh_valuation_sensor_;
 
   sensor::Sensor *charging_sensor_;
   sensor::Sensor *discharging_sensor_;

@@ -474,7 +474,9 @@ sensor:
     uart1_protocol_number:
       name: "${bms0_name} uart1 protocol number"
     uart2_protocol_number:
-      name: "${bms0_name} uart2 protocol number"      
+      name: "${bms0_name} uart2 protocol number"  
+    battery_soh_valuation:    
+      name: "${bms0_name} battery soh valuation"
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms1
@@ -714,6 +716,8 @@ sensor:
       name: "${bms1_name} uart1 protocol number"
     uart2_protocol_number:
       name: "${bms1_name} uart2 protocol number"
+    battery_soh_valuation:    
+      name: "${bms1_name} battery soh valuation"
 
 switch:
   - platform: jk_rs485_bms
