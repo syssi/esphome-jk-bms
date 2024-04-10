@@ -1912,17 +1912,25 @@ views:
                       set uart1 =
                       states('sensor.rs485_bms1_uart1_protocol_number') %}  {%-
                       set uart2 =
-                      states('sensor.rs485_bms1_uart2_protocol_number')
-                      %}            <table> <tr><td colspan=2><b>BMS
-                      INFO:</b></td></tr> <tr><td>VendorID:</td><td>{{vid}}</tr>
-                      <tr><td>HARD ver:</td><td>{{swv}}</tr> <tr><td>SOFT
+                      states('sensor.rs485_bms1_uart2_protocol_number') %} {%-
+                      set cell_number_settings =
+                      states('sensor.rs485_bms1_cell_count_settings') %} {%- set
+                      cell_number_real =
+                      states('sensor.rs485_bms1_cell_count_real') %} <table>
+                      <tr><td colspan=2><b>BMS INFO:</b></td></tr>
+                      <tr><td>VendorID:</td><td>{{vid}}</tr> <tr><td>HARD
+                      ver:</td><td>{{swv}}</tr> <tr><td>SOFT
                       ver:</td><td>{{hwv}}</tr>           <tr><td>DEV
                       name:</td><td>{{dna}}</tr>  <tr><td>DEV
                       S/N</td><td>{{dsn}}</tr>              
                       <tr><td>PASS:</td><td>{{pin}}</tr>
                       <tr><td>UART1:</td><td>{{uart1}}</tr>   
                       <tr><td>UART2:</td><td>{{uart2}}</tr>           
-                      </table><br>         
+                      <tr><td>Cells
+                      (sett.):</td><td>{{cell_number_settings}}</tr>                         
+                      <tr><td>Cells
+                      (real):</td><td>{{cell_number_real}}</tr>                                       
+                      </table><br>
                   - type: markdown
                     content: >-
                       {%- set min_idx =
