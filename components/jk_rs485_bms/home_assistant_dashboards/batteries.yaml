@@ -2095,66 +2095,132 @@ views:
                     {% endif %}
                   {% endfor %} </center>
   - title: BMS0 (PROTECTION)
-    path: protection0
+    path: protection_bms0
     badges: []
     cards:
       - type: entities
         entities:
           - entity: sensor.rs485_bms0_mos_overtemperature_protection
+            name: mos_overtemperature_protection
           - entity: sensor.rs485_bms0_mos_overtemperature_protection_recovery
+            name: mos_overtemperature_protection_recovery
           - entity: sensor.rs485_bms0_charging_overtemperature_protection
+            name: charging_overtemperature_protection
           - entity: sensor.rs485_bms0_discharging_overtemperature_protection
+            name: discharging_overtemperature_protection
           - entity: sensor.rs485_bms0_charging_overtemperature_protection_recovery
+            name: charging_overtemperature_protection_recovery
           - entity: sensor.rs485_bms0_discharging_overtemperature_protection_recovery
+            name: discharging_overtemperature_protection_recovery
           - entity: sensor.rs485_bms0_charging_lowtemperature_protection_recovery
+            name: charging_lowtemperature_protection_recovery
           - entity: sensor.rs485_bms0_charging_lowtemperature_protection
+            name: charging_lowtemperature_protection
         title: TEMPERATURE
       - type: entities
         entities:
           - entity: sensor.rs485_bms0_max_charging_current
+            name: max_charging_current
           - entity: sensor.rs485_bms0_charging_overcurrent_protection_delay
+            name: charging_overcurrent_protection_delay
           - entity: sensor.rs485_bms0_charging_overcurrent_protection_recovery_delay
+            name: charging_overcurrent_protection_recovery_delay
+          - entity: sensor.rs485_bms0_charging_overcurrent_protection_release_time
+            name: charging_overcurrent_protection_release_time
+          - entity: sensor.rs485_bms0_charging_short_circuit_protection_release_time
+            name: charging_short_circuit_protection_release_time
+          - entity: sensor.rs485_bms0_precharging_time_from_discharge
+            name: precharging_time_from_discharge
+        title: CHARGING
+      - type: entities
+        entities:
           - entity: sensor.rs485_bms0_max_discharging_current
+            name: max_discharging_current
           - entity: sensor.rs485_bms0_discharging_overcurrent_protection_delay
+            name: discharging_overcurrent_protection_delay
           - entity: >-
               sensor.rs485_bms0_discharging_overcurrent_protection_recovery_delay
-          - entity: sensor.rs485_bms0_short_circuit_protection_recovery_delay
-          - entity: sensor.rs485_bms0_max_balancing_current
-          - entity: sensor.rs485_bms0_charging_overcurrent_protection_release_time
-          - entity: sensor.rs485_bms0_charging_short_circuit_protection_release_time
+            name: discharging_overcurrent_protection_recovery_delay
           - entity: sensor.rs485_bms0_discharging_overcurrent_protection_release_time
+            name: discharging_overcurrent_protection_release_time
           - entity: >-
               sensor.rs485_bms0_discharging_short_circuit_protection_release_time
-        title: CURRENT
+            name: discharging_short_circuit_protection_release_time
+        title: DISCHARGING
+      - type: entities
+        entities:
+          - entity: sensor.rs485_bms0_short_circuit_protection_delay
+            name: short_circuit_protection_delay
+          - entity: sensor.rs485_bms0_short_circuit_protection_recovery_delay
+            name: short_circuit_protection_recovery_delay
+        title: SHORT CIRCUIT
+      - type: entities
+        entities:
+          - entity: sensor.rs485_bms0_max_balancing_current
+            name: max_balancing_current
+        title: BALANCING
   - title: BMS1 (PROTECTION)
-    path: protection1
+    path: protection_bms1
     badges: []
     cards:
       - type: entities
         entities:
           - entity: sensor.rs485_bms1_mos_overtemperature_protection
+            name: mos_overtemperature_protection
           - entity: sensor.rs485_bms1_mos_overtemperature_protection_recovery
+            name: mos_overtemperature_protection_recovery
           - entity: sensor.rs485_bms1_charging_overtemperature_protection
+            name: charging_overtemperature_protection
           - entity: sensor.rs485_bms1_discharging_overtemperature_protection
+            name: discharging_overtemperature_protection
           - entity: sensor.rs485_bms1_charging_overtemperature_protection_recovery
+            name: charging_overtemperature_protection_recovery
           - entity: sensor.rs485_bms1_discharging_overtemperature_protection_recovery
+            name: discharging_overtemperature_protection_recovery
           - entity: sensor.rs485_bms1_charging_lowtemperature_protection_recovery
+            name: charging_lowtemperature_protection_recovery
           - entity: sensor.rs485_bms1_charging_lowtemperature_protection
+            name: charging_lowtemperature_protection
         title: TEMPERATURE
       - type: entities
         entities:
           - entity: sensor.rs485_bms1_max_charging_current
+            name: max_charging_current
           - entity: sensor.rs485_bms1_charging_overcurrent_protection_delay
+            name: charging_overcurrent_protection_delay
           - entity: sensor.rs485_bms1_charging_overcurrent_protection_recovery_delay
+            name: charging_overcurrent_protection_recovery_delay
+          - entity: sensor.rs485_bms1_charging_overcurrent_protection_release_time
+            name: charging_overcurrent_protection_release_time
+          - entity: sensor.rs485_bms1_charging_short_circuit_protection_release_time
+            name: charging_short_circuit_protection_release_time
+          - entity: sensor.rs485_bms1_precharging_time_from_discharge
+            name: precharging_time_from_discharge
+        title: CHARGING
+      - type: entities
+        entities:
           - entity: sensor.rs485_bms1_max_discharging_current
+            name: max_discharging_current
           - entity: sensor.rs485_bms1_discharging_overcurrent_protection_delay
+            name: discharging_overcurrent_protection_delay
           - entity: >-
               sensor.rs485_bms1_discharging_overcurrent_protection_recovery_delay
-          - entity: sensor.rs485_bms1_short_circuit_protection_recovery_delay
-          - entity: sensor.rs485_bms1_max_balancing_current
-          - entity: sensor.rs485_bms1_charging_overcurrent_protection_release_time
-          - entity: sensor.rs485_bms1_charging_short_circuit_protection_release_time
+            name: discharging_overcurrent_protection_recovery_delay
           - entity: sensor.rs485_bms1_discharging_overcurrent_protection_release_time
+            name: discharging_overcurrent_protection_release_time
           - entity: >-
               sensor.rs485_bms1_discharging_short_circuit_protection_release_time
-        title: CURRENT
+            name: discharging_short_circuit_protection_release_time
+        title: DISCHARGING
+      - type: entities
+        entities:
+          - entity: sensor.rs485_bms1_short_circuit_protection_delay
+            name: short_circuit_protection_delay
+          - entity: sensor.rs485_bms1_short_circuit_protection_recovery_delay
+            name: short_circuit_protection_recovery_delay
+        title: SHORT CIRCUIT
+      - type: entities
+        entities:
+          - entity: sensor.rs485_bms1_max_balancing_current
+            name: max_balancing_current
+        title: BALANCING

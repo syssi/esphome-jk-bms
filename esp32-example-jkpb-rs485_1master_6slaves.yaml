@@ -835,8 +835,12 @@ sensor:
       name: "${bms0_name} discharging overcurrent protection delay"
     discharging_overcurrent_protection_recovery_delay:
       name: "${bms0_name} discharging overcurrent protection recovery delay"   
+    short_circuit_protection_delay:
+      name: "${bms0_name} short circuit protection delay"                    
     short_circuit_protection_recovery_delay:
-      name: "${bms0_name} short circuit protection recovery delay"                     
+      name: "${bms0_name} short circuit protection recovery delay"   
+    precharging_time_from_discharge:
+      name: "${bms0_name} precharging time from discharge"                        
     charging_overtemperature_protection:
       name: "${bms0_name} charging overtemperature protection"
     charging_overtemperature_protection_recovery:
@@ -1088,8 +1092,12 @@ sensor:
       name: "${bms1_name} discharging overcurrent protection delay"
     discharging_overcurrent_protection_recovery_delay:
       name: "${bms1_name} discharging overcurrent protection recovery delay"   
+    short_circuit_protection_delay:
+      name: "${bms1_name} short circuit protection delay"                    
     short_circuit_protection_recovery_delay:
       name: "${bms1_name} short circuit protection recovery delay"   
+    precharging_time_from_discharge:
+      name: "${bms1_name} precharging time from discharge"      
     charging_overtemperature_protection:
       name: "${bms1_name} charging overtemperature protection"
     charging_overtemperature_protection_recovery:
@@ -1342,8 +1350,12 @@ sensor:
       name: "${bms2_name} discharging overcurrent protection delay"
     discharging_overcurrent_protection_recovery_delay:
       name: "${bms2_name} discharging overcurrent protection recovery delay"   
+    short_circuit_protection_delay:
+      name: "${bms2_name} short circuit protection delay"                    
     short_circuit_protection_recovery_delay:
       name: "${bms2_name} short circuit protection recovery delay"   
+    precharging_time_from_discharge:
+      name: "${bms2_name} precharging time from discharge"      
     charging_overtemperature_protection:
       name: "${bms2_name} charging overtemperature protection"
     charging_overtemperature_protection_recovery:
@@ -1595,8 +1607,12 @@ sensor:
       name: "${bms3_name} discharging overcurrent protection delay"
     discharging_overcurrent_protection_recovery_delay:
       name: "${bms3_name} discharging overcurrent protection recovery delay"   
+    short_circuit_protection_delay:
+      name: "${bms3_name} short circuit protection delay"                    
     short_circuit_protection_recovery_delay:
       name: "${bms3_name} short circuit protection recovery delay"   
+    precharging_time_from_discharge:
+      name: "${bms3_name} precharging time from discharge"      
     charging_overtemperature_protection:
       name: "${bms3_name} charging overtemperature protection"
     charging_overtemperature_protection_recovery:
@@ -1848,8 +1864,12 @@ sensor:
       name: "${bms4_name} discharging overcurrent protection delay"
     discharging_overcurrent_protection_recovery_delay:
       name: "${bms4_name} discharging overcurrent protection recovery delay"   
+    short_circuit_protection_delay:
+      name: "${bms4_name} short circuit protection delay"                    
     short_circuit_protection_recovery_delay:
       name: "${bms4_name} short circuit protection recovery delay"   
+    precharging_time_from_discharge:
+      name: "${bms4_name} precharging time from discharge"     
     charging_overtemperature_protection:
       name: "${bms4_name} charging overtemperature protection"
     charging_overtemperature_protection_recovery:
@@ -2101,8 +2121,12 @@ sensor:
       name: "${bms5_name} discharging overcurrent protection delay"
     discharging_overcurrent_protection_recovery_delay:
       name: "${bms5_name} discharging overcurrent protection recovery delay"   
+    short_circuit_protection_delay:
+      name: "${bms5_name} short circuit protection delay"                    
     short_circuit_protection_recovery_delay:
       name: "${bms5_name} short circuit protection recovery delay"   
+    precharging_time_from_discharge:
+      name: "${bms5_name} precharging time from discharge"     
     charging_overtemperature_protection:
       name: "${bms5_name} charging overtemperature protection"
     charging_overtemperature_protection_recovery:
@@ -2354,8 +2378,12 @@ sensor:
       name: "${bms6_name} discharging overcurrent protection delay"
     discharging_overcurrent_protection_recovery_delay:
       name: "${bms6_name} discharging overcurrent protection recovery delay"   
+    short_circuit_protection_delay:
+      name: "${bms6_name} short circuit protection delay"                    
     short_circuit_protection_recovery_delay:
       name: "${bms6_name} short circuit protection recovery delay"   
+    precharging_time_from_discharge:
+      name: "${bms6_name} precharging time from discharge"      
     charging_overtemperature_protection:
       name: "${bms6_name} charging overtemperature protection"
     charging_overtemperature_protection_recovery:

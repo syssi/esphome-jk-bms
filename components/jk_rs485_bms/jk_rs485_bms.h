@@ -239,6 +239,9 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   void set_discharging_overcurrent_protection_recovery_delay_sensor(sensor::Sensor *discharging_overcurrent_protection_recovery_delay_sensor) {
     discharging_overcurrent_protection_recovery_delay_sensor_ = discharging_overcurrent_protection_recovery_delay_sensor;
   }
+  void set_short_circuit_protection_delay_sensor(sensor::Sensor *short_circuit_protection_delay_sensor) {
+    short_circuit_protection_delay_sensor_ = short_circuit_protection_delay_sensor;
+  }
   void set_short_circuit_protection_recovery_delay_sensor(sensor::Sensor *short_circuit_protection_recovery_delay_sensor) {
     short_circuit_protection_recovery_delay_sensor_ = short_circuit_protection_recovery_delay_sensor;
   }
@@ -267,6 +270,9 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
     mos_overtemperature_protection_recovery_sensor_ = mos_overtemperature_protection_recovery_sensor;
   }
 
+  void set_precharging_time_from_discharge_sensor(sensor::Sensor *precharging_time_from_discharge_sensor) {
+    precharging_time_from_discharge_sensor_ = precharging_time_from_discharge_sensor;
+  }
 
 
   void set_discharging_overcurrent_protection_release_time_sensor(sensor::Sensor *discharging_overcurrent_protection_release_time_sensor) {
@@ -713,6 +719,7 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   sensor::Sensor *charging_overcurrent_protection_recovery_delay_sensor_;  
   sensor::Sensor *discharging_overcurrent_protection_delay_sensor_;
   sensor::Sensor *discharging_overcurrent_protection_recovery_delay_sensor_;  
+  sensor::Sensor *short_circuit_protection_delay_sensor_;
   sensor::Sensor *short_circuit_protection_recovery_delay_sensor_;
   sensor::Sensor *charging_overtemperature_protection_sensor_;
   sensor::Sensor *charging_overtemperature_protection_recovery_sensor_;
@@ -807,6 +814,7 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   sensor::Sensor *cell_request_charge_voltage_time_sensor_;
   sensor::Sensor *cell_request_float_voltage_time_sensor_; 
 
+  sensor::Sensor *precharging_time_from_discharge_sensor_;
 
 
   switch_::Switch *precharging_switch_;

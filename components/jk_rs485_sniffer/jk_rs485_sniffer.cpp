@@ -11,6 +11,7 @@ static const char *const TAG = "jk_rs485_sniffer";
 static const uint16_t JKPB_RS485_RESPONSE_SIZE = 308;
 static const uint16_t JKPB_RS485_NUMBER_OF_ELEMENTS_TO_COMPUTE_CHECKSUM = 299;
 static const uint16_t JKPB_RS485_FRAME_TYPE_ADDRESS = 4;
+static const uint16_t JKPB_RS485_FRAME_TYPE_ADDRESS_FOR_FRAME_TYPE_x01 = 264;
 static const uint16_t JKPB_RS485_FRAME_COUNTER_ADDRESS = 5;
 static const uint16_t JKPB_RS485_CHECKSUM_INDEX = 299;
 static const uint16_t JKPB_RS485_ADDRESS_OF_RS485_ADDRESS = 300;
@@ -21,9 +22,9 @@ static const uint16_t MIN_SILENCE_NEEDED_BEFORE_SPEAKING_MILLISECONDS = 250;
 
 static const uint32_t TIME_BETWEEN_DEVICE_INFO_REQUESTS_MILLISECONDS = 300000;
 static const uint32_t TIME_BETWEEN_CELL_INFO_REQUESTS_MILLISECONDS = 10000;
-static const uint32_t TIME_BETWEEN_DEVICE_SETTINGS_REQUESTS_MILLISECONDS=600000;
+static const uint32_t TIME_BETWEEN_DEVICE_SETTINGS_REQUESTS_MILLISECONDS=3600000;
 
-static const uint16_t SILENCE_BEFORE_ACTING_AS_MASTER = 2000;
+static const uint16_t SILENCE_BEFORE_ACTING_AS_MASTER = 5000;
 static const uint16_t SILENCE_BEFORE_REUSING_NETWORK_ACTING_AS_MASTER=250;
 
 static const uint16_t TIME_BETWEEN_NETWORK_SCAN_MILLISECONDS=500;  // mejorar
@@ -578,7 +579,13 @@ uint8_t JkRS485Sniffer::manage_rx_buffer_(void) {
     uint8_t computed_checksum = chksum(raw, JKPB_RS485_NUMBER_OF_ELEMENTS_TO_COMPUTE_CHECKSUM);
     uint8_t remote_checksum = raw[JKPB_RS485_CHECKSUM_INDEX];
 
-    address=raw[JKPB_RS485_ADDRESS_OF_RS485_ADDRESS];
+    if (raw[JKPB_RS485_FRAME_TYPE_ADDRESS]==1){
+      address=raw[JKPB_RS485_FRAME_TYPE_ADDRESS_FOR_FRAME_TYPE_x01+6];
+    } else {
+      address=raw[JKPB_RS485_ADDRESS_OF_RS485_ADDRESS];
+    }
+    //ESP_LOGI(TAG, "(at:%03d) [address 0x%02X] Frame Type 0x%02X ",at,address,raw[JKPB_RS485_FRAME_TYPE_ADDRESS]);
+
     if (computed_checksum != remote_checksum) {
       ESP_LOGW(TAG, "CHECKSUM failed! 0x%02X != 0x%02X", computed_checksum, remote_checksum);
       return(10);
@@ -587,7 +594,7 @@ uint8_t JkRS485Sniffer::manage_rx_buffer_(void) {
       if (address==0){
         last_master_activity=now;
       } else if (address>15){
-        ESP_LOGD(TAG, "(at:%03d) [address 0x%02X] Frame Type 0x%02X | CHECKSUM is correct",at,address,raw[JKPB_RS485_FRAME_TYPE_ADDRESS]);
+        ESP_LOGV(TAG, "(at:%03d) [address 0x%02X] Frame Type 0x%02X | CHECKSUM is correct",at,address,raw[JKPB_RS485_FRAME_TYPE_ADDRESS]);
         //printBuffer(0);
         this->rx_buffer_.clear();
         return(11);

@@ -145,6 +145,8 @@ CONF_CHARGING_OVERCURRENT_PROTECTION_RELEASE_TIME = "charging_overcurrent_protec
 CONF_CHARGING_SHORT_CIRCUIT_PROTECTION_RELEASE_TIME = "charging_short_circuit_protection_release_time";
 CONF_CELL_UNDERVOLTAGE_PROTECTION_RELEASE_TIME = "cell_undervoltage_protection_release_time";
 CONF_CELL_OVERVOLTAGE_PROTECTION_RELEASE_TIME = "cell_overvoltage_protection_release_time";
+CONF_PRECHARGING_TIME_FROM_DISCHARGE = "precharging_time_from_discharge";
+
 
 CONF_CELL_PRESSURE_DIFFERENCE_PROTECTION = "cell_pressure_difference_protection"
 
@@ -194,6 +196,7 @@ CONF_CHARGING_OVERCURRENT_PROTECION_DELAY = "charging_overcurrent_protection_del
 CONF_CHARGING_OVERCURRENT_PROTECION_RECOVERY_DELAY = "charging_overcurrent_protection_recovery_delay"
 CONF_DISCHARGING_OVERCURRENT_PROTECION_DELAY = "discharging_overcurrent_protection_delay"
 CONF_DISCHARGING_OVERCURRENT_PROTECION_RECOVERY_DELAY = "discharging_overcurrent_protection_recovery_delay"
+CONF_SHORT_CIRCUIT_PROTECTION_DELAY ="short_circuit_protection_delay"
 CONF_SHORT_CIRCUIT_PROTECTION_RECOVERY_DELAY ="short_circuit_protection_recovery_delay"
 CONF_CHARGING_OVERTEMPERATURE_PROTECION = "charging_overtemperature_protection"
 CONF_CHARGING_OVERTEMPERATURE_PROTECION_RECOVERY = "charging_overtemperature_protection_recovery"
@@ -236,6 +239,7 @@ ICON_CLOCK ="mdi:clock-outline"
 ICON_HIGH_TEMPERATURE = "mdi:weather-sunny"
 ICON_LOW_TEMPERATURE = "mdi:snowflake"
 
+UNIT_MICROSECONDS = "us"
 UNIT_SECONDS = "s"
 UNIT_HOURS = "h"
 UNIT_OHM = "Ω"
@@ -352,6 +356,7 @@ SENSORS = [
     CONF_CHARGING_OVERCURRENT_PROTECION_RECOVERY_DELAY,
     CONF_DISCHARGING_OVERCURRENT_PROTECION_DELAY,
     CONF_DISCHARGING_OVERCURRENT_PROTECION_RECOVERY_DELAY,
+    CONF_SHORT_CIRCUIT_PROTECTION_DELAY,
     CONF_SHORT_CIRCUIT_PROTECTION_RECOVERY_DELAY,
     CONF_CHARGING_OVERTEMPERATURE_PROTECION,
     CONF_CHARGING_OVERTEMPERATURE_PROTECION_RECOVERY,
@@ -403,7 +408,7 @@ SENSORS = [
     CONF_CHARGING_SHORT_CIRCUIT_PROTECTION_RELEASE_TIME,
     CONF_CELL_UNDERVOLTAGE_PROTECTION_RELEASE_TIME,
     CONF_CELL_OVERVOLTAGE_PROTECTION_RELEASE_TIME,
-
+    CONF_PRECHARGING_TIME_FROM_DISCHARGE,
 ]
 
 # pylint: disable=too-many-function-args
@@ -1128,6 +1133,13 @@ CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
             device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
+        cv.Optional(CONF_SHORT_CIRCUIT_PROTECTION_DELAY): sensor.sensor_schema(
+            unit_of_measurement=UNIT_MICROSECONDS,
+            icon=ICON_TIMELAPSE,
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
         cv.Optional(CONF_SHORT_CIRCUIT_PROTECTION_RECOVERY_DELAY): sensor.sensor_schema(
             unit_of_measurement=UNIT_SECONDS,
             icon=ICON_TIMELAPSE,
@@ -1474,7 +1486,14 @@ CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
             accuracy_decimals=0,
             device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
-        ),                              
+        ),        
+        cv.Optional(CONF_PRECHARGING_TIME_FROM_DISCHARGE): sensor.sensor_schema(
+            unit_of_measurement=UNIT_SECONDS,
+            icon=ICON_CLOCK,
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),  
     }
 )
 
