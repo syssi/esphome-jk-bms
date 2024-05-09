@@ -1018,17 +1018,6 @@ sensor:
   # 0x12D8   216   UINT16    2    R    VolChargCur     mV
   # 0x12DA   218   UINT16    2    R    VolDischargCur  mV
 
-  # 0x12BC   188   UINT32    4    R    RunTime         S
-  - platform: modbus_controller
-    modbus_controller_id: bms0
-    name: "${name} total runtime in seconds"
-    address: 0x12BC
-    register_type: holding
-    value_type: U_DWORD
-    state_class: measurement
-    accuracy_decimals: 0
-    id: total_runtime
-
 switch:
   - platform: modbus_controller
     modbus_controller_id: bms0
