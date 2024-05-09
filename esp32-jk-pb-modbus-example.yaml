@@ -63,7 +63,7 @@ sensor:
     address: 0x1200
     register_type: holding
     value_type: U_WORD
-    register_count: 32 # read up to CellVol31
+    register_count: 32  # read up to CellVol31
     unit_of_measurement: "V"
     device_class: voltage
     state_class: measurement
@@ -952,13 +952,12 @@ sensor:
       - multiply: 0.001
 
   # 0x128A   138    INT16    2    R    TempMos         0.1 °C
-  - platform: modbus_controller # 0x1200 index 0x008A(138) # 0x128A   138    INT16    2    R    TempMos         0.1 °C
+  - platform: modbus_controller
     modbus_controller_id: bms0
     name: "${name} mosfet temperature"
     address: 0x128A
     register_type: holding
     value_type: S_WORD
-    # register_count: 40 # skip CellWireResSta to BatVol
     unit_of_measurement: "°C"
     state_class: measurement
     accuracy_decimals: 3
