@@ -5,7 +5,8 @@
 ![GitHub watchers](https://img.shields.io/github/watchers/txubelaxu/esphome-jk-bms)
 
 ESPHome component to monitor a Jikong Battery Management System (JK-PB) via ESP SERIAL (UART-TTL) + SERIAL TO RS485 + ETHERNET CABLE
-In theory 1 ESP can gather information of every BMS in the RS485 network: MAX 16
+In theory 1 ESP can gather information of every BMS in the RS485 network: MAX 16.
+
 The BMS bluetooth remains free to use with your mobile.
 
 ## REMINDER
