@@ -58,8 +58,8 @@ In any of the two modes ESP needs to SPEAK to the JK-RS485 internal network. Tha
 ┌──────────┐                ┌───────────┐                       ┌─────────┐
 │          │<----- A  ----->│  SERIAL   │<-----------------Vcc--│         │<--Vcc
 │  JK-BMS  │<----- B  ----->│  TTL TO   │                       │ ESP32/  │
-│          │                │  RS485    │--DI---------------RX->│ ESP8266 │
-│          │                │           │<-RO---------------TX--│         │
+│          │                │  RS485    │--RO---------------RX->│ ESP8266 │
+│          │                │           │<-DI---------------TX--│         │
 │          │                │ CONVERTER │<-DE-----+             │         │
 │          │                │           │<-RE-----└---TALK PIN--│         │
 │          │                │           │                       │         │
