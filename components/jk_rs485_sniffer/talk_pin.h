@@ -15,7 +15,7 @@ namespace output {
     ESP_LOGCONFIG(TAG, "  Inverted: YES"); \
   }
 
-class BinaryOutput {
+class TalkPin {
  public:
   /// Set the inversion state of this binary output.
   void set_inverted(bool inverted) { this->inverted_ = inverted; }

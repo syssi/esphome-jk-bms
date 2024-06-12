@@ -3,7 +3,7 @@
 #include "esphome/core/component.h"
 #include "esphome/components/uart/uart.h"
 #include "esphome/core/hal.h"
-#include "binary_output.h"
+#include "talk_pin.h"
 
 
 namespace esphome {
@@ -19,7 +19,7 @@ enum ProtocolVersion {
 
 class JkRS485SnifferDevice;
 
-class JkRS485Sniffer : public uart::UARTDevice, public output::BinaryOutput, public Component {
+class JkRS485Sniffer : public uart::UARTDevice, public output::TalkPin, public Component {
  public:
   JkRS485Sniffer() = default;
 
