@@ -601,7 +601,9 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   void set_info_device_serial_number_text_sensor(text_sensor::TextSensor *info_device_serial_number_text_sensor) {
       info_device_serial_number_text_sensor_ = info_device_serial_number_text_sensor;
   }
-  
+  void set_info_device_setup_passcode_text_sensor(text_sensor::TextSensor *info_device_setup_passcode_text_sensor) {
+      info_device_setup_passcode_text_sensor_ = info_device_setup_passcode_text_sensor;
+  }
 
 
 
@@ -849,7 +851,7 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   text_sensor::TextSensor *info_software_version_text_sensor_;
   text_sensor::TextSensor *info_device_name_text_sensor_;
   text_sensor::TextSensor *info_device_password_text_sensor_;
-
+  text_sensor::TextSensor *info_device_setup_passcode_text_sensor_;
 
 //  struct Cell {
 //    sensor::Sensor *cell_voltage_sensor_{nullptr};

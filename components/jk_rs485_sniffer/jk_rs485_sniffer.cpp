@@ -20,9 +20,9 @@ static const uint16_t JKPB_RS485_MASTER_REQUEST_SIZE = 11;
 static const uint16_t MIN_SILENCE_MILLISECONDS = 150;                           //MIN TIME THAT MEANS THAT THERE IS A SILENCE
 static const uint16_t MIN_SILENCE_NEEDED_BEFORE_SPEAKING_MILLISECONDS = 250;
 
-static const uint32_t TIME_BETWEEN_DEVICE_INFO_REQUESTS_MILLISECONDS = 300000;
+static const uint32_t TIME_BETWEEN_DEVICE_INFO_REQUESTS_MILLISECONDS = 30000;
 static const uint32_t TIME_BETWEEN_CELL_INFO_REQUESTS_MILLISECONDS = 10000;
-static const uint32_t TIME_BETWEEN_DEVICE_SETTINGS_REQUESTS_MILLISECONDS=3600000;
+static const uint32_t TIME_BETWEEN_DEVICE_SETTINGS_REQUESTS_MILLISECONDS=60000;
 
 static const uint16_t SILENCE_BEFORE_ACTING_AS_MASTER = 5000;
 static const uint16_t SILENCE_BEFORE_REUSING_NETWORK_ACTING_AS_MASTER=250;
@@ -325,9 +325,9 @@ void JkRS485Sniffer::loop() {
             }
             if (found_index==-1){
               //all nodes are available now
-              ESP_LOGD(TAG, "SCANNING NEXT UNAVAILABLE...NO INDEX FOUND");
+              ESP_LOGD(TAG, "SCANNING TO DISCOVER...NO INDEX FOUND");
             } else {
-              ESP_LOGI(TAG, "SCANNING NEXT UNAVAILABLE...0x%02X",found_index);
+              ESP_LOGD(TAG, "SCANNING TO DISCOVER...0x%02X",found_index);
               this->pooling_index.scan_address=found_index;
               this->send_request_to_slave(found_index,2);
               this->last_network_scan=millis();

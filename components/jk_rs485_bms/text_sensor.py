@@ -24,7 +24,7 @@ CONF_INFO_SOFTWARE_VERSION = "info_software_version";
 CONF_INFO_DEVICE_NAME = "info_device_name";
 CONF_INFO_DEVICE_PASSWORD = "info_device_password";
 CONF_INFO_DEVICE_SERIAL_NUMBER = "info_device_serial_number";
-
+CONF_INFO_DEVICE_SETUP_PASSCODE = "info_device_setup_passcode";
 
 ICON_BATTERY_TYPE = "mdi:car-battery"
 ICON_ERRORS = "mdi:alert-circle-outline"
@@ -50,7 +50,8 @@ TEXT_SENSORS = [
     CONF_INFO_SOFTWARE_VERSION,
     CONF_INFO_DEVICE_NAME,
     CONF_INFO_DEVICE_PASSWORD,
-    CONF_INFO_DEVICE_SERIAL_NUMBER,    
+    CONF_INFO_DEVICE_SERIAL_NUMBER,   
+    CONF_INFO_DEVICE_SETUP_PASSCODE, 
 ]
 
 CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
@@ -157,6 +158,15 @@ CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
                 cv.Optional(CONF_ICON, default=ICON_INFORMATION): cv.icon,
             }
         ),                    
+        cv.Optional(
+            CONF_INFO_DEVICE_SETUP_PASSCODE
+        ): text_sensor.TEXT_SENSOR_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
+                cv.Optional(CONF_ICON, default=ICON_INFORMATION): cv.icon,
+            }
+        ),   
+
         
     }
 )
