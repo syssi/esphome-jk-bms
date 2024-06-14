@@ -769,7 +769,7 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->precharging_time_from_discharge_sensor_,(float) ((int32_t) jk_get_32bit(274)));  
 
   // 278   4   0x00 0x00 0x00 0x00  //60 e3 16 00          10023c3218feffffffbfe90102000000000001
-  ESP_LOGI(TAG, "         278: %02X%02X%02X%02X",data[278],data[279],data[280],data[281]);
+  ESP_LOGI(TAG, "      unkown 278: %02X%02X%02X%02X",data[278],data[279],data[280],data[281]);
 
   // 282 [276]   1   0x00                   New controls bitmask
   // ** [JK-PB2A16S-20P v14]
@@ -817,6 +817,8 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   // 286   4   0x00 0x00 0x00 0x00
   // ESP_LOGI(TAG, "  TIMSmartSleep: %d H", (uint8_t) (data[286]));
   this->publish_state_(this->smart_sleep_time_sensor_, (uint8_t) (data[286]));
+  ESP_LOGI(TAG, "  Data field enable control 0: %d", (uint8_t) (data[287]));
+  
 
   // 290   4   0x00 0x00 0x00 0x00
   // 294   4   0x00 0x00 0x00 0x00
