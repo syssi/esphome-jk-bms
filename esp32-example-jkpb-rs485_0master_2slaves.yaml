@@ -77,11 +77,11 @@ jk_rs485_bms:
   - id: bms0
     rs485_address: 0x01
     jk_rs485_sniffer_id: sniffer0
-    update_interval: 5s
+    update_interval: 180s
   - id: bms1
     rs485_address: 0x02
     jk_rs485_sniffer_id: sniffer0
-    update_interval: 5s
+    update_interval: 180s
 
 binary_sensor:
   - platform: jk_rs485_bms
