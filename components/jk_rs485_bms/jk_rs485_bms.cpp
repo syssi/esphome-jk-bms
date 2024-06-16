@@ -49,6 +49,19 @@ static const char *const BATTERY_TYPES[BATTERY_TYPES_SIZE] = {
     "Lithium Titanate",        // 0x02
 };
 
+float int32_to_float(const uint8_t* byteArray) {
+    // Combine the bytes into an int32_t
+    int32_t intValue = (static_cast<int32_t>(byteArray[0]) << 0) |
+                       (static_cast<int32_t>(byteArray[1]) << 8) |
+                       (static_cast<int32_t>(byteArray[2]) << 16)|
+                       (static_cast<int32_t>(byteArray[3]) << 24);
+
+    // Convert to float and divide by 10
+    float floatValue = static_cast<float>(intValue);
+
+    return floatValue;
+}
+
 void JkRS485Bms::on_jk_rs485_sniffer_data(const uint8_t &origin_address, const uint8_t &frame_type,
                                           const std::vector<uint8_t> &data,
                                           const std::string &nodes_available_received) {
@@ -593,7 +606,7 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->cell_overvoltage_protection_sensor_, (float) jk_get_32bit(18) * 0.001f);
 
   // 22 [16]   4   0x68 0x10 0x00 0x00    Cell OVP Recovery
-  ESP_LOGV(TAG, "  Cell OVPR: %f V", (float) jk_get_32bit(22) * 0.001f);
+  ESP_LOGI(TAG, "  Cell OVPR: %f V", (float) jk_get_32bit(22) * 0.001f);
   this->publish_state_(this->cell_overvoltage_protection_recovery_sensor_, (float) jk_get_32bit(22) * 0.001f);
 
   // 26 [20]   4   0x0A 0x00 0x00 0x00    Balance trigger voltage
@@ -656,39 +669,47 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->max_balancing_current_sensor_, (float) jk_get_32bit(78) * 0.001f);
 
   // 82 [76]   4   0xBC 0x02 0x00 0x00    Charge OTP                          TMPBatCOT        Charging Over Temperature Protection
-  ESP_LOGV(TAG, "  Charging OTP: %f °C", (float) jk_get_32bit(82) * 0.1f);
-  this->publish_state_(this->charging_overtemperature_protection_sensor_, (float) jk_get_32bit(82) * 0.1f);
+  float value_f=int32_to_float(&data[82])*0.1f;
+  ESP_LOGV(TAG, "  Charging OTP: %f °C", value_f);
+  this->publish_state_(this->charging_overtemperature_protection_sensor_, value_f);
   
   // 86 [80]   4   0x58 0x02 0x00 0x00    Charge OTP Recovery                 TMPBatCOTPR      Charging Over Temperature Protection Recovery
-  ESP_LOGV(TAG, "  Charge OTP recovery: %f °C", (float) jk_get_32bit(86) * 0.1f);
-  this->publish_state_(this->charging_overtemperature_protection_recovery_sensor_, (float) jk_get_32bit(86) * 0.1f);
+  value_f=int32_to_float(&data[86])*0.1f;
+  ESP_LOGV(TAG, "  Charge OTP recovery: %f °C", value_f);
+  this->publish_state_(this->charging_overtemperature_protection_recovery_sensor_, value_f);
 
   // 90 [84]    4   0xBC 0x02 0x00 0x00    Discharge OTP                       TMPBatDcOT
-  ESP_LOGV(TAG, "  Discharge OTP: %f °C", (float) jk_get_32bit(90) * 0.1f);
-  this->publish_state_(this->discharging_overtemperature_protection_sensor_, (float) jk_get_32bit(90) * 0.1f);
+  value_f=int32_to_float(&data[90])*0.1f;
+  ESP_LOGV(TAG, "  Discharge OTP: %f °C", value_f);
+  this->publish_state_(this->discharging_overtemperature_protection_sensor_, value_f);
 
   // 94 [88]    4   0x58 0x02 0x00 0x00    Discharge OTP Recovery              TMPBatDcOTPR
-  ESP_LOGV(TAG, "  Discharge OTP recovery: %f °C", (float) jk_get_32bit(94) * 0.1f);
-  this->publish_state_(this->discharging_overtemperature_protection_recovery_sensor_, (float) jk_get_32bit(94) * 0.1f);
+  value_f=int32_to_float(&data[94])*0.1f;
+  ESP_LOGV(TAG, "  Discharge OTP recovery: %f °C", value_f);
+  this->publish_state_(this->discharging_overtemperature_protection_recovery_sensor_, value_f);
 
   // 98 [92]   4   0x38 0xFF 0xFF 0xFF    Charge UTP                          TMPBatCUT        Charging Low Temperature Protection
-  ESP_LOGV(TAG, "  Charge UTP: %f °C", (float) ((int32_t) jk_get_32bit(98)) * 0.1f);
-  this->publish_state_(this->charging_lowtemperature_protection_sensor_, (float) ((int32_t) jk_get_32bit(98)) * 0.1f);
+  value_f=int32_to_float(&data[98])*0.1f;
+  ESP_LOGI(TAG, "  Charge UTP: %f °C", value_f);
+  this->publish_state_(this->charging_lowtemperature_protection_sensor_, value_f);
   
   // 102 [96]   4   0x9C 0xFF 0xFF 0xFF    Charge UTP Recovery                 TMPBatCUTPR      Charging Low Temperature Protection Recovery
-  ESP_LOGV(TAG, "  Charge UTP recovery: %f °C", (float) ((int32_t) jk_get_32bit(102)) * 0.1f);
-  this->publish_state_(this->charging_lowtemperature_protection_recovery_sensor_,(float) ((int32_t) jk_get_32bit(102)) * 0.1f);
+  value_f=int32_to_float(&data[102])*0.1f;
+  ESP_LOGI(TAG, "  Charge UTP recovery: %f °C", value_f);
+  this->publish_state_(this->charging_lowtemperature_protection_recovery_sensor_,value_f);
   
   // 106 [100]  4   0x84 0x03 0x00 0x00    MOS OTP                             TMPMosOT         MOS Overtemperature Protection
-  ESP_LOGV(TAG, "  MOS OTP: %f °C", (float) ((int32_t) jk_get_32bit(106)) * 0.1f);
-  this->publish_state_(this->mos_overtemperature_protection_sensor_, (float) jk_get_32bit(106) * 0.1f);
+  value_f=int32_to_float(&data[106])*0.1f;
+  ESP_LOGI(TAG, "  MOS OTP: %f °C", value_f);
+  this->publish_state_(this->mos_overtemperature_protection_sensor_, value_f);
   
   // 110 [104]   4   0xBC 0x02 0x00 0x00    MOS OTP Recovery
-  ESP_LOGV(TAG, "  MOS OTP recovery: %f °C", (float) ((int32_t) jk_get_32bit(110)) * 0.1f);
-  this->publish_state_(this->mos_overtemperature_protection_recovery_sensor_, (float) jk_get_32bit(110) * 0.1f);
+  value_f=int32_to_float(&data[110])*0.1f;
+  ESP_LOGI(TAG, "  MOS OTP recovery: %f °C", value_f);
+  this->publish_state_(this->mos_overtemperature_protection_recovery_sensor_, value_f);
 
   // 114 [108]  4   0x0D 0x00 0x00 0x00    cell count settings
-  ESP_LOGV(TAG, "  cell count settings: %f", (float) jk_get_32bit(114));
+  ESP_LOGI(TAG, "  cell count settings: %f", (float) jk_get_32bit(114));
   this->publish_state_(this->cell_count_settings_sensor_, (float) data[114]);
 
   // 118 [112]  4   0x01 0x00 0x00 0x00    Charge switch BatChargeEN
@@ -709,7 +730,7 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
 
   // 134 [128] 4   0xDC 0x05 0x00 0x00    SCP DELAY (us)
   // ESP_LOGI(TAG, "  SCP DELAY: %f us", (float) jk_get_32bit(134) * 0.001f);
-   this->publish_state_(this->short_circuit_protection_delay_sensor_, (float) jk_get_32bit(134) * 0.001f);
+  this->publish_state_(this->short_circuit_protection_delay_sensor_, (float) jk_get_32bit(134) * 0.001f);
 
   // 138 [132]  4   0xE4 0x0C 0x00 0x00    Start balance voltage
   // ESP_LOGI(TAG, "  Start balance voltage: %f V", (float) jk_get_32bit(138) * 0.001f);
@@ -886,29 +907,29 @@ void JkRS485Bms::decode_device_info_(const std::vector<uint8_t> &data) {
   // 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
   // 0x65
 
-  ESP_LOGI(TAG, "  Vendor ID: %s", std::string(data.begin() + 6, data.begin() + 6 + 16).c_str());
-  ESP_LOGI(TAG, "  Hardware version: %s", std::string(data.begin() + 22, data.begin() + 22 + 8).c_str());
-  ESP_LOGI(TAG, "  Software version: %s", std::string(data.begin() + 30, data.begin() + 30 + 8).c_str());
-  ESP_LOGI(TAG, "  Uptime: %d s", jk_get_32bit(38));
-  ESP_LOGI(TAG, "  Power on count: %d", jk_get_32bit(42));
-  ESP_LOGI(TAG, "  Device name: %s", std::string(data.begin() + 46, data.begin() + 46 + 16).c_str());
-  ESP_LOGI(TAG, "  Device passcode: %s", std::string(data.begin() + 62, data.begin() + 62 + 16).c_str());
-  ESP_LOGI(TAG, "  Manufacturing date: %s", std::string(data.begin() + 78, data.begin() + 78 + 8).c_str());
-  ESP_LOGI(TAG, "  Serial number: %s", std::string(data.begin() + 86, data.begin() + 86 + 11).c_str());
-  ESP_LOGI(TAG, "  Passcode: %s", std::string(data.begin() + 97, data.begin() + 97 + 5).c_str());
-  ESP_LOGI(TAG, "  User data: %s", std::string(data.begin() + 102, data.begin() + 102 + 16).c_str());
-  ESP_LOGI(TAG, "  Setup passcode: %s", std::string(data.begin() + 118, data.begin() + 118 + 16).c_str());
+  ESP_LOGV(TAG, "  Vendor ID: %s", std::string(data.begin() + 6, data.begin() + 6 + 16).c_str());
+  ESP_LOGV(TAG, "  Hardware version: %s", std::string(data.begin() + 22, data.begin() + 22 + 8).c_str());
+  ESP_LOGV(TAG, "  Software version: %s", std::string(data.begin() + 30, data.begin() + 30 + 8).c_str());
+  ESP_LOGV(TAG, "  Uptime: %d s", jk_get_32bit(38));
+  ESP_LOGV(TAG, "  Power on count: %d", jk_get_32bit(42));
+  ESP_LOGV(TAG, "  Device name: %s", std::string(data.begin() + 46, data.begin() + 46 + 16).c_str());
+  ESP_LOGV(TAG, "  Device passcode: %s", std::string(data.begin() + 62, data.begin() + 62 + 16).c_str());
+  ESP_LOGV(TAG, "  Manufacturing date: %s", std::string(data.begin() + 78, data.begin() + 78 + 8).c_str());
+  ESP_LOGV(TAG, "  Serial number: %s", std::string(data.begin() + 86, data.begin() + 86 + 11).c_str());
+  ESP_LOGV(TAG, "  Passcode: %s", std::string(data.begin() + 97, data.begin() + 97 + 5).c_str());
+  ESP_LOGV(TAG, "  User data: %s", std::string(data.begin() + 102, data.begin() + 102 + 16).c_str());
+  ESP_LOGV(TAG, "  Setup passcode: %s", std::string(data.begin() + 118, data.begin() + 118 + 16).c_str());
 
-  ESP_LOGI(TAG, "  UART1 Protocol Number:     0x%02X", ((uint8_t) data[178]));
-  ESP_LOGI(TAG, "  CAN   Protocol Number:     0x%02X", ((uint8_t) data[179]));  
-  ESP_LOGI(TAG, "  UART2 Protocol Number:     0x%02X", ((uint8_t) data[212]));
-  ESP_LOGI(TAG, "  UART2 Protocol Enabled[0]: 0x%02X", ((uint8_t) data[213]));
+  ESP_LOGV(TAG, "  UART1 Protocol Number:     0x%02X", ((uint8_t) data[178]));
+  ESP_LOGV(TAG, "  CAN   Protocol Number:     0x%02X", ((uint8_t) data[179]));  
+  ESP_LOGV(TAG, "  UART2 Protocol Number:     0x%02X", ((uint8_t) data[212]));
+  ESP_LOGV(TAG, "  UART2 Protocol Enabled[0]: 0x%02X", ((uint8_t) data[213]));
 
-  ESP_LOGI(TAG, "  RCV Time: %f h", (float) ((uint8_t) data[266]) * 0.1f);
-  ESP_LOGI(TAG, "  RFV Time: %f h", (float) ((uint8_t) data[267]) * 0.1f);
-  ESP_LOGI(TAG, "  CAN Protocol Library Version: %f", (float) ((uint8_t) data[268]));
-  ESP_LOGI(TAG, "  RVD: %f", (float) ((uint8_t) data[269]));
-  ESP_LOGI(TAG, "  ---------------------------------------");
+  ESP_LOGV(TAG, "  RCV Time: %f h", (float) ((uint8_t) data[266]) * 0.1f);
+  ESP_LOGV(TAG, "  RFV Time: %f h", (float) ((uint8_t) data[267]) * 0.1f);
+  ESP_LOGV(TAG, "  CAN Protocol Library Version: %f", (float) ((uint8_t) data[268]));
+  ESP_LOGV(TAG, "  RVD: %f", (float) ((uint8_t) data[269]));
+  ESP_LOGV(TAG, "  ---------------------------------------");
 
 
   this->publish_state_(this->info_vendorid_text_sensor_, std::string(data.begin() + 6, data.begin() + 6 + 16).c_str());
