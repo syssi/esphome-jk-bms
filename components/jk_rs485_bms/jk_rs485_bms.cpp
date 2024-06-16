@@ -62,6 +62,17 @@ float int32_to_float(const uint8_t* byteArray) {
     return floatValue;
 }
 
+float int16_to_float(const uint8_t* byteArray) {
+    // Combine the bytes into an int32_t
+    int32_t intValue = (static_cast<int32_t>(byteArray[0]) << 0) |
+                       (static_cast<int32_t>(byteArray[1]) << 8);
+
+    // Convert to float and divide by 10
+    float floatValue = static_cast<float>(intValue);
+
+    return floatValue;
+}
+
 void JkRS485Bms::on_jk_rs485_sniffer_data(const uint8_t &origin_address, const uint8_t &frame_type,
                                           const std::vector<uint8_t> &data,
                                           const std::string &nodes_available_received) {
@@ -248,7 +259,7 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
 
   // 112   2   0x00 0x00              Unknown112
   if (frame_version == FRAME_VERSION_JK02_32S) {
-    this->publish_state_(this->temperature_powertube_sensor_, (float) ((int16_t) jk_get_16bit(112 + offset)) * 0.1f);
+    this->publish_state_(this->temperature_powertube_sensor_, int16_to_float(&data[112+offset]) * 0.1f);
   } else {
     ESP_LOGD(TAG, "Unknown112: 0x%02X 0x%02X", data[112 + offset], data[113 + offset]);
   }
@@ -265,8 +276,8 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
 
   // 122   4   0x00 0x00 0x00 0x00    Battery power         0.001        W
   // 126   4   0x00 0x00 0x00 0x00    Charge current        0.001        A
-  float current = (float) ((int32_t) jk_get_32bit(126 + offset)) * 0.001f;
-  this->publish_state_(this->battery_current_sensor_, (float) ((int32_t) jk_get_32bit(126 + offset)) * 0.001f);
+  float current = int32_to_float(&data[126+offset]) * 0.001f;
+  this->publish_state_(this->battery_current_sensor_, current);
 
   // Don't use byte 122 because it's unsigned
   // float power = (float) ((int32_t) jk_get_32bit(122 + offset)) * 0.001f;
@@ -278,11 +289,11 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
 
   // 130 [156 = 130+26]   2   0xBE 0x00              Temperature Sensor 1  0.1          °C
   this->publish_state_(this->temperatures_[0].temperature_sensor_,
-                       (float) ((int16_t) jk_get_16bit(130 + offset)) * 0.1f);
+                       int16_to_float(&data[130+offset]) * 0.1f);
 
   // 132 [158 = 132+26]   2   0xBF 0x00              Temperature Sensor 2  0.1          °C
   this->publish_state_(this->temperatures_[1].temperature_sensor_,
-                       (float) ((int16_t) jk_get_16bit(132 + offset)) * 0.1f);
+                       int16_to_float(&data[132+offset]) * 0.1f);
 
   // 134 [160=134+26]  2   0xD2        Alarms      bit
   // AlarmWireRes                1   (0:normal | 1:alarm)
@@ -372,7 +383,7 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   }
 
   // 138 [164=138+26]  2   0x00 0x00              Balance current      0.001         A
-  this->publish_state_(this->balancing_current_sensor_, (float) ((int16_t) jk_get_16bit(138 + offset)) * 0.001f);
+  this->publish_state_(this->balancing_current_sensor_, int16_to_float(&data[138+offset]) * 0.001f);
 
   // 140 [166=140+26]  1   0x00                   Balancing action                   0x00: Off
   //                                                                                 0x01: Charging balancer
@@ -390,7 +401,7 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->battery_capacity_state_of_charge_sensor_, (float) data[141 + offset]);
 
   // 142 [168=142+26]  4   0x8E 0x0B 0x01 0x00    Capacity_Remain      0.001         Ah
-  this->publish_state_(this->battery_capacity_remaining_sensor_, (float) jk_get_32bit(142 + offset) * 0.001f);
+  this->publish_state_(this->battery_capacity_remaining_sensor_, int32_to_float(&data[142+offset]) * 0.001f);
 
   // 146 [172=146+26]  4   0x68 0x3C 0x01 0x00    Nominal_Capacity     0.001         Ah
   this->publish_state_(this->battery_capacity_total_setting_sensor_, (float) jk_get_32bit(146 + offset) * 0.001f);
@@ -475,8 +486,8 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   //ESP_LOGI(TAG, " BATTERY VOLTAGE 228: %f", battery_voltage);
 
   // 204 [230=204+26]    2   0x01 0xFD         230.Heating current         0.001         A
-  this->publish_state_(this->heating_current_sensor_, (float) ((int16_t) jk_get_16bit(204 + offset)) * 0.001f);
-  ESP_LOGV(TAG, "HEATING CURRENT:  %f", (float) ((int16_t) jk_get_16bit(204 + offset)) * 0.001f);
+  this->publish_state_(this->heating_current_sensor_, int16_to_float(&data[204+offset])  * 0.001f);
+  ESP_LOGV(TAG, "HEATING CURRENT:  %f", int16_to_float(&data[204+offset])  * 0.001f);
 
   // 207   7   0x00 0x00 0x01 0x00 0x02 0x00 0x00
   
@@ -489,11 +500,11 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // 224 [250=224+26] 250.Temp Bat 4
   // 226 [252=226+26] 252.Temp Bat 5
   this->publish_state_(this->temperatures_[2].temperature_sensor_,
-                        (float) ((int16_t) jk_get_16bit(222 + offset)) * 0.1f);
+                        int16_to_float(&data[222+offset])  * 0.1f);
   this->publish_state_(this->temperatures_[3].temperature_sensor_,
-                        (float) ((int16_t) jk_get_16bit(224 + offset)) * 0.1f);
+                        int16_to_float(&data[224+offset]) * 0.1f);
   this->publish_state_(this->temperatures_[4].temperature_sensor_,
-                        (float) ((int16_t) jk_get_16bit(226 + offset)) * 0.1f);
+                        int16_to_float(&data[226+offset]) * 0.1f);
   
   
   if (frame_version == FRAME_VERSION_JK02_32S) {
