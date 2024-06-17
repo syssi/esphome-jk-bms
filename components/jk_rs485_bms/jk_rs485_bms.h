@@ -362,7 +362,10 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   void set_manufacturing_date_sensor(sensor::Sensor *manufacturing_date_sensor) {
     manufacturing_date_sensor_ = manufacturing_date_sensor;
   }
-  void set_battery_total_runtime_sensor(sensor::Sensor *battery_total_runtime_sensor) { battery_total_runtime_sensor_ = battery_total_runtime_sensor; }
+  
+  void set_battery_total_runtime_sensor(sensor::Sensor *battery_total_runtime_sensor) { 
+    battery_total_runtime_sensor_ = battery_total_runtime_sensor; 
+  }
   void set_start_current_calibration_sensor(sensor::Sensor *start_current_calibration_sensor) {
     start_current_calibration_sensor_ = start_current_calibration_sensor;
   }
@@ -911,7 +914,7 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
     return current;
   };
 
-  std::string format_total_runtime_(const uint32_t value) {
+  std::string format_total_runtime_(float value) {
     int seconds = (int) value;
     int years = seconds / (24 * 3600 * 365);
     seconds = seconds % (24 * 3600 * 365);

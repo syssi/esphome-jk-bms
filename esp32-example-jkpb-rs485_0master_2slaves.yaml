@@ -14,10 +14,9 @@ esphome:
   project:
     name: "txubelaxu.esphome-jk-bms"
     version: 1.0.0
-  #includes:
-    #- ./components/output/binary_output.h
-    #- ./components/jk_rs485_sniffer/gpio.h
-
+  includes:
+    - ./components/json/json_util.h
+  
 
 esp32:
   board: esp32dev #nodemcu-32s #wemos_d1_mini32
@@ -41,8 +40,9 @@ ota:
 
 api:
 
+
 logger:
-  level: INFO #VERY_VERBOSE #VERBOSE #DEBUG #INFO #DEBUG
+  level: VERBOSE #INFO #VERY_VERBOSE #VERBOSE #DEBUG #INFO #DEBUG
   tx_buffer_size: 1024
 
 # If you use Home Assistant please remove this `mqtt` section and uncomment the `api` component!
