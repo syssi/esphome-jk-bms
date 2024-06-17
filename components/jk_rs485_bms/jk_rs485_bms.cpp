@@ -586,13 +586,13 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
 }
 
 void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
-  auto jk_get_16bit = [&](size_t i) -> uint16_t { return (uint16_t(data[i + 1]) << 8) | (uint16_t(data[i + 0]) << 0); };
-  auto jk_get_32bit = [&](size_t i) -> uint32_t {
-    return (uint32_t(jk_get_16bit(i + 2)) << 16) | (uint32_t(jk_get_16bit(i + 0)) << 0);
-  };
+
+
   ESP_LOGI(TAG, "Decoding settings  frame.... [ADDRESS: %02X] %d bytes received", this->address_, data.size());
   ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front(), 160).c_str());
   ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front() + 160, data.size() - 160).c_str());
+
+  float temp_param_value;
 
   // JK02_24S response example:
   //
@@ -616,127 +616,147 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   // 4     1   0x01                   Frame type
   // 5     1   0x4F                   Frame counter
   // 6  [0]   4   0x58 0x02 0x00 0x00    ** [JK-PB2A16S-20P v14] VOLTAGE SMART SLEEP
-  ESP_LOGV(TAG, "  Voltage Smart Sleep: %f", (float) jk_get_32bit(6) * 0.001f);
-  this->publish_state_(this->cell_smart_sleep_voltage_sensor_, (float) jk_get_32bit(6) * 0.001f);
+  temp_param_value = uint32_to_float(&data[6]) * 0.001f;
+  ESP_LOGV(TAG, "  Voltage Smart Sleep: %f", temp_param_value); ///(float) jk_get_32bit(6) * 0.001f);
+  this->publish_state_(this->cell_smart_sleep_voltage_sensor_, temp_param_value);
 
   // 10 [4]   4   0x54 0x0B 0x00 0x00    Cell UVP
-  ESP_LOGV(TAG, "  Cell UVP: %f V", (float) jk_get_32bit(10) * 0.001f);
-  this->publish_state_(this->cell_undervoltage_protection_sensor_, (float) jk_get_32bit(10) * 0.001f);
+  temp_param_value = uint32_to_float(&data[10]) * 0.001f;
+  ESP_LOGV(TAG, "  Cell UVP: %f V", temp_param_value); ///(float) jk_get_32bit(10) * 0.001f);
+  this->publish_state_(this->cell_undervoltage_protection_sensor_, temp_param_value);
 
   // 14 [8]   4   0x80 0x0C 0x00 0x00    Cell UVP Recovery
-  ESP_LOGV(TAG, "  Cell UVPR: %f V", (float) jk_get_32bit(14) * 0.001f);
-  this->publish_state_(this->cell_undervoltage_protection_recovery_sensor_, (float) jk_get_32bit(14) * 0.001f);
+  temp_param_value = uint32_to_float(&data[14]) * 0.001f;
+  ESP_LOGV(TAG, "  Cell UVPR: %f V", temp_param_value); /// (float) jk_get_32bit(14) * 0.001f);
+  this->publish_state_(this->cell_undervoltage_protection_recovery_sensor_, temp_param_value); /// (float) jk_get_32bit(14) * 0.001f);
 
   // 18 [12]   4   0xCC 0x10 0x00 0x00    Cell OVP
-  ESP_LOGV(TAG, "%02X%02X%02X%02X Cell OVP: %f V", data[18], data[19], data[20], data[21], (float) jk_get_32bit(18));
-  this->publish_state_(this->cell_overvoltage_protection_sensor_, (float) jk_get_32bit(18) * 0.001f);
+  temp_param_value = uint32_to_float(&data[18]) * 0.001f;  
+  ///ESP_LOGV(TAG, "%02X%02X%02X%02X Cell OVP: %f V", data[18], data[19], data[20], data[21], (float) jk_get_32bit(18));
+  this->publish_state_(this->cell_overvoltage_protection_sensor_, temp_param_value); ///(float) jk_get_32bit(18) * 0.001f);
 
   // 22 [16]   4   0x68 0x10 0x00 0x00    Cell OVP Recovery
-  ESP_LOGI(TAG, "  Cell OVPR: %f V", (float) jk_get_32bit(22) * 0.001f);
-  this->publish_state_(this->cell_overvoltage_protection_recovery_sensor_, (float) jk_get_32bit(22) * 0.001f);
+  temp_param_value = uint32_to_float(&data[22]) * 0.001f; 
+  ESP_LOGI(TAG, "  Cell OVPR: %f V", temp_param_value); /// (float) jk_get_32bit(22) * 0.001f);
+  this->publish_state_(this->cell_overvoltage_protection_recovery_sensor_, temp_param_value); ///(float) jk_get_32bit(22) * 0.001f);
 
   // 26 [20]   4   0x0A 0x00 0x00 0x00    Balance trigger voltage
-  ESP_LOGV(TAG, "  Balance trigger voltage: %f V", (float) jk_get_32bit(26) * 0.001f);
-  this->publish_state_(this->balancing_trigger_voltage_sensor_, (float) jk_get_32bit(26) * 0.001f);
+  temp_param_value = uint32_to_float(&data[26]) * 0.001f; 
+  ESP_LOGV(TAG, "  Balance trigger voltage: %f V", temp_param_value); ///(float) jk_get_32bit(26) * 0.001f);
+  this->publish_state_(this->balancing_trigger_voltage_sensor_, temp_param_value); ///(float) jk_get_32bit(26) * 0.001f);
 
   // 30 [24]   4   0x00 0x00 0x00 0x00    ** [JK-PB2A16S-20P v14] SOC-100% VOLTAGE
-  ESP_LOGV(TAG, "  SOC-100 VOLTAGE: %f V", (float) jk_get_32bit(30) * 0.001f);
-  this->publish_state_(this->cell_soc100_voltage_sensor_, (float) jk_get_32bit(30) * 0.001f);
+  temp_param_value = uint32_to_float(&data[30]) * 0.001f; 
+  ESP_LOGV(TAG, "  SOC-100 VOLTAGE: %f V", temp_param_value); ///(float) jk_get_32bit(30) * 0.001f);
+  this->publish_state_(this->cell_soc100_voltage_sensor_, temp_param_value); ///(float) jk_get_32bit(30) * 0.001f);
   
   // 34 [28]   4   0x00 0x00 0x00 0x00    ** [JK-PB2A16S-20P v14] SOC-0% VOLTAGE
-  ESP_LOGV(TAG, "  SOC-0 VOLTAGE: %f V", (float) jk_get_32bit(34) * 0.001f);
-  this->publish_state_(this->cell_soc0_voltage_sensor_, (float) jk_get_32bit(34) * 0.001f);
+  temp_param_value = uint32_to_float(&data[34]) * 0.001f; 
+  ESP_LOGV(TAG, "  SOC-0 VOLTAGE: %f V", temp_param_value); ///(float) jk_get_32bit(34) * 0.001f);
+  this->publish_state_(this->cell_soc0_voltage_sensor_, temp_param_value); ///(float) jk_get_32bit(34) * 0.001f);
   
   // 38 [32]   4   0x00 0x00 0x00 0x00    ** [JK-PB2A16S-20P v14] VOLTAGE CELL REQUEST CHARGE VOLTAGE [RCV]
-  ESP_LOGV(TAG, "  CELL REQUEST CHARGE VOLTAGE [RCV]: %f V", (float) jk_get_32bit(38) * 0.001f);
-  this->publish_state_(this->cell_request_charge_voltage_sensor_, (float) jk_get_32bit(38) * 0.001f);
+  temp_param_value = uint32_to_float(&data[38]) * 0.001f; 
+  ESP_LOGV(TAG, "  CELL REQUEST CHARGE VOLTAGE [RCV]: %f V", temp_param_value); ///(float) jk_get_32bit(38) * 0.001f);
+  this->publish_state_(this->cell_request_charge_voltage_sensor_, temp_param_value); ///(float) jk_get_32bit(38) * 0.001f);
   
   // 42 [36]   4   0x00 0x00 0x00 0x00    ** [JK-PB2A16S-20P v14] VOLTAGE CELL REQUEST FLOAT VOLTAGE
-  ESP_LOGV(TAG, "  CELL REQUEST FLOAT VOLTAGE [RFV]: %f V", (float) jk_get_32bit(42) * 0.001f);
-  this->publish_state_(this->cell_request_float_voltage_sensor_, (float) jk_get_32bit(42) * 0.001f);
+  temp_param_value = uint32_to_float(&data[42]) * 0.001f; 
+  ESP_LOGV(TAG, "  CELL REQUEST FLOAT VOLTAGE [RFV]: %f V", temp_param_value); ///(float) jk_get_32bit(42) * 0.001f);
+  this->publish_state_(this->cell_request_float_voltage_sensor_, temp_param_value); ///(float) jk_get_32bit(42) * 0.001f);
   
   // 46 [40]   4   0xF0 0x0A 0x00 0x00    Power off voltage
-  ESP_LOGV(TAG, "  Sys Power off voltage: %f V", (float) jk_get_32bit(46) * 0.001f);
-  this->publish_state_(this->cell_power_off_voltage_sensor_, (float) jk_get_32bit(46) * 0.001f);
+  temp_param_value = uint32_to_float(&data[46]) * 0.001f;   
+  ESP_LOGV(TAG, "  Sys Power off voltage: %f V", temp_param_value); ///(float) jk_get_32bit(46) * 0.001f);
+  this->publish_state_(this->cell_power_off_voltage_sensor_, temp_param_value); ///(float) jk_get_32bit(46) * 0.001f);
 
   // 50 [44]   4   0xA8 0x61 0x00 0x00    Max. charge current                 CurBatCOC
-  ESP_LOGV(TAG, "  Max. charging current: %f A", (float) jk_get_32bit(50) * 0.001f);
-  this->publish_state_(this->max_charging_current_sensor_, (float) jk_get_32bit(50) * 0.001f);
+  temp_param_value = uint32_to_float(&data[50]) * 0.001f;     
+  ESP_LOGV(TAG, "  Max. charging current: %f A", temp_param_value); ///(float) jk_get_32bit(50) * 0.001f);
+  this->publish_state_(this->max_charging_current_sensor_, temp_param_value); ///(float) jk_get_32bit(50) * 0.001f);
 
   // 54 [48]   4   0x1E 0x00 0x00 0x00    Charge OCP delay                    TIMBatCOCPDly   Charging Overcurrent
   // Protection Delay (s)
-  ESP_LOGV(TAG, "  Charge OCP delay: %f s", (float) jk_get_32bit(54));
-  this->publish_state_(this->charging_overcurrent_protection_delay_sensor_, (float) jk_get_32bit(54) * 0.001f);
+  temp_param_value = uint32_to_float(&data[54]);  
+  ESP_LOGV(TAG, "  Charge OCP delay: %f s", temp_param_value); ///(float) jk_get_32bit(54));
+  this->publish_state_(this->charging_overcurrent_protection_delay_sensor_, temp_param_value); ///(float) jk_get_32bit(54));
   
   // 58 [52]   4   0x3C 0x00 0x00 0x00    Charge OCP recovery time            TIMBatCOCPRDly  Charging Overcurrent
   // Protection Release Delay (s)
-  ESP_LOGV(TAG, "  Charge OCP recovery delay: %f s", (float) jk_get_32bit(58));
-  this->publish_state_(this->charging_overcurrent_protection_recovery_delay_sensor_, (float) jk_get_32bit(58) * 0.001f);
+  temp_param_value = uint32_to_float(&data[58]);    
+  ESP_LOGV(TAG, "  Charge OCP recovery delay: %f s", temp_param_value); ///(float) jk_get_32bit(58));
+  this->publish_state_(this->charging_overcurrent_protection_recovery_delay_sensor_,  temp_param_value); ///(float) jk_get_32bit(58));
   
   // 62 [56]   4   0xF0 0x49 0x02 0x00    Max. discharge current CurBatDcOC
-  ESP_LOGV(TAG, "  Max. discharging current: %f A", (float) jk_get_32bit(62) * 0.001f);
-  this->publish_state_(this->max_discharging_current_sensor_, (float) jk_get_32bit(62) * 0.001f);
+  temp_param_value = uint32_to_float(&data[62]) * 0.001f;   
+  ESP_LOGV(TAG, "  Max. discharging current: %f A", temp_param_value); ///(float) jk_get_32bit(62) * 0.001f);
+  this->publish_state_(this->max_discharging_current_sensor_, temp_param_value); ///(float) jk_get_32bit(62) * 0.001f);
 
   // 66 [60]   4   0x2C 0x01 0x00 0x00    Discharge OCP delay                 TIMBatDcOCPDly   Discharge Overcurrent Protection Delay
-  ESP_LOGV(TAG, "  Discharge OCP delay: %f s", (float) jk_get_32bit(66));
-  this->publish_state_(this->discharging_overcurrent_protection_delay_sensor_, (float) jk_get_32bit(66) * 0.001f);
+  temp_param_value = uint32_to_float(&data[66]);  
+  ESP_LOGV(TAG, "  Discharge OCP delay: %f s", temp_param_value); ///(float) jk_get_32bit(66));
+  this->publish_state_(this->discharging_overcurrent_protection_delay_sensor_, temp_param_value); ///(float) jk_get_32bit(66) * 0.001f);
   
   // 70 [64]   4   0x3C 0x00 0x00 0x00    Discharge OCP recovery time         TIMBatDcOCPRDly  Discharge Overcurrent
   // Protection Release Delay
-  ESP_LOGV(TAG, "  Discharge OCP recovery time: %f s", (float) jk_get_32bit(70));
-  this->publish_state_(this->discharging_overcurrent_protection_recovery_delay_sensor_, (float) jk_get_32bit(70) * 0.001f);
+  temp_param_value = uint32_to_float(&data[70]);    
+  ESP_LOGV(TAG, "  Discharge OCP recovery time: %f s", temp_param_value); ///(float) jk_get_32bit(70));
+  this->publish_state_(this->discharging_overcurrent_protection_recovery_delay_sensor_, temp_param_value); ///(float) jk_get_32bit(70) * 0.001f);
   
   // 74 [68]   4   0x3C 0x00 0x00 0x00    SCPR delay                          TIMBatSCPRDly    Short Circuit Protection Recovery Delay
-  ESP_LOGV(TAG, "  SCP recovery time: %f s", (float) jk_get_32bit(74));
-  this->publish_state_(this->short_circuit_protection_recovery_delay_sensor_, (float) jk_get_32bit(74) * 0.001f);
+  temp_param_value = uint32_to_float(&data[74]);    
+  ESP_LOGV(TAG, "  SCP recovery time: %f s", temp_param_value); ///(float) jk_get_32bit(74));
+  this->publish_state_(this->short_circuit_protection_recovery_delay_sensor_, temp_param_value); ///(float) jk_get_32bit(74) * 0.001f);
 
   // 78 [72]   4   0xD0 0x07 0x00 0x00    Max balance current
-  ESP_LOGV(TAG, "  Max. balance current: %f A", (float) jk_get_32bit(78) * 0.001f);
-  this->publish_state_(this->max_balancing_current_sensor_, (float) jk_get_32bit(78) * 0.001f);
+  temp_param_value = uint32_to_float(&data[78]) * 0.001f;   
+  ESP_LOGV(TAG, "  Max. balance current: %f A", temp_param_value); ///(float) jk_get_32bit(78) * 0.001f);
+  this->publish_state_(this->max_balancing_current_sensor_, temp_param_value); ///(float) jk_get_32bit(78) * 0.001f);
 
   // 82 [76]   4   0xBC 0x02 0x00 0x00    Charge OTP                          TMPBatCOT        Charging Over Temperature Protection
-  float value_f=int32_to_float(&data[82])*0.1f;
-  ESP_LOGV(TAG, "  Charging OTP: %f °C", value_f);
-  this->publish_state_(this->charging_overtemperature_protection_sensor_, value_f);
+  temp_param_value=int32_to_float(&data[82])*0.1f;
+  ESP_LOGV(TAG, "  Charging OTP: %f °C", temp_param_value);
+  this->publish_state_(this->charging_overtemperature_protection_sensor_, temp_param_value);
   
   // 86 [80]   4   0x58 0x02 0x00 0x00    Charge OTP Recovery                 TMPBatCOTPR      Charging Over Temperature Protection Recovery
-  value_f=int32_to_float(&data[86])*0.1f;
-  ESP_LOGV(TAG, "  Charge OTP recovery: %f °C", value_f);
-  this->publish_state_(this->charging_overtemperature_protection_recovery_sensor_, value_f);
+  temp_param_value=int32_to_float(&data[86])*0.1f;
+  ESP_LOGV(TAG, "  Charge OTP recovery: %f °C", temp_param_value);
+  this->publish_state_(this->charging_overtemperature_protection_recovery_sensor_, temp_param_value);
 
   // 90 [84]    4   0xBC 0x02 0x00 0x00    Discharge OTP                       TMPBatDcOT
-  value_f=int32_to_float(&data[90])*0.1f;
-  ESP_LOGV(TAG, "  Discharge OTP: %f °C", value_f);
-  this->publish_state_(this->discharging_overtemperature_protection_sensor_, value_f);
+  temp_param_value=int32_to_float(&data[90])*0.1f;
+  ESP_LOGV(TAG, "  Discharge OTP: %f °C", temp_param_value);
+  this->publish_state_(this->discharging_overtemperature_protection_sensor_, temp_param_value);
 
   // 94 [88]    4   0x58 0x02 0x00 0x00    Discharge OTP Recovery              TMPBatDcOTPR
-  value_f=int32_to_float(&data[94])*0.1f;
-  ESP_LOGV(TAG, "  Discharge OTP recovery: %f °C", value_f);
-  this->publish_state_(this->discharging_overtemperature_protection_recovery_sensor_, value_f);
+  temp_param_value=int32_to_float(&data[94])*0.1f;
+  ESP_LOGV(TAG, "  Discharge OTP recovery: %f °C", temp_param_value);
+  this->publish_state_(this->discharging_overtemperature_protection_recovery_sensor_, temp_param_value);
 
   // 98 [92]   4   0x38 0xFF 0xFF 0xFF    Charge UTP                          TMPBatCUT        Charging Low Temperature Protection
-  value_f=int32_to_float(&data[98])*0.1f;
-  ESP_LOGI(TAG, "  Charge UTP: %f °C", value_f);
-  this->publish_state_(this->charging_lowtemperature_protection_sensor_, value_f);
+  temp_param_value=int32_to_float(&data[98])*0.1f;
+  ESP_LOGI(TAG, "  Charge UTP: %f °C", temp_param_value);
+  this->publish_state_(this->charging_lowtemperature_protection_sensor_, temp_param_value);
   
   // 102 [96]   4   0x9C 0xFF 0xFF 0xFF    Charge UTP Recovery                 TMPBatCUTPR      Charging Low Temperature Protection Recovery
-  value_f=int32_to_float(&data[102])*0.1f;
-  ESP_LOGI(TAG, "  Charge UTP recovery: %f °C", value_f);
-  this->publish_state_(this->charging_lowtemperature_protection_recovery_sensor_,value_f);
+  temp_param_value=int32_to_float(&data[102])*0.1f;
+  ESP_LOGI(TAG, "  Charge UTP recovery: %f °C", temp_param_value);
+  this->publish_state_(this->charging_lowtemperature_protection_recovery_sensor_,temp_param_value);
   
   // 106 [100]  4   0x84 0x03 0x00 0x00    MOS OTP                             TMPMosOT         MOS Overtemperature Protection
-  value_f=int32_to_float(&data[106])*0.1f;
-  ESP_LOGI(TAG, "  MOS OTP: %f °C", value_f);
-  this->publish_state_(this->mos_overtemperature_protection_sensor_, value_f);
+  temp_param_value=int32_to_float(&data[106])*0.1f;
+  ESP_LOGI(TAG, "  MOS OTP: %f °C", temp_param_value);
+  this->publish_state_(this->mos_overtemperature_protection_sensor_, temp_param_value);
   
   // 110 [104]   4   0xBC 0x02 0x00 0x00    MOS OTP Recovery
-  value_f=int32_to_float(&data[110])*0.1f;
-  ESP_LOGI(TAG, "  MOS OTP recovery: %f °C", value_f);
-  this->publish_state_(this->mos_overtemperature_protection_recovery_sensor_, value_f);
+  temp_param_value=int32_to_float(&data[110])*0.1f;
+  ESP_LOGI(TAG, "  MOS OTP recovery: %f °C", temp_param_value);
+  this->publish_state_(this->mos_overtemperature_protection_recovery_sensor_, temp_param_value);
 
   // 114 [108]  4   0x0D 0x00 0x00 0x00    cell count settings
-  ESP_LOGI(TAG, "  cell count settings: %f", (float) jk_get_32bit(114));
-  this->publish_state_(this->cell_count_settings_sensor_, (float) data[114]);
+  temp_param_value=uint32_to_float(&data[114]);  
+  ESP_LOGI(TAG, "  cell count settings: %f", temp_param_value); ///(float) jk_get_32bit(114));
+  this->publish_state_(this->cell_count_settings_sensor_, temp_param_value); ///(float) data[114]);
 
   // 118 [112]  4   0x01 0x00 0x00 0x00    Charge switch BatChargeEN
   //  ESP_LOGI(TAG, "  Charge switch: %s", ((bool) data[118]) ? "on" : "off");
@@ -756,11 +776,13 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
 
   // 134 [128] 4   0xDC 0x05 0x00 0x00    SCP DELAY (us)
   // ESP_LOGI(TAG, "  SCP DELAY: %f us", (float) jk_get_32bit(134) * 0.001f);
-  this->publish_state_(this->short_circuit_protection_delay_sensor_, (float) jk_get_32bit(134) * 0.001f);
+  temp_param_value=uint32_to_float(&data[134])*0.001f;   
+  this->publish_state_(this->short_circuit_protection_delay_sensor_, temp_param_value); ///(float) jk_get_32bit(134) * 0.001f);
 
   // 138 [132]  4   0xE4 0x0C 0x00 0x00    Start balance voltage
   // ESP_LOGI(TAG, "  Start balance voltage: %f V", (float) jk_get_32bit(138) * 0.001f);
-  this->publish_state_(this->cell_balancing_starting_voltage_sensor_, (float) jk_get_32bit(138) * 0.001f);
+  temp_param_value=uint32_to_float(&data[138])*0.001f;     
+  this->publish_state_(this->cell_balancing_starting_voltage_sensor_, temp_param_value); ///(float) jk_get_32bit(138) * 0.001f);
 
   // 142   4   0x00 0x00 0x00 0x00
   // ESP_LOGI(TAG, "         142: %02X%02X%02X%02X",data[142],data[143],data[144],data[145]);
@@ -812,11 +834,12 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   
   // 274 [268]  4   0x00 0x00 0x00 0x00    TIMProdischarge: Discharge pre-charging time
   // ESP_LOGI(TAG, "         274: %02X%02X%02X%02X",data[274],data[275],data[276],data[277]);
-  ESP_LOGI(TAG, "  Precharging time from discharged: %f s", (float) ((int32_t) jk_get_32bit(274)));
-  this->publish_state_(this->precharging_time_from_discharge_sensor_,(float) ((int32_t) jk_get_32bit(274)));  
+  temp_param_value=uint32_to_float(&data[274]);   
+  ESP_LOGI(TAG, "  Precharging time from discharged: %f s", temp_param_value); ///(float) ((int32_t) jk_get_32bit(274)));
+  this->publish_state_(this->precharging_time_from_discharge_sensor_, temp_param_value); ///(float) ((int32_t) jk_get_32bit(274)));  
 
   // 278   4   0x00 0x00 0x00 0x00  //60 e3 16 00          10023c3218feffffffbfe90102000000000001
-  ESP_LOGI(TAG, "      unkown 278: %02X%02X%02X%02X",data[278],data[279],data[280],data[281]);
+  ///ESP_LOGI(TAG, "      unkown 278: %02X%02X%02X%02X",data[278],data[279],data[280],data[281]);
 
   // 282 [276]   1   0x00                   New controls bitmask
   // ** [JK-PB2A16S-20P v14]
@@ -876,10 +899,7 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
 void JkRS485Bms::update() { this->track_status_online_(); }
 
 void JkRS485Bms::decode_device_info_(const std::vector<uint8_t> &data) {
-  auto jk_get_16bit = [&](size_t i) -> uint16_t { return (uint16_t(data[i + 1]) << 8) | (uint16_t(data[i + 0]) << 0); };
-  auto jk_get_32bit = [&](size_t i) -> uint32_t {
-    return (uint32_t(jk_get_16bit(i + 2)) << 16) | (uint32_t(jk_get_16bit(i + 0)) << 0);
-  };
+
 
   ESP_LOGI(TAG, "Device info frame (%d bytes) received", data.size());
   ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front(), 160).c_str());
@@ -936,8 +956,8 @@ void JkRS485Bms::decode_device_info_(const std::vector<uint8_t> &data) {
   ESP_LOGV(TAG, "  Vendor ID: %s", std::string(data.begin() + 6, data.begin() + 6 + 16).c_str());
   ESP_LOGV(TAG, "  Hardware version: %s", std::string(data.begin() + 22, data.begin() + 22 + 8).c_str());
   ESP_LOGV(TAG, "  Software version: %s", std::string(data.begin() + 30, data.begin() + 30 + 8).c_str());
-  ESP_LOGV(TAG, "  Uptime: %d s", jk_get_32bit(38));
-  ESP_LOGV(TAG, "  Power on count: %d", jk_get_32bit(42));
+  ESP_LOGV(TAG, "  Uptime: %f s", uint32_to_float(&data[38]));
+  ESP_LOGV(TAG, "  Power on count: %f", uint32_to_float(&data[42]));
   ESP_LOGV(TAG, "  Device name: %s", std::string(data.begin() + 46, data.begin() + 46 + 16).c_str());
   ESP_LOGV(TAG, "  Device passcode: %s", std::string(data.begin() + 62, data.begin() + 62 + 16).c_str());
   ESP_LOGV(TAG, "  Manufacturing date: %s", std::string(data.begin() + 78, data.begin() + 78 + 8).c_str());
