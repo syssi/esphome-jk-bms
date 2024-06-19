@@ -877,8 +877,8 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->smart_sleep_on_switch_, value_tmp);
   value_tmp=this->check_bit_of_byte_(data[282], 7); 
   ESP_LOGI(TAG, "  Getting bit 7 from value: %d is %02X of object with address %p",data[282],value_tmp,(void *) this->disable_pcl_module_switch_);  
-  this->publish_state_(this->disable_pcl_module_switch_, value_tmp);
-  
+  ////this->publish_state_(this->disable_pcl_module_switch_, value_tmp);
+
 //  // Loggear memoria libre
 //  ESP_LOGD(TAG, "Free Heap: %u bytes", heap_caps_get_free_size(MALLOC_CAP_8BIT));
 //  // Loggear tiempo de actividad

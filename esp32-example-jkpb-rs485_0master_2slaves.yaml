@@ -14,13 +14,13 @@ esphome:
   project:
     name: "txubelaxu.esphome-jk-bms"
     version: 1.0.0
-  libraries:
-    - "ArduinoJson"
-  includes:
+#  libraries:
+#    - "ArduinoJson"
+#  includes:
     #- ./components/ArduinoJson/ArduinoJson.h
     #- ./components/ArduinoJson/ArduinoJson.hpp
     #- ./components/ArduinoJson/Configuration.hpp
-    - ./components/json/json_util.h
+#    - ./components/json/json_util.h
 
 esp32:
   board: esp32dev #nodemcu-32s #wemos_d1_mini32
