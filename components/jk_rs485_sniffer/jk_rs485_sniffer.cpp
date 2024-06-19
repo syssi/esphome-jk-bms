@@ -294,6 +294,8 @@ void JkRS485Sniffer::loop() {
       if (now-last_master_activity>SILENCE_BEFORE_ACTING_AS_MASTER){
         if (this->act_as_master==false){
               this->act_as_master=true;
+              this->rs485_network_node[0].available=0;
+              this->nodes_available=this->nodes_available_to_string();
               ESP_LOGI(TAG, "NO JK MASTER DETECTED IN THE NETWORK. ESP WILL ACT AS MASTER");
         }
       }
