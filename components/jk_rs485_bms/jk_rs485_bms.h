@@ -564,6 +564,7 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   void set_disable_pcl_module_switch(switch_::Switch *disable_pcl_module_switch) {
     disable_pcl_module_switch_ = disable_pcl_module_switch;
   }
+  
   void set_gps_heartbeat_switch(switch_::Switch *gps_heartbeat_switch) {
     gps_heartbeat_switch_ = gps_heartbeat_switch;
   }
@@ -932,7 +933,10 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
     return ret;
   }
 
-  bool check_bit_(uint16_t mask, uint16_t flag) { return (mask & flag) == flag; }
+  bool check_bit_of_byte_(uint8_t value, uint8_t position) { 
+    //position: 76543210
+    return ((value >> position) & 0x01); 
+  }
 };
 
 }  // namespace jk_rs485_bms
