@@ -1707,73 +1707,66 @@ views:
     icon: ''
     badges: []
     cards:
-      - type: vertical-stack
+      - type: custom:stack-in-card
+        keep:
+          margin: false
+          box_shadow: false
+          background: false
         cards:
-          - type: custom:stack-in-card
-            keep:
-              margin: false
-              box_shadow: false
-              background: false
+          - type: grid
+            square: false
+            columns: 2
             cards:
-              - type: grid
-                square: false
-                columns: 2
-                cards:
-                  - type: markdown
-                    content: >-
-                      {%- set vid = states('sensor.rs485_bms0_info_vendorid') %}
-                      {%- set swv =
-                      states('sensor.rs485_bms0_info_software_version') %} {%-
-                      set hwv =
-                      states('sensor.rs485_bms0_info_hardware_version') %} {%-
-                      set dna = states('sensor.rs485_bms0_info_device_name') %}
-                      {%- set dsn =
-                      states('sensor.rs485_bms0_info_device_serial_number')
-                      %}               {%- set pin =
-                      states('sensor.rs485_bms0_info_device_password') %}   {%-
-                      set uart1 =
-                      states('sensor.rs485_bms0_uart1_protocol_number') %}  {%-
-                      set uart2 =
-                      states('sensor.rs485_bms0_uart2_protocol_number') %} {%-
-                      set cell_number_settings =
-                      states('sensor.rs485_bms0_cell_count_settings') %} {%- set
-                      cell_number_real =
-                      states('sensor.rs485_bms0_cell_count_real') %} <table>
-                      <tr><td colspan=2><b>BMS INFO:</b></td></tr>
-                      <tr><td>VendorID:</td><td>{{vid}}</tr> <tr><td>HARD
-                      ver:</td><td>{{swv}}</tr> <tr><td>SOFT
-                      ver:</td><td>{{hwv}}</tr>           <tr><td>DEV
-                      name:</td><td>{{dna}}</tr>  <tr><td>DEV
-                      S/N</td><td>{{dsn}}</tr>              
-                      <tr><td>PASS:</td><td>{{pin}}</tr>
-                      <tr><td>UART1:</td><td>{{uart1}}</tr>   
-                      <tr><td>UART2:</td><td>{{uart2}}</tr>           
-                      <tr><td>Cells
-                      (sett.):</td><td>{{cell_number_settings}}</tr>                         
-                      <tr><td>Cells
-                      (real):</td><td>{{cell_number_real}}</tr>                                       
-                      </table><br>         
-                  - type: markdown
-                    content: >-
-                      {%- set min_idx =
-                      states('sensor.rs485_bms0_cell_voltage_min_cell_number')
-                      %} 
+              - type: markdown
+                content: >-
+                  {%- set vid = states('sensor.rs485_bms0_info_vendorid') %} {%-
+                  set swv = states('sensor.rs485_bms0_info_software_version') %}
+                  {%- set hwv =
+                  states('sensor.rs485_bms0_info_hardware_version') %} {%- set
+                  dna = states('sensor.rs485_bms0_info_device_name') %} {%- set
+                  dsn = states('sensor.rs485_bms0_info_device_serial_number')
+                  %}               {%- set pin =
+                  states('sensor.rs485_bms0_info_device_password') %}  {%- set
+                  settings_pin =
+                  states('sensor.rs485_bms0_info_device_setup_passcode') %} {%-
+                  set uart1 = states('sensor.rs485_bms0_uart1_protocol_number')
+                  %}  {%- set uart2 =
+                  states('sensor.rs485_bms0_uart2_protocol_number') %} {%- set
+                  cell_number_settings =
+                  states('sensor.rs485_bms0_cell_count_settings') %} {%- set
+                  cell_number_real = states('sensor.rs485_bms0_cell_count_real')
+                  %} <table> <tr><td colspan=2><b>BMS INFO:</b></td></tr>
+                  <tr><td>VendorID:</td><td>{{vid}}</tr> <tr><td>HARD
+                  ver:</td><td>{{swv}}</tr> <tr><td>SOFT
+                  ver:</td><td>{{hwv}}</tr>           <tr><td>DEV
+                  name:</td><td>{{dna}}</tr>  <tr><td>DEV
+                  S/N</td><td>{{dsn}}</tr>               <tr><td>BT
+                  PASS:</td><td>{{pin}}</tr><tr><td>
+                  PASS:</td><td>{{settings_pin}}</tr>
+                  <tr><td>UART1:</td><td>{{uart1}}</tr>   
+                  <tr><td>UART2:</td><td>{{uart2}}</tr>            <tr><td>Cells
+                  (sett.):</td><td>{{cell_number_settings}}</tr>                         
+                  <tr><td>Cells
+                  (real):</td><td>{{cell_number_real}}</tr>                                       
+                  </table><br>
+              - type: markdown
+                content: >-
+                  {%- set min_idx =
+                  states('sensor.rs485_bms0_cell_voltage_min_cell_number') %} 
 
-                      {%- set max_idx =
-                      states('sensor.rs485_bms0_cell_voltage_max_cell_number')
-                      %}  
+                  {%- set max_idx =
+                  states('sensor.rs485_bms0_cell_voltage_max_cell_number') %}  
 
-                      {%- set delta =
-                      (states('sensor.rs485_bms0_cell_delta_voltage')|float)
-                      %}  
+                  {%- set delta =
+                  (states('sensor.rs485_bms0_cell_delta_voltage')|float) %}  
 
-                      <table> <tr><td colspan=4><b>NETWORK
-                      DEVICES:</b>&nbsp;&nbsp;</td></tr> <tr><td>{%- set
-                      network_nodes_available =
-                      states('sensor.rs485_bms0_network_nodes_available') %} 
-                      </td></tr></table>
+                  <table> <tr><td colspan=4><b>NETWORK
+                  DEVICES:</b>&nbsp;&nbsp;</td></tr> <tr><td>{%- set
+                  network_nodes_available =
+                  states('sensor.rs485_bms0_network_nodes_available') %} 
+                  </td></tr></table>
 
-                      {{network_nodes_available}}</b>&nbsp;&nbsp;
+                  {{network_nodes_available}}</b>&nbsp;&nbsp;
       - type: entities
         entities:
           - entity: switch.rs485_bms0_charging
@@ -1926,8 +1919,10 @@ views:
                       {%- set dsn =
                       states('sensor.rs485_bms1_info_device_serial_number')
                       %}               {%- set pin =
-                      states('sensor.rs485_bms1_info_device_password') %}   {%-
-                      set uart1 =
+                      states('sensor.rs485_bms1_info_device_password') %}  {%-
+                      set settings_pin =
+                      states('sensor.rs485_bms1_info_device_setup_passcode') %}
+                      {%- set uart1 =
                       states('sensor.rs485_bms1_uart1_protocol_number') %}  {%-
                       set uart2 =
                       states('sensor.rs485_bms1_uart2_protocol_number') %} {%-
@@ -1940,8 +1935,9 @@ views:
                       ver:</td><td>{{swv}}</tr> <tr><td>SOFT
                       ver:</td><td>{{hwv}}</tr>           <tr><td>DEV
                       name:</td><td>{{dna}}</tr>  <tr><td>DEV
-                      S/N</td><td>{{dsn}}</tr>              
-                      <tr><td>PASS:</td><td>{{pin}}</tr>
+                      S/N</td><td>{{dsn}}</tr>               <tr><td>BT
+                      PASS:</td><td>{{pin}}</tr><tr><td>
+                      PASS:</td><td>{{settings_pin}}</tr>
                       <tr><td>UART1:</td><td>{{uart1}}</tr>   
                       <tr><td>UART2:</td><td>{{uart2}}</tr>           
                       <tr><td>Cells
