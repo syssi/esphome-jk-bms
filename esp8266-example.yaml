@@ -24,6 +24,7 @@ wifi:
   password: !secret wifi_password
 
 ota:
+  platform: esphome
 
 logger:
   baud_rate: 0
