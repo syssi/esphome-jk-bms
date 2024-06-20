@@ -93,6 +93,8 @@ float int16_to_float(const uint8_t* byteArray) {
     return floatValue;
 }
 
+
+
 void JkRS485Bms::on_jk_rs485_sniffer_data(const uint8_t &origin_address, const uint8_t &frame_type,
                                           const std::vector<uint8_t> &data,
                                           const std::string &nodes_available_received) {
@@ -849,35 +851,38 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   //    bit4: DISPLAY_ALWAYS_ON_SWITCH_ENABLED       16
   //    bit5: Special Charger                        32
   //    bit6: SMART_SLEEP_ON_SWITCH_ENABLED          64
-  //    bit7: DISABLE_PCL_MODULE_SWITCH_ENABLED      128
+  //    bit7: disable_pcl_module_switch_ENABLED      128
   ESP_LOGI(TAG, "  Before binary 0 -------------------------------------------------------------------------------------------"); 
   bool value_tmp;
+
   value_tmp=this->check_bit_of_byte_(data[282], 0); 
-  ESP_LOGI(TAG, "  Getting bit 0 from value: %d is %02X of object with address %p",data[282],value_tmp,(void *) this->heating_switch_);   
+  ESP_LOGI(TAG, "[%02X] heating_switch_                      is bit 0 of %d is %02X address %p",this->address_,data[282],value_tmp,(void *) this->heating_switch_);    
   this->publish_state_(this->heating_switch_, value_tmp);
   // ESP_LOGI(TAG, "  heating switch: %s", ( this->check_bit_(data[282], 1)) ? "on" : "off");
   value_tmp=this->check_bit_of_byte_(data[282], 1); 
-  ESP_LOGI(TAG, "  Getting bit 1 from value: %d is %02X of object with address %p",data[282],value_tmp,(void *) this->disable_temperature_sensors_switch_);   
+  ESP_LOGI(TAG, "[%02X] disable_temperature_sensors_switch_  is bit 1 of %d is %02X address %p",this->address_,data[282],value_tmp,(void *) this->disable_temperature_sensors_switch_); 
   this->publish_state_(this->disable_temperature_sensors_switch_, value_tmp);
   value_tmp=this->check_bit_of_byte_(data[282], 2); 
-  ESP_LOGI(TAG, "  Getting bit 2 from value: %d is %02X of object with address %p",data[282],value_tmp,(void *) this->gps_heartbeat_switch_);   
+  ESP_LOGI(TAG, "[%02X] gps_heartbeat_switch_                is bit 2 of %d is %02X address %p",this->address_,data[282],value_tmp,(void *) this->gps_heartbeat_switch_);    
   this->publish_state_(this->gps_heartbeat_switch_, value_tmp); 
   value_tmp=this->check_bit_of_byte_(data[282], 3); 
-  ESP_LOGI(TAG, "  Getting bit 3 from value: %d is %02X of object with address %p",data[282],value_tmp,(void *) this->port_selection_switch_);   
+  ESP_LOGI(TAG, "[%02X] port_selection_switch_               is bit 3 of %d is %02X address %p",this->address_,data[282],value_tmp,(void *) this->port_selection_switch_); 
   this->publish_state_(this->port_selection_switch_, value_tmp);
   // ESP_LOGI(TAG, "  Port switch: %s", this->check_bit_(data[282], 8) ? "RS485" : "CAN");
+  value_tmp=this->check_bit_of_byte_(data[282], 7); 
+  //ESP_LOGI(TAG, "[%02X]  Getting bit 7 from value: %d is %02X of object with address %p",this->address_,data[282],value_tmp,(void *) this->disable_pcl_module_switch_);  
+  ESP_LOGI(TAG, "[%02X] disable_pcl_module_switch_           is bit 7 of %d is %02X address %p <------------",this->address_,data[282],value_tmp,(void *) this->disable_pcl_module_switch_);   
+  ////this->publish_state_(this->disable_pcl_module_switch_, value_tmp);
   value_tmp=this->check_bit_of_byte_(data[282], 4); 
-  ESP_LOGI(TAG, "  Getting bit 4 from value: %d is %02X of object with address %p",data[282],value_tmp,(void *) this->display_always_on_switch_);  
+  ESP_LOGI(TAG, "[%02X] display_always_on_switch_            is bit 4 of %d is %02X address %p",this->address_,data[282],value_tmp,(void *) this->display_always_on_switch_); 
   this->publish_state_(this->display_always_on_switch_, value_tmp);
   value_tmp=this->check_bit_of_byte_(data[282], 5); 
-  ESP_LOGI(TAG, "  Getting bit 5 from value: %d is %02X of object with address %p",data[282],value_tmp,(void *) this->special_charger_switch_);   
+  ESP_LOGI(TAG, "[%02X] special_charger_switch_              is bit 5 of %d is %02X address %p",this->address_,data[282],value_tmp,(void *) this->special_charger_switch_); 
   this->publish_state_(this->special_charger_switch_, value_tmp);
   value_tmp=this->check_bit_of_byte_(data[282], 6); 
-  ESP_LOGI(TAG, "  Getting bit 6 from value: %d is %02X of object with address %p",data[282],value_tmp,(void *) this->smart_sleep_on_switch_);  
+  ESP_LOGI(TAG, "[%02X] smart_sleep_on_switch_               is bit 6 of %d is %02X address %p",this->address_,data[282],value_tmp,(void *) this->smart_sleep_on_switch_); 
   this->publish_state_(this->smart_sleep_on_switch_, value_tmp);
-  value_tmp=this->check_bit_of_byte_(data[282], 7); 
-  ESP_LOGI(TAG, "  Getting bit 7 from value: %d is %02X of object with address %p",data[282],value_tmp,(void *) this->disable_pcl_module_switch_);  
-  ////this->publish_state_(this->disable_pcl_module_switch_, value_tmp);
+  
 
 //  // Loggear memoria libre
 //  ESP_LOGD(TAG, "Free Heap: %u bytes", heap_caps_get_free_size(MALLOC_CAP_8BIT));
@@ -977,29 +982,29 @@ void JkRS485Bms::decode_device_info_(const std::vector<uint8_t> &data) {
   // 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
   // 0x65
 
-  ESP_LOGV(TAG, "  Vendor ID: %s", std::string(data.begin() + 6, data.begin() + 6 + 16).c_str());
-  ESP_LOGV(TAG, "  Hardware version: %s", std::string(data.begin() + 22, data.begin() + 22 + 8).c_str());
-  ESP_LOGV(TAG, "  Software version: %s", std::string(data.begin() + 30, data.begin() + 30 + 8).c_str());
-  ESP_LOGV(TAG, "  Uptime: %f s", uint32_to_float(&data[38]));
-  ESP_LOGV(TAG, "  Power on count: %f", uint32_to_float(&data[42]));
-  ESP_LOGV(TAG, "  Device name: %s", std::string(data.begin() + 46, data.begin() + 46 + 16).c_str());
-  ESP_LOGV(TAG, "  Device passcode: %s", std::string(data.begin() + 62, data.begin() + 62 + 16).c_str());
-  ESP_LOGV(TAG, "  Manufacturing date: %s", std::string(data.begin() + 78, data.begin() + 78 + 8).c_str());
-  ESP_LOGV(TAG, "  Serial number: %s", std::string(data.begin() + 86, data.begin() + 86 + 11).c_str());
-  ESP_LOGV(TAG, "  Passcode: %s", std::string(data.begin() + 97, data.begin() + 97 + 5).c_str());
-  ESP_LOGV(TAG, "  User data: %s", std::string(data.begin() + 102, data.begin() + 102 + 16).c_str());
-  ESP_LOGV(TAG, "  Setup passcode: %s", std::string(data.begin() + 118, data.begin() + 118 + 16).c_str());
+  //ESP_LOGV(TAG, "  Vendor ID: %s", std::string(data.begin() + 6, data.begin() + 6 + 16).c_str());
+  //ESP_LOGV(TAG, "  Hardware version: %s", std::string(data.begin() + 22, data.begin() + 22 + 8).c_str());
+  //ESP_LOGV(TAG, "  Software version: %s", std::string(data.begin() + 30, data.begin() + 30 + 8).c_str());
+  //ESP_LOGV(TAG, "  Uptime: %f s", uint32_to_float(&data[38]));
+  //ESP_LOGV(TAG, "  Power on count: %f", uint32_to_float(&data[42]));
+  //ESP_LOGV(TAG, "  Device name: %s", std::string(data.begin() + 46, data.begin() + 46 + 16).c_str());
+  //ESP_LOGV(TAG, "  Device passcode: %s", std::string(data.begin() + 62, data.begin() + 62 + 16).c_str());
+  //ESP_LOGV(TAG, "  Manufacturing date: %s", std::string(data.begin() + 78, data.begin() + 78 + 8).c_str());
+  //ESP_LOGV(TAG, "  Serial number: %s", std::string(data.begin() + 86, data.begin() + 86 + 11).c_str());
+  //ESP_LOGV(TAG, "  Passcode: %s", std::string(data.begin() + 97, data.begin() + 97 + 5).c_str());
+  //ESP_LOGV(TAG, "  User data: %s", std::string(data.begin() + 102, data.begin() + 102 + 16).c_str());
+  //ESP_LOGV(TAG, "  Setup passcode: %s", std::string(data.begin() + 118, data.begin() + 118 + 16).c_str());
 
-  ESP_LOGV(TAG, "  UART1 Protocol Number:     0x%02X", ((uint8_t) data[178]));
-  ESP_LOGV(TAG, "  CAN   Protocol Number:     0x%02X", ((uint8_t) data[179]));  
-  ESP_LOGV(TAG, "  UART2 Protocol Number:     0x%02X", ((uint8_t) data[212]));
-  ESP_LOGV(TAG, "  UART2 Protocol Enabled[0]: 0x%02X", ((uint8_t) data[213]));
+  //ESP_LOGV(TAG, "  UART1 Protocol Number:     0x%02X", ((uint8_t) data[178]));
+  //ESP_LOGV(TAG, "  CAN   Protocol Number:     0x%02X", ((uint8_t) data[179]));  
+  //ESP_LOGV(TAG, "  UART2 Protocol Number:     0x%02X", ((uint8_t) data[212]));
+  //ESP_LOGV(TAG, "  UART2 Protocol Enabled[0]: 0x%02X", ((uint8_t) data[213]));
 
-  ESP_LOGV(TAG, "  RCV Time: %f h", (float) ((uint8_t) data[266]) * 0.1f);
-  ESP_LOGV(TAG, "  RFV Time: %f h", (float) ((uint8_t) data[267]) * 0.1f);
-  ESP_LOGV(TAG, "  CAN Protocol Library Version: %f", (float) ((uint8_t) data[268]));
-  ESP_LOGV(TAG, "  RVD: %f", (float) ((uint8_t) data[269]));
-  ESP_LOGV(TAG, "  ---------------------------------------");
+  //ESP_LOGV(TAG, "  RCV Time: %f h", (float) ((uint8_t) data[266]) * 0.1f);
+  //ESP_LOGV(TAG, "  RFV Time: %f h", (float) ((uint8_t) data[267]) * 0.1f);
+  //ESP_LOGV(TAG, "  CAN Protocol Library Version: %f", (float) ((uint8_t) data[268]));
+  //ESP_LOGV(TAG, "  RVD: %f", (float) ((uint8_t) data[269]));
+  //ESP_LOGV(TAG, "  ---------------------------------------");
 
 
   this->publish_state_(this->info_vendorid_text_sensor_, std::string(data.begin() + 6, data.begin() + 6 + 16).c_str());

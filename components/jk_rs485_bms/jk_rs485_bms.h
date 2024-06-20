@@ -18,6 +18,7 @@ enum ProtocolVersion {
 
 class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485SnifferDevice {
  public:
+
   void set_address(uint8_t address) { address_ = address; }
 
 
@@ -541,7 +542,9 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
 
 
 
-
+  void set_disable_pcl_module_switch(switch_::Switch *disable_pcl_module_switch) {
+    disable_pcl_module_switch_ = disable_pcl_module_switch;
+  }
 
 
   void set_precharging_switch(switch_::Switch *precharging_switch) { precharging_switch_ = precharging_switch; }
@@ -561,9 +564,7 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
     timed_stored_data_switch_ = timed_stored_data_switch;
   }
   
-  void set_disable_pcl_module_switch(switch_::Switch *disable_pcl_module_switch) {
-    disable_pcl_module_switch_ = disable_pcl_module_switch;
-  }
+
   
   void set_gps_heartbeat_switch(switch_::Switch *gps_heartbeat_switch) {
     gps_heartbeat_switch_ = gps_heartbeat_switch;
@@ -882,6 +883,7 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   void reset_status_online_tracker_();
   void track_status_online_();
 
+
   bool status_notification_received_ = false;
 
   uint32_t last_cell_info_{0};
@@ -938,6 +940,8 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
     return ((value >> position) & 0x01); 
   }
 };
+
+
 
 }  // namespace jk_rs485_bms
 }  // namespace esphome
