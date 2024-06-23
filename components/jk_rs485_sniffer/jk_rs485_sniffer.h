@@ -89,6 +89,7 @@ class JkRS485Sniffer : public uart::UARTDevice, public output::TalkPin, public C
   void detected_master_activity_now(void);
   void send_request_to_slave(uint8_t node_address, uint8_t frame_type);
   bool calculate_next_pooling(void);
+  int found_next_node_to_discover(void);
 
   std::vector<uint8_t> rx_buffer_;
   uint16_t rx_timeout_{50};

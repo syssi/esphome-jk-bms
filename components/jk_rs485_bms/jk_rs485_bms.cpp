@@ -158,8 +158,8 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   }
 
   ESP_LOGI(TAG, "Decoding cell info frame.... [ADDRESS: %02X] %d bytes received", this->address_, data.size());
-  ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front(), 150).c_str());
-  ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front() + 150, data.size() - 150).c_str());
+  //ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front(), 150).c_str());
+  //ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front() + 150, data.size() - 150).c_str());
 
   // 6 example responses (128+128+44 = 300 bytes per frame)
   //
@@ -590,8 +590,8 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
 
 
   ESP_LOGI(TAG, "Decoding settings  frame.... [ADDRESS: %02X] %d bytes received", this->address_, data.size());
-  ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front(), 160).c_str());
-  ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front() + 160, data.size() - 160).c_str());
+  //ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front(), 160).c_str());
+  //ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front() + 160, data.size() - 160).c_str());
 
   float temp_param_value;
 
@@ -852,7 +852,7 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   //    bit5: Special Charger                        32
   //    bit6: SMART_SLEEP_ON_SWITCH_ENABLED          64
   //    bit7: disable_pcl_module_switch_ENABLED      128
-  ESP_LOGI(TAG, "  Before binary 0 -------------------------------------------------------------------------------------------"); 
+  //ESP_LOGI(TAG, "  Before binary 0 -------------------------------------------------------------------------------------------"); 
   bool value_tmp;
 
   value_tmp=this->check_bit_of_byte_(data[282], 0); 
@@ -872,7 +872,7 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   value_tmp=this->check_bit_of_byte_(data[282], 7); 
   //ESP_LOGI(TAG, "[%02X]  Getting bit 7 from value: %d is %02X of object with address %p",this->address_,data[282],value_tmp,(void *) this->disable_pcl_module_switch_);  
   ESP_LOGI(TAG, "[%02X] disable_pcl_module_switch_           is bit 7 of %d is %02X address %p <------------",this->address_,data[282],value_tmp,(void *) this->disable_pcl_module_switch_);   
-  ////this->publish_state_(this->disable_pcl_module_switch_, value_tmp);
+  this->publish_state_(this->disable_pcl_module_switch_, value_tmp);
   value_tmp=this->check_bit_of_byte_(data[282], 4); 
   ESP_LOGI(TAG, "[%02X] display_always_on_switch_            is bit 4 of %d is %02X address %p",this->address_,data[282],value_tmp,(void *) this->display_always_on_switch_); 
   this->publish_state_(this->display_always_on_switch_, value_tmp);
@@ -889,7 +889,7 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
 //  // Loggear tiempo de actividad
 //  ESP_LOGD(TAG, "Uptime: %u seconds", millis() / 1000);
 
-  ESP_LOGI(TAG, "  After binary 7 -------------------------------------------------------------------------------------"); 
+//  ESP_LOGI(TAG, "  After binary 7 -------------------------------------------------------------------------------------"); 
 
   // 283 [28?]   1   0x00                   New controls bitmask
   // ** [JK-PB2A16S-20P v14]
@@ -916,7 +916,7 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   // 286   4   0x00 0x00 0x00 0x00
   // ESP_LOGI(TAG, "  TIMSmartSleep: %d H", (uint8_t) (data[286]));
   this->publish_state_(this->smart_sleep_time_sensor_, (uint8_t) (data[286]));
-  ESP_LOGI(TAG, "  Data field enable control 0: %d", (uint8_t) (data[287]));
+//  ESP_LOGI(TAG, "  Data field enable control 0: %d", (uint8_t) (data[287]));
   
 
   // 290   4   0x00 0x00 0x00 0x00
@@ -1139,14 +1139,16 @@ void JkRS485Bms::publish_state_(switch_::Switch *obj, const bool &state) {
     ESP_LOGE(TAG, "Object is nullptr");
     return;
   }
-  
+  const size_t free_heap = heap_caps_get_largest_free_block(MALLOC_CAP_8BIT);
 
-  ESP_LOGV(TAG, "Publishing state %d for object with address %p", state, (void*)obj);
-  ESP_LOGV(TAG, "  --------------------------------------- BEFORE");
-  ESP_LOGV(TAG, "Object name: %s", obj->get_name().c_str());
-  ESP_LOGV(TAG, "  --------------------------------------- AFTER 1");
-  obj->publish_state(state);
-  ESP_LOGV(TAG, "  --------------------------------------- AFTER 2");
+  if (reinterpret_cast<uintptr_t>(obj) > 0x3f000000) {
+    ESP_LOGV(TAG, "Publishing state %d for object with address %p [%f]", state, (void*)obj, ((float)free_heap/1024));
+    obj->publish_state(state);
+    ESP_LOGV(TAG, "  --------------------------------------- PUBLISHED     0x%02X publish_state(state) of %s", reinterpret_cast<uintptr_t>(obj), obj->get_name().c_str());
+  } else {
+    ESP_LOGV(TAG, "  --------------------------------------- NOT PUBLISHED 0x%02X", reinterpret_cast<uintptr_t>(obj));
+  }
+
 }
 
 void JkRS485Bms::publish_state_(text_sensor::TextSensor *text_sensor, const std::string &state) {
