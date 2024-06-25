@@ -1134,7 +1134,7 @@ void JkRS485Bms::publish_state_(sensor::Sensor *sensor, float value) {
   sensor->publish_state(value);
 }
 
-void JkRS485Bms::publish_state_(switch_::Switch *obj, const bool &state) {
+void JkRS485Bms::publish_state_(JkRS485BmsSwitch *obj, const bool &state) {
   if (obj == nullptr) {
     ESP_LOGE(TAG, "Object is nullptr");
     return;
@@ -1143,7 +1143,8 @@ void JkRS485Bms::publish_state_(switch_::Switch *obj, const bool &state) {
 
   if (reinterpret_cast<uintptr_t>(obj) > 0x3f000000) {
     ESP_LOGV(TAG, "Publishing state %d for object with address %p [%f]", state, (void*)obj, ((float)free_heap/1024));
-    obj->publish_state(state);
+    //obj->publish_state(state);
+    obj->write_state(state);
     ESP_LOGV(TAG, "  --------------------------------------- PUBLISHED     0x%02X publish_state(state) of %s", reinterpret_cast<uintptr_t>(obj), obj->get_name().c_str());
   } else {
     ESP_LOGE(TAG, "  Object changes its nullptr !!!--------- NOT PUBLISHED 0x%02X", reinterpret_cast<uintptr_t>(obj));

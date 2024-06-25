@@ -1,5 +1,5 @@
 substitutions:
-  esp_name: esp32-s3
+  esp_name: esp-rs485-gw
   bms0_name: rs485-bms0
   bms1_name: rs485-bms1
   bms1bis_name: rs485-bms1bis
@@ -81,7 +81,7 @@ api:
 
 logger:
   level: VERY_VERBOSE #DEBUG #INFO #VERY_VERBOSE #VERBOSE #DEBUG #INFO #DEBUG
-  tx_buffer_size: 2048
+  tx_buffer_size: 1024
 
 # If you use Home Assistant please remove this `mqtt` section and uncomment the `api` component!
 # The native API has many advantages over MQTT: https://esphome.io/components/api.html#advantages-over-mqtt
@@ -101,7 +101,7 @@ logger:
 uart:
   - id: uart_0
     baud_rate: 115200
-    rx_buffer_size: 1000
+    rx_buffer_size: 500
     tx_pin: ${tx_pin_uart_0}
     rx_pin: ${rx_pin_uart_0}
 jk_rs485_sniffer:

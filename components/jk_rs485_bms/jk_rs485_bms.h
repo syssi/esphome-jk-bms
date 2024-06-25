@@ -4,7 +4,8 @@
 #include "esphome/components/binary_sensor/binary_sensor.h"
 #include "esphome/components/sensor/sensor.h"
 #include "esphome/components/text_sensor/text_sensor.h"
-#include "esphome/components/switch/switch.h"
+//#include "esphome/components/switch/switch.h"
+#include "switch/jk_switch.h"
 #include "esphome/components/jk_rs485_sniffer/jk_rs485_sniffer.h"
 
 namespace esphome {
@@ -542,41 +543,41 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
 
 
 
-  void set_disable_pcl_module_switch(switch_::Switch *disable_pcl_module_switch) {
+  void set_disable_pcl_module_switch(JkRS485BmsSwitch *disable_pcl_module_switch) {
     disable_pcl_module_switch_ = disable_pcl_module_switch;
   }
 
 
-  void set_precharging_switch(switch_::Switch *precharging_switch) { precharging_switch_ = precharging_switch; }
-  void set_charging_switch(switch_::Switch *charging_switch) { charging_switch_ = charging_switch; }
-  void set_discharging_switch(switch_::Switch *discharging_switch) { discharging_switch_ = discharging_switch; }
-  void set_balancing_switch(switch_::Switch *balancer_switch) { balancer_switch_ = balancer_switch; }
-  void set_emergency_switch(switch_::Switch *emergency_switch) { emergency_switch_ = emergency_switch; }
-  void set_heating_switch(switch_::Switch *heating_switch) { heating_switch_ = heating_switch; }
-  void set_display_always_on_switch(switch_::Switch *display_always_on_switch) { display_always_on_switch_ = display_always_on_switch; }
-  void set_charging_float_mode_switch(switch_::Switch *charging_float_mode_switch) {
+  void set_precharging_switch(JkRS485BmsSwitch *precharging_switch) { precharging_switch_ = precharging_switch; }
+  void set_charging_switch(JkRS485BmsSwitch *charging_switch) { charging_switch_ = charging_switch; }
+  void set_discharging_switch(JkRS485BmsSwitch *discharging_switch) { discharging_switch_ = discharging_switch; }
+  void set_balancing_switch(JkRS485BmsSwitch *balancer_switch) { balancer_switch_ = balancer_switch; }
+  void set_emergency_switch(JkRS485BmsSwitch *emergency_switch) { emergency_switch_ = emergency_switch; }
+  void set_heating_switch(JkRS485BmsSwitch *heating_switch) { heating_switch_ = heating_switch; }
+  void set_display_always_on_switch(JkRS485BmsSwitch *display_always_on_switch) { display_always_on_switch_ = display_always_on_switch; }
+  void set_charging_float_mode_switch(JkRS485BmsSwitch *charging_float_mode_switch) {
     charging_float_mode_switch_ = charging_float_mode_switch;
   }
-  void set_disable_temperature_sensors_switch(switch_::Switch *disable_temperature_sensors_switch) {
+  void set_disable_temperature_sensors_switch(JkRS485BmsSwitch *disable_temperature_sensors_switch) {
     disable_temperature_sensors_switch_ = disable_temperature_sensors_switch;
   }
-  void set_timed_stored_data_switch(switch_::Switch *timed_stored_data_switch) {
+  void set_timed_stored_data_switch(JkRS485BmsSwitch *timed_stored_data_switch) {
     timed_stored_data_switch_ = timed_stored_data_switch;
   }
   
 
   
-  void set_gps_heartbeat_switch(switch_::Switch *gps_heartbeat_switch) {
+  void set_gps_heartbeat_switch(JkRS485BmsSwitch *gps_heartbeat_switch) {
     gps_heartbeat_switch_ = gps_heartbeat_switch;
   }
-  void set_port_selection_switch(switch_::Switch *port_selection_switch) {
+  void set_port_selection_switch(JkRS485BmsSwitch *port_selection_switch) {
     port_selection_switch_ = port_selection_switch;
   }
-  void set_special_charger_switch(switch_::Switch *special_charger_switch) {
+  void set_special_charger_switch(JkRS485BmsSwitch *special_charger_switch) {
     special_charger_switch_ = special_charger_switch;
   }
 
-  void set_smart_sleep_on_switch(switch_::Switch *smart_sleep_on_switch) { smart_sleep_on_switch_ = smart_sleep_on_switch; }
+  void set_smart_sleep_on_switch(JkRS485BmsSwitch *smart_sleep_on_switch) { smart_sleep_on_switch_ = smart_sleep_on_switch; }
 
   void set_errors_text_sensor(text_sensor::TextSensor *errors_text_sensor) { errors_text_sensor_ = errors_text_sensor; }
   void set_operation_status_text_sensor(text_sensor::TextSensor *operation_status_text_sensor) {
@@ -650,6 +651,7 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   uint8_t battery_total_alarms_count_;
   uint8_t battery_total_alarms_active_;
   std::string nodes_available;
+  std::vector<JkRS485BmsSwitch *> switches_;
 
   //binary_sensor::BinarySensor *balancing_binary_sensor_;
   binary_sensor::BinarySensor *balancing_switch_binary_sensor_;
@@ -824,21 +826,38 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   sensor::Sensor *precharging_time_from_discharge_sensor_;
 
 
-  switch_::Switch *precharging_switch_;
-  switch_::Switch *charging_switch_;
-  switch_::Switch *discharging_switch_;
-  switch_::Switch *balancer_switch_;
-  switch_::Switch *emergency_switch_;  
-  switch_::Switch *heating_switch_; 
-  switch_::Switch *charging_float_mode_switch_;
-  switch_::Switch *disable_temperature_sensors_switch_; 
-  switch_::Switch *display_always_on_switch_;   
-  switch_::Switch *smart_sleep_on_switch_;
-  switch_::Switch *timed_stored_data_switch_;
-  switch_::Switch *disable_pcl_module_switch_;
-  switch_::Switch *gps_heartbeat_switch_;
-  switch_::Switch *port_selection_switch_;
-  switch_::Switch *special_charger_switch_;
+  JkRS485BmsSwitch *precharging_switch_ = new JkRS485BmsSwitch(false);
+  JkRS485BmsSwitch *charging_switch_ = new JkRS485BmsSwitch(false);
+  JkRS485BmsSwitch *discharging_switch_ = new JkRS485BmsSwitch(false);
+  JkRS485BmsSwitch *balancer_switch_ = new JkRS485BmsSwitch(false);
+  JkRS485BmsSwitch *emergency_switch_ = new JkRS485BmsSwitch(false);
+  JkRS485BmsSwitch *heating_switch_ = new JkRS485BmsSwitch(false);
+  JkRS485BmsSwitch *charging_float_mode_switch_ = new JkRS485BmsSwitch(false);
+  JkRS485BmsSwitch *disable_temperature_sensors_switch_ = new JkRS485BmsSwitch(false);
+  JkRS485BmsSwitch *display_always_on_switch_ = new JkRS485BmsSwitch(false);
+  JkRS485BmsSwitch *smart_sleep_on_switch_ = new JkRS485BmsSwitch(false);
+  JkRS485BmsSwitch *timed_stored_data_switch_ = new JkRS485BmsSwitch(false);
+  JkRS485BmsSwitch *disable_pcl_module_switch_ = new JkRS485BmsSwitch(false);
+  JkRS485BmsSwitch *gps_heartbeat_switch_ = new JkRS485BmsSwitch(false);
+  JkRS485BmsSwitch *port_selection_switch_ = new JkRS485BmsSwitch(false);
+  JkRS485BmsSwitch *special_charger_switch_ = new JkRS485BmsSwitch(false);
+
+  //auto *port_selection_switch = new JkRS485BmsSwitch(false);
+  //switch_::Switch *precharging_switch_;
+  //switch_::Switch *charging_switch_;
+  //switch_::Switch *discharging_switch_;
+  //switch_::Switch *balancer_switch_;
+  //switch_::Switch *emergency_switch_;  
+  //switch_::Switch *heating_switch_; 
+  //switch_::Switch *charging_float_mode_switch_;
+  //switch_::Switch *disable_temperature_sensors_switch_; 
+  //switch_::Switch *display_always_on_switch_;   
+  //switch_::Switch *smart_sleep_on_switch_;
+  //switch_::Switch *timed_stored_data_switch_;
+  //switch_::Switch *disable_pcl_module_switch_;
+  //switch_::Switch *gps_heartbeat_switch_;
+  //switch_::Switch *port_selection_switch_;
+  //switch_::Switch *special_charger_switch_;
 
   text_sensor::TextSensor *battery_type_text_sensor_;
   text_sensor::TextSensor *password_text_sensor_;
@@ -876,7 +895,7 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   void on_status_data_(const std::vector<uint8_t> &data);
   void publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state);
   void publish_state_(sensor::Sensor *sensor, float value);
-  void publish_state_(switch_::Switch *obj, const bool &state);
+  void publish_state_(JkRS485BmsSwitch *obj, const bool &state);
   void publish_state_(text_sensor::TextSensor *text_sensor, const std::string &state);
   void publish_alarm_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state);  
   void publish_device_unavailable_();
