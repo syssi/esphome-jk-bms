@@ -20,13 +20,13 @@ esphome:
   # Standard uses a single line for data, Dual IO uses 2 lines for data.
   platformio_options:
     board_build.flash_mode: dio # Needed to flash the ESP32-S3 and prevent reboot loop
-    build_flags: 
+#    build_flags: 
 #      - '-D ARDUINO_LOOP_STACK_SIZE=1024'
 #      - '-D ARDUINO_LOOP_STACK_SIZE=8192'
 #      - '-D ARDUINO_LOOP_STACK_SIZE=16384'
 #      - '-D ARDUINO_LOOP_STACK_SIZE=32768'
 #      - '-D CONFIG_ARDUINO_LOOP_STACK_SIZE=16384'
-       - -DCONFIG_ARDUINO_LOOP_STACK_SIZE=17384
+#       - -DCONFIG_ARDUINO_LOOP_STACK_SIZE=17384
 
   on_boot:
     then:
@@ -80,7 +80,7 @@ api:
 
 
 logger:
-  level: VERY_VERBOSE #DEBUG #INFO #VERY_VERBOSE #VERBOSE #DEBUG #INFO #DEBUG
+  level: DEBUG #INFO #VERY_VERBOSE #VERBOSE #DEBUG #INFO #DEBUG
   tx_buffer_size: 1024
 
 # If you use Home Assistant please remove this `mqtt` section and uncomment the `api` component!

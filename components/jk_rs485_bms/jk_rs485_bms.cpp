@@ -856,32 +856,31 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   bool value_tmp;
 
   value_tmp=this->check_bit_of_byte_(data[282], 0); 
-  ESP_LOGI(TAG, "[%02X] heating_switch_                      is bit 0 of %d is %02X address %p",this->address_,data[282],value_tmp,(void *) this->heating_switch_);    
+  ESP_LOGV(TAG, "[%02X] heating_switch_                      is bit 0 of %d is %02X address %p",this->address_,data[282],value_tmp,(void *) this->heating_switch_);    
   this->publish_state_(this->heating_switch_, value_tmp);
   // ESP_LOGI(TAG, "  heating switch: %s", ( this->check_bit_(data[282], 1)) ? "on" : "off");
   value_tmp=this->check_bit_of_byte_(data[282], 1); 
-  ESP_LOGI(TAG, "[%02X] disable_temperature_sensors_switch_  is bit 1 of %d is %02X address %p",this->address_,data[282],value_tmp,(void *) this->disable_temperature_sensors_switch_); 
+  ESP_LOGV(TAG, "[%02X] disable_temperature_sensors_switch_  is bit 1 of %d is %02X address %p",this->address_,data[282],value_tmp,(void *) this->disable_temperature_sensors_switch_); 
   this->publish_state_(this->disable_temperature_sensors_switch_, value_tmp);
   value_tmp=this->check_bit_of_byte_(data[282], 2); 
-  ESP_LOGI(TAG, "[%02X] gps_heartbeat_switch_                is bit 2 of %d is %02X address %p",this->address_,data[282],value_tmp,(void *) this->gps_heartbeat_switch_);    
+  ESP_LOGV(TAG, "[%02X] gps_heartbeat_switch_                is bit 2 of %d is %02X address %p",this->address_,data[282],value_tmp,(void *) this->gps_heartbeat_switch_);    
   this->publish_state_(this->gps_heartbeat_switch_, value_tmp); 
   value_tmp=this->check_bit_of_byte_(data[282], 3); 
-  ESP_LOGI(TAG, "[%02X] port_selection_switch_               is bit 3 of %d is %02X address %p",this->address_,data[282],value_tmp,(void *) this->port_selection_switch_); 
+  ESP_LOGV(TAG, "[%02X] port_selection_switch_               is bit 3 of %d is %02X address %p",this->address_,data[282],value_tmp,(void *) this->port_selection_switch_); 
   this->publish_state_(this->port_selection_switch_, value_tmp);
   // ESP_LOGI(TAG, "  Port switch: %s", this->check_bit_(data[282], 8) ? "RS485" : "CAN");
-  value_tmp=this->check_bit_of_byte_(data[282], 7); 
-  //ESP_LOGI(TAG, "[%02X]  Getting bit 7 from value: %d is %02X of object with address %p",this->address_,data[282],value_tmp,(void *) this->disable_pcl_module_switch_);  
-  ESP_LOGI(TAG, "[%02X] disable_pcl_module_switch_           is bit 7 of %d is %02X address %p <------------",this->address_,data[282],value_tmp,(void *) this->disable_pcl_module_switch_);   
-  this->publish_state_(this->disable_pcl_module_switch_, value_tmp);
   value_tmp=this->check_bit_of_byte_(data[282], 4); 
-  ESP_LOGI(TAG, "[%02X] display_always_on_switch_            is bit 4 of %d is %02X address %p",this->address_,data[282],value_tmp,(void *) this->display_always_on_switch_); 
+  ESP_LOGV(TAG, "[%02X] display_always_on_switch_            is bit 4 of %d is %02X address %p",this->address_,data[282],value_tmp,(void *) this->display_always_on_switch_); 
   this->publish_state_(this->display_always_on_switch_, value_tmp);
   value_tmp=this->check_bit_of_byte_(data[282], 5); 
-  ESP_LOGI(TAG, "[%02X] special_charger_switch_              is bit 5 of %d is %02X address %p",this->address_,data[282],value_tmp,(void *) this->special_charger_switch_); 
+  ESP_LOGV(TAG, "[%02X] special_charger_switch_              is bit 5 of %d is %02X address %p",this->address_,data[282],value_tmp,(void *) this->special_charger_switch_); 
   this->publish_state_(this->special_charger_switch_, value_tmp);
   value_tmp=this->check_bit_of_byte_(data[282], 6); 
-  ESP_LOGI(TAG, "[%02X] smart_sleep_on_switch_               is bit 6 of %d is %02X address %p",this->address_,data[282],value_tmp,(void *) this->smart_sleep_on_switch_); 
+  ESP_LOGV(TAG, "[%02X] smart_sleep_on_switch_               is bit 6 of %d is %02X address %p",this->address_,data[282],value_tmp,(void *) this->smart_sleep_on_switch_); 
   this->publish_state_(this->smart_sleep_on_switch_, value_tmp);
+  value_tmp=this->check_bit_of_byte_(data[282], 7); 
+  ESP_LOGV(TAG, "[%02X] disable_pcl_module_switch_           is bit 7 of %d is %02X address %p <------------",this->address_,data[282],value_tmp,(void *) this->disable_pcl_module_switch_);   
+  this->publish_state_(this->disable_pcl_module_switch_, value_tmp);
   
 
 //  // Loggear memoria libre
