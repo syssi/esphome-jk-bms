@@ -36,15 +36,17 @@ class JkRS485Sniffer : public uart::UARTDevice, public output::TalkPin, public C
     for (uint8_t cont=0;cont<16;cont++){
         rs485_network_node[cont].available=0;
         rs485_network_node[cont].last_message_received=0;
-        rs485_network_node[cont].last_device_settings_request_sent=0;
-        rs485_network_node[cont].last_cell_info_request_sent=0;
-        rs485_network_node[cont].last_device_info_request_sent=0;
+        rs485_network_node[cont].last_request_sent=0;
+        rs485_network_node[cont].last_device_settings_request_received_OK=0;
+        rs485_network_node[cont].last_cell_info_request_received_OK=0;
+        rs485_network_node[cont].last_device_info_request_received_OK=0;
         rs485_network_node[cont].counter_cell_info_received=0;
         rs485_network_node[cont].counter_device_settings_received=0;
-        rs485_network_node[cont].counter_device_info_received=0;        
+        rs485_network_node[cont].counter_device_info_received=0;  
+        
     }    
     last_master_activity=0;
-    last_message_sent_acting_as_master=0;
+    last_message_received_acting_as_master=0;
     last_network_scan=0;
 
     act_as_master=false;
@@ -71,13 +73,15 @@ class JkRS485Sniffer : public uart::UARTDevice, public output::TalkPin, public C
 
   void set_rx_timeout(uint16_t rx_timeout) { rx_timeout_ = rx_timeout; }
 
+  void handle_bms_event(int address, std::string event, std::uint8_t frame_type);
 
+  
  protected:
   ProtocolVersion protocol_version_{PROTOCOL_VERSION_JK02_32S};
   
   bool act_as_master;
   uint32_t last_master_activity;
-  uint32_t last_message_sent_acting_as_master;
+  uint32_t last_message_received_acting_as_master;
   uint32_t last_network_scan;
 
 
@@ -103,9 +107,10 @@ class JkRS485Sniffer : public uart::UARTDevice, public output::TalkPin, public C
   struct struct_rs485_network_node {
      bool available;
      uint32_t last_message_received;
-     uint32_t last_device_settings_request_sent;
-     uint32_t last_device_info_request_sent;
-     uint32_t last_cell_info_request_sent;
+     uint32_t last_request_sent;
+     uint32_t last_device_settings_request_received_OK;
+     uint32_t last_device_info_request_received_OK;
+     uint32_t last_cell_info_request_received_OK;
      uint16_t counter_cell_info_received;
      uint16_t counter_device_settings_received;
      uint16_t counter_device_info_received;      

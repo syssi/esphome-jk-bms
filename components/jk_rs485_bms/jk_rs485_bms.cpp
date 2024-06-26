@@ -584,6 +584,7 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
     this->publish_state_(this->battery_total_alarms_active_sensor_, (float) this->battery_total_alarms_active_);
   }
   this->status_notification_received_ = true;
+  this->trigger_event("WORKING ! ######################################################################################",02);  
 }
 
 void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
@@ -922,6 +923,7 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   // 294   4   0x00 0x00 0x00 0x00
   // 298   1   0x00
   // 299   1   0x40                   CHECKSUM
+  this->trigger_event("WORKING ! ######################################################################################",01);
 }
 
 void JkRS485Bms::update() { this->track_status_online_(); }
@@ -1020,7 +1022,7 @@ void JkRS485Bms::decode_device_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->cell_request_charge_voltage_time_sensor_, (float) data[266]*0.1f);
   this->publish_state_(this->cell_request_float_voltage_time_sensor_, (float) data[267]*0.1f);
 
-
+  this->trigger_event("WORKING ! ######################################################################################",03);
 }
 
 void JkRS485Bms::track_status_online_() {

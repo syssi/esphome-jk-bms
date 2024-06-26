@@ -20,12 +20,14 @@ static const uint16_t JKPB_RS485_MASTER_REQUEST_SIZE = 11;
 static const uint16_t MIN_SILENCE_MILLISECONDS = 150;                           //MIN TIME THAT MEANS THAT THERE IS A SILENCE
 static const uint16_t MIN_SILENCE_NEEDED_BEFORE_SPEAKING_MILLISECONDS = 250;
 
-static const uint32_t TIME_BETWEEN_DEVICE_INFO_REQUESTS_MILLISECONDS = 10000;
-static const uint32_t TIME_BETWEEN_CELL_INFO_REQUESTS_MILLISECONDS = 10000;
-static const uint32_t TIME_BETWEEN_DEVICE_SETTINGS_REQUESTS_MILLISECONDS=10000;
+static const uint32_t TIME_BETWEEN_CELL_INFO_REQUESTS_MILLISECONDS = 5000;
+static const uint32_t TIME_BETWEEN_DEVICE_SETTINGS_REQUESTS_MILLISECONDS=3600000;
+static const uint32_t TIME_BETWEEN_DEVICE_INFO_REQUESTS_MILLISECONDS = 3600000;
 
 static const uint16_t SILENCE_BEFORE_ACTING_AS_MASTER = 5000;
-static const uint16_t SILENCE_BEFORE_REUSING_NETWORK_ACTING_AS_MASTER=250;
+static const uint16_t SILENCE_BEFORE_REUSING_NETWORK_ACTING_AS_MASTER=300;
+static const uint16_t TIME_BETWEEN_CONSECUTIVE_REQUEST_SENDINGS_TO_SAME_SLAVE=4000;
+
 
 static const uint16_t TIME_BETWEEN_NETWORK_SCAN_MILLISECONDS=500;  // mejorar
 static const uint16_t NO_MESSAGE_RECEIVED_TIME_SET_AS_UNAVAILABLE_MILLISECONDS = 10000;
@@ -65,6 +67,44 @@ uint16_t chksum(const uint8_t data[], const uint16_t len) {
   return checksum;
 }
 
+//void handle_bms_event(int address, std::string event, std::uint8_t frame_type) {
+//  // Maneja el evento aquí. Por ejemplo, puedes imprimir el evento:
+//  ESP_LOGD("JK_RS485_SNIFFER", "Event from ADDRESS %d: [FRAME_TYPE: %d] %s", address, frame_type, event.c_str());
+//
+//
+//}
+
+void JkRS485Sniffer::handle_bms_event(int address, std::string event, std::uint8_t frame_type) {
+  // Maneja el evento aquí. Por ejemplo, puedes imprimir el evento:
+  ESP_LOGD(TAG,"Received Event from BMS.. [address:0x%02X] @ %d -->  %s", address, frame_type, event.c_str());
+  const uint32_t now=millis();
+
+  if (frame_type==1){
+    this->rs485_network_node[address].last_device_settings_request_received_OK=now;  
+    this->rs485_network_node[address].counter_device_settings_received++;
+    ESP_LOGD(TAG, "updated last_device_settings_request_received_OK");
+  } else if (frame_type==2){
+    this->rs485_network_node[address].last_cell_info_request_received_OK=now;  
+    this->rs485_network_node[address].counter_cell_info_received++;
+    ESP_LOGD(TAG, "updated last_cell_info_request_received_OK");
+  } else if (frame_type==3){
+    this->rs485_network_node[address].last_device_info_request_received_OK=now;  
+    this->rs485_network_node[address].counter_device_info_received++;
+    ESP_LOGD(TAG, "updated last_device_info_request_received_OK");
+  } else {
+
+  }
+
+
+
+
+
+  this->last_jk_rs485_network_activity_=now;
+  if (this->act_as_master==true){
+    this->last_message_received_acting_as_master=now;
+  }  
+}
+
 void JkRS485Sniffer::send_request_to_slave(uint8_t address, uint8_t frame_type){
 
     uint8_t frame[11];
@@ -101,23 +141,14 @@ void JkRS485Sniffer::send_request_to_slave(uint8_t address, uint8_t frame_type){
     this->talk_pin_->digital_write(0); 
     delayMicroseconds(50); //50us
 
+
     const uint32_t now=millis();
 
-    if (frame_type==1){
-      this->rs485_network_node[address].last_device_settings_request_sent=now;  
-    } else if (frame_type==2){
-      this->rs485_network_node[address].last_cell_info_request_sent=now;  
-    } else if (frame_type==3){
-      this->rs485_network_node[address].last_device_info_request_sent=now;  
-    } else {
-  
-    }
-    
-    this->last_jk_rs485_network_activity_=now;
-    if (this->act_as_master==true){
-      this->last_message_sent_acting_as_master=now;
-    }
- 
+    this->rs485_network_node[address].last_request_sent=now;  
+//    this->last_jk_rs485_network_activity_=now;
+//    if (this->act_as_master==true){
+//      this->last_message_received_acting_as_master=now;
+//    }  
 
 }
 
@@ -128,36 +159,21 @@ bool JkRS485Sniffer::calculate_next_pooling(void){
   const uint32_t now=millis();
 
   //PENDING INFO FROM ACTUAL ADDRESS NODE?
-  if (this->rs485_network_node[this->pooling_index.node_address].available){
-    if (this->pooling_index.frame_type==3){ //DEVICE INFO
-        if (now-this->rs485_network_node[pooling_index.node_address].last_device_settings_request_sent>TIME_BETWEEN_DEVICE_SETTINGS_REQUESTS_MILLISECONDS || this->rs485_network_node[pooling_index.node_address].last_device_settings_request_sent==0){
+  if (this->rs485_network_node[this->pooling_index.node_address].available && (now-this->rs485_network_node[this->pooling_index.node_address].last_request_sent)>TIME_BETWEEN_CONSECUTIVE_REQUEST_SENDINGS_TO_SAME_SLAVE){
+    if (now-this->rs485_network_node[pooling_index.node_address].last_device_info_request_received_OK>TIME_BETWEEN_DEVICE_INFO_REQUESTS_MILLISECONDS || this->rs485_network_node[pooling_index.node_address].last_device_info_request_received_OK==0){
+      this->pooling_index.frame_type=3; //DEVICE INFO
+      found=true;
+    } else {
+        if (now-this->rs485_network_node[pooling_index.node_address].last_device_settings_request_received_OK>TIME_BETWEEN_DEVICE_SETTINGS_REQUESTS_MILLISECONDS || this->rs485_network_node[pooling_index.node_address].last_device_settings_request_received_OK==0){
           this->pooling_index.frame_type=1; //DEVICE SETTINGS
           found=true;
         } else {
-          if (now-this->rs485_network_node[pooling_index.node_address].last_cell_info_request_sent>TIME_BETWEEN_DEVICE_INFO_REQUESTS_MILLISECONDS || this->rs485_network_node[pooling_index.node_address].last_device_info_request_sent==0 ){
-            this->pooling_index.frame_type=3; //DEVICE INFO
-            found=true;
-          } else {
-            if (now-this->rs485_network_node[pooling_index.node_address].last_cell_info_request_sent>TIME_BETWEEN_CELL_INFO_REQUESTS_MILLISECONDS || this->rs485_network_node[pooling_index.node_address].last_cell_info_request_sent==0 ){
+            if (now-this->rs485_network_node[pooling_index.node_address].last_cell_info_request_received_OK>TIME_BETWEEN_DEVICE_SETTINGS_REQUESTS_MILLISECONDS || this->rs485_network_node[pooling_index.node_address].last_cell_info_request_received_OK==0){
               this->pooling_index.frame_type=2; //CELL INFO
-              found=true;            
-            }    
-          }
+              found=true;
+            }
         }
-    } else if (this->pooling_index.frame_type==1){
-        if (now-this->rs485_network_node[pooling_index.node_address].last_cell_info_request_sent>TIME_BETWEEN_CELL_INFO_REQUESTS_MILLISECONDS || this->rs485_network_node[pooling_index.node_address].last_cell_info_request_sent==0){
-          this->pooling_index.frame_type=2; //CELL INFO
-          found=true;
-        }          
-
-    } else if (this->pooling_index.frame_type==2){
-
-
-    } else {
-      //try_next_address
     }
-  } else {
-    //try_next_address
   }
 
 
@@ -165,16 +181,16 @@ bool JkRS485Sniffer::calculate_next_pooling(void){
     //try other address
     uint8_t found_index=0;
     for (uint8_t j = this->pooling_index.node_address+1; j < 16; ++j) {
-      if (rs485_network_node[j].available) {
-        if (now-this->rs485_network_node[j].last_device_info_request_sent>TIME_BETWEEN_DEVICE_INFO_REQUESTS_MILLISECONDS || this->rs485_network_node[j].last_device_info_request_sent==0){
+      if (rs485_network_node[j].available && (now-this->rs485_network_node[j].last_request_sent)>TIME_BETWEEN_CONSECUTIVE_REQUEST_SENDINGS_TO_SAME_SLAVE) {
+        if (now-this->rs485_network_node[j].last_device_info_request_received_OK>TIME_BETWEEN_DEVICE_INFO_REQUESTS_MILLISECONDS || this->rs485_network_node[j].last_device_info_request_received_OK==0){
           this->pooling_index.frame_type=3; //DEVICE INFO
           found=true;
         } else { //DEVICE SETTINGS
-          if (now-this->rs485_network_node[j].last_device_settings_request_sent>TIME_BETWEEN_DEVICE_SETTINGS_REQUESTS_MILLISECONDS || this->rs485_network_node[j].last_device_settings_request_sent==0){
+          if (now-this->rs485_network_node[j].last_device_settings_request_received_OK>TIME_BETWEEN_DEVICE_SETTINGS_REQUESTS_MILLISECONDS || this->rs485_network_node[j].last_device_settings_request_received_OK==0){
             this->pooling_index.frame_type=1; //DEVICE SETTINGS
             found=true;
           } else {
-            if (now-this->rs485_network_node[j].last_cell_info_request_sent>TIME_BETWEEN_CELL_INFO_REQUESTS_MILLISECONDS || this->rs485_network_node[j].last_cell_info_request_sent==0){
+            if (now-this->rs485_network_node[j].last_cell_info_request_received_OK>TIME_BETWEEN_CELL_INFO_REQUESTS_MILLISECONDS || this->rs485_network_node[j].last_cell_info_request_received_OK==0){
               this->pooling_index.frame_type=2; //CELL INFO
               found=true;
             }          
@@ -187,18 +203,19 @@ bool JkRS485Sniffer::calculate_next_pooling(void){
       }      
     }
 
+
     if (found==false){
       for (uint8_t j = 1; j <= this->pooling_index.node_address; ++j) {
-        if (rs485_network_node[j].available) {
-          if (now-this->rs485_network_node[j].last_device_info_request_sent>TIME_BETWEEN_DEVICE_INFO_REQUESTS_MILLISECONDS || this->rs485_network_node[j].last_device_info_request_sent==0){
+        if (rs485_network_node[j].available && (now-this->rs485_network_node[j].last_request_sent)>TIME_BETWEEN_CONSECUTIVE_REQUEST_SENDINGS_TO_SAME_SLAVE) {
+          if (now-this->rs485_network_node[j].last_device_info_request_received_OK>TIME_BETWEEN_DEVICE_INFO_REQUESTS_MILLISECONDS || this->rs485_network_node[j].last_device_info_request_received_OK==0){
             this->pooling_index.frame_type=3; //DEVICE INFO
             found=true;
           } else { //DEVICE SETTINGS
-            if (now-this->rs485_network_node[j].last_device_settings_request_sent>TIME_BETWEEN_DEVICE_SETTINGS_REQUESTS_MILLISECONDS || this->rs485_network_node[j].last_device_settings_request_sent==0){
+            if (now-this->rs485_network_node[j].last_device_settings_request_received_OK>TIME_BETWEEN_DEVICE_SETTINGS_REQUESTS_MILLISECONDS || this->rs485_network_node[j].last_device_settings_request_received_OK==0){
               this->pooling_index.frame_type=1; //DEVICE SETTINGS
               found=true;
             } else {
-              if (now-this->rs485_network_node[j].last_cell_info_request_sent>TIME_BETWEEN_CELL_INFO_REQUESTS_MILLISECONDS || this->rs485_network_node[j].last_cell_info_request_sent==0){
+              if (now-this->rs485_network_node[j].last_cell_info_request_received_OK>TIME_BETWEEN_CELL_INFO_REQUESTS_MILLISECONDS || this->rs485_network_node[j].last_cell_info_request_received_OK==0){
                 this->pooling_index.frame_type=2; //CELL INFO
                 found=true;
               }          
@@ -212,6 +229,7 @@ bool JkRS485Sniffer::calculate_next_pooling(void){
       }
     }    
 
+
     if (found==true){
       this->pooling_index.node_address=found_index;
     } else {
@@ -221,10 +239,10 @@ bool JkRS485Sniffer::calculate_next_pooling(void){
 
   if (found==true){
     const uint32_t now=millis();
-    ESP_LOGI(TAG, "POOLING NEXT AVAILABLE...0x%02X @ %d [%d,%d,%d]",this->pooling_index.node_address,this->pooling_index.frame_type,
-                                                          now-this->rs485_network_node[this->pooling_index.node_address].last_cell_info_request_sent,
-                                                          now-this->rs485_network_node[this->pooling_index.node_address].last_device_settings_request_sent,
-                                                          now-this->rs485_network_node[this->pooling_index.node_address].last_device_info_request_sent);
+    ESP_LOGI(TAG, "POOLING NEXT AVAILABLE... [address:0x%02X] @ %d [%d,%d,%d]",this->pooling_index.node_address,this->pooling_index.frame_type,
+                                                          now-this->rs485_network_node[this->pooling_index.node_address].last_device_settings_request_received_OK,
+                                                          now-this->rs485_network_node[this->pooling_index.node_address].last_cell_info_request_received_OK,
+                                                          now-this->rs485_network_node[this->pooling_index.node_address].last_device_info_request_received_OK);
   } else {
 
   } 
@@ -321,7 +339,7 @@ void JkRS485Sniffer::loop() {
       if (this->act_as_master) {
         
         
-        if (now-last_message_sent_acting_as_master>SILENCE_BEFORE_REUSING_NETWORK_ACTING_AS_MASTER){
+        if (now-last_message_received_acting_as_master>SILENCE_BEFORE_REUSING_NETWORK_ACTING_AS_MASTER){
           // Is an special message to send in the queue?
           // if so, do it and return. TO DO!!!
           
@@ -346,20 +364,8 @@ void JkRS485Sniffer::loop() {
           if (scan_sent==false){
             if (this->nodes_available_number>0){
               //NORMAL POOLING LOOP AS MASTER
-              //FIRST CHECK IF BASIC INFO ARRIVED FROM EACH SLAVE
-              for (uint8_t cont=0;cont<16;cont++){
-                if (this->rs485_network_node[cont].available){
-                  if (this->rs485_network_node[cont].counter_device_info_received==0){
-                    this->rs485_network_node[cont].last_device_info_request_sent=0;
-                  }
-                  if (this->rs485_network_node[cont].counter_device_settings_received==0){
-                    this->rs485_network_node[cont].last_device_settings_request_sent=0;
-                  }                  
-                }
-              }
-
               if (this->calculate_next_pooling()==true){
-                ESP_LOGD(TAG, "CALCULATED NEXT POOLING...0x%02X @ %d",this->pooling_index.node_address,this->pooling_index.frame_type);
+                //ESP_LOGI(TAG, "CALCULATED NEXT POOLING...0x%02X @ %d",this->pooling_index.node_address,this->pooling_index.frame_type);
                 this->send_request_to_slave(this->pooling_index.node_address,this->pooling_index.frame_type);
               }
             }
@@ -371,13 +377,11 @@ void JkRS485Sniffer::loop() {
         for (uint8_t cont=0;cont<16;cont++){
           if (this->rs485_network_node[cont].available==true){
             //repeat device info request
-            if (now-rs485_network_node[cont].last_device_info_request_sent>TIME_BETWEEN_DEVICE_INFO_REQUESTS_MILLISECONDS ||
-               this->rs485_network_node[cont].last_device_info_request_sent==0){
+            if (now-rs485_network_node[cont].last_device_info_request_received_OK>TIME_BETWEEN_DEVICE_INFO_REQUESTS_MILLISECONDS){
 
               send_request_to_slave(cont,03);
 
-              now=millis();
-              rs485_network_node[cont].last_device_info_request_sent=now;          
+              now=millis();       
               this->last_jk_rs485_network_activity_=now; 
               break;
             }
@@ -394,7 +398,7 @@ void JkRS485Sniffer::loop() {
           //periodically test !!!!!!
           if (this->rs485_network_node[cont].available && cont>0){
             if (this->rs485_network_node[cont].counter_device_info_received==0){
-              this->rs485_network_node[cont].last_device_info_request_sent=0;
+              this->rs485_network_node[cont].last_device_info_request_received_OK=0;
             }                
           }
           
@@ -568,7 +572,7 @@ uint8_t JkRS485Sniffer::manage_rx_buffer_(void) {
 
       if (this->rx_buffer_.size()>=JKPB_RS485_RESPONSE_SIZE){
         //continue
-        ESP_LOGV(TAG, "###############################Sequence found SIZE: %d",(this->rx_buffer_.size()));     
+        ESP_LOGD(TAG, "###############################Sequence found SIZE: %d",(this->rx_buffer_.size()));     
       } else {
         return(3);
       }
@@ -595,6 +599,16 @@ uint8_t JkRS485Sniffer::manage_rx_buffer_(void) {
 
     if (computed_checksum != remote_checksum) {
       ESP_LOGW(TAG, "CHECKSUM failed! 0x%02X != 0x%02X", computed_checksum, remote_checksum);
+      auto it_next = std::search(this->rx_buffer_.begin()+1, this->rx_buffer_.end(), pattern_response_header.begin(), pattern_response_header.end());
+      size_t index_next = std::distance(this->rx_buffer_.begin(), it_next);
+      
+      if (index_next>0){
+        //printBuffer(index);
+        this->rx_buffer_.erase(this->rx_buffer_.begin(), this->rx_buffer_.begin() + index_next);        
+      } else {
+          this->rx_buffer_.clear();
+      }
+
       return(10);
     } else {
       this->rs485_network_node[address].last_message_received=now;
@@ -611,14 +625,7 @@ uint8_t JkRS485Sniffer::manage_rx_buffer_(void) {
       
     }
 
-    //counter++
-    if (raw[JKPB_RS485_FRAME_TYPE_ADDRESS]==0x02){
-      this->rs485_network_node[address].counter_cell_info_received++;
-    } else if (raw[JKPB_RS485_FRAME_TYPE_ADDRESS]==0x01){
-      this->rs485_network_node[address].counter_device_settings_received++;
-    } else if (raw[JKPB_RS485_FRAME_TYPE_ADDRESS]==0x03){
-      this->rs485_network_node[address].counter_device_info_received++;
-    }
+
 
 
 

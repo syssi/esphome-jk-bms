@@ -65,7 +65,7 @@ def jk_rs485_sniffer_device_schema():
     return cv.Schema(schema)
 
 
-async def register_jk_rs485_sniffer_device(var, config):
+async def register_jk_rs485_bms_device(var, config):
     parent = await cg.get_variable(config[CONF_JK_RS485_SNIFFER_ID])
     cg.add(var.set_parent(parent))
 ##    cg.add(var.set_address(config[CONF_ADDRESS]))
