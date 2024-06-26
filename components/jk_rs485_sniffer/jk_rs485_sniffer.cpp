@@ -21,12 +21,12 @@ static const uint16_t MIN_SILENCE_MILLISECONDS = 150;                           
 static const uint16_t MIN_SILENCE_NEEDED_BEFORE_SPEAKING_MILLISECONDS = 250;
 
 static const uint32_t TIME_BETWEEN_CELL_INFO_REQUESTS_MILLISECONDS = 5000;
-static const uint32_t TIME_BETWEEN_DEVICE_SETTINGS_REQUESTS_MILLISECONDS=3600000;
+static const uint32_t TIME_BETWEEN_DEVICE_SETTINGS_REQUESTS_MILLISECONDS=5000;
 static const uint32_t TIME_BETWEEN_DEVICE_INFO_REQUESTS_MILLISECONDS = 3600000;
 
-static const uint16_t SILENCE_BEFORE_ACTING_AS_MASTER = 5000;
-static const uint16_t SILENCE_BEFORE_REUSING_NETWORK_ACTING_AS_MASTER=300;
-static const uint16_t TIME_BETWEEN_CONSECUTIVE_REQUEST_SENDINGS_TO_SAME_SLAVE=4000;
+static const uint16_t SILENCE_BEFORE_ACTING_AS_MASTER = 2000;
+static const uint16_t SILENCE_BEFORE_REUSING_NETWORK_ACTING_AS_MASTER=400;
+static const uint16_t TIME_BETWEEN_CONSECUTIVE_REQUEST_SENDINGS_TO_SAME_SLAVE=2500;
 
 
 static const uint16_t TIME_BETWEEN_NETWORK_SCAN_MILLISECONDS=500;  // mejorar
@@ -337,11 +337,10 @@ void JkRS485Sniffer::loop() {
       }
       
       if (this->act_as_master) {
-        
-        
         if (now-last_message_received_acting_as_master>SILENCE_BEFORE_REUSING_NETWORK_ACTING_AS_MASTER){
           // Is an special message to send in the queue?
           // if so, do it and return. TO DO!!!
+          this->last_message_received_acting_as_master=now;      
           
           bool scan_sent=false;
           //SCAN NEXT UNAVAILABLE NODE
