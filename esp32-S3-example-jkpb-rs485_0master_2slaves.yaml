@@ -2,7 +2,6 @@ substitutions:
   esp_name: esp-rs485-gw
   bms0_name: rs485-bms0
   bms1_name: rs485-bms1
-  bms1bis_name: rs485-bms1bis
   device_description: "Monitor two JK-BMS via RS485 internal"
   external_components_source: github://txubelaxu/esphome-jk-bms@main #github://syssi/esphome-jk-bms@main
   tx_pin_uart_0: GPIO17 #GPIO1 #GPIO16
@@ -272,80 +271,7 @@ binary_sensor:
     alarm_battempsensor5absent:
       name: "${bms1_name} alarm BATTempSensor5Absent"
 
-  - platform: jk_rs485_bms
-    jk_rs485_bms_id: bms1bis
-    status_balancing:
-      name: "${bms1bis_name} status balancing"
-    status_precharging:
-      name: "${bms1bis_name} status precharging"      
-    status_charging:
-      name: "${bms1bis_name} status charging"
-    status_discharging:
-      name: "${bms1bis_name} status discharging"
-    status_online:
-      name: "${bms1bis_name} status online"
-    status_heating:
-      name: "${bms1bis_name} status heating"      
-    alarm_wireres:
-      name: "${bms1bis_name} alarm WireRes"
-    alarm_mosotp:
-      name: "${bms1bis_name} alarm MosOTP"
-    alarm_cellquantity:
-      name: "${bms1bis_name} alarm CellQuantity"
-    alarm_cursensorerr:
-      name: "${bms1bis_name} alarm CurSensorErr"
-    alarm_cellovp:
-      name: "${bms1bis_name} alarm CellOVP"
-    alarm_batovp:
-      name: "${bms1bis_name} alarm BatOVP"
-    alarm_chocp:
-      name: "${bms1bis_name} alarm ChOCP"
-    alarm_chscp:
-      name: "${bms1bis_name} alarm ChSCP"
-    alarm_chotp:
-      name: "${bms1bis_name} alarm ChOTP"
-    alarm_chutp:
-      name: "${bms1bis_name} alarm ChUTP"
-    alarm_cpuauxcommuerr:
-      name: "${bms1bis_name} alarm CPUAuxCommuErr"
-    alarm_celluvp:
-      name: "${bms1bis_name} alarm CellUVP"
-    alarm_batuvp:
-      name: "${bms1bis_name} alarm BatUVP"
-    alarm_dchocp:
-      name: "${bms1bis_name} alarm DchOCP"
-    alarm_dchscp:
-      name: "${bms1bis_name} alarm DchSCP"
-    alarm_dchotp:
-      name: "${bms1bis_name} alarm DchOTP"
-    alarm_chargemos:
-      name: "${bms1bis_name} alarm ChargeMOS"
-    alarm_dischargemos:
-      name: "${bms1bis_name} alarm DischargeMOS"
-    alarm_gpsdisconneted:
-      name: "${bms1bis_name} alarm GPSDisconneted"
-    alarm_modifypwdintime:
-      name: "${bms1bis_name} alarm ModifyPWDinTime"
-    alarm_dischargeonfailed:
-      name: "${bms1bis_name} alarm DischargeOnFailed"
-    alarm_batteryovertemp:
-      name: "${bms1bis_name} alarm BatteryOverTemp"
-    alarm_temperaturesensoranomaly:
-      name: "${bms1bis_name} alarm TemperatureSensorAnomaly"
-    alarm_plcmoduleanomaly:
-      name: "${bms1bis_name} alarm PLCModuleAnomaly"
-    alarm_mostempsensorabsent:
-      name: "${bms1bis_name} alarm MOSTempSensorAbsent"
-    alarm_battempsensor1absent:
-      name: "${bms1bis_name} alarm BATTempSensor1Absent"
-    alarm_battempsensor2absent:
-      name: "${bms1bis_name} alarm BATTempSensor2Absent"
-    alarm_battempsensor3absent:
-      name: "${bms1bis_name} alarm BATTempSensor3Absent"
-    alarm_battempsensor4absent:
-      name: "${bms1bis_name} alarm BATTempSensor4Absent"
-    alarm_battempsensor5absent:
-      name: "${bms1bis_name} alarm BATTempSensor5Absent"
+
 
 
 sensor:
