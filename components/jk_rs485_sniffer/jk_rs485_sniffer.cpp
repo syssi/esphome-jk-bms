@@ -143,8 +143,8 @@ void JkRS485Sniffer::send_request_to_slave(uint8_t address, uint8_t frame_type){
 
 
     const uint32_t now=millis();
-
     this->rs485_network_node[address].last_request_sent=now;  
+    this->last_jk_rs485_network_activity_=now;     
 //    this->last_jk_rs485_network_activity_=now;
 //    if (this->act_as_master==true){
 //      this->last_message_received_acting_as_master=now;
@@ -295,12 +295,14 @@ void JkRS485Sniffer::loop() {
       this->read_byte(&byte);
       this->rx_buffer_.push_back(byte);
     }
+    now = millis();
+    this->last_jk_rs485_network_activity_ = now; 
 
     //manage buffer
     uint8_t response=0;
     uint16_t original_buffer_size=rx_buffer_.size();
     uint8_t cont_manage=0;
-    bool changed=false;
+    bool changed=true;
     ESP_LOGD(TAG, "..........................................");
     do {
         cont_manage++;
@@ -322,7 +324,7 @@ void JkRS485Sniffer::loop() {
     }
     
     
-    this->last_jk_rs485_network_activity_ = now;    
+       
   } else {
     //NO RX DATA
     if ((now-this->last_jk_rs485_network_activity_)>MIN_SILENCE_NEEDED_BEFORE_SPEAKING_MILLISECONDS){
@@ -355,7 +357,8 @@ void JkRS485Sniffer::loop() {
               ESP_LOGD(TAG, "SCANNING TO DISCOVER...0x%02X",found_index);
               this->pooling_index.scan_address=found_index;
               this->send_request_to_slave(found_index,2);
-              this->last_network_scan=millis();
+
+              this->last_network_scan=now;
               scan_sent=true;
             }
           }
@@ -363,9 +366,10 @@ void JkRS485Sniffer::loop() {
           if (scan_sent==false){
             if (this->nodes_available_number>0){
               //NORMAL POOLING LOOP AS MASTER
-              if (this->calculate_next_pooling()==true){
+              if (this->calculate_next_pooling()==true && now-this->last_jk_rs485_network_activity_>SILENCE_BEFORE_REUSING_NETWORK_ACTING_AS_MASTER){
                 //ESP_LOGI(TAG, "CALCULATED NEXT POOLING...0x%02X @ %d",this->pooling_index.node_address,this->pooling_index.frame_type);
                 this->send_request_to_slave(this->pooling_index.node_address,this->pooling_index.frame_type);
+
               }
             }
           }
@@ -380,8 +384,8 @@ void JkRS485Sniffer::loop() {
 
               send_request_to_slave(cont,03);
 
-              now=millis();       
-              this->last_jk_rs485_network_activity_=now; 
+
+
               break;
             }
 

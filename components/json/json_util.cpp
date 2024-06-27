@@ -33,7 +33,7 @@ std::string build_json(const json_build_t &f) {
   const size_t free_heap = lt_heap_get_free();
 #endif
 
-  size_t request_size = std::min(free_heap, (size_t) 1024);
+  size_t request_size = std::min(free_heap, (size_t) 4096);
   while (true) {
     ESP_LOGV(TAG, "Attempting to allocate %u bytes for JSON serialization", request_size);
     DynamicJsonDocument json_document(request_size);
