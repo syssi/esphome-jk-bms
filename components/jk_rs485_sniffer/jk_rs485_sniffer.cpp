@@ -26,6 +26,7 @@ static const uint32_t TIME_BETWEEN_DEVICE_INFO_REQUESTS_MILLISECONDS = 3600000;
 
 static const uint16_t SILENCE_BEFORE_ACTING_AS_MASTER = 2000;
 static const uint16_t SILENCE_BEFORE_REUSING_NETWORK_ACTING_AS_MASTER=400;
+static const uint16_t TIME_BEFORE_NEXT_POOLING_MILLISENCONDS=750;
 static const uint16_t TIME_BETWEEN_CONSECUTIVE_REQUEST_SENDINGS_TO_SAME_SLAVE=2500;
 
 
@@ -108,24 +109,25 @@ void JkRS485Sniffer::handle_bms_event(int address, std::string event, std::uint8
 void JkRS485Sniffer::send_request_to_slave(uint8_t address, uint8_t frame_type){
 
     uint8_t frame[11];
-    frame[0] = address ;     // start sequence
-    frame[1] = 0x10;     // start sequence
-    frame[2] = 0x16;     // start sequence
+    frame[0] = address ;        // start sequence
+    frame[1] = 0x10;            // start sequence
+    frame[2] = 0x16;            // start sequence
     
     if (frame_type==1){
-      frame[3] = 0x1E;     // start sequence
+      frame[3] = 0x1E;          // start sequence
     } else if (frame_type==2){
-      frame[3] = 0x20;     // start sequence
+      frame[3] = 0x20;          // start sequence
     } else if (frame_type==3){
-      frame[3] = 0x1C;     // start sequence
+      frame[3] = 0x1C;          // start sequence
     } else {
       return;
-    }
-    frame[4] = 0x00;     // holding register
-    frame[5] = 0x01;     // size of the value in byte
-    frame[6] = 0x02;
+    }  
+    frame[4] = 0x00;            // holding register
+    frame[5] = 0x01;            // size of the value in byte
+    frame[6] = 0x02;            // command word: 0x01 (activation), 0x02 (write), 0x03 (read), 0x05 (password), 0x06 (read all)
     frame[7] = 0x00;
     frame[8] = 0x00;
+    
     uint16_t computed_checksum = crc16_c(frame, 9);
     frame[9] = ((computed_checksum & 0xFF00)>>8);
     frame[10] = ((computed_checksum & 0x00FF)>>0);
@@ -364,9 +366,10 @@ void JkRS485Sniffer::loop() {
           }
           
           if (scan_sent==false){
-            if (this->nodes_available_number>0){
+            if (this->nodes_available_number>0 && now-this->last_jk_rs485_pooling_trial_>TIME_BEFORE_NEXT_POOLING_MILLISENCONDS){
+              this->last_jk_rs485_pooling_trial_=now;
               //NORMAL POOLING LOOP AS MASTER
-              if (this->calculate_next_pooling()==true && now-this->last_jk_rs485_network_activity_>SILENCE_BEFORE_REUSING_NETWORK_ACTING_AS_MASTER){
+              if (this->calculate_next_pooling()==true){
                 //ESP_LOGI(TAG, "CALCULATED NEXT POOLING...0x%02X @ %d",this->pooling_index.node_address,this->pooling_index.frame_type);
                 this->send_request_to_slave(this->pooling_index.node_address,this->pooling_index.frame_type);
 

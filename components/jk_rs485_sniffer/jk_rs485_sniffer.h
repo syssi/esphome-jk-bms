@@ -98,6 +98,7 @@ class JkRS485Sniffer : public uart::UARTDevice, public output::TalkPin, public C
   std::vector<uint8_t> rx_buffer_;
   uint16_t rx_timeout_{50};
   uint32_t last_jk_rs485_network_activity_{0};
+  uint32_t last_jk_rs485_pooling_trial_{0};
   std::vector<JkRS485SnifferDevice *> devices_;  
 
   void write_state(bool state) override { this->talk_pin_->digital_write(state); }
