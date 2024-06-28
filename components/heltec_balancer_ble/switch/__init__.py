@@ -15,8 +15,6 @@ CODEOWNERS = ["@syssi"]
 
 CONF_BALANCER = "balancer"
 
-ICON_CHARGING = "mdi:battery-charging-50"
-ICON_DISCHARGING = "mdi:battery-charging-50"
 ICON_BALANCER = "mdi:seesaw"
 
 SWITCHES = {
