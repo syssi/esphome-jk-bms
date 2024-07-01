@@ -39,7 +39,7 @@ esphome:
   comment: ${device_description}
   project:
     name: "txubelaxu.esphome-jk-bms"
-    version: 1.0.0
+    version: 1.3.1
 #  libraries:
 #    - "ArduinoJson"
 #  includes:
@@ -290,19 +290,21 @@ sensor:
         - text_sensor.template.publish:
             id: uptime_human
             state: !lambda |-
-              int seconds = round(id(uptime_sensor).raw_state);
-              int days = seconds / (24 * 3600);
-              seconds = seconds % (24 * 3600);
-              int hours = seconds / 3600;
-              seconds = seconds % 3600;
-              int minutes = seconds /  60;
-              seconds = seconds % 60;
-              return (
-                (days ? to_string(days) + "d " : "") +
-                (hours ? to_string(hours) + "h " : "") +
-                (minutes ? to_string(minutes) + "m " : "") +
-                (to_string(seconds) + "s")
-              ).c_str();
+              char buf[10];
+              int uptime_sec = round(id(uptime_sensor).raw_state);
+              int days = (int)(uptime_sec / 86400);
+              int hours = (int)((uptime_sec % 86400) / 3600);
+              int minutes = (int)((uptime_sec % 3600) / 60);
+              int seconds = (int)(uptime_sec % 60);
+
+              return(
+                (
+                  (days ? sprintf(buf, "%02dd ", days), std::string(buf) : "") +
+                  (hours ? sprintf(buf, "%02dh ", hours), std::string(buf) : "") +
+                  (minutes ? sprintf(buf, "%02dm ", minutes), std::string(buf) : "") +
+                  (sprintf(buf, "%02ds", seconds), std::string(buf))
+                ).c_str()
+              ); 
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms0
