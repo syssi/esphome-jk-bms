@@ -60,14 +60,17 @@ external_components:
 #   refresh: 0s
   #- source:
   #    type: git
-  #    url: https://github.com/esphome/esphome
+  #    url: https://github.com/txubelaxu/esphome-jk-bms/
   #    ref: dev
   #  components: [ json ]
 
-  - source: ./components
-    refresh: 0s
-    components: [ jk_rs485_sniffer , jk_rs485_bms ]
-     
+  #- source: ./components
+  #  refresh: 0s
+  #  components: [ jk_rs485_sniffer , jk_rs485_bms ]
+
+   - source: ${external_components_source}
+     refresh: 0s
+     components: [ jk_rs485_sniffer , jk_rs485_bms ]
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
