@@ -513,7 +513,7 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   ESP_LOGD(TAG, "SOCSOH: 0x%02X (always 0x64?)", data[158 + offset]);
 
   // 159   1   0x00                   Precharge
-  ESP_LOGI(TAG, "Precharge: 0x%02X (always 0x00?)", data[159 + offset]);
+  ESP_LOGD(TAG, "Precharge: 0x%02X (always 0x00?)", data[159 + offset]);
 
   // 160   2   0x79 0x04              Unknown160 (Cycle capacity?)
   ESP_LOGD(TAG, "Unknown160: 0x%02X 0x%02X (always 0xC5 0x09?)", data[160 + offset], data[161 + offset]);
@@ -805,7 +805,7 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   // 5     1   0x4F                   Frame counter
 
   // 6     4   0x58 0x02 0x00 0x00    ** [JK-PB2A16S-20P v14] Smart sleep voltage
-  ESP_LOGD(TAG, "  Smart sleep voltage: %f", (float) jk_get_32bit(6) * 0.001f);
+  ESP_LOGI(TAG, "  Smart sleep voltage: %f", (float) jk_get_32bit(6) * 0.001f);
   this->publish_state_(this->smart_sleep_voltage_number_, (float) jk_get_32bit(6) * 0.001f);
 
   // 10    4   0x54 0x0B 0x00 0x00    Cell UVP
