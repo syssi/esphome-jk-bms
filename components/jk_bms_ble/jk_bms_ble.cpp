@@ -491,6 +491,8 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   //                                                                     0x01: Charging balancer
   //                                                                     0x02: Discharging balancer
   this->publish_state_(this->balancing_sensor_, (data[140 + offset]));
+  this->publish_state_(this->balancing_binary_sensor_, (data[140 + offset] != 0x00));
+  ESP_LOGD(TAG, " Balancing indicator (legacy): %s", YESNO(data[140 + offset] != 0x00));
 
   // 141   1   0x54                   State of charge in   1.0           %
   this->publish_state_(this->state_of_charge_sensor_, (float) data[141 + offset]);
@@ -530,7 +532,8 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->precharging_binary_sensor_, (bool) data[168 + offset]);
 
   // 169   1   0x01                   Balancer working                             0x00: off, 0x01: on
-  this->publish_state_(this->balancing_binary_sensor_, (bool) data[169 + offset]);
+  // this->publish_state_(this->balancing_binary_sensor_, (bool) data[169 + offset]);
+  ESP_LOGD(TAG, " Balancing indicator (new): %s", YESNO((bool) data[169 + offset]));
 
   // 171   2   0x00 0x00              Unknown171
   // 173   2   0x00 0x00              Unknown173
