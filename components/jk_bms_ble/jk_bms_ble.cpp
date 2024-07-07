@@ -576,7 +576,7 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
 
   if (frame_version == FRAME_VERSION_JK02_32S) {
     uint16_t raw_emergency_time_countdown = jk_get_16bit(186 + offset);
-    ESP_LOGI(TAG, "  Emergency switch: %s", (raw_emergency_time_countdown > 0) ? "on" : "off");
+    ESP_LOGI(TAG, "  Emergency switch: %s", ONOFF(raw_emergency_time_countdown > 0));
     this->publish_state_(this->emergency_switch_, raw_emergency_time_countdown > 0);
     this->publish_state_(this->emergency_time_countdown_sensor_, (float) raw_emergency_time_countdown * 1.0f);
 
@@ -891,15 +891,15 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->cell_count_number_, (float) data[114]);
 
   // 118   4   0x01 0x00 0x00 0x00    Charge switch
-  ESP_LOGI(TAG, "  Charge switch: %s", ((bool) data[118]) ? "on" : "off");
+  ESP_LOGI(TAG, "  Charge switch: %s", ONOFF((bool) data[118]));
   this->publish_state_(this->charging_switch_, (bool) data[118]);
 
   // 122   4   0x01 0x00 0x00 0x00    Discharge switch
-  ESP_LOGI(TAG, "  Discharge switch: %s", ((bool) data[122]) ? "on" : "off");
+  ESP_LOGI(TAG, "  Discharge switch: %s", ONOFF((bool) data[122]));
   this->publish_state_(this->discharging_switch_, (bool) data[122]);
 
   // 126   4   0x01 0x00 0x00 0x00    Balancer switch
-  ESP_LOGI(TAG, "  Balancer switch: %s", ((bool) data[126]) ? "on" : "off");
+  ESP_LOGI(TAG, "  Balancer switch: %s", ONOFF((bool) data[126]));
   this->publish_state_(this->balancer_switch_, (bool) (data[126]));
 
   // 130   4   0x88 0x13 0x00 0x00    Nominal battery capacity
@@ -969,7 +969,7 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   //    bit6: SMART_SLEEP_ON_SWITCH_ENABLED          64
   //    bit7: DISABLE_PCL_MODULE_SWITCH_ENABLED      128
   this->publish_state_(this->heating_switch_, check_bit_(data[282], 1));
-  ESP_LOGI(TAG, "  Heating switch: %s", ((bool) check_bit_(data[282], 1)) ? "on" : "off");
+  ESP_LOGI(TAG, "  Heating switch: %s", ONOFF(check_bit_(data[282], 1)));
   this->publish_state_(this->disable_temperature_sensors_switch_, check_bit_(data[282], 2));
   ESP_LOGI(TAG, "  Port switch: %s", check_bit_(data[282], 8) ? "RS485" : "CAN");
   this->publish_state_(this->display_always_on_switch_, check_bit_(data[282], 16));
@@ -988,12 +988,12 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   //    bit7: ?                                      128
   this->publish_state_(this->timed_stored_data_switch_, (bool) this->check_bit_(data[283], 1));
   this->publish_state_(this->charging_float_mode_switch_, (bool) this->check_bit_(data[283], 2));
-  ESP_LOGI(TAG, "  Switch bit2: %s", (this->check_bit_(data[283], 4)) ? "on" : "off");
-  ESP_LOGI(TAG, "  Switch bit3: %s", (this->check_bit_(data[283], 8)) ? "on" : "off");
-  ESP_LOGI(TAG, "  Switch bit4: %s", (this->check_bit_(data[283], 16)) ? "on" : "off");
-  ESP_LOGI(TAG, "  Switch bit5: %s", (this->check_bit_(data[283], 32)) ? "on" : "off");
-  ESP_LOGI(TAG, "  Switch bit6: %s", (this->check_bit_(data[283], 64)) ? "on" : "off");
-  ESP_LOGI(TAG, "  Switch bit7: %s", (this->check_bit_(data[283], 128)) ? "on" : "off");
+  ESP_LOGI(TAG, "  Switch bit2: %s", ONOFF(check_bit_(data[283], 4)));
+  ESP_LOGI(TAG, "  Switch bit3: %s", ONOFF(check_bit_(data[283], 8)));
+  ESP_LOGI(TAG, "  Switch bit4: %s", ONOFF(check_bit_(data[283], 16)));
+  ESP_LOGI(TAG, "  Switch bit5: %s", ONOFF(check_bit_(data[283], 32)));
+  ESP_LOGI(TAG, "  Switch bit6: %s", ONOFF(check_bit_(data[283], 64)));
+  ESP_LOGI(TAG, "  Switch bit7: %s", ONOFF(check_bit_(data[283], 128)));
   // 283   3   0x00 0x00 0x00
   // 286   4   0x00 0x00 0x00 0x00
   // 290   4   0x00 0x00 0x00 0x00
