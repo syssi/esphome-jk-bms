@@ -25,22 +25,22 @@ static const uint16_t MAX_RESPONSE_SIZE = 320;
 
 static const uint8_t ERRORS_SIZE = 16;
 static const char *const ERRORS[ERRORS_SIZE] = {
-    "Charge Overtemperature",               // 0000 0000 0000 0001
-    "Charge Undertemperature",              // 0000 0000 0000 0010
-    "Error 0x00 0x04",                      // 0000 0000 0000 0100
-    "Cell Undervoltage",                    // 0000 0000 0000 1000
-    "Error 0x00 0x10",                      // 0000 0000 0001 0000
-    "Error 0x00 0x20",                      // 0000 0000 0010 0000
-    "Error 0x00 0x40",                      // 0000 0000 0100 0000
-    "Error 0x00 0x80",                      // 0000 0000 1000 0000
-    "Error 0x01 0x00",                      // 0000 0001 0000 0000
-    "Error 0x02 0x00",                      // 0000 0010 0000 0000
+    "Charge overtemperature",               // 0000 0000 0000 0001
+    "Charge undertemperature",              // 0000 0000 0000 0010
+    "Coprocessor communication error",      // 0000 0000 0000 0100
+    "Cell undervoltage",                    // 0000 0000 0000 1000
+    "Battery pack undervoltage",            // 0000 0000 0001 0000
+    "Discharge overcurrent",                // 0000 0000 0010 0000
+    "Discharge short circuit",              // 0000 0000 0100 0000
+    "Discharge overtemperature",            // 0000 0000 1000 0000
+    "Wire resistance",                      // 0000 0001 0000 0000
+    "Mosfet overtemperature",               // 0000 0010 0000 0000
     "Cell count is not equal to settings",  // 0000 0100 0000 0000
     "Current sensor anomaly",               // 0000 1000 0000 0000
     "Cell Overvoltage",                     // 0001 0000 0000 0000
-    "Error 0x20 0x00",                      // 0010 0000 0000 0000
+    "Battery pack overvoltage",             // 0010 0000 0000 0000
     "Charge overcurrent protection",        // 0100 0000 0000 0000
-    "Error 0x80 0x00",                      // 1000 0000 0000 0000
+    "Charge short circuit",                 // 1000 0000 0000 0000
 };
 
 uint8_t crc(const uint8_t data[], const uint16_t len) {
