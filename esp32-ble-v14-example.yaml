@@ -265,6 +265,8 @@ sensor:
       name: "${name} temperature sensor 3"
     temperature_sensor_4:
       name: "${name} temperature sensor 4"
+    temperature_sensor_5:
+      name: "${name} temperature sensor 5"
     power_tube_temperature:
       name: "${name} power tube temperature"
     balancing:

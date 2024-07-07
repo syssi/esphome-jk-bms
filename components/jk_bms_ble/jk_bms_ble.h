@@ -219,7 +219,7 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   } cells_[32];
   struct Temperature {
     sensor::Sensor *temperature_sensor_{nullptr};
-  } temperatures_[4];
+  } temperatures_[5];
 
  protected:
   ProtocolVersion protocol_version_{PROTOCOL_VERSION_JK02_24S};

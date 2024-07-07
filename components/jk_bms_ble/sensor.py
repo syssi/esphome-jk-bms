@@ -92,6 +92,7 @@ CONF_TEMPERATURE_SENSOR_1 = "temperature_sensor_1"
 CONF_TEMPERATURE_SENSOR_2 = "temperature_sensor_2"
 CONF_TEMPERATURE_SENSOR_3 = "temperature_sensor_3"
 CONF_TEMPERATURE_SENSOR_4 = "temperature_sensor_4"
+CONF_TEMPERATURE_SENSOR_5 = "temperature_sensor_5"
 CONF_POWER_TUBE_TEMPERATURE = "power_tube_temperature"
 CONF_STATE_OF_CHARGE = "state_of_charge"
 CONF_CAPACITY_REMAINING = "capacity_remaining"
@@ -178,6 +179,7 @@ TEMPERATURES = [
     CONF_TEMPERATURE_SENSOR_2,
     CONF_TEMPERATURE_SENSOR_3,
     CONF_TEMPERATURE_SENSOR_4,
+    CONF_TEMPERATURE_SENSOR_5,
 ]
 
 SENSORS = [
@@ -652,6 +654,13 @@ CONFIG_SCHEMA = cv.Schema(
             state_class=STATE_CLASS_MEASUREMENT,
         ),
         cv.Optional(CONF_TEMPERATURE_SENSOR_4): sensor.sensor_schema(
+            unit_of_measurement=UNIT_CELSIUS,
+            icon=ICON_EMPTY,
+            accuracy_decimals=1,
+            device_class=DEVICE_CLASS_TEMPERATURE,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_TEMPERATURE_SENSOR_5): sensor.sensor_schema(
             unit_of_measurement=UNIT_CELSIUS,
             icon=ICON_EMPTY,
             accuracy_decimals=1,
