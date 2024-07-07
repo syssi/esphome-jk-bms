@@ -21,7 +21,7 @@ from .. import CONF_JK_BMS_BLE_ID, JK_BMS_BLE_COMPONENT_SCHEMA, jk_bms_ble_ns
 
 DEPENDENCIES = ["jk_bms_ble"]
 
-CODEOWNERS = ["@syssi", "txubelaxu"]
+CODEOWNERS = ["@syssi", "@txubelaxu"]
 
 DEFAULT_STEP = 1
 

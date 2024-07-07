@@ -8,7 +8,7 @@ from .const import CONF_BALANCING, CONF_CHARGING, CONF_DISCHARGING, CONF_HEATING
 
 DEPENDENCIES = ["jk_bms_ble"]
 
-CODEOWNERS = ["@syssi"]
+CODEOWNERS = ["@syssi", "@txubelaxu"]
 
 CONF_ONLINE_STATUS = "online_status"
 

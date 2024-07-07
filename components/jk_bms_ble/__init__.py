@@ -3,7 +3,7 @@ from esphome.components import ble_client
 import esphome.config_validation as cv
 from esphome.const import CONF_ID, CONF_THROTTLE
 
-CODEOWNERS = ["@syssi"]
+CODEOWNERS = ["@syssi", "@txubelaxu"]
 
 AUTO_LOAD = ["binary_sensor", "button", "number", "sensor", "switch", "text_sensor"]
 MULTI_CONF = True
