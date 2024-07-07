@@ -7,7 +7,7 @@ from . import CONF_JK_BMS_BLE_ID, JkBmsBle
 
 DEPENDENCIES = ["jk_bms_ble"]
 
-CODEOWNERS = ["@syssi"]
+CODEOWNERS = ["@syssi", "@txubelaxu"]
 
 CONF_ERRORS = "errors"
 CONF_OPERATION_STATUS = "operation_status"

@@ -7,7 +7,7 @@ from .. import CONF_JK_BMS_BLE_ID, JK_BMS_BLE_COMPONENT_SCHEMA, jk_bms_ble_ns
 
 DEPENDENCIES = ["jk_bms_ble"]
 
-CODEOWNERS = ["@syssi"]
+CODEOWNERS = ["@syssi", "@txubelaxu"]
 
 CONF_RETRIEVE_SETTINGS = "retrieve_settings"
 CONF_RETRIEVE_DEVICE_INFO = "retrieve_device_info"

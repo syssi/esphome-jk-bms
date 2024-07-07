@@ -123,6 +123,16 @@ number:
       name: "${name} max charge current"
     max_discharge_current:
       name: "${name} max discharge current"
+    smart_sleep_voltage:
+      name: "${name} smart sleep voltage"
+    cell_soc100_voltage:
+      name: "${name} cell soc100 voltage"
+    cell_soc0_voltage:
+      name: "${name} cell soc0 voltage"
+    cell_request_charge_voltage:
+      name: "${name} cell request charge voltage"
+    cell_request_float_voltage:
+      name: "${name} cell request float voltage"
 
 sensor:
   - platform: jk_bms_ble
@@ -257,6 +267,8 @@ sensor:
       name: "${name} temperature sensor 4"
     power_tube_temperature:
       name: "${name} power tube temperature"
+    balancing:
+      name: "${name} balancing"
     state_of_charge:
       name: "${name} state of charge"
     capacity_remaining:

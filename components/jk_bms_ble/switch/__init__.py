@@ -4,19 +4,23 @@ import esphome.config_validation as cv
 from esphome.const import CONF_ICON, CONF_ID
 
 from .. import CONF_JK_BMS_BLE_ID, JK_BMS_BLE_COMPONENT_SCHEMA, jk_bms_ble_ns
-from ..const import CONF_BALANCER, CONF_CHARGING, CONF_DISCHARGING, CONF_HEATING
+from ..const import (
+    CONF_BALANCER,
+    CONF_CHARGING,
+    CONF_CHARGING_FLOAT_MODE,
+    CONF_DISABLE_PCL_MODULE,
+    CONF_DISABLE_TEMPERATURE_SENSORS,
+    CONF_DISCHARGING,
+    CONF_DISPLAY_ALWAYS_ON,
+    CONF_EMERGENCY,
+    CONF_HEATING,
+    CONF_SMART_SLEEP,
+    CONF_TIMED_STORED_DATA,
+)
 
 DEPENDENCIES = ["jk_bms_ble"]
 
-CODEOWNERS = ["@syssi"]
-
-CONF_EMERGENCY = "emergency"
-CONF_DISABLE_TEMPERATURE_SENSORS = "disable_temperature_sensors"
-CONF_DISPLAY_ALWAYS_ON = "display_always_on"
-CONF_SMART_SLEEP = "smart_sleep"
-CONF_TIMED_STORED_DATA = "timed_stored_data"
-CONF_DISABLE_PCL_MODULE = "disable_pcl_module"
-CONF_CHARGING_FLOAT_MODE = "charging_float_mode"
+CODEOWNERS = ["@syssi", "@txubelaxu"]
 
 ICON_CHARGING = "mdi:battery-charging-50"
 ICON_DISCHARGING = "mdi:battery-charging-50"
@@ -24,11 +28,11 @@ ICON_BALANCER = "mdi:seesaw"
 ICON_EMERGENCY = "mdi:exit-run"
 ICON_HEATING = "mdi:radiator"
 ICON_DISABLE_TEMPERATURE_SENSORS = "mdi:thermometer-off"
-ICON_DISPLAY_ALWAYS_ON = "mdi:led-on"
 ICON_SMART_SLEEP = "mdi:sleep"
 ICON_TIMED_STORED_DATA = "mdi:calendar-clock"
 ICON_DISABLE_PCL_MODULE = "mdi:power-plug-off"
 ICON_CHARGING_FLOAT_MODE = "mdi:battery-charging-80"
+ICON_DISPLAY_ALWAYS_ON = "mdi:television"
 
 SWITCHES = {
     # JK04, JK02, JK02_32S

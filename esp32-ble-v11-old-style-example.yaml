@@ -257,6 +257,8 @@ sensor:
       name: "${name} temperature sensor 4"
     power_tube_temperature:
       name: "${name} power tube temperature"
+    balancing:
+      name: "${name} balancing"
     state_of_charge:
       name: "${name} state of charge"
     capacity_remaining:

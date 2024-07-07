@@ -4,13 +4,12 @@ import esphome.config_validation as cv
 from esphome.const import CONF_ID, DEVICE_CLASS_CONNECTIVITY, ENTITY_CATEGORY_DIAGNOSTIC
 
 from . import CONF_JK_BMS_BLE_ID, JkBmsBle
-from .const import CONF_CHARGING, CONF_DISCHARGING, CONF_HEATING
+from .const import CONF_BALANCING, CONF_CHARGING, CONF_DISCHARGING, CONF_HEATING
 
 DEPENDENCIES = ["jk_bms_ble"]
 
-CODEOWNERS = ["@syssi"]
+CODEOWNERS = ["@syssi", "@txubelaxu"]
 
-CONF_BALANCING = "balancing"
 CONF_ONLINE_STATUS = "online_status"
 
 ICON_CHARGING = "mdi:battery-charging"
