@@ -91,7 +91,6 @@ binary_sensor:
     online_status:
       name: "${balancer1} online status"
 
-
 button:
   - platform: heltec_balancer_ble
     heltec_balancer_ble_id: balancer0
