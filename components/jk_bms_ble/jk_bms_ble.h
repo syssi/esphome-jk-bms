@@ -88,6 +88,56 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   void set_max_discharge_current_number(number::Number *max_discharge_current_number) {
     max_discharge_current_number_ = max_discharge_current_number;
   }
+  void set_charge_overcurrent_protection_delay_number(number::Number *charge_overcurrent_protection_delay_number) {
+    charge_overcurrent_protection_delay_number_ = charge_overcurrent_protection_delay_number;
+  }
+  void set_charge_overcurrent_protection_recovery_time_number(
+      number::Number *charge_overcurrent_protection_recovery_time_number) {
+    charge_overcurrent_protection_recovery_time_number_ = charge_overcurrent_protection_recovery_time_number;
+  }
+  void set_discharge_overcurrent_protection_delay_number(
+      number::Number *discharge_overcurrent_protection_delay_number) {
+    discharge_overcurrent_protection_delay_number_ = discharge_overcurrent_protection_delay_number;
+  }
+  void set_discharge_overcurrent_protection_recovery_time_number(
+      number::Number *discharge_overcurrent_protection_recovery_time_number) {
+    discharge_overcurrent_protection_recovery_time_number_ = discharge_overcurrent_protection_recovery_time_number;
+  }
+  void set_short_circuit_protection_delay_number(number::Number *short_circuit_protection_delay_number) {
+    short_circuit_protection_delay_number_ = short_circuit_protection_delay_number;
+  }
+  void set_short_circuit_protection_recovery_time_number(
+      number::Number *short_circuit_protection_recovery_time_number) {
+    short_circuit_protection_recovery_time_number_ = short_circuit_protection_recovery_time_number;
+  }
+  void set_charge_overtemperature_protection_number(number::Number *charge_overtemperature_protection_number) {
+    charge_overtemperature_protection_number_ = charge_overtemperature_protection_number;
+  }
+  void set_charge_overtemperature_protection_recovery_number(
+      number::Number *charge_overtemperature_protection_recovery_number) {
+    charge_overtemperature_protection_recovery_number_ = charge_overtemperature_protection_recovery_number;
+  }
+  void set_discharge_overtemperature_protection_number(number::Number *discharge_overtemperature_protection_number) {
+    discharge_overtemperature_protection_number_ = discharge_overtemperature_protection_number;
+  }
+  void set_discharge_overtemperature_protection_recovery_number(
+      number::Number *discharge_overtemperature_protection_recovery_number) {
+    discharge_overtemperature_protection_recovery_number_ = discharge_overtemperature_protection_recovery_number;
+  }
+  void set_charge_undertemperature_protection_number(number::Number *charge_undertemperature_protection_number) {
+    charge_undertemperature_protection_number_ = charge_undertemperature_protection_number;
+  }
+  void set_charge_undertemperature_protection_recovery_number(
+      number::Number *charge_undertemperature_protection_recovery_number) {
+    charge_undertemperature_protection_recovery_number_ = charge_undertemperature_protection_recovery_number;
+  }
+  void set_power_tube_overtemperature_protection_number(number::Number *power_tube_overtemperature_protection_number) {
+    power_tube_overtemperature_protection_number_ = power_tube_overtemperature_protection_number;
+  }
+  void set_power_tube_overtemperature_protection_recovery_number(
+      number::Number *power_tube_overtemperature_protection_recovery_number) {
+    power_tube_overtemperature_protection_recovery_number_ = power_tube_overtemperature_protection_recovery_number;
+  }
 
   void set_balancing_binary_sensor(binary_sensor::BinarySensor *balancing_binary_sensor) {
     balancing_binary_sensor_ = balancing_binary_sensor;
@@ -250,6 +300,20 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   number::Number *max_balance_current_number_;
   number::Number *max_charge_current_number_;
   number::Number *max_discharge_current_number_;
+  number::Number *charge_overcurrent_protection_delay_number_;
+  number::Number *charge_overcurrent_protection_recovery_time_number_;
+  number::Number *discharge_overcurrent_protection_delay_number_;
+  number::Number *discharge_overcurrent_protection_recovery_time_number_;
+  number::Number *short_circuit_protection_delay_number_;
+  number::Number *short_circuit_protection_recovery_time_number_;
+  number::Number *charge_overtemperature_protection_number_;
+  number::Number *charge_overtemperature_protection_recovery_number_;
+  number::Number *discharge_overtemperature_protection_number_;
+  number::Number *discharge_overtemperature_protection_recovery_number_;
+  number::Number *charge_undertemperature_protection_number_;
+  number::Number *charge_undertemperature_protection_recovery_number_;
+  number::Number *power_tube_overtemperature_protection_number_;
+  number::Number *power_tube_overtemperature_protection_recovery_number_;
 
   sensor::Sensor *balancing_sensor_;
   sensor::Sensor *min_cell_voltage_sensor_;

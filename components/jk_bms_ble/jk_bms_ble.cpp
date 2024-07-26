@@ -808,113 +808,142 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   // 5     1   0x4F                   Frame counter
 
   // 6     4   0x58 0x02 0x00 0x00    ** [JK-PB2A16S-20P v14] Smart sleep voltage
-  ESP_LOGI(TAG, "  Smart sleep voltage: %f", (float) jk_get_32bit(6) * 0.001f);
+  ESP_LOGV(TAG, "  Smart sleep voltage: %f", (float) jk_get_32bit(6) * 0.001f);
   this->publish_state_(this->smart_sleep_voltage_number_, (float) jk_get_32bit(6) * 0.001f);
 
   // 10    4   0x54 0x0B 0x00 0x00    Cell UVP
-  ESP_LOGI(TAG, "  Cell UVP: %f V", (float) jk_get_32bit(10) * 0.001f);
+  ESP_LOGV(TAG, "  Cell UVP: %f V", (float) jk_get_32bit(10) * 0.001f);
   this->publish_state_(this->cell_voltage_undervoltage_protection_number_, (float) jk_get_32bit(10) * 0.001f);
 
   // 14    4   0x80 0x0C 0x00 0x00    Cell UVP recovery
-  ESP_LOGI(TAG, "  Cell UVPR: %f V", (float) jk_get_32bit(14) * 0.001f);
+  ESP_LOGV(TAG, "  Cell UVPR: %f V", (float) jk_get_32bit(14) * 0.001f);
   this->publish_state_(this->cell_voltage_undervoltage_recovery_number_, (float) jk_get_32bit(14) * 0.001f);
 
   // 18    4   0xCC 0x10 0x00 0x00    Cell OVP
-  ESP_LOGI(TAG, "  Cell OVP: %f V", (float) jk_get_32bit(18) * 0.001f);
+  ESP_LOGV(TAG, "  Cell OVP: %f V", (float) jk_get_32bit(18) * 0.001f);
   this->publish_state_(this->cell_voltage_overvoltage_protection_number_, (float) jk_get_32bit(18) * 0.001f);
 
   // 22    4   0x68 0x10 0x00 0x00    Cell OVP recovery
-  ESP_LOGI(TAG, "  Cell OVPR: %f V", (float) jk_get_32bit(22) * 0.001f);
+  ESP_LOGV(TAG, "  Cell OVPR: %f V", (float) jk_get_32bit(22) * 0.001f);
   this->publish_state_(this->cell_voltage_overvoltage_recovery_number_, (float) jk_get_32bit(22) * 0.001f);
 
   // 26    4   0x0A 0x00 0x00 0x00    Balance trigger voltage
-  ESP_LOGI(TAG, "  Balance trigger voltage: %f V", (float) jk_get_32bit(26) * 0.001f);
+  ESP_LOGV(TAG, "  Balance trigger voltage: %f V", (float) jk_get_32bit(26) * 0.001f);
   this->publish_state_(this->balance_trigger_voltage_number_, (float) jk_get_32bit(26) * 0.001f);
 
   // 30    4   0x00 0x00 0x00 0x00    ** [JK-PB2A16S-20P v14] SOC 100% voltage
-  ESP_LOGI(TAG, "  SOC 100%% voltage: %f V", (float) jk_get_32bit(30) * 0.001f);
+  ESP_LOGV(TAG, "  SOC 100%% voltage: %f V", (float) jk_get_32bit(30) * 0.001f);
   this->publish_state_(this->cell_soc100_voltage_number_, (float) jk_get_32bit(30) * 0.001f);
 
   // 34    4   0x00 0x00 0x00 0x00    ** [JK-PB2A16S-20P v14] SOC 0% voltage
-  ESP_LOGI(TAG, "  SOC 0%% voltage: %f V", (float) jk_get_32bit(34) * 0.001f);
+  ESP_LOGV(TAG, "  SOC 0%% voltage: %f V", (float) jk_get_32bit(34) * 0.001f);
   this->publish_state_(this->cell_soc0_voltage_number_, (float) jk_get_32bit(34) * 0.001f);
 
   // 38    4   0x00 0x00 0x00 0x00    ** [JK-PB2A16S-20P v14] Voltage cell request charge voltage [RCV]
-  ESP_LOGI(TAG, "  Voltage cell request charge voltage [RCV]: %f V", (float) jk_get_32bit(38) * 0.001f);
+  ESP_LOGV(TAG, "  Voltage cell request charge voltage [RCV]: %f V", (float) jk_get_32bit(38) * 0.001f);
   this->publish_state_(this->cell_request_charge_voltage_number_, (float) jk_get_32bit(38) * 0.001f);
 
   // 42    4   0x00 0x00 0x00 0x00    ** [JK-PB2A16S-20P v14] Voltage cell request float voltage
-  ESP_LOGI(TAG, "  Voltage cell request float voltage [RFV]: %f V", (float) jk_get_32bit(42) * 0.001f);
+  ESP_LOGV(TAG, "  Voltage cell request float voltage [RFV]: %f V", (float) jk_get_32bit(42) * 0.001f);
   this->publish_state_(this->cell_request_float_voltage_number_, (float) jk_get_32bit(42) * 0.001f);
 
   // 46    4   0xF0 0x0A 0x00 0x00    Power off voltage
-  ESP_LOGI(TAG, "  Power off voltage: %f V", (float) jk_get_32bit(46) * 0.001f);
+  ESP_LOGV(TAG, "  Power off voltage: %f V", (float) jk_get_32bit(46) * 0.001f);
   this->publish_state_(this->power_off_voltage_number_, (float) jk_get_32bit(46) * 0.001f);
 
   // 50    4   0xA8 0x61 0x00 0x00    Max. charge current
-  ESP_LOGI(TAG, "  Max. charge current: %f A", (float) jk_get_32bit(50) * 0.001f);
+  ESP_LOGV(TAG, "  Max. charge current: %f A", (float) jk_get_32bit(50) * 0.001f);
   this->publish_state_(this->max_charge_current_number_, (float) jk_get_32bit(50) * 0.001f);
 
   // 54    4   0x1E 0x00 0x00 0x00    Charge OCP delay
-  ESP_LOGI(TAG, "  Charge OCP delay: %f s", (float) jk_get_32bit(54));
-  // 58    4   0x3C 0x00 0x00 0x00    Charge OCP recovery delay
-  ESP_LOGI(TAG, "  Charge OCP recovery delay: %f s", (float) jk_get_32bit(58));
+  ESP_LOGV(TAG, "  Charge OCP delay: %f s", (float) jk_get_32bit(54));
+  this->publish_state_(this->charge_overcurrent_protection_delay_number_, (float) jk_get_32bit(54));
+
+  // 58    4   0x3C 0x00 0x00 0x00    Charge OCP recovery time
+  ESP_LOGV(TAG, "  Charge OCP recovery time: %f s", (float) jk_get_32bit(58));
+  this->publish_state_(this->charge_overcurrent_protection_recovery_time_number_, (float) jk_get_32bit(58));
+
   // 62    4   0xF0 0x49 0x02 0x00    Max. discharge current
-  ESP_LOGI(TAG, "  Max. discharge current: %f A", (float) jk_get_32bit(62) * 0.001f);
+  ESP_LOGV(TAG, "  Max. discharge current: %f A", (float) jk_get_32bit(62) * 0.001f);
   this->publish_state_(this->max_discharge_current_number_, (float) jk_get_32bit(62) * 0.001f);
 
   // 66    4   0x2C 0x01 0x00 0x00    Discharge OCP delay
-  ESP_LOGI(TAG, "  Discharge OCP recovery delay: %f s", (float) jk_get_32bit(66));
-  // 70    4   0x3C 0x00 0x00 0x00    Discharge OCP recovery delay
-  ESP_LOGI(TAG, "  Discharge OCP recovery delay: %f s", (float) jk_get_32bit(70));
+  ESP_LOGV(TAG, "  Discharge OCP delay: %f s", (float) jk_get_32bit(66));
+  this->publish_state_(this->discharge_overcurrent_protection_delay_number_, (float) jk_get_32bit(66));
+
+  // 70    4   0x3C 0x00 0x00 0x00    Discharge OCP recovery time
+  ESP_LOGV(TAG, "  Discharge OCP recovery time: %f s", (float) jk_get_32bit(70));
+  this->publish_state_(this->discharge_overcurrent_protection_recovery_time_number_, (float) jk_get_32bit(70));
+
   // 74    4   0x3C 0x00 0x00 0x00    SCPR time
-  ESP_LOGI(TAG, "  SCP recovery time: %f s", (float) jk_get_32bit(74));
+  ESP_LOGV(TAG, "  Short circuit protection recovery time: %f s", (float) jk_get_32bit(74));
+  this->publish_state_(this->short_circuit_protection_recovery_time_number_, (float) jk_get_32bit(74));
+
   // 78    4   0xD0 0x07 0x00 0x00    Max balance current
-  ESP_LOGI(TAG, "  Max. balance current: %f A", (float) jk_get_32bit(78) * 0.001f);
+  ESP_LOGV(TAG, "  Max. balance current: %f A", (float) jk_get_32bit(78) * 0.001f);
   this->publish_state_(this->max_balance_current_number_, (float) jk_get_32bit(78) * 0.001f);
 
   // 82    4   0xBC 0x02 0x00 0x00    Charge OTP
-  ESP_LOGI(TAG, "  Charge OTP: %f °C", (float) jk_get_32bit(82) * 0.1f);
+  ESP_LOGV(TAG, "  Charge OTP: %f °C", (float) jk_get_32bit(82) * 0.1f);
+  this->publish_state_(this->charge_overtemperature_protection_number_, (float) jk_get_32bit(82) * 0.1f);
+
   // 86    4   0x58 0x02 0x00 0x00    Charge OTP Recovery
-  ESP_LOGI(TAG, "  Charge OTP recovery: %f °C", (float) jk_get_32bit(86) * 0.1f);
+  ESP_LOGV(TAG, "  Charge OTP recovery: %f °C", (float) jk_get_32bit(86) * 0.1f);
+  this->publish_state_(this->charge_overtemperature_protection_recovery_number_, (float) jk_get_32bit(86) * 0.1f);
+
   // 90    4   0xBC 0x02 0x00 0x00    Discharge OTP
-  ESP_LOGI(TAG, "  Discharge OTP: %f °C", (float) jk_get_32bit(90) * 0.1f);
+  ESP_LOGV(TAG, "  Discharge OTP: %f °C", (float) jk_get_32bit(90) * 0.1f);
+  this->publish_state_(this->discharge_overtemperature_protection_number_, (float) jk_get_32bit(90) * 0.1f);
+
   // 94    4   0x58 0x02 0x00 0x00    Discharge OTP Recovery
-  ESP_LOGI(TAG, "  Discharge OTP recovery: %f °C", (float) jk_get_32bit(94) * 0.1f);
+  ESP_LOGV(TAG, "  Discharge OTP recovery: %f °C", (float) jk_get_32bit(94) * 0.1f);
+  this->publish_state_(this->discharge_overtemperature_protection_recovery_number_, (float) jk_get_32bit(94) * 0.1f);
+
   // 98    4   0x38 0xFF 0xFF 0xFF    Charge UTP
-  ESP_LOGI(TAG, "  Charge UTP: %f °C", (float) ((int32_t) jk_get_32bit(98)) * 0.1f);
+  ESP_LOGV(TAG, "  Charge UTP: %f °C", (float) ((int32_t) jk_get_32bit(98)) * 0.1f);
+  this->publish_state_(this->charge_undertemperature_protection_number_, (float) ((int32_t) jk_get_32bit(98)) * 0.1f);
+
   // 102   4   0x9C 0xFF 0xFF 0xFF    Charge UTP Recovery
-  ESP_LOGI(TAG, "  Charge UTP recovery: %f °C", (float) ((int32_t) jk_get_32bit(102)) * 0.1f);
+  ESP_LOGV(TAG, "  Charge UTP recovery: %f °C", (float) ((int32_t) jk_get_32bit(102)) * 0.1f);
+  this->publish_state_(this->charge_undertemperature_protection_recovery_number_,
+                       (float) ((int32_t) jk_get_32bit(102)) * 0.1f);
+
   // 106   4   0x84 0x03 0x00 0x00    MOS OTP
-  ESP_LOGI(TAG, "  MOS OTP: %f °C", (float) ((int32_t) jk_get_32bit(106)) * 0.1f);
+  ESP_LOGV(TAG, "  Mosfet OTP: %f °C", (float) ((int32_t) jk_get_32bit(106)) * 0.1f);
+  this->publish_state_(this->power_tube_overtemperature_protection_number_,
+                       (float) ((int32_t) jk_get_32bit(106)) * 0.1f);
+
   // 110   4   0xBC 0x02 0x00 0x00    MOS OTP Recovery
-  ESP_LOGI(TAG, "  MOS OTP recovery: %f °C", (float) ((int32_t) jk_get_32bit(110)) * 0.1f);
+  ESP_LOGV(TAG, "  Mosfet OTP recovery: %f °C", (float) ((int32_t) jk_get_32bit(110)) * 0.1f);
+  this->publish_state_(this->power_tube_overtemperature_protection_recovery_number_,
+                       (float) ((int32_t) jk_get_32bit(110)) * 0.1f);
+
   // 114   4   0x0D 0x00 0x00 0x00    Cell count
-  ESP_LOGI(TAG, "  Cell count: %f", (float) jk_get_32bit(114));
+  ESP_LOGV(TAG, "  Cell count: %f", (float) jk_get_32bit(114));
   this->publish_state_(this->cell_count_number_, (float) data[114]);
 
   // 118   4   0x01 0x00 0x00 0x00    Charge switch
-  ESP_LOGI(TAG, "  Charge switch: %s", ONOFF((bool) data[118]));
+  ESP_LOGV(TAG, "  Charge switch: %s", ONOFF((bool) data[118]));
   this->publish_state_(this->charging_switch_, (bool) data[118]);
 
   // 122   4   0x01 0x00 0x00 0x00    Discharge switch
-  ESP_LOGI(TAG, "  Discharge switch: %s", ONOFF((bool) data[122]));
+  ESP_LOGV(TAG, "  Discharge switch: %s", ONOFF((bool) data[122]));
   this->publish_state_(this->discharging_switch_, (bool) data[122]);
 
   // 126   4   0x01 0x00 0x00 0x00    Balancer switch
-  ESP_LOGI(TAG, "  Balancer switch: %s", ONOFF((bool) data[126]));
+  ESP_LOGV(TAG, "  Balancer switch: %s", ONOFF((bool) data[126]));
   this->publish_state_(this->balancer_switch_, (bool) (data[126]));
 
   // 130   4   0x88 0x13 0x00 0x00    Nominal battery capacity
-  ESP_LOGI(TAG, "  Nominal battery capacity: %f Ah", (float) jk_get_32bit(130) * 0.001f);
+  ESP_LOGV(TAG, "  Nominal battery capacity: %f Ah", (float) jk_get_32bit(130) * 0.001f);
   this->publish_state_(this->total_battery_capacity_number_, (float) jk_get_32bit(130) * 0.001f);
 
   // 134   4   0xDC 0x05 0x00 0x00    SCP delay
-  ESP_LOGI(TAG, "  SCP delay?: %f us", (float) jk_get_32bit(134) * 0.001f);
-  // this->publish_state_(this->scp_delay_number_, (float) jk_get_32bit(134) * 0.001f);
+  ESP_LOGV(TAG, "  SCP delay?: %f us", (float) jk_get_32bit(134) * 0.001f);
+  this->publish_state_(this->short_circuit_protection_delay_number_, (float) jk_get_32bit(134) * 0.001f);
 
   // 138   4   0xE4 0x0C 0x00 0x00    Start balance voltage
-  ESP_LOGI(TAG, "  Start balance voltage: %f V", (float) jk_get_32bit(138) * 0.001f);
+  ESP_LOGV(TAG, "  Start balance voltage: %f V", (float) jk_get_32bit(138) * 0.001f);
   this->publish_state_(this->balance_starting_voltage_number_, (float) jk_get_32bit(138) * 0.001f);
 
   ESP_LOGD(TAG, "  Unknown142: %f", (float) jk_get_32bit(142) * 0.001f);

@@ -123,6 +123,34 @@ number:
       name: "${name} max charge current"
     max_discharge_current:
       name: "${name} max discharge current"
+    charge_overcurrent_protection_delay:
+      name: "${name} charge overcurrent protection delay"
+    charge_overcurrent_protection_recovery_time:
+      name: "${name} charge overcurrent protection recovery time"
+    discharge_overcurrent_protection_delay:
+      name: "${name} discharge overcurrent protection delay"
+    discharge_overcurrent_protection_recovery_time:
+      name: "${name} discharge overcurrent protection recovery time"
+    short_circuit_protection_delay:
+      name: "${name} short circuit protection delay"
+    short_circuit_protection_recovery_time:
+      name: "${name} short circuit protection recovery time"
+    charge_overtemperature_protection:
+      name: "${name} charge overtemperature protection"
+    charge_overtemperature_protection_recovery:
+      name: "${name} charge overtemperature protection recovery"
+    discharge_overtemperature_protection:
+      name: "${name} discharge overtemperature protection"
+    discharge_overtemperature_protection_recovery:
+      name: "${name} discharge overtemperature protection recovery"
+    charge_undertemperature_protection:
+      name: "${name} charge undertemperature protection"
+    charge_undertemperature_protection_recovery:
+      name: "${name} charge undertemperature protection recovery"
+    power_tube_overtemperature_protection:
+      name: "${name} power tube overtemperature protection"
+    power_tube_overtemperature_protection_recovery:
+      name: "${name} power tube overtemperature protection recovery"
 
 sensor:
   - platform: jk_bms_ble
