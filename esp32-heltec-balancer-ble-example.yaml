@@ -65,10 +65,11 @@ ble_client:
 heltec_balancer_ble:
   - ble_client_id: client0
     throttle: 5s
-    id: bms0
+    id: balancer0
 
 binary_sensor:
   - platform: heltec_balancer_ble
+    heltec_balancer_ble_id: balancer0
     balancing:
       name: "${name} balancing"
     online_status:
@@ -76,9 +77,10 @@ binary_sensor:
 
 button:
   - platform: heltec_balancer_ble
+    heltec_balancer_ble_id: balancer0
     retrieve_settings:
       name: "${name} retrieve settings"
-      id: retrieve_settings_button
+      id: retrieve_settings_button0
     retrieve_device_info:
       name: "${name} retrieve device info"
     retrieve_factory_defaults:
@@ -86,6 +88,7 @@ button:
 
 number:
   - platform: heltec_balancer_ble
+    heltec_balancer_ble_id: balancer0
     cell_count:
       name: "${name} cell count"
     balance_trigger_voltage:
@@ -101,6 +104,7 @@ number:
 
 sensor:
   - platform: heltec_balancer_ble
+    heltec_balancer_ble_id: balancer0
     min_cell_voltage:
       name: "${name} min cell voltage"
     max_cell_voltage:
@@ -235,6 +239,7 @@ sensor:
 
 switch:
   - platform: heltec_balancer_ble
+    heltec_balancer_ble_id: balancer0
     balancer:
       name: "${name} balancer"
 
@@ -245,6 +250,7 @@ switch:
 
 text_sensor:
   - platform: heltec_balancer_ble
+    heltec_balancer_ble_id: balancer0
     # Not implemented
     # errors:
     #   name: "${name} errors"
@@ -260,4 +266,4 @@ text_sensor:
 interval:
   - interval: 30min
     then:
-      - button.press: retrieve_settings_button
+      - button.press: retrieve_settings_button0
