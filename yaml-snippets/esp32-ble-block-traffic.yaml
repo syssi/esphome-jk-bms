@@ -1,7 +1,7 @@
 substitutions:
   name: jk-bms
   device_description: "Occupy the BLE module of the BMS to prevent advertising and block connections from foreign devices"
-  mac_address: C8:47:8C:E1:E2:E1
+  mac_address: C8:47:8C:E1:E2:AA
 
 esphome:
   name: ${name}

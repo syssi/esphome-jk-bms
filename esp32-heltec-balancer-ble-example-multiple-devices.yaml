@@ -4,8 +4,8 @@ substitutions:
   balancer1: "${name} device1"
   device_description: "Monitor and control a Heltec/NEEY 4A balancer via bluetooth"
   external_components_source: github://syssi/esphome-jk-bms@main
-  balancer0_mac_address: C8:47:8C:E1:E2:FF
-  balancer1_mac_address: C8:47:8C:E1:E2:EE
+  balancer0_mac_address: C8:47:8C:E1:E2:AA
+  balancer1_mac_address: C8:47:8C:E1:E2:BB
 
 esphome:
   name: ${name}
