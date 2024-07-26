@@ -33,6 +33,7 @@ ota:
   on_begin:
     then:
       - switch.turn_off: ble_client_switch0
+      - switch.turn_off: ble_client_switch1
       - logger.log: "BLE connection suspended for OTA update"
 
 logger:
@@ -96,7 +97,7 @@ button:
     heltec_balancer_ble_id: balancer0
     retrieve_settings:
       name: "${balancer0} retrieve settings"
-      id: balancer0_retrieve_settings_button
+      id: retrieve_settings_button0
     retrieve_device_info:
       name: "${balancer0} retrieve device info"
     retrieve_factory_defaults:
@@ -106,7 +107,7 @@ button:
     heltec_balancer_ble_id: balancer1
     retrieve_settings:
       name: "${balancer1} retrieve settings"
-      id: balancer1_retrieve_settings_button
+      id: retrieve_settings_button1
     retrieve_device_info:
       name: "${balancer1} retrieve device info"
     retrieve_factory_defaults:
@@ -465,5 +466,5 @@ text_sensor:
 interval:
   - interval: 30min
     then:
-      - button.press: balancer0_retrieve_settings_button
-      - button.press: balancer1_retrieve_settings_button
+      - button.press: retrieve_settings_button0
+      - button.press: retrieve_settings_button1
