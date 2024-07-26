@@ -122,6 +122,7 @@ CONF_POWER_TUBE_OVERTEMPERATURE_PROTECTION_RECOVERY = (
 
 # JK02_32S
 #
+# 01 04 03000000  Smart sleep voltage            0.003 V (3)
 # 02 04 ac0d0000  UVP                              3.5 V (3500)
 # 03 04 100e0000  UVPR                             3.6 V (3600)
 # 04 04 68100000  OVP                              4.2 V (4200)
@@ -148,6 +149,7 @@ CONF_POWER_TUBE_OVERTEMPERATURE_PROTECTION_RECOVERY = (
 # 20 04 b0360000  Set battery capacity             14 Ah (14)
 # 21 04 d0070000  SCP Delay                      2000 uS (2000)
 # 22 04 04100000  Start Balance voltage            4.1 V (4100)
+# 39 01 17000000  Time Smart Sleep                  23 h (23)
 # 64 04 983a0000  Set calibration voltage        15.00 V (15000)
 # 67 04 c8000000  Set calibration current          2.0 A (200)
 #
