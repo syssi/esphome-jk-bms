@@ -6,16 +6,9 @@ yaml-files:
   - '.yamllint'
 
 ignore: |
-  /.cache/
-  esphome/**/*.pio*
-  config/automations.yaml
-  config/known_devices.yaml
-  config/scenes.yaml
-  config/google_calendars.yaml
-  config/custom_components/scheduler
-  config/custom_components/xiaomi_cloud_map_extractor
-  config/custom_components/zha_map
-  config/custom_components/hacs
+  .clang-format
+  .esphome/
+  tests/.esphome/
 
 rules:
   braces:
