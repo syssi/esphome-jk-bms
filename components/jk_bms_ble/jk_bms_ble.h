@@ -51,6 +51,12 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   void set_cell_request_float_voltage_number(number::Number *cell_request_float_voltage_number) {
     cell_request_float_voltage_number_ = cell_request_float_voltage_number;
   }
+  void set_cell_request_charge_voltage_time_number(number::Number *cell_request_charge_voltage_time_number) {
+    cell_request_charge_voltage_time_number_ = cell_request_charge_voltage_time_number;
+  }
+  void set_cell_request_float_voltage_time_number(number::Number *cell_request_float_voltage_time_number) {
+    cell_request_float_voltage_time_number_ = cell_request_float_voltage_time_number;
+  }
   void set_cell_count_number(number::Number *cell_count_number) { cell_count_number_ = cell_count_number; }
   void set_total_battery_capacity_number(number::Number *total_battery_capacity_number) {
     total_battery_capacity_number_ = total_battery_capacity_number;
@@ -287,6 +293,8 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   number::Number *cell_soc0_voltage_number_;
   number::Number *cell_request_charge_voltage_number_;
   number::Number *cell_request_float_voltage_number_;
+  number::Number *cell_request_charge_voltage_time_number_;
+  number::Number *cell_request_float_voltage_time_number_;
   number::Number *cell_count_number_;
   number::Number *total_battery_capacity_number_;
   number::Number *cell_voltage_overvoltage_protection_number_;

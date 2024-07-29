@@ -133,6 +133,10 @@ number:
       name: "${name} cell request charge voltage"
     cell_request_float_voltage:
       name: "${name} cell request float voltage"
+    cell_request_charge_voltage_time:
+      name: "${name} cell request charge voltage time"
+    cell_request_float_voltage_time:
+      name: "${name} cell request float voltage time"
     charge_overcurrent_protection_delay:
       name: "${name} charge overcurrent protection delay"
     charge_overcurrent_protection_recovery_time:
