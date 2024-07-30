@@ -530,7 +530,7 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=0): cv.float_,
                 cv.Optional(CONF_MAX_VALUE, default=10000000): cv.float_,
-                cv.Optional(CONF_STEP, default=0.001): cv.float_,
+                cv.Optional(CONF_STEP, default=1.0): cv.float_,
                 cv.Optional(
                     CONF_UNIT_OF_MEASUREMENT, default=UNIT_MICROSECONDS
                 ): cv.string_strict,

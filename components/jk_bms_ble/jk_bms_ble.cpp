@@ -937,8 +937,8 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->total_battery_capacity_number_, (float) jk_get_32bit(130) * 0.001f);
 
   // 134   4   0xDC 0x05 0x00 0x00    SCP delay
-  ESP_LOGV(TAG, "  SCP delay?: %f us", (float) jk_get_32bit(134) * 0.001f);
-  this->publish_state_(this->short_circuit_protection_delay_number_, (float) jk_get_32bit(134) * 0.001f);
+  ESP_LOGV(TAG, "  Short circuit protection delay: %f us", (float) jk_get_32bit(134) * 1.0f);
+  this->publish_state_(this->short_circuit_protection_delay_number_, (float) jk_get_32bit(134) * 1.0f);
 
   // 138   4   0xE4 0x0C 0x00 0x00    Start balance voltage
   ESP_LOGV(TAG, "  Start balance voltage: %f V", (float) jk_get_32bit(138) * 0.001f);
@@ -1002,7 +1002,7 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
     // 270   4   0x00 0x00 0x00 0x00
     ESP_LOGI(TAG, "  Device address: %d", data[270]);
     // 274   4   0x00 0x00 0x00 0x00
-    ESP_LOGI(TAG, "  Precharge time: %d S", data[274]);
+    ESP_LOGI(TAG, "  Precharge time: %d s", data[274]);
     // 278   4   0x00 0x00 0x00 0x00
     // 282   2   0x00 0x00                 New controls bitmask
     // ** [JK-PB2A16S-20P v14]
