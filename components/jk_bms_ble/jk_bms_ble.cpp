@@ -1373,11 +1373,11 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
 
   // 266  0x0A                  RCV Time    0.1h
   ESP_LOGI(TAG, "  RCV Time: %.1f h", (float) data[266] * 0.1f);
-  this->publish_state_(this->cell_request_charge_voltage_number_, (float) data[266] * 0.1f);
+  this->publish_state_(this->cell_request_charge_voltage_time_number_, (float) data[266] * 0.1f);
 
   // 267  0x50                  RFV Time    0.1h
   ESP_LOGI(TAG, "  RFV Time: %.1f h", (float) data[267] * 0.1f);
-  this->publish_state_(this->cell_request_float_voltage_number_, (float) data[267] * 0.1f);
+  this->publish_state_(this->cell_request_float_voltage_time_number_, (float) data[267] * 0.1f);
 
   // 268  0x01  CAN protocol library version
   // 269  0x00  Reserved
