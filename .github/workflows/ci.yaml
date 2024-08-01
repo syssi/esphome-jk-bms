@@ -10,7 +10,7 @@ on:  # yamllint disable-line rule:truthy
     - cron: 0 12 * * *
 
 env:
-  PY_COLORS: 1
+  FORCE_COLOR: "1"
 
 jobs:
   yamllint:
