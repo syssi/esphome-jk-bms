@@ -2,7 +2,7 @@
 # Hardware version: 11.XW
 # Software version: 11.288H
 #
-# 2 cells, heating on + heating current
+# 2 cells, heating on/off, heating current 0.511A/0.514A/0.0A, error bitmask 256 + error bitmask 258
 
 <<: !include ../esp32-ble-v11-example.yaml
 
