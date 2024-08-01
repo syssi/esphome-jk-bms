@@ -560,13 +560,13 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   ESP_LOGD(TAG, "Battery voltage correction factor: %f", (float) jk_get_32bit(194 + offset) * 1.0f);
 
   ESP_LOGD(TAG, "Battery voltage: %.3f", (float) ieee_float_(jk_get_32bit(202 + offset)));
-  ESP_LOGD(TAG, "Heating current: %d mA", jk_get_16bit(204 + offset));
+  ESP_LOGD(TAG, "Heating current: %.3f A", (float) ((int16_t) jk_get_16bit(204 + offset)) * 0.001f);
   this->publish_state_(this->heating_current_sensor_, (float) ((int16_t) jk_get_16bit(204 + offset)) * 0.001f);
 
   ESP_LOGD(TAG, "Charger Plugged: %s", ONOFF((bool) data[213 + offset]));
-  ESP_LOGD(TAG, "Temperature sensor 3: %.1f", (float) jk_get_16bit(222 + offset));
-  ESP_LOGD(TAG, "Temperature sensor 4: %.1f", (float) jk_get_16bit(224 + offset));
-  ESP_LOGD(TAG, "Temperature sensor 5: %.1f", (float) jk_get_16bit(226 + offset));
+  ESP_LOGD(TAG, "Temperature sensor 3: %.1f °C", (float) jk_get_16bit(222 + offset) * 0.1f);
+  ESP_LOGD(TAG, "Temperature sensor 4: %.1f °C", (float) jk_get_16bit(224 + offset) * 0.1f);
+  ESP_LOGD(TAG, "Temperature sensor 5: %.1f °C", (float) jk_get_16bit(226 + offset) * 0.1f);
   ESP_LOGD(TAG, "Time enter sleep: %u s", jk_get_32bit(238 + offset));
   ESP_LOGD(TAG, "PCL Module State: %s", ONOFF((bool) data[242 + offset]));
 

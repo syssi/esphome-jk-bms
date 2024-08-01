@@ -4,7 +4,7 @@
 #
 # 2 cells, heating on + heating current
 
-<<: !include esp32-ble-v11-example.yaml
+<<: !include ../esp32-ble-v11-example.yaml
 
 logger:
   level: VERY_VERBOSE
@@ -14,7 +14,6 @@ logger:
     jk_bms_ble: VERY_VERBOSE
     scheduler: WARN
     component: WARN
-    sensor: WARN
     mqtt: WARN
     mqtt.idf: WARN
     mqtt.component: WARN
@@ -22,6 +21,7 @@ logger:
     mqtt.switch: WARN
     api.service: WARN
     api: WARN
+    api.connection: WARN
 
 interval:
   - interval: 20s
