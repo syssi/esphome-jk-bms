@@ -196,24 +196,27 @@ jobs:
         run: 'echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password" > secrets.yaml'
       - name: Validate example configurations
         run: |
-          esphome -s external_components_source components config esp32-*.yaml
-          esphome -s external_components_source components config esp8266-*.yaml
+          for YAML in esp32-*.yaml esp8266-*.yaml; do
+            esphome -s external_components_source components config $YAML >/dev/null
+          done
 
       - name: Write yaml-snippets/secrets.yaml
         shell: bash
         run: 'echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password" > yaml-snippets/secrets.yaml'
       - name: Validate YAML snippets
         run: |
-          esphome -s external_components_source ../components config yaml-snippets/esp32-*.yaml
-          # esphome -s external_components_source ../components config yaml-snippets/esp8266-*.yaml
+          for YAML in yaml-snippets/esp32-*.yaml yaml-snippets/esp8266-*.yaml; do
+            esphome -s external_components_source ../components config $YAML >/dev/null
+          done
 
       - name: Write tests/secrets.yaml
         shell: bash
         run: 'echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password" > tests/secrets.yaml'
       - name: Validate test configurations
         run: |
-          esphome -s external_components_source ../components config tests/esp32-*.yaml
-          esphome -s external_components_source ../components config tests/esp8266-*.yaml
+          for YAML in tests/esp32-*.yaml tests/esp8266-*.yaml; do
+            esphome -s external_components_source ../components config $YAML >/dev/null
+          done
 
   esphome-compile:
     runs-on: ubuntu-latest
