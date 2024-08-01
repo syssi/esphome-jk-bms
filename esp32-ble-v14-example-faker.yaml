@@ -1,7 +1,7 @@
 <<: !include esp32-ble-v14-example-debug.yaml
 
 interval:
-  - interval: 1s
+  - interval: 20s
     then:
       - lambda: |-
           const uint8_t device_info_frame[300] = {

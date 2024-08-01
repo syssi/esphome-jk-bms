@@ -493,7 +493,7 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   //                                                                     0x02: Discharging balancer
   this->publish_state_(this->balancing_sensor_, (data[140 + offset]));
   this->publish_state_(this->balancing_binary_sensor_, (data[140 + offset] != 0x00));
-  ESP_LOGD(TAG, " Balancing indicator (legacy): %s", YESNO(data[140 + offset] != 0x00));
+  ESP_LOGD(TAG, "Balancing indicator (legacy): %s", YESNO(data[140 + offset] != 0x00));
 
   // 141   1   0x54                   State of charge in   1.0           %
   this->publish_state_(this->state_of_charge_sensor_, (float) data[141 + offset]);
@@ -534,7 +534,7 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
 
   // 169   1   0x01                   Balancer working                             0x00: off, 0x01: on
   // this->publish_state_(this->balancing_binary_sensor_, (bool) data[169 + offset]);
-  ESP_LOGD(TAG, " Balancing indicator (new): %s", YESNO((bool) data[169 + offset]));
+  ESP_LOGD(TAG, "Balancing indicator (new): %s", YESNO((bool) data[169 + offset]));
 
   ESP_LOGD(TAG, "Discharge overcurrent protection release timer: %d", jk_get_16bit(170 + offset));
   ESP_LOGD(TAG, "Discharge short circuit protection release timer: %d", jk_get_16bit(172 + offset));
@@ -551,6 +551,8 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // bit5: Temperature sensor 5
 
   ESP_LOGD(TAG, "Heating: %s", ONOFF((bool) data[183 + offset]));
+  this->publish_state_(this->heating_binary_sensor_, (bool) data[183 + offset]);
+
   ESP_LOGD(TAG, "Time emergency: %d s", jk_get_16bit(186 + offset));
   ESP_LOGD(TAG, "Discharge current correction factor: %d", jk_get_16bit(188 + offset));
   ESP_LOGD(TAG, "Charging current sensor voltage: %.3f", jk_get_16bit(190 + offset) * 0.001f);
@@ -558,24 +560,19 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   ESP_LOGD(TAG, "Battery voltage correction factor: %f", (float) jk_get_32bit(194 + offset) * 1.0f);
 
   ESP_LOGD(TAG, "Battery voltage: %.3f", (float) ieee_float_(jk_get_32bit(202 + offset)));
-  ESP_LOGD(TAG, "Heating current: %d mA", jk_get_16bit(204 + offset));
+  ESP_LOGD(TAG, "Heating current: %.3f A", (float) ((int16_t) jk_get_16bit(204 + offset)) * 0.001f);
+  this->publish_state_(this->heating_current_sensor_, (float) ((int16_t) jk_get_16bit(204 + offset)) * 0.001f);
 
   ESP_LOGD(TAG, "Charger Plugged: %s", ONOFF((bool) data[213 + offset]));
-  ESP_LOGD(TAG, "Temperature sensor 3: %.1f", (float) jk_get_16bit(222 + offset));
-  ESP_LOGD(TAG, "Temperature sensor 4: %.1f", (float) jk_get_16bit(224 + offset));
-  ESP_LOGD(TAG, "Temperature sensor 5: %.1f", (float) jk_get_16bit(226 + offset));
+  ESP_LOGD(TAG, "Temperature sensor 3: %.1f °C", (float) jk_get_16bit(222 + offset) * 0.1f);
+  ESP_LOGD(TAG, "Temperature sensor 4: %.1f °C", (float) jk_get_16bit(224 + offset) * 0.1f);
+  ESP_LOGD(TAG, "Temperature sensor 5: %.1f °C", (float) jk_get_16bit(226 + offset) * 0.1f);
   ESP_LOGD(TAG, "Time enter sleep: %u s", jk_get_32bit(238 + offset));
   ESP_LOGD(TAG, "PCL Module State: %s", ONOFF((bool) data[242 + offset]));
 
-  // 192   1   0x01                   Heating status          0x00: off, 0x01: on
-  this->publish_state_(this->heating_binary_sensor_, (bool) data[192 + offset]);
-
-  // 204   2   0x01 0xFD              Heating current         0.001         A
-  this->publish_state_(this->heating_current_sensor_, (float) ((int16_t) jk_get_16bit(204 + offset)) * 0.001f);
-
   if (frame_version == FRAME_VERSION_JK02_32S) {
     uint16_t raw_emergency_time_countdown = jk_get_16bit(186 + offset);
-    ESP_LOGI(TAG, "  Emergency switch: %s", ONOFF(raw_emergency_time_countdown > 0));
+    ESP_LOGI(TAG, "Emergency switch: %s", ONOFF(raw_emergency_time_countdown > 0));
     this->publish_state_(this->emergency_switch_, raw_emergency_time_countdown > 0);
     this->publish_state_(this->emergency_time_countdown_sensor_, (float) raw_emergency_time_countdown * 1.0f);
 

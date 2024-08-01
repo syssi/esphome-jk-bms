@@ -81,7 +81,7 @@ def load_json_from_file(file_path):
 
 
 def save_to_file(file_name, data):
-    with open(file_name + "_output.log", "w") as file:
+    with open(file_name + ".txt", "w") as file:
         file.write(data)
         file.close()
 

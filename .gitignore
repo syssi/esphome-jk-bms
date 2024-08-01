@@ -1,6 +1,7 @@
 .idea/
 secrets.yaml
 .esphome/
+/tests/.gitignore
 **/.pioenvs/
 **/.piolibdeps/
 **/lib/
