@@ -9,6 +9,9 @@ on:  # yamllint disable-line rule:truthy
   schedule:
     - cron: 0 12 * * *
 
+env:
+  FORCE_COLOR: 1
+
 jobs:
   yamllint:
     runs-on: ubuntu-latest
@@ -194,55 +197,29 @@ jobs:
       - name: Write secrets.yaml
         shell: bash
         run: 'echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password" > secrets.yaml'
-      - name: Validate esp32 (heltec_balancer_ble) example configurations
+      - name: Validate example configurations
         run: |
-          esphome -s external_components_source components config esp32-heltec-balancer-ble-example.yaml
-          esphome -s external_components_source components config esp32-heltec-balancer-ble-example-debug.yaml
-          esphome -s external_components_source components config esp32-heltec-balancer-ble-example-faker.yaml
-          esphome -s external_components_source components config esp32-heltec-balancer-ble-example-multiple-devices.yaml
-      - name: Validate esp8266 (jk_bms) example configurations
-        run: |
-          esphome -s external_components_source components config esp8266-example.yaml
-          esphome -s external_components_source components config esp8266-example-debug.yaml
-          esphome -s external_components_source components config esp8266-example-faker.yaml
-      - name: Validate esp32 (jk_bms) example configurations
-        run: |
-          esphome -s external_components_source components config esp32-example.yaml
-          esphome -s external_components_source components config esp32-example-debug.yaml
-          esphome -s external_components_source components config esp32-example-faker.yaml
-          esphome -s external_components_source components config esp32-example-multiple-devices.yaml
-      - name: Validate esp32 (jk_bms_ble) example configurations
-        run: |
-          esphome -s external_components_source components config esp32-ble-example.yaml
-          esphome -s external_components_source components config esp32-ble-example-debug.yaml
-          esphome -s external_components_source components config esp32-ble-example-faker.yaml
-          esphome -s external_components_source components config esp32-ble-jk04-example.yaml
-          esphome -s external_components_source components config esp32-ble-example-multiple-devices.yaml
-          esphome -s external_components_source components config esp32-ble-uart-hybrid-example.yaml
-          esphome -s external_components_source components config esp32-ble-v11-example.yaml
-          esphome -s external_components_source components config esp32-ble-v11-example-debug.yaml
-          esphome -s external_components_source components config esp32-ble-v11-example-faker.yaml
-          esphome -s external_components_source components config esp32-ble-v14-example.yaml
-          esphome -s external_components_source components config esp32-ble-v14-example-debug.yaml
-          esphome -s external_components_source components config esp32-ble-v14-example-faker.yaml
-      - name: Compile esp32 (modbus) example configurations
-        run: |
-          esphome config esp32-jk-pb-modbus-example.yaml
+          for YAML in esp*.yaml; do
+            esphome -s external_components_source components config $YAML >/dev/null
+          done
 
       - name: Write yaml-snippets/secrets.yaml
         shell: bash
         run: 'echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password" > yaml-snippets/secrets.yaml'
       - name: Validate YAML snippets
         run: |
-          esphome -s external_components_source ../components config yaml-snippets/esp32-ble-energy-dashboard.yaml
-          esphome -s external_components_source ../components config yaml-snippets/esp32-ble-block-traffic.yaml
+          for YAML in yaml-snippets/esp*.yaml; do
+            esphome -s external_components_source ../components config $YAML >/dev/null
+          done
 
       - name: Write tests/secrets.yaml
         shell: bash
         run: 'echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password" > tests/secrets.yaml'
       - name: Validate test configurations
         run: |
-          esphome -s external_components_source ../components config tests/esp8266-fake-bms.yaml
+          for YAML in tests/esp*.yaml; do
+            esphome -s external_components_source ../components config $YAML >/dev/null
+          done
 
   esphome-compile:
     runs-on: ubuntu-latest
@@ -291,8 +268,9 @@ jobs:
           esphome -s external_components_source components compile esp32-example-faker.yaml
       - name: Compile esp32 (jk_bms_ble) example configurations
         run: |
-          esphome -s external_components_source components compile esp32-ble-example-faker.yaml
-          esphome -s external_components_source components compile esp32-ble-v11-example-faker.yaml
+          esphome -s external_components_source components -s name jk-bms-jk04 compile esp32-ble-jk04-example-faker.yaml
+          esphome -s external_components_source components -s name jk-bms-jk02-24s compile esp32-ble-example-faker.yaml
+          esphome -s external_components_source components -s name jk-bms-jk02-32s compile esp32-ble-v14-example-faker.yaml
       - name: Compile esp32 (modbus) example configurations
         run: |
-          esphome compile esp32-jk-pb-modbus-example.yaml
+          esphome -s name jk-bms-pb compile esp32-jk-pb-modbus-example.yaml
