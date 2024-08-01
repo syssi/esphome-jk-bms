@@ -9,6 +9,9 @@ on:  # yamllint disable-line rule:truthy
   schedule:
     - cron: 0 12 * * *
 
+env:
+  FORCE_COLOR: 1
+
 jobs:
   yamllint:
     runs-on: ubuntu-latest
@@ -197,7 +200,7 @@ jobs:
       - name: Validate example configurations
         run: |
           for YAML in esp32-*.yaml esp8266-*.yaml; do
-            FORCE_COLOR=1 TERM=xterm-color PY_COLORS=1  esphome -s external_components_source components config $YAML >/dev/null
+            esphome -s external_components_source components config $YAML >/dev/null
           done
 
       - name: Write yaml-snippets/secrets.yaml
