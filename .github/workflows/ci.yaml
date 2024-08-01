@@ -199,7 +199,7 @@ jobs:
         run: 'echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password" > secrets.yaml'
       - name: Validate example configurations
         run: |
-          for YAML in esp32-*.yaml esp8266-*.yaml; do
+          for YAML in esp*.yaml; do
             esphome -s external_components_source components config $YAML >/dev/null
           done
 
@@ -208,8 +208,7 @@ jobs:
         run: 'echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password" > yaml-snippets/secrets.yaml'
       - name: Validate YAML snippets
         run: |
-          # for YAML in yaml-snippets/esp32-*.yaml yaml-snippets/esp8266-*.yaml; do
-          for YAML in yaml-snippets/esp32-*.yaml; do
+          for YAML in yaml-snippets/esp*.yaml; do
             esphome -s external_components_source ../components config $YAML >/dev/null
           done
 
@@ -218,7 +217,7 @@ jobs:
         run: 'echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password" > tests/secrets.yaml'
       - name: Validate test configurations
         run: |
-          for YAML in tests/esp32-*.yaml tests/esp8266-*.yaml; do
+          for YAML in tests/esp*.yaml; do
             esphome -s external_components_source ../components config $YAML >/dev/null
           done
 
