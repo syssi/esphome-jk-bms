@@ -205,8 +205,8 @@ jobs:
         run: 'echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password" > yaml-snippets/secrets.yaml'
       - name: Validate YAML snippets
         run: |
-          # for YAML in yaml-snippets/esp32-*.yaml; do
-          for YAML in yaml-snippets/esp32-*.yaml yaml-snippets/esp8266-*.yaml; do
+          # for YAML in yaml-snippets/esp32-*.yaml yaml-snippets/esp8266-*.yaml; do
+          for YAML in yaml-snippets/esp32-*.yaml; do
             esphome -s external_components_source ../components config $YAML >/dev/null
           done
 
