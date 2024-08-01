@@ -493,7 +493,7 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   //                                                                     0x02: Discharging balancer
   this->publish_state_(this->balancing_sensor_, (data[140 + offset]));
   this->publish_state_(this->balancing_binary_sensor_, (data[140 + offset] != 0x00));
-  ESP_LOGD(TAG, " Balancing indicator (legacy): %s", YESNO(data[140 + offset] != 0x00));
+  ESP_LOGD(TAG, "Balancing indicator (legacy): %s", YESNO(data[140 + offset] != 0x00));
 
   // 141   1   0x54                   State of charge in   1.0           %
   this->publish_state_(this->state_of_charge_sensor_, (float) data[141 + offset]);
@@ -534,7 +534,7 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
 
   // 169   1   0x01                   Balancer working                             0x00: off, 0x01: on
   // this->publish_state_(this->balancing_binary_sensor_, (bool) data[169 + offset]);
-  ESP_LOGD(TAG, " Balancing indicator (new): %s", YESNO((bool) data[169 + offset]));
+  ESP_LOGD(TAG, "Balancing indicator (new): %s", YESNO((bool) data[169 + offset]));
 
   ESP_LOGD(TAG, "Discharge overcurrent protection release timer: %d", jk_get_16bit(170 + offset));
   ESP_LOGD(TAG, "Discharge short circuit protection release timer: %d", jk_get_16bit(172 + offset));
@@ -572,7 +572,7 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
 
   if (frame_version == FRAME_VERSION_JK02_32S) {
     uint16_t raw_emergency_time_countdown = jk_get_16bit(186 + offset);
-    ESP_LOGI(TAG, "  Emergency switch: %s", ONOFF(raw_emergency_time_countdown > 0));
+    ESP_LOGI(TAG, "Emergency switch: %s", ONOFF(raw_emergency_time_countdown > 0));
     this->publish_state_(this->emergency_switch_, raw_emergency_time_countdown > 0);
     this->publish_state_(this->emergency_time_countdown_sensor_, (float) raw_emergency_time_countdown * 1.0f);
 
