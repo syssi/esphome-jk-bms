@@ -273,4 +273,4 @@ jobs:
           esphome -s external_components_source components -s name jk-bms-jk02-32s compile esp32-ble-v14-example-faker.yaml
       - name: Compile esp32 (modbus) example configurations
         run: |
-          esphome compile esp32-jk-pb-modbus-example.yaml
+          esphome -s name jk-bms-pb compile esp32-jk-pb-modbus-example.yaml
