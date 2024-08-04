@@ -8,9 +8,11 @@
 
 ESPHome components to monitor Jikong Battery Management Systems (JK-BMS) via UART-TTL, BLE, and RS-485.
 
-## Via RS-485 (best for monitoring)
+## Via RS-485 (best for monitoring and some switch control (when ESP is acting as MASTER)
 
 **NEW:** monitor your new JK-PBx BMSs via internal RS485 network using 1 only ESP. [Click here](https://github.com/txubelaxu/esphome-jk-bms/blob/main/components/jk_rs485_bms/README.md) for more info. Home Assistant dashboards inside as well.
+
+Last: control your BMSs "balancing", "charging" and "discharging" switches. New "broadcast mode" to easy switch on/off every BMS in the network.
 
 Last: new parameters added and new dashboards
 + New Dashboards (summary, cells, settings, protection) available [here](https://github.com/txubelaxu/esphome-jk-bms/tree/main/components/jk_rs485_bms/home_assistant_dashboards)
