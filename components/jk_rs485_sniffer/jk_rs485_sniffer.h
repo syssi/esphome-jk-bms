@@ -28,13 +28,18 @@ class JkRS485Sniffer : public uart::UARTDevice, public output::TalkPin, public C
 
 
   void set_talk_pin(GPIOPin *pin) { talk_pin_ = pin; }
+  void set_talk_pin_needed(bool talk_pin_needed) { talk_pin_needed_= talk_pin_needed;}
 
   void setup() override {
-    this->turn_off();
-    //this->talk_pin_->pin_mode(esphome::gpio::FLAG_OUTPUT);
-    this->talk_pin_->setup();
-    //this->turn_on();
-    this->talk_pin_->digital_write(0); 
+
+    if (talk_pin_needed_){
+      this->turn_off();
+      //this->talk_pin_->pin_mode(esphome::gpio::FLAG_OUTPUT);
+      this->talk_pin_->setup();
+      //this->turn_on();
+      this->talk_pin_->digital_write(0); 
+    }
+
   //
     for (uint8_t cont=0;cont<16;cont++){
         rs485_network_node[cont].available=0;
@@ -113,6 +118,7 @@ class JkRS485Sniffer : public uart::UARTDevice, public output::TalkPin, public C
   void write_state(bool state) override { this->talk_pin_->digital_write(state); }
   //void write_state(bool state) override { this->set_state(state); }
   GPIOPin *talk_pin_;
+  bool talk_pin_needed_;
 
   struct struct_rs485_network_node {
      bool available;
