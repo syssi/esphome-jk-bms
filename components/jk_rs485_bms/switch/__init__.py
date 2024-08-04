@@ -27,22 +27,32 @@ ICON_CHARGING_FLOAT_MODE = "mdi:battery-charging-80"
 ICON_DISPLAY_ALWAYS_ON = "mdi:television"
 
 SWITCHES = {
-    CONF_PRECHARGING: 0xAB,
-    CONF_CHARGING: 0xAB,
-    CONF_DISCHARGING: 0xAC,
-    # The BMS (v11) doesn't accept updates of register 0x9D at the moment
-    CONF_BALANCING: 0x9D,
-    CONF_DISPLAY_ALWAYS_ON: 0x00,
-    CONF_EMERGENCY: 0x00,
-    CONF_HEATING: 0x00,    
-    CONF_CHARGING_FLOAT_MODE: 0x00,
-    CONF_DISABLE_TEMPERATURE_SENSORS: 0x28,
-    CONF_SMART_SLEEP_ON: 0x2D,
-    CONF_DISABLE_PCL_MODULE: 0x2E,
-    CONF_TIMED_STORED_DATA: 0x2F,
+    CONF_CHARGING: 0x70,
+    CONF_DISCHARGING: 0x74,
+    CONF_BALANCING: 0x78,
+
+    CONF_HEATING: 0x00,  
+    CONF_DISABLE_TEMPERATURE_SENSORS: 0x00,
     CONF_GPS_HEARTBEAT: 0x00,
     CONF_PORT_SELECTION: 0x00,
+    CONF_DISPLAY_ALWAYS_ON: 0x00,
     CONF_SPECIAL_CHARGER:0x00,
+    CONF_SMART_SLEEP_ON: 0x00,
+    CONF_DISABLE_PCL_MODULE: 0x00,
+    CONF_TIMED_STORED_DATA: 0x00,
+    CONF_CHARGING_FLOAT_MODE: 0x00,
+
+    CONF_PRECHARGING: 0x00,
+    CONF_EMERGENCY: 0x00,
+  
+    
+    
+    
+    
+    
+    
+    
+    
 }
 
 JkRS485BmsSwitch = jk_rs485_bms_ns.class_("JkRS485BmsSwitch", switch.Switch, cg.Component)
@@ -155,4 +165,4 @@ async def to_code(config):
             await switch.register_switch(var, conf)
             cg.add(getattr(hub, f"set_{key}_switch")(var))
             cg.add(var.set_parent(hub))
-            #cg.add(var.set_holding_register(address))
+            cg.add(var.set_register_address(address))

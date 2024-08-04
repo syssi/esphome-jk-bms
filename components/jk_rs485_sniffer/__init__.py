@@ -11,6 +11,7 @@ CONF_JK_RS485_SNIFFER_ID = "jk_rs485_sniffer_id"
 CONF_RX_TIMEOUT = "rx_timeout"
 CONF_PROTOCOL_VERSION = "protocol_version"
 CONF_TALK_PIN = "talk_pin"
+CONF_BROADCAST_TO_ALL_BMS = "broadcast_to_all_bms"
 
 jk_rs485_sniffer_ns = cg.esphome_ns.namespace("jk_rs485_sniffer")
 
@@ -40,10 +41,17 @@ CONFIG_SCHEMA = (
             cv.Optional(
                 CONF_RX_TIMEOUT, default="50ms"
             ): cv.positive_time_period_milliseconds,            
+            cv.Required(CONF_BROADCAST_TO_ALL_BMS): cv.boolean,
         }
     )
     .extend(cv.COMPONENT_SCHEMA)
     .extend(uart.UART_DEVICE_SCHEMA)
+)
+
+JK_RS485_SNIFFER_COMPONENT_SCHEMA = cv.Schema(
+    {
+        cv.GenerateID(CONF_JK_RS485_SNIFFER_ID): cv.use_id(JkRS485Sniffer),
+    }
 )
 
 
@@ -57,6 +65,7 @@ async def to_code(config):
 
     talk_pin = await cg.gpio_pin_expression(config[CONF_TALK_PIN])
     cg.add(var.set_talk_pin(talk_pin))
+    cg.add(var.set_broadcast_to_all_bms(config[CONF_BROADCAST_TO_ALL_BMS]))    
 
 def jk_rs485_sniffer_device_schema():
     schema = {

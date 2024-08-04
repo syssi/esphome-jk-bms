@@ -14,7 +14,7 @@ esp32:
     type: esp-idf
   board: esp32-s3-devkitc-1
   flash_size: 16MB # ajust according to your ESP32-S3 version
-  
+
 esphome:
   # Standard uses a single line for data, Dual IO uses 2 lines for data.
   platformio_options:
@@ -77,9 +77,9 @@ wifi:
 
 
 ota:
+  platform: esphome
 
 api:
-
 
 logger:
   level: DEBUG #INFO #VERY_VERBOSE #VERBOSE #DEBUG #INFO #DEBUG
@@ -93,6 +93,7 @@ logger:
 #  password: !secret mqtt_password
 #  id: mqtt_client
 #  log_topic: null
+
 #web_server:
 #  local: true
 #  port: 80
@@ -112,6 +113,7 @@ jk_rs485_sniffer:
     rx_timeout: 500ms
     uart_id: uart_0
     talk_pin: ${talk_pin_rs485}
+    broadcast_to_all_bms: true
 
 jk_rs485_bms:
   - id: bms0

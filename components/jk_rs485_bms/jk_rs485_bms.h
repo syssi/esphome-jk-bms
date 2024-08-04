@@ -1,15 +1,30 @@
 #pragma once
 
-#include "esphome/core/component.h"
+#include "switch/jk_switch.h"
 #include "esphome/components/binary_sensor/binary_sensor.h"
 #include "esphome/components/sensor/sensor.h"
 #include "esphome/components/text_sensor/text_sensor.h"
-//#include "esphome/components/switch/switch.h"
-#include "switch/jk_switch.h"
-#include "esphome/components/jk_rs485_sniffer/jk_rs485_sniffer.h"
+#include "../jk_rs485_sniffer/jk_rs485_sniffer.h"
+//#include "esphome/core/component.h"
+
+
+
+
+
+
 
 namespace esphome {
+
+namespace jk_rs485_sniffer {
+class JkRS485Sniffer;  // Declaración anticipada
+};
+
+
 namespace jk_rs485_bms {
+
+class JkRS485BmsSwitch;  // Declaración anticipada de JkRS485BmsSwitch
+
+
 
 enum ProtocolVersion {
   PROTOCOL_VERSION_JK04,
@@ -17,16 +32,40 @@ enum ProtocolVersion {
   PROTOCOL_VERSION_JK02_32S,
 };
 
+/*
+El problema que estás experimentando se debe a que el compilador encuentra referencias a JkRS485BmsSwitch en el archivo jk_rs485_bms.h antes de conocer la 
+definición de la clase JkRS485BmsSwitch. 
+
+Esto ocurre porque jk_rs485_bms.h se incluye antes de que el compilador haya procesado la definición de JkRS485BmsSwitch.
+1º jk_rs485_bms.h
+2º jk_switch.h
+
+*/
 class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485SnifferDevice {
  public:
+  JkRS485Bms() = default;
 
+  void JkRS485Bms_init(void);
+
+
+  void set_sniffer_parent(jk_rs485_sniffer::JkRS485Sniffer *parent);
+  
+  jk_rs485_sniffer::JkRS485Sniffer* get_sniffer_parent(void); // Nuevo método para obtener el parent
+  
   void set_address(uint8_t address) { address_ = address; }
 
-  void trigger_event(std::string event, std::uint8_t frame_type) {
-    if (parent_ != nullptr) {
-      parent_->handle_bms_event(this->address_, event, frame_type);
-    }
-  }
+  uint8_t get_address() const { return this->address_; }
+
+  //void handle_switch2bms_event(uint8_t register_address, uint8_t data_length, uint64_t value);
+
+  void trigger_bms2sniffer_event(std::string event, std::uint8_t frame_type);
+
+  void trigger_bms2sniffer_switch_event(std::uint8_t register_address, std::uint8_t data_length, std::uint64_t value);
+
+
+
+
+
 
   void set_smart_sleep_time_sensor(sensor::Sensor *smart_sleep_time_sensor) {
     smart_sleep_time_sensor_ = smart_sleep_time_sensor;
@@ -548,41 +587,25 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
 
 
 
-  void set_disable_pcl_module_switch(JkRS485BmsSwitch *disable_pcl_module_switch) {
-    disable_pcl_module_switch_ = disable_pcl_module_switch;
-  }
+  void set_disable_pcl_module_switch(JkRS485BmsSwitch *disable_pcl_module_switch);
+
+  void set_precharging_switch(JkRS485BmsSwitch *precharging_switch);
+  void set_charging_switch(JkRS485BmsSwitch *charging_switch);
+  void set_discharging_switch(JkRS485BmsSwitch *discharging_switch);
+  void set_balancing_switch(JkRS485BmsSwitch *balancer_switch);
+  void set_emergency_switch(JkRS485BmsSwitch *emergency_switch);
+  void set_heating_switch(JkRS485BmsSwitch *heating_switch);
+  void set_display_always_on_switch(JkRS485BmsSwitch *display_always_on_switch);
+  void set_charging_float_mode_switch(JkRS485BmsSwitch *charging_float_mode_switch);
+  void set_disable_temperature_sensors_switch(JkRS485BmsSwitch *disable_temperature_sensors_switch);
+  void set_timed_stored_data_switch(JkRS485BmsSwitch *timed_stored_data_switch);
+  void set_gps_heartbeat_switch(JkRS485BmsSwitch *gps_heartbeat_switch);
+  void set_port_selection_switch(JkRS485BmsSwitch *port_selection_switch);
+  void set_special_charger_switch(JkRS485BmsSwitch *special_charger_switch);
+  void set_smart_sleep_on_switch(JkRS485BmsSwitch *smart_sleep_on_switch);
 
 
-  void set_precharging_switch(JkRS485BmsSwitch *precharging_switch) { precharging_switch_ = precharging_switch; }
-  void set_charging_switch(JkRS485BmsSwitch *charging_switch) { charging_switch_ = charging_switch; }
-  void set_discharging_switch(JkRS485BmsSwitch *discharging_switch) { discharging_switch_ = discharging_switch; }
-  void set_balancing_switch(JkRS485BmsSwitch *balancer_switch) { balancer_switch_ = balancer_switch; }
-  void set_emergency_switch(JkRS485BmsSwitch *emergency_switch) { emergency_switch_ = emergency_switch; }
-  void set_heating_switch(JkRS485BmsSwitch *heating_switch) { heating_switch_ = heating_switch; }
-  void set_display_always_on_switch(JkRS485BmsSwitch *display_always_on_switch) { display_always_on_switch_ = display_always_on_switch; }
-  void set_charging_float_mode_switch(JkRS485BmsSwitch *charging_float_mode_switch) {
-    charging_float_mode_switch_ = charging_float_mode_switch;
-  }
-  void set_disable_temperature_sensors_switch(JkRS485BmsSwitch *disable_temperature_sensors_switch) {
-    disable_temperature_sensors_switch_ = disable_temperature_sensors_switch;
-  }
-  void set_timed_stored_data_switch(JkRS485BmsSwitch *timed_stored_data_switch) {
-    timed_stored_data_switch_ = timed_stored_data_switch;
-  }
-  
 
-  
-  void set_gps_heartbeat_switch(JkRS485BmsSwitch *gps_heartbeat_switch) {
-    gps_heartbeat_switch_ = gps_heartbeat_switch;
-  }
-  void set_port_selection_switch(JkRS485BmsSwitch *port_selection_switch) {
-    port_selection_switch_ = port_selection_switch;
-  }
-  void set_special_charger_switch(JkRS485BmsSwitch *special_charger_switch) {
-    special_charger_switch_ = special_charger_switch;
-  }
-
-  void set_smart_sleep_on_switch(JkRS485BmsSwitch *smart_sleep_on_switch) { smart_sleep_on_switch_ = smart_sleep_on_switch; }
 
   void set_errors_text_sensor(text_sensor::TextSensor *errors_text_sensor) { errors_text_sensor_ = errors_text_sensor; }
   void set_operation_status_text_sensor(text_sensor::TextSensor *operation_status_text_sensor) {
@@ -650,9 +673,12 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
 
   void update() override;
 
+  //bool write_register(uint8_t address, uint32_t value, uint8_t length);
+
  protected:
-  //JKRs485Sniffer *parent_;
+  jk_rs485_sniffer::JkRS485Sniffer *parent_;
   ProtocolVersion protocol_version_{PROTOCOL_VERSION_JK02_32S};
+
   uint8_t address_;
   uint8_t battery_total_alarms_count_;
   uint8_t battery_total_alarms_active_;
@@ -832,7 +858,7 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   sensor::Sensor *precharging_time_from_discharge_sensor_;
 
 
-  JkRS485BmsSwitch *precharging_switch_ = new JkRS485BmsSwitch(false);
+  /*JkRS485BmsSwitch *precharging_switch_ = new JkRS485BmsSwitch(false);
   JkRS485BmsSwitch *charging_switch_ = new JkRS485BmsSwitch(false);
   JkRS485BmsSwitch *discharging_switch_ = new JkRS485BmsSwitch(false);
   JkRS485BmsSwitch *balancer_switch_ = new JkRS485BmsSwitch(false);
@@ -846,7 +872,7 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   JkRS485BmsSwitch *disable_pcl_module_switch_ = new JkRS485BmsSwitch(false);
   JkRS485BmsSwitch *gps_heartbeat_switch_ = new JkRS485BmsSwitch(false);
   JkRS485BmsSwitch *port_selection_switch_ = new JkRS485BmsSwitch(false);
-  JkRS485BmsSwitch *special_charger_switch_ = new JkRS485BmsSwitch(false);
+  JkRS485BmsSwitch *special_charger_switch_ = new JkRS485BmsSwitch(false);*/
 
   //auto *port_selection_switch = new JkRS485BmsSwitch(false);
   //switch_::Switch *precharging_switch_;
@@ -964,6 +990,23 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
     //position: 76543210
     return ((value >> position) & 0x01); 
   }
+
+  private:
+    JkRS485BmsSwitch *precharging_switch_;
+    JkRS485BmsSwitch *charging_switch_;
+    JkRS485BmsSwitch *discharging_switch_;
+    JkRS485BmsSwitch *balancer_switch_;
+    JkRS485BmsSwitch *emergency_switch_;
+    JkRS485BmsSwitch *heating_switch_;
+    JkRS485BmsSwitch *charging_float_mode_switch_;
+    JkRS485BmsSwitch *disable_temperature_sensors_switch_;
+    JkRS485BmsSwitch *display_always_on_switch_;
+    JkRS485BmsSwitch *smart_sleep_on_switch_;
+    JkRS485BmsSwitch *timed_stored_data_switch_;
+    JkRS485BmsSwitch *disable_pcl_module_switch_;
+    JkRS485BmsSwitch *gps_heartbeat_switch_;
+    JkRS485BmsSwitch *port_selection_switch_;
+    JkRS485BmsSwitch *special_charger_switch_;  
 };
 
 

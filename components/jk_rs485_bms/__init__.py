@@ -3,6 +3,8 @@ from esphome.components import jk_rs485_sniffer
 import esphome.config_validation as cv
 from esphome.const import CONF_ID
 
+from ..jk_rs485_sniffer import CONF_JK_RS485_SNIFFER_ID, JK_RS485_SNIFFER_COMPONENT_SCHEMA, jk_rs485_sniffer_ns
+
 AUTO_LOAD = ["jk_rs485_sniffer", "binary_sensor", "sensor", "switch", "text_sensor"]
 CODEOWNERS = ["@syssi"]
 MULTI_CONF = True
@@ -30,9 +32,11 @@ JK_RS485_BMS_COMPONENT_SCHEMA = cv.Schema(
     }
 )
 
-
 async def to_code(config):
     var = cg.new_Pvariable(config[CONF_ID])                               #definicion var: BMS (conf_id)
     await cg.register_component(var, config)                              #registro de var y su config
     await jk_rs485_sniffer.register_jk_rs485_bms_device(var, config)      #registro de SNIFFER_DEVICE
     cg.add(var.set_address(config[CONF_RS485_ADDRESS]))                   #JK_RS485_BMS --> address
+    hub = await cg.get_variable(config[CONF_JK_RS485_SNIFFER_ID])
+    #cg.add(getattr(hub, f"set_bms")(var))
+    cg.add(var.set_sniffer_parent(hub))    

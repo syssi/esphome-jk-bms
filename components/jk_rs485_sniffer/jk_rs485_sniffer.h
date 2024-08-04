@@ -1,9 +1,12 @@
 #pragma once
 
 #include "esphome/core/component.h"
-#include "esphome/components/uart/uart.h"
 #include "esphome/core/hal.h"
+#include "esphome/core/log.h"
+#include "esphome/core/helpers.h"
+#include "esphome/components/uart/uart.h"
 #include "talk_pin.h"
+
 
 
 namespace esphome {
@@ -73,9 +76,13 @@ class JkRS485Sniffer : public uart::UARTDevice, public output::TalkPin, public C
 
   void set_rx_timeout(uint16_t rx_timeout) { rx_timeout_ = rx_timeout; }
 
-  void handle_bms_event(int address, std::string event, std::uint8_t frame_type);
+  void set_broadcast_to_all_bms (bool broadcast_to_all_bms) { broadcast_to_all_bms_ = broadcast_to_all_bms; }
 
-  
+  void handle_bms2sniffer_event(std::uint8_t slave_address, std::string event, std::uint8_t frame_type);
+
+  void handle_bms2sniffer_switch_event(std::uint8_t slave_address, std::uint8_t register_address, std::uint8_t data_length, std::uint64_t value);
+  void send_command_switch_to_slave(std::uint8_t slave_address, std::uint8_t register_address, std::uint8_t data_length, std::uint64_t value);
+
  protected:
   ProtocolVersion protocol_version_{PROTOCOL_VERSION_JK02_32S};
   
@@ -92,11 +99,13 @@ class JkRS485Sniffer : public uart::UARTDevice, public output::TalkPin, public C
 
   void detected_master_activity_now(void);
   void send_request_to_slave(uint8_t node_address, uint8_t frame_type);
+  
   bool calculate_next_pooling(void);
   int found_next_node_to_discover(void);
 
   std::vector<uint8_t> rx_buffer_;
   uint16_t rx_timeout_{50};
+  bool broadcast_to_all_bms_;
   uint32_t last_jk_rs485_network_activity_{0};
   uint32_t last_jk_rs485_pooling_trial_{0};
   std::vector<JkRS485SnifferDevice *> devices_;  

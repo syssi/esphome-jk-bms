@@ -1,7 +1,5 @@
 #include "jk_rs485_sniffer.h"
-#include "esphome/core/log.h"
-#include "esphome/core/hal.h"
-#include "esphome/core/helpers.h"
+
 
 namespace esphome {
 namespace jk_rs485_sniffer {
@@ -68,36 +66,27 @@ uint16_t chksum(const uint8_t data[], const uint16_t len) {
   return checksum;
 }
 
-//void handle_bms_event(int address, std::string event, std::uint8_t frame_type) {
-//  // Maneja el evento aquí. Por ejemplo, puedes imprimir el evento:
-//  ESP_LOGD("JK_RS485_SNIFFER", "Event from ADDRESS %d: [FRAME_TYPE: %d] %s", address, frame_type, event.c_str());
-//
-//
-//}
 
-void JkRS485Sniffer::handle_bms_event(int address, std::string event, std::uint8_t frame_type) {
+void JkRS485Sniffer::handle_bms2sniffer_event(std::uint8_t slave_address, std::string event, std::uint8_t frame_type){
   // Maneja el evento aquí. Por ejemplo, puedes imprimir el evento:
-  ESP_LOGD(TAG,"Received Event from BMS.. [address:0x%02X] @ %d -->  %s", address, frame_type, event.c_str());
+  ESP_LOGD(TAG,"Received Event from BMS.. [address:0x%02X] @ %d -->  %s", slave_address, frame_type, event.c_str());
   const uint32_t now=millis();
 
   if (frame_type==1){
-    this->rs485_network_node[address].last_device_settings_request_received_OK=now;  
-    this->rs485_network_node[address].counter_device_settings_received++;
+    this->rs485_network_node[slave_address].last_device_settings_request_received_OK=now;  
+    this->rs485_network_node[slave_address].counter_device_settings_received++;
     ESP_LOGD(TAG, "updated last_device_settings_request_received_OK");
   } else if (frame_type==2){
-    this->rs485_network_node[address].last_cell_info_request_received_OK=now;  
-    this->rs485_network_node[address].counter_cell_info_received++;
+    this->rs485_network_node[slave_address].last_cell_info_request_received_OK=now;  
+    this->rs485_network_node[slave_address].counter_cell_info_received++;
     ESP_LOGD(TAG, "updated last_cell_info_request_received_OK");
   } else if (frame_type==3){
-    this->rs485_network_node[address].last_device_info_request_received_OK=now;  
-    this->rs485_network_node[address].counter_device_info_received++;
+    this->rs485_network_node[slave_address].last_device_info_request_received_OK=now;  
+    this->rs485_network_node[slave_address].counter_device_info_received++;
     ESP_LOGD(TAG, "updated last_device_info_request_received_OK");
   } else {
 
   }
-
-
-
 
 
   this->last_jk_rs485_network_activity_=now;
@@ -105,6 +94,69 @@ void JkRS485Sniffer::handle_bms_event(int address, std::string event, std::uint8
     this->last_message_received_acting_as_master=now;
   }  
 }
+
+void JkRS485Sniffer::handle_bms2sniffer_switch_event(std::uint8_t slave_address, std::uint8_t register_address, std::uint8_t data_length, std::uint64_t value) {
+
+  // 02.10.10.78.00.02.04.00.00.00.00.37.A9
+  // 02.10.10.78.00.02.04.00.00.00.01.F6.69.
+
+  // 02.10.10.78.00.02.04.00.00.00.00.37.A9
+
+  if (rs485_network_node[slave_address].available && register_address!=0x00) {
+    send_command_switch_to_slave(slave_address,register_address,data_length,value);
+  }
+
+  if (this->broadcast_to_all_bms_==true){
+    for (uint8_t j = 1; j < 16; ++j) {
+        if (rs485_network_node[j].available && slave_address!=j && register_address!=0x00) {
+            delayMicroseconds(50000);
+            send_command_switch_to_slave(j,register_address,data_length,value);
+        }
+    }
+  }
+
+
+  
+
+//  return (status == 0);
+}
+
+void JkRS485Sniffer::send_command_switch_to_slave(std::uint8_t slave_address, std::uint8_t register_address, std::uint8_t data_length, std::uint64_t value) {
+
+  uint8_t frame[13];
+    frame[0]  = slave_address ;                   // Slave Address
+    frame[1]  = 0x10;                             // 
+    frame[2]  = 0x10;                             // 
+    frame[3]  = register_address;                 // Register address
+    frame[4]  = 0x00;                             // 
+    frame[5]  = 0x02;                             // 
+    frame[6]  = data_length;                      // Length of data in number of Bytes
+    frame[7]  = (value & 0xFF000000) >> 24;       // Data Byte 1
+    frame[8]  = (value & 0x00FF0000) >> 16;       // Data Byte 2
+    frame[9]  = (value & 0x0000FF00) >> 8;        // Data Byte 3
+    frame[10] = (value & 0x000000FF) >> 0;        // Data Byte 4
+
+    uint16_t computed_checksum = crc16_c(frame, 11);
+    frame[11] = ((computed_checksum & 0xFF00)>>8);
+    frame[12] = ((computed_checksum & 0x00FF)>>0);
+
+    ESP_LOGD(TAG, "MESSAGE REQUEST TO SEND switch >>: %s",format_hex_pretty(frame, 13).c_str());
+    // Enviar el array de bytes por UART
+    std::vector<uint8_t> data_to_send(frame, frame + sizeof(frame) / sizeof(frame[0]));
+
+    this->talk_pin_->digital_write(1);
+    delayMicroseconds(50); //50us
+    this->write_array(data_to_send);
+    this->flush();
+    this->talk_pin_->digital_write(0); 
+    delayMicroseconds(50); //50us
+
+
+    const uint32_t now=millis();
+    this->rs485_network_node[slave_address].last_request_sent=now;  
+    this->last_jk_rs485_network_activity_=now;   
+}
+
 
 void JkRS485Sniffer::send_request_to_slave(uint8_t address, uint8_t frame_type){
 
@@ -153,6 +205,9 @@ void JkRS485Sniffer::send_request_to_slave(uint8_t address, uint8_t frame_type){
 //    }  
 
 }
+
+
+
 
 bool JkRS485Sniffer::calculate_next_pooling(void){
   //NORMAL POOLING MODE: SAME NODE
@@ -493,9 +548,10 @@ uint8_t JkRS485Sniffer::manage_rx_buffer_(void) {
 
   const uint32_t now = millis();
 
+  /*
   const size_t free_heap = heap_caps_get_largest_free_block(MALLOC_CAP_8BIT);
   ESP_LOGV(TAG, "free_heap %f kBytes [buffer: %d bytes]",((float)free_heap/1024),this->rx_buffer_.size());
-
+  */
   if (this->rx_buffer_.size()>=JKPB_RS485_MASTER_SHORT_REQUEST_SIZE){
     auto it = std::search(this->rx_buffer_.begin(), this->rx_buffer_.end(), pattern_response_header.begin(), pattern_response_header.end());
     if (it == this->rx_buffer_.end()) {
@@ -509,14 +565,14 @@ uint8_t JkRS485Sniffer::manage_rx_buffer_(void) {
         //IT IS NOT A SHORT REQUEST OR THERE WAS A COMM. ERROR --> continue whith manage_rx_buffer code
       } else {
         address=raw[0];
-        ESP_LOGI(TAG, "REAL master is speaking to address 0x%02X (short request)",address);
+        //ESP_LOGI(TAG, "REAL master is speaking to address 0x%02X (short request)",address);
 
-        this->rs485_network_node[0].last_message_received=now;
-        this->detected_master_activity_now();
+        //this->rs485_network_node[0].last_message_received=now;
+        //this->detected_master_activity_now();
         
-        this->set_node_availability(0,1);
-        //std::vector<uint8_t> data(this->rx_buffer_.begin() + 0, this->rx_buffer_.begin() + JKPB_RS485_MASTER_SHORT_REQUEST_SIZE-1);
-        //ESP_LOGD(TAG, "Frame received from MASTER (type: SHORT REQUEST for address %02X, %d bytes)",address, data.size());
+        //this->set_node_availability(0,1);
+        std::vector<uint8_t> data(this->rx_buffer_.begin() + 0, this->rx_buffer_.begin() + JKPB_RS485_MASTER_SHORT_REQUEST_SIZE-1);
+        ESP_LOGD(TAG, "Answer received for MASTER (type: SHORT REQUEST for address %02X, %d bytes)",address, data.size());
         this->rx_buffer_.erase(this->rx_buffer_.begin(), this->rx_buffer_.begin() + JKPB_RS485_MASTER_SHORT_REQUEST_SIZE-1); 
         //continue with next;
         return(7);

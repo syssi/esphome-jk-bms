@@ -1,9 +1,45 @@
 #include "jk_rs485_bms.h"
-#include "esphome/core/log.h"
-#include "esphome/core/helpers.h"
+
+
 
 namespace esphome {
 namespace jk_rs485_bms {
+
+void JkRS485Bms::JkRS485Bms_init(void) {
+    this->precharging_switch_ = new JkRS485BmsSwitch(false);
+    this->charging_switch_ = new JkRS485BmsSwitch(false);
+    this->discharging_switch_ = new JkRS485BmsSwitch(false);
+    this->balancer_switch_ = new JkRS485BmsSwitch(false);
+    this->emergency_switch_ = new JkRS485BmsSwitch(false);
+    this->heating_switch_ = new JkRS485BmsSwitch(false);
+    this->charging_float_mode_switch_ = new JkRS485BmsSwitch(false);
+    this->disable_temperature_sensors_switch_ = new JkRS485BmsSwitch(false);
+    this->display_always_on_switch_ = new JkRS485BmsSwitch(false);
+    this->smart_sleep_on_switch_ = new JkRS485BmsSwitch(false);
+    this->timed_stored_data_switch_ = new JkRS485BmsSwitch(false);
+    this->disable_pcl_module_switch_ = new JkRS485BmsSwitch(false);
+    this->gps_heartbeat_switch_ = new JkRS485BmsSwitch(false);
+    this->port_selection_switch_ = new JkRS485BmsSwitch(false);
+    this->special_charger_switch_ = new JkRS485BmsSwitch(false);
+}  
+
+
+void JkRS485Bms::set_disable_pcl_module_switch(JkRS485BmsSwitch *disable_pcl_module_switch) {this->disable_pcl_module_switch_ = disable_pcl_module_switch;}
+void JkRS485Bms::set_precharging_switch(JkRS485BmsSwitch *precharging_switch) { this->precharging_switch_ = precharging_switch; }
+void JkRS485Bms::set_charging_switch(JkRS485BmsSwitch *charging_switch) { this->charging_switch_ = charging_switch; }
+void JkRS485Bms::set_discharging_switch(JkRS485BmsSwitch *discharging_switch) { this->discharging_switch_ = discharging_switch; }
+void JkRS485Bms::set_balancing_switch(JkRS485BmsSwitch *balancer_switch) { this->balancer_switch_ = balancer_switch; }
+void JkRS485Bms::set_emergency_switch(JkRS485BmsSwitch *emergency_switch) { this->emergency_switch_ = emergency_switch; }
+void JkRS485Bms::set_heating_switch(JkRS485BmsSwitch *heating_switch) { this->heating_switch_ = heating_switch; }
+void JkRS485Bms::set_display_always_on_switch(JkRS485BmsSwitch *display_always_on_switch) { this->display_always_on_switch_ = display_always_on_switch; }
+void JkRS485Bms::set_charging_float_mode_switch(JkRS485BmsSwitch *charging_float_mode_switch) {this->charging_float_mode_switch_ = charging_float_mode_switch;}
+void JkRS485Bms::set_disable_temperature_sensors_switch(JkRS485BmsSwitch *disable_temperature_sensors_switch) {this->disable_temperature_sensors_switch_ = disable_temperature_sensors_switch;}
+void JkRS485Bms::set_timed_stored_data_switch(JkRS485BmsSwitch *timed_stored_data_switch) {this->timed_stored_data_switch_ = timed_stored_data_switch;}
+void JkRS485Bms::set_gps_heartbeat_switch(JkRS485BmsSwitch *gps_heartbeat_switch) {this->gps_heartbeat_switch_ = gps_heartbeat_switch;}
+void JkRS485Bms::set_port_selection_switch(JkRS485BmsSwitch *port_selection_switch) {this->port_selection_switch_ = port_selection_switch;}
+void JkRS485Bms::set_special_charger_switch(JkRS485BmsSwitch *special_charger_switch) { this->special_charger_switch_ = special_charger_switch;}
+void JkRS485Bms::set_smart_sleep_on_switch(JkRS485BmsSwitch *smart_sleep_on_switch) { this->smart_sleep_on_switch_ = smart_sleep_on_switch; }
+
 
 static const char *const TAG = "jk_rs485_bms";
 
@@ -88,10 +124,63 @@ float int16_to_float(const uint8_t* byteArray) {
     int32_t intValue = (static_cast<int32_t>(byteArray[0]) << 0) |
                        (static_cast<int32_t>(byteArray[1]) << 8);
 
-    float floatValue = static_cast<float>(intValue);
+    float floatValue = static_cast<float>(intValue); 
 
     return floatValue;
 }
+
+
+
+
+//void JkRS485Bms::set_parent(JkRS485Sniffer *parent) { 
+void JkRS485Bms::set_sniffer_parent(jk_rs485_sniffer::JkRS485Sniffer* parent) {
+    if (parent == nullptr) {
+        ESP_LOGE(TAG, "Trying to set parent to null");
+    } else {
+        ESP_LOGD(TAG, "Setting parent");
+    }
+    this->parent_ = parent;
+}
+
+jk_rs485_sniffer::JkRS485Sniffer* JkRS485Bms::get_sniffer_parent(void){
+    ESP_LOGD(TAG, "Get sniffer parent");
+    return(this->parent_);
+}
+
+void JkRS485Bms::trigger_bms2sniffer_event(std::string event, std::uint8_t frame_type) {
+  if (this->parent_ != nullptr) {
+    this->parent_->handle_bms2sniffer_event(this->address_, event, frame_type);
+  }
+}
+
+/*void JkRS485Bms::trigger_bms2sniffer_switch_event(std::uint8_t register_address, std::uint8_t data_length, std::uint64_t value) {
+    //this->parent_->handle_bms2sniffer_switch_event(this->address_, register_address, data_length, value);
+    //this->parent_->handle_bms2sniffer_event(this->address_, "KK", 0);
+    ESP_LOGD(TAG, "TEST address %02X switch_address %02X",this->get_address(),register_address);
+    //ESP_LOGD(TAG, "This BMS address is: %d  and register_address is: %d (data_length: %d)", this->address_, register_address, data_length);
+}*/
+
+/*void JkRS485Bms::trigger_bms2sniffer_switch_event(std::uint8_t register_address, std::uint8_t data_length, std::uint64_t value) {
+    uint8_t address = this->get_address();
+    ESP_LOGD(TAG, "TEST address %02X switch_address %02X", address, register_address);
+}*/
+
+void JkRS485Bms::trigger_bms2sniffer_switch_event(std::uint8_t register_address, std::uint8_t data_length, std::uint64_t value){
+//void JkRS485Bms::trigger_bms2sniffer_switch_event(uint8_t register_address, uint8_t data_length, uint64_t value) {
+    ESP_LOGD(TAG, "Entering trigger_bms2sniffer_switch_event");
+
+    // Verificación de `this`
+    if (this == nullptr) {
+        ESP_LOGE(TAG, "switch THIS (this->) is null");
+        return;
+    }
+//    // Log final
+    ESP_LOGD(TAG, "TEST address %02X switch_address %02X", this->address_, register_address);
+    this->parent_->handle_bms2sniffer_switch_event(this->address_, register_address, data_length, value);
+}
+
+
+
 
 
 
@@ -584,7 +673,7 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
     this->publish_state_(this->battery_total_alarms_active_sensor_, (float) this->battery_total_alarms_active_);
   }
   this->status_notification_received_ = true;
-  this->trigger_event("WORKING ! #####",02);  
+  this->trigger_bms2sniffer_event("WORKING ! #####",02);  
 }
 
 void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
@@ -678,6 +767,8 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->max_charging_current_sensor_, temp_param_value); ///(float) jk_get_32bit(50) * 0.001f);
 
   // 54 [48]   4   0x1E 0x00 0x00 0x00    Charge OCP delay                    TIMBatCOCPDly   Charging Overcurrent
+  // 0x0030 48  UINT32 4 RW充电过流保护延迟TIMBatCOCPDly    S
+  // 02.10.10.     30.00.      02.04.            00.00.00.03.        72.3E      <=====
   // Protection Delay (s)
   temp_param_value = uint32_to_float(&data[54]);  
   //ESP_LOGV(TAG, "  Charge OCP delay: %f s", temp_param_value); ///(float) jk_get_32bit(54));
@@ -690,6 +781,10 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->charging_overcurrent_protection_recovery_delay_sensor_,  temp_param_value); ///(float) jk_get_32bit(58));
   
   // 62 [56]   4   0xF0 0x49 0x02 0x00    Max. discharge current CurBatDcOC
+  // 0x0038 56 UINT32 4 RW持续放电电流CurBatDcOC    mA
+  // 02.10.10.    38.00.      02.04.             00.00.04.4C.         30.AC.          (044C=1100)
+
+
   temp_param_value = uint32_to_float(&data[62]) * 0.001f;   
   //ESP_LOGV(TAG, "  Max. discharging current: %f A", temp_param_value); ///(float) jk_get_32bit(62) * 0.001f);
   this->publish_state_(this->max_discharging_current_sensor_, temp_param_value); ///(float) jk_get_32bit(62) * 0.001f);
@@ -768,8 +863,10 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   // ESP_LOGI(TAG, "  Discharge switch: %s", ((bool) data[122]) ? "on" : "off");
   this->publish_state_(this->discharging_switch_, (bool) data[122]);
 
-  // 126 [120]  4   0x01 0x00 0x00 0x00    Balancer switch
-  // ESP_LOGI(TAG, "  Balancer switch: %s", ((bool) data[126]) ? "on" : "off");
+  // 126 [120 = 0x78]  4   0x01 0x00 0x00 0x00    Balancer switch
+  ESP_LOGI(TAG, "  Balancer switch: %s", ((bool) data[126]) ? "on" : "off");
+  // 02.10.10.78.00.02.04.00.00.00.00.37.A9
+  // 02.10.10.78.00.02.04.00.00.00.01.F6.69.
   this->publish_state_(this->balancer_switch_, (bool) (data[126]));
 
   // 130 [124]  4   0x88 0x13 0x00 0x00    Nominal battery capacity CapBatCell  [Nominal_Capacity] (CellInfo)
@@ -923,7 +1020,7 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   // 294   4   0x00 0x00 0x00 0x00
   // 298   1   0x00
   // 299   1   0x40                   CHECKSUM
-  this->trigger_event("WORKING ! #####",01);  
+  this->trigger_bms2sniffer_event("WORKING ! #####",01);  
 }
 
 void JkRS485Bms::update() { this->track_status_online_(); }
@@ -1022,7 +1119,7 @@ void JkRS485Bms::decode_device_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->cell_request_charge_voltage_time_sensor_, (float) data[266]*0.1f);
   this->publish_state_(this->cell_request_float_voltage_time_sensor_, (float) data[267]*0.1f);
 
-  this->trigger_event("WORKING ! #####",03);  
+  this->trigger_bms2sniffer_event("WORKING ! #####",03);  
 }
 
 void JkRS485Bms::track_status_online_() {
@@ -1140,18 +1237,25 @@ void JkRS485Bms::publish_state_(JkRS485BmsSwitch *obj, const bool &state) {
     ESP_LOGE(TAG, "Object is nullptr");
     return;
   }
+
   const size_t free_heap = heap_caps_get_largest_free_block(MALLOC_CAP_8BIT);
 
   if (reinterpret_cast<uintptr_t>(obj) > 0x3f000000) {
     ESP_LOGV(TAG, "Publishing state %d for object with address %p [%f]", state, (void*)obj, ((float)free_heap/1024));
-    //obj->publish_state(state);
-    obj->write_state(state);
+    obj->publish_state(state);
+    //obj->write_state(state);
     ESP_LOGV(TAG, "  --------------------------------------- PUBLISHED     0x%02X publish_state(state) of %s", reinterpret_cast<uintptr_t>(obj), obj->get_name().c_str());
   } else {
     ESP_LOGE(TAG, "  Object changes its nullptr !!!--------- NOT PUBLISHED 0x%02X", reinterpret_cast<uintptr_t>(obj));
   }
+  
 
 }
+
+//bool JkRS485Bms::write_register(uint8_t address, uint32_t value, uint8_t length) {
+//  trigger_bms2sniffer_event("KK", 0x00);
+//  return(true);
+//}
 
 void JkRS485Bms::publish_state_(text_sensor::TextSensor *text_sensor, const std::string &state) {
   if (text_sensor == nullptr)
@@ -1210,8 +1314,10 @@ std::string JkRS485Bms::mode_bits_to_string_(const uint16_t mask) {
 }
 
 void JkRS485Bms::dump_config() {  // NOLINT(google-readability-function-size,readability-function-size)
-  ESP_LOGCONFIG(TAG, "JkRS485Bms:");
+  /*
+  ESP_LOGCONFIG(TAG, "JkRS485Bms (DUMP CONFIG):");
   ESP_LOGCONFIG(TAG, "  Address: 0x%02X", this->address_);
+
   LOG_SENSOR("", "Minimum Cell Voltage", this->cell_voltage_min_sensor_);
   LOG_SENSOR("", "Maximum Cell Voltage", this->cell_voltage_max_sensor_);
   LOG_SENSOR("", "Minimum Voltage Cell", this->cell_voltage_min_cell_number_sensor_);
@@ -1243,8 +1349,8 @@ void JkRS485Bms::dump_config() {  // NOLINT(google-readability-function-size,rea
   LOG_SENSOR("", "Cell Voltage 23", this->cells_[22].cell_voltage_sensor_);
   LOG_SENSOR("", "Cell Voltage 24", this->cells_[23].cell_voltage_sensor_);
   LOG_SENSOR("", "Temperature powertube", this->temperature_powertube_sensor_);
-  LOG_SENSOR("", "Temperature Sensor 1", this->temperature_sensor_1_sensor_);
-  LOG_SENSOR("", "Temperature Sensor 2", this->temperature_sensor_2_sensor_);
+  LOG_SENSOR("", "Temperature Sensor 1", this->temperatures_[0].temperature_sensor_);
+  LOG_SENSOR("", "Temperature Sensor 2", this->temperatures_[1].temperature_sensor_);
   LOG_SENSOR("", "Battery voltage", this->battery_voltage_sensor_);
   LOG_SENSOR("", "Current", this->battery_current_sensor_);
   LOG_SENSOR("", "Power", this->battery_power_sensor_);
@@ -1309,6 +1415,7 @@ void JkRS485Bms::dump_config() {  // NOLINT(google-readability-function-size,rea
   LOG_BINARY_SENSOR("", "Discharging Switch", this->discharging_switch_binary_sensor_);
   LOG_BINARY_SENSOR("", "Dedicated Charger Switch", this->dedicated_charger_switch_binary_sensor_);
   LOG_TEXT_SENSOR("", "Battery total runtime Formatted", this->total_runtime_formatted_text_sensor_);
+  */
 }
 
 }  // namespace jk_rs485_bms
