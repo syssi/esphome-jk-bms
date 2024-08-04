@@ -86,7 +86,8 @@ SECOND: CONNECT THE SNIFFER (ESP32->RS485 CONVERTER->) AT ONE END OF THE CHAIN
 ```
 ![image](https://github.com/user-attachments/assets/94e6c464-df4b-4a0f-b6e6-dd013b574ea0)
 
-![image](https://github.com/txubelaxu/esphome-jk-bms/assets/156140720/9505df34-a807-4953-b0b9-946aa2de66e6)
+![image](https://github.com/user-attachments/assets/5e12311d-1791-40c4-9302-a4130708c5a6) Thanks to [TheSmartGerman](https://github.com/TheSmartGerman) for previous picture. The RS485 connectors are the 2 connectors on the right.
+
 pinout:
 ![image](https://github.com/txubelaxu/esphome-jk-bms/assets/156140720/278abcac-c095-4ae2-8ba2-f82f1f152343)
 
@@ -124,9 +125,8 @@ wifi_ssid: MY_WIFI_SSID
 wifi_password: MY_WIFI_PASSWORD
 EOF
 
-There is 2 example configurations that you can change to your needs:
-- esp32-example-jkpb-rs485_1master_1slave.yaml    <>  a config of 1 master and 1 slave  (total: 2 JK-PB BMSs)
-- esp32-example-jkpb-rs485_1master_6slaves.yaml   <>  a config of 1 master and 6 slaves (total: 7 JK-PB BMSs)
+There is a example configuration (0 master and 2 slaves) that you can change to your needs:
+- esp32-S3-example-jkpb-rs485_0master_2slaves.yaml   <>  a config of 0 master and 2 slave  (total: 2 JK-PB BMSs)
 
 
 # Configure every BMS you have in this yaml, assigning a name and the address of each one.
@@ -136,9 +136,9 @@ There is 2 example configurations that you can change to your needs:
 ## VALIDATE CODE + UPLOAD + LAUNCH + VIEW LOGS:
 
 # Validate the configuration, create a binary, upload it, and start logs
-esphome run esp32-example-jkpb-rs485_1master_1slave.yaml
+esphome run esp32-S3-example-jkpb-rs485_0master_2slaves.yaml
 
-(previous example has 1 MASTER at address 0x00 and 1 SLAVE at address 0x01). There is another example with 6 slaves.
+(previous example has 2 SLAVES at address 0x01 and at address 0x02).
 
 
 ## Known issues
