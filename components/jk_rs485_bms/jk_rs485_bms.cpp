@@ -153,20 +153,7 @@ void JkRS485Bms::trigger_bms2sniffer_event(std::string event, std::uint8_t frame
   }
 }
 
-/*void JkRS485Bms::trigger_bms2sniffer_switch_event(std::uint8_t register_address, std::uint8_t data_length, std::uint64_t value) {
-    //this->parent_->handle_bms2sniffer_switch_event(this->address_, register_address, data_length, value);
-    //this->parent_->handle_bms2sniffer_event(this->address_, "KK", 0);
-    ESP_LOGD(TAG, "TEST address %02X switch_address %02X",this->get_address(),register_address);
-    //ESP_LOGD(TAG, "This BMS address is: %d  and register_address is: %d (data_length: %d)", this->address_, register_address, data_length);
-}*/
-
-/*void JkRS485Bms::trigger_bms2sniffer_switch_event(std::uint8_t register_address, std::uint8_t data_length, std::uint64_t value) {
-    uint8_t address = this->get_address();
-    ESP_LOGD(TAG, "TEST address %02X switch_address %02X", address, register_address);
-}*/
-
-void JkRS485Bms::trigger_bms2sniffer_switch_event(std::uint8_t register_address, std::uint8_t data_length, std::uint64_t value){
-//void JkRS485Bms::trigger_bms2sniffer_switch_event(uint8_t register_address, uint8_t data_length, uint64_t value) {
+void JkRS485Bms::trigger_bms2sniffer_switch64_event(std::uint8_t register_address, std::uint64_t value){
     ESP_LOGD(TAG, "Entering trigger_bms2sniffer_switch_event");
 
     // Verificación de `this`
@@ -174,11 +161,72 @@ void JkRS485Bms::trigger_bms2sniffer_switch_event(std::uint8_t register_address,
         ESP_LOGE(TAG, "switch THIS (this->) is null");
         return;
     }
+
 //    // Log final
-    ESP_LOGD(TAG, "TEST address %02X switch_address %02X", this->address_, register_address);
-    this->parent_->handle_bms2sniffer_switch_event(this->address_, register_address, data_length, value);
+    ESP_LOGD(TAG, "BMS address %02X switch_register_address [64] %02X", this->address_, register_address);
+    this->parent_->handle_bms2sniffer_switch_event(this->address_, register_address, 4, value);
 }
 
+/*void uint64_to_binary_str(uint64_t value, char *buffer, size_t buffer_size) {
+    if (buffer_size < 65) { // 64 bits + 1 for null terminator
+        return; // Buffer too small
+    }
+    buffer[64] = '\0'; // Null terminator
+    for (int i = 63; i >= 0; --i) {
+        buffer[i] = (value & 1) ? '1' : '0';
+        value >>= 1;
+    }
+}*/
+
+void JkRS485Bms::trigger_bms2sniffer_switch16_event(std::uint8_t register_address){
+    ESP_LOGD(TAG, "Entering trigger_bms2sniffer_switch_event");
+
+    // Verificación de `this`
+    if (this == nullptr) {
+        ESP_LOGE(TAG, "switch THIS (this->) is null");
+        return;
+    }
+
+    uint64_t value_to_send=0;
+
+    if (
+      (this->heating_switch_->is_ready()) &&
+      (this->disable_temperature_sensors_switch_->is_ready()) &&
+      (this->gps_heartbeat_switch_->is_ready()) &&
+      (this->port_selection_switch_->is_ready()) &&
+      (this->display_always_on_switch_->is_ready()) &&
+      (this->special_charger_switch_->is_ready()) &&
+      (this->smart_sleep_on_switch_->is_ready()) &&
+      (this->disable_pcl_module_switch_->is_ready()) &&
+      (this->timed_stored_data_switch_->is_ready()) &&
+      (this->charging_float_mode_switch_->is_ready()) 
+    ) {
+      value_to_send = this->charging_float_mode_switch_->state;
+      value_to_send = (value_to_send << 1) | this->timed_stored_data_switch_->state;
+      value_to_send = (value_to_send << 1) | this->disable_pcl_module_switch_->state;
+      value_to_send = (value_to_send << 1) | this->smart_sleep_on_switch_->state;
+      value_to_send = (value_to_send << 1) | this->special_charger_switch_->state;
+      value_to_send = (value_to_send << 1) | this->display_always_on_switch_->state;
+      value_to_send = (value_to_send << 1) | this->port_selection_switch_->state;
+      value_to_send = (value_to_send << 1) | this->gps_heartbeat_switch_->state;
+      value_to_send = (value_to_send << 1) | this->disable_temperature_sensors_switch_->state;
+      value_to_send = (value_to_send << 1) | this->heating_switch_->state;
+
+      // Log final
+      //char binary_str[65]; // 64 bits + 1 for null terminator
+      //uint64_to_binary_str(value_to_send, binary_str, sizeof(binary_str));
+
+      ESP_LOGD(TAG, "BMS address %02X switch_register_address [16] %02X", this->address_, register_address);
+      this->parent_->handle_bms2sniffer_switch_event(this->address_, register_address, 2, value_to_send);
+    } else {
+      ESP_LOGD(TAG, "BMS address %02X switch_register_address [16] %02X (NOT READY ALL SWITCHES)", this->address_, register_address);
+    }
+
+
+
+
+
+}
 
 
 

@@ -24,7 +24,6 @@ class JkRS485BmsSwitch : public switch_::Switch, public Component {
   
   void set_parent(JkRS485Bms *parent) { this->parent_ = parent; };
   void set_register_address(uint8_t register_address) { this->register_address_ = register_address; };
-  uint8_t get_register_address(void) { return(this->register_address_); };  
   void dump_config() override;
   void loop() override {}
   float get_setup_priority() const override { return setup_priority::DATA; }
@@ -42,9 +41,8 @@ class JkRS485BmsSwitch : public switch_::Switch, public Component {
 
   JkRS485Bms *parent_;
   uint8_t register_address_;
+  uint8_t register_address_bit_;
 };
-
-
 
 
 }  // namespace jk_rs485_bms

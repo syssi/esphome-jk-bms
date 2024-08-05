@@ -56,11 +56,10 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
 
   uint8_t get_address() const { return this->address_; }
 
-  //void handle_switch2bms_event(uint8_t register_address, uint8_t data_length, uint64_t value);
-
   void trigger_bms2sniffer_event(std::string event, std::uint8_t frame_type);
 
-  void trigger_bms2sniffer_switch_event(std::uint8_t register_address, std::uint8_t data_length, std::uint64_t value);
+  void trigger_bms2sniffer_switch16_event(std::uint8_t register_address);
+  void trigger_bms2sniffer_switch64_event(std::uint8_t register_address, std::uint64_t value);
 
 
 
