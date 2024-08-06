@@ -36,10 +36,10 @@ def append_values(
             current_packet = value
             if index_of_value + 1 < len(values):
                 for value_to_append in values[index_of_value + 1 :]:
-                    if (
-                        value_to_append.startswith(start_value)
-                        or value_to_append.startswith("aa:55")
-                    ):  ##55:aa:eb:90 start of the next frame or "aa:55" command response??
+                    # 55:aa:eb:90 start of the next frame or "aa:55" command response??
+                    if value_to_append.startswith(
+                        start_value
+                    ) or value_to_append.startswith("aa:55"):
                         list_of_frame_values.append("".join(current_packet))
                         break
                     else:
