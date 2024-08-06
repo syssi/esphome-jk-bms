@@ -3,7 +3,7 @@ substitutions:
   bms0_name: rs485-bms0
   bms1_name: rs485-bms1
   device_description: "Monitor two JK-BMS via RS485 internal"
-  external_components_source: github://txubelaxu/esphome-jk-bms@main #github://syssi/esphome-jk-bms@main
+  external_components_source: ./components/ #github://txubelaxu/esphome-jk-bms@main #github://syssi/esphome-jk-bms@main
   tx_pin_uart_0: GPIO17 #GPIO1 #GPIO16
   rx_pin_uart_0: GPIO18 #GPIO3 #GPIO17
   talk_pin_rs485: GPIO4

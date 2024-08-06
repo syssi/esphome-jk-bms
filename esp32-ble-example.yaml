@@ -2,7 +2,7 @@ substitutions:
   name: jk-bms
   device_description: "Monitor and control a JK-BMS via bluetooth"
   external_components_source: github://syssi/esphome-jk-bms@main
-  mac_address: C8:47:8C:E1:E2:E1
+  mac_address: C8:47:8C:E1:E2:AA
   # Please use "JK02_24S" if you own a old JK-BMS < hardware version 11.0 (hardware version >= 6.0 and < 11.0)
   # Please use "JK02_32S" if you own a new JK-BMS >= hardware version 11.0 (f.e. JK-B2A8S20P hw 11.XW, sw 11.26)
   # Please use "JK04" if you have some old JK-BMS <= hardware version 3.0 (f.e. JK-B2A16S hw 3.0, sw. 3.3.0)
@@ -11,6 +11,7 @@ substitutions:
 esphome:
   name: ${name}
   comment: ${device_description}
+  min_version: 2024.6.0
   project:
     name: "syssi.esphome-jk-bms"
     version: 2.0.0
@@ -21,9 +22,7 @@ esp32:
     type: esp-idf
 
 external_components:
-#  - source: ${external_components_source}
-#    refresh: 0s
-  - source: ./components
+  - source: ${external_components_source}
     refresh: 0s
 
 wifi:
@@ -31,6 +30,7 @@ wifi:
   password: !secret wifi_password
 
 ota:
+  platform: esphome
   on_begin:
     then:
       - switch.turn_off: ble_client_switch0
@@ -123,18 +123,46 @@ number:
       name: "${name} max charge current"
     max_discharge_current:
       name: "${name} max discharge current"
+    charge_overcurrent_protection_delay:
+      name: "${name} charge overcurrent protection delay"
+    charge_overcurrent_protection_recovery_time:
+      name: "${name} charge overcurrent protection recovery time"
+    discharge_overcurrent_protection_delay:
+      name: "${name} discharge overcurrent protection delay"
+    discharge_overcurrent_protection_recovery_time:
+      name: "${name} discharge overcurrent protection recovery time"
+    short_circuit_protection_delay:
+      name: "${name} short circuit protection delay"
+    short_circuit_protection_recovery_time:
+      name: "${name} short circuit protection recovery time"
+    charge_overtemperature_protection:
+      name: "${name} charge overtemperature protection"
+    charge_overtemperature_protection_recovery:
+      name: "${name} charge overtemperature protection recovery"
+    discharge_overtemperature_protection:
+      name: "${name} discharge overtemperature protection"
+    discharge_overtemperature_protection_recovery:
+      name: "${name} discharge overtemperature protection recovery"
+    charge_undertemperature_protection:
+      name: "${name} charge undertemperature protection"
+    charge_undertemperature_protection_recovery:
+      name: "${name} charge undertemperature protection recovery"
+    power_tube_overtemperature_protection:
+      name: "${name} power tube overtemperature protection"
+    power_tube_overtemperature_protection_recovery:
+      name: "${name} power tube overtemperature protection recovery"
 
 sensor:
   - platform: jk_bms_ble
     jk_bms_ble_id: bms0
-    cell_voltage_min:
-      name: "${name} cell voltage min"
-    cell_voltage_max:
-      name: "${name} cell voltage max"
-    cell_voltage_min_cell_number:
-      name: "${name} cell voltage min cell number"
-    cell_voltage_max_cell_number:
-      name: "${name} cell voltage max cell number"
+    min_cell_voltage:
+      name: "${name} min cell voltage"
+    max_cell_voltage:
+      name: "${name} max cell voltage"
+    min_voltage_cell:
+      name: "${name} min voltage cell"
+    max_voltage_cell:
+      name: "${name} max voltage cell"
     delta_cell_voltage:
       name: "${name} delta cell voltage"
     average_cell_voltage:
@@ -257,6 +285,8 @@ sensor:
     #   name: "${name} temperature sensor 4"
     power_tube_temperature:
       name: "${name} power tube temperature"
+    balancing:
+      name: "${name} balancing"
     state_of_charge:
       name: "${name} state of charge"
     capacity_remaining:

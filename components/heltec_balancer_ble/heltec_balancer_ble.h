@@ -61,17 +61,17 @@ class HeltecBalancerBle : public esphome::ble_client::BLEClientNode, public Poll
   }
 
   void set_throttle(uint32_t throttle) { this->throttle_ = throttle; }
-  void set_cell_voltage_min_sensor(sensor::Sensor *cell_voltage_min_sensor) {
-    cell_voltage_min_sensor_ = cell_voltage_min_sensor;
+  void set_min_cell_voltage_sensor(sensor::Sensor *min_cell_voltage_sensor) {
+    min_cell_voltage_sensor_ = min_cell_voltage_sensor;
   }
-  void set_cell_voltage_max_sensor(sensor::Sensor *cell_voltage_max_sensor) {
-    cell_voltage_max_sensor_ = cell_voltage_max_sensor;
+  void set_max_cell_voltage_sensor(sensor::Sensor *max_cell_voltage_sensor) {
+    max_cell_voltage_sensor_ = max_cell_voltage_sensor;
   }
-  void set_cell_voltage_min_cell_number_sensor(sensor::Sensor *cell_voltage_min_cell_number_sensor) {
-    cell_voltage_min_cell_number_sensor_ = cell_voltage_min_cell_number_sensor;
+  void set_min_voltage_cell_sensor(sensor::Sensor *min_voltage_cell_sensor) {
+    min_voltage_cell_sensor_ = min_voltage_cell_sensor;
   }
-  void set_cell_voltage_max_cell_number_sensor(sensor::Sensor *cell_voltage_max_cell_number_sensor) {
-    cell_voltage_max_cell_number_sensor_ = cell_voltage_max_cell_number_sensor;
+  void set_max_voltage_cell_sensor(sensor::Sensor *max_voltage_cell_sensor) {
+    max_voltage_cell_sensor_ = max_voltage_cell_sensor;
   }
   void set_delta_cell_voltage_sensor(sensor::Sensor *delta_cell_voltage_sensor) {
     delta_cell_voltage_sensor_ = delta_cell_voltage_sensor;
@@ -153,10 +153,10 @@ class HeltecBalancerBle : public esphome::ble_client::BLEClientNode, public Poll
   number::Number *balance_start_voltage_number_;
   number::Number *nominal_battery_capacity_number_;
 
-  sensor::Sensor *cell_voltage_min_sensor_;
-  sensor::Sensor *cell_voltage_max_sensor_;
-  sensor::Sensor *cell_voltage_min_cell_number_sensor_;
-  sensor::Sensor *cell_voltage_max_cell_number_sensor_;
+  sensor::Sensor *min_cell_voltage_sensor_;
+  sensor::Sensor *max_cell_voltage_sensor_;
+  sensor::Sensor *min_voltage_cell_sensor_;
+  sensor::Sensor *max_voltage_cell_sensor_;
   sensor::Sensor *delta_cell_voltage_sensor_;
   sensor::Sensor *average_cell_voltage_sensor_;
   sensor::Sensor *total_voltage_sensor_;

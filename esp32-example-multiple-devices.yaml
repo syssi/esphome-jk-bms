@@ -12,6 +12,7 @@ substitutions:
 esphome:
   name: ${name}
   comment: ${device_description}
+  min_version: 2024.6.0
   project:
     name: "syssi.esphome-jk-bms"
     version: 2.0.0
@@ -30,6 +31,7 @@ wifi:
   password: !secret wifi_password
 
 ota:
+  platform: esphome
 
 logger:
   level: DEBUG
