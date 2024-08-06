@@ -7,12 +7,6 @@
 #include "../jk_rs485_sniffer/jk_rs485_sniffer.h"
 //#include "esphome/core/component.h"
 
-
-
-
-
-
-
 namespace esphome {
 
 namespace jk_rs485_sniffer {
@@ -23,8 +17,6 @@ class JkRS485Sniffer;  // Declaración anticipada
 namespace jk_rs485_bms {
 
 class JkRS485BmsSwitch;  // Declaración anticipada de JkRS485BmsSwitch
-
-
 
 enum ProtocolVersion {
   PROTOCOL_VERSION_JK04,
@@ -43,7 +35,11 @@ Esto ocurre porque jk_rs485_bms.h se incluye antes de que el compilador haya pro
 */
 class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485SnifferDevice {
  public:
+  // Constructor por defecto necesario para crear instancias sin argumentos
   JkRS485Bms() = default;
+
+  virtual ~JkRS485Bms() = default; // Destructor por defecto
+
 
   void JkRS485Bms_init(void);
 
@@ -60,11 +56,6 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
 
   void trigger_bms2sniffer_switch16_event(std::uint8_t register_address);
   void trigger_bms2sniffer_switch64_event(std::uint8_t register_address, std::uint64_t value);
-
-
-
-
-
 
   void set_smart_sleep_time_sensor(sensor::Sensor *smart_sleep_time_sensor) {
     smart_sleep_time_sensor_ = smart_sleep_time_sensor;
@@ -682,237 +673,7 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   uint8_t battery_total_alarms_count_;
   uint8_t battery_total_alarms_active_;
   std::string nodes_available;
-  std::vector<JkRS485BmsSwitch *> switches_;
-
-  //binary_sensor::BinarySensor *balancing_binary_sensor_;
-  binary_sensor::BinarySensor *balancing_switch_binary_sensor_;
-  //binary_sensor::BinarySensor *precharging_binary_sensor_; 
-  //binary_sensor::BinarySensor *charging_binary_sensor_;
-  binary_sensor::BinarySensor *precharging_switch_binary_sensor_;
-  binary_sensor::BinarySensor *charging_switch_binary_sensor_;
-  //binary_sensor::BinarySensor *discharging_binary_sensor_;
-  binary_sensor::BinarySensor *discharging_switch_binary_sensor_;
-  binary_sensor::BinarySensor *dedicated_charger_switch_binary_sensor_;
-  //binary_sensor::BinarySensor *heating_binary_sensor_;
-
-  binary_sensor::BinarySensor *status_online_binary_sensor_;
-  binary_sensor::BinarySensor *status_balancing_binary_sensor_;
-  binary_sensor::BinarySensor *status_precharging_binary_sensor_;  
-  binary_sensor::BinarySensor *status_charging_binary_sensor_;
-  binary_sensor::BinarySensor *status_discharging_binary_sensor_;
-  binary_sensor::BinarySensor *status_heating_binary_sensor_;
-
-  binary_sensor::BinarySensor *alarm_wireres_binary_sensor_;
-  binary_sensor::BinarySensor *alarm_mosotp_binary_sensor_;
-  binary_sensor::BinarySensor *alarm_cellquantity_binary_sensor_;
-  binary_sensor::BinarySensor *alarm_cursensorerr_binary_sensor_;
-  binary_sensor::BinarySensor *alarm_cellovp_binary_sensor_;
-  binary_sensor::BinarySensor *alarm_batovp_binary_sensor_;
-  binary_sensor::BinarySensor *alarm_chocp_binary_sensor_;
-  binary_sensor::BinarySensor *alarm_chscp_binary_sensor_;
-  binary_sensor::BinarySensor *alarm_chotp_binary_sensor_;
-  binary_sensor::BinarySensor *alarm_chutp_binary_sensor_;
-  binary_sensor::BinarySensor *alarm_cpuauxcommuerr_binary_sensor_;
-  binary_sensor::BinarySensor *alarm_celluvp_binary_sensor_;
-  binary_sensor::BinarySensor *alarm_batuvp_binary_sensor_;
-  binary_sensor::BinarySensor *alarm_dchocp_binary_sensor_;
-  binary_sensor::BinarySensor *alarm_dchscp_binary_sensor_;
-  binary_sensor::BinarySensor *alarm_dchotp_binary_sensor_;
-  binary_sensor::BinarySensor *alarm_chargemos_binary_sensor_;
-  binary_sensor::BinarySensor *alarm_dischargemos_binary_sensor_;
-  binary_sensor::BinarySensor *alarm_gpsdisconneted_binary_sensor_;
-  binary_sensor::BinarySensor *alarm_modifypwdintime_binary_sensor_;
-  binary_sensor::BinarySensor *alarm_dischargeonfailed_binary_sensor_;
-  binary_sensor::BinarySensor *alarm_batteryovertemp_binary_sensor_;
-  binary_sensor::BinarySensor *alarm_temperaturesensoranomaly_binary_sensor_;
-  binary_sensor::BinarySensor *alarm_plcmoduleanomaly_binary_sensor_;
-  binary_sensor::BinarySensor *alarm_mostempsensorabsent_binary_sensor_;
-  binary_sensor::BinarySensor *alarm_battempsensor1absent_binary_sensor_;
-  binary_sensor::BinarySensor *alarm_battempsensor2absent_binary_sensor_;
-  binary_sensor::BinarySensor *alarm_battempsensor3absent_binary_sensor_;
-  binary_sensor::BinarySensor *alarm_battempsensor4absent_binary_sensor_;
-  binary_sensor::BinarySensor *alarm_battempsensor5absent_binary_sensor_;
-
-  sensor::Sensor *battery_total_alarms_count_sensor_;
-  sensor::Sensor *battery_total_alarms_active_sensor_;
-  sensor::Sensor *smart_sleep_time_sensor_;
-  sensor::Sensor *emergency_time_countdown_sensor_;
-  sensor::Sensor *cell_undervoltage_protection_sensor_;  
-  sensor::Sensor *cell_undervoltage_protection_recovery_sensor_;
-  sensor::Sensor *cell_overvoltage_protection_sensor_; 
-  sensor::Sensor *cell_overvoltage_protection_recovery_sensor_; 
-  sensor::Sensor *cell_request_charge_voltage_sensor_;
-  sensor::Sensor *cell_request_float_voltage_sensor_; 
-
-  sensor::Sensor *balancing_trigger_voltage_sensor_;  
-  sensor::Sensor *cell_soc100_voltage_sensor_;
-  sensor::Sensor *cell_soc0_voltage_sensor_;  
-  sensor::Sensor *cell_power_off_voltage_sensor_;
-
-  sensor::Sensor *balancing_direction_sensor_; 
-  sensor::Sensor *cell_count_settings_sensor_;  
-  sensor::Sensor *cell_smart_sleep_voltage_sensor_;
-  sensor::Sensor *max_balancing_current_sensor_; 
-  sensor::Sensor *max_charging_current_sensor_;
-  sensor::Sensor *max_discharging_current_sensor_;
-  sensor::Sensor *charging_overcurrent_protection_delay_sensor_;
-  sensor::Sensor *charging_overcurrent_protection_recovery_delay_sensor_;  
-  sensor::Sensor *discharging_overcurrent_protection_delay_sensor_;
-  sensor::Sensor *discharging_overcurrent_protection_recovery_delay_sensor_;  
-  sensor::Sensor *short_circuit_protection_delay_sensor_;
-  sensor::Sensor *short_circuit_protection_recovery_delay_sensor_;
-  sensor::Sensor *charging_overtemperature_protection_sensor_;
-  sensor::Sensor *charging_overtemperature_protection_recovery_sensor_;
-  sensor::Sensor *discharging_overtemperature_protection_sensor_;
-  sensor::Sensor *discharging_overtemperature_protection_recovery_sensor_;
-  sensor::Sensor *charging_lowtemperature_protection_sensor_;
-  sensor::Sensor *charging_lowtemperature_protection_recovery_sensor_;
-  sensor::Sensor *mos_overtemperature_protection_sensor_;
-  sensor::Sensor *mos_overtemperature_protection_recovery_sensor_;  
-  sensor::Sensor *scp_recovery_time_number_;    
-  sensor::Sensor *total_battery_capacity_number_;  
-
-  sensor::Sensor *discharging_overcurrent_protection_release_time_sensor_;
-  sensor::Sensor *discharging_short_circuit_protection_release_time_sensor_;
-  sensor::Sensor *charging_overcurrent_protection_release_time_sensor_;
-  sensor::Sensor *charging_short_circuit_protection_release_time_sensor_;
-  sensor::Sensor *cell_undervoltage_protection_release_time_sensor_;
-  sensor::Sensor *cell_overvoltage_protection_release_time_sensor_;
-
-
-
-  sensor::Sensor *cell_count_real_sensor_;
-  sensor::Sensor *cell_voltage_min_sensor_;
-  sensor::Sensor *cell_voltage_max_sensor_;
-  sensor::Sensor *cell_resistance_min_sensor_;
-  sensor::Sensor *cell_resistance_max_sensor_;  
-  sensor::Sensor *cell_voltage_min_cell_number_sensor_;
-  sensor::Sensor *cell_voltage_max_cell_number_sensor_;
-  sensor::Sensor *cell_resistance_min_cell_number_sensor_;
-  sensor::Sensor *cell_resistance_max_cell_number_sensor_;  
-  sensor::Sensor *cell_delta_voltage_sensor_;
-  sensor::Sensor *cell_average_voltage_sensor_;
-  sensor::Sensor *temperature_powertube_sensor_;
-  sensor::Sensor *temperature_sensor_1_sensor_;
-  sensor::Sensor *temperature_sensor_2_sensor_;
-  sensor::Sensor *battery_voltage_sensor_;
-  sensor::Sensor *battery_current_sensor_;
-  sensor::Sensor *battery_power_sensor_;
-  sensor::Sensor *battery_power_charging_sensor_;
-  sensor::Sensor *battery_power_discharging_sensor_;
-  sensor::Sensor *battery_capacity_remaining_sensor_;
-  sensor::Sensor *battery_capacity_remaining_derived_sensor_;
-  sensor::Sensor *temperature_sensors_sensor_;
-  sensor::Sensor *charging_cycles_sensor_;
-  sensor::Sensor *battery_capacity_total_charging_cycle_sensor_;
-  sensor::Sensor *battery_strings_sensor_;
-  sensor::Sensor *errors_bitmask_sensor_;
-  sensor::Sensor *operation_mode_bitmask_sensor_;
-  sensor::Sensor *total_voltage_overvoltage_protection_sensor_;
-  sensor::Sensor *total_voltage_undervoltage_protection_sensor_;
-  sensor::Sensor *cell_voltage_overvoltage_delay_sensor_;
-  sensor::Sensor *cell_voltage_undervoltage_delay_sensor_;
-  sensor::Sensor *cell_pressure_difference_protection_sensor_;
-  sensor::Sensor *discharging_overcurrent_protection_sensor_;
-  sensor::Sensor *discharging_overcurrent_delay_sensor_;
-  sensor::Sensor *charging_overcurrent_protection_sensor_;
-  sensor::Sensor *charging_overcurrent_delay_sensor_;
-  sensor::Sensor *cell_balancing_starting_voltage_sensor_;
-  sensor::Sensor *balancing_opening_pressure_difference_sensor_;
-  sensor::Sensor *powertube_temperature_protection_sensor_;
-  sensor::Sensor *powertube_temperature_protection_recovery_sensor_;
-  sensor::Sensor *temperature_sensor_temperature_protection_sensor_;
-  sensor::Sensor *temperature_sensor_temperature_recovery_sensor_;
-  sensor::Sensor *temperature_sensor_temperature_difference_protection_sensor_;
-  sensor::Sensor *charging_high_temperature_protection_sensor_;
-  sensor::Sensor *discharging_high_temperature_protection_sensor_;
-  sensor::Sensor *charging_low_temperature_protection_sensor_;
-  sensor::Sensor *charging_low_temperature_recovery_sensor_;
-  sensor::Sensor *discharging_low_temperature_protection_sensor_;
-  sensor::Sensor *discharging_low_temperature_recovery_sensor_;
-  sensor::Sensor *battery_capacity_total_setting_sensor_;
-  sensor::Sensor *battery_soh_valuation_sensor_;
-
-  sensor::Sensor *charging_sensor_;
-  sensor::Sensor *discharging_sensor_;
-  sensor::Sensor *current_calibration_sensor_;
-  sensor::Sensor *device_address_sensor_;
-  sensor::Sensor *sleep_wait_time_sensor_;
-  sensor::Sensor *alarm_low_volume_sensor_;
-  sensor::Sensor *password_sensor_;
-  sensor::Sensor *manufacturing_date_sensor_;
-  sensor::Sensor *battery_total_runtime_sensor_;
-  sensor::Sensor *start_current_calibration_sensor_;
-  sensor::Sensor *actual_battery_capacity_sensor_;
-  sensor::Sensor *protocol_version_sensor_;
-
-  sensor::Sensor *battery_capacity_state_of_charge_sensor_;
-  sensor::Sensor *heating_current_sensor_;
-  sensor::Sensor *balancing_current_sensor_;
-  sensor::Sensor *uart1_protocol_number_sensor_;
-  sensor::Sensor *uart2_protocol_number_sensor_;  
-  sensor::Sensor *cell_request_charge_voltage_time_sensor_;
-  sensor::Sensor *cell_request_float_voltage_time_sensor_; 
-
-  sensor::Sensor *precharging_time_from_discharge_sensor_;
-
-
-  /*JkRS485BmsSwitch *precharging_switch_ = new JkRS485BmsSwitch(false);
-  JkRS485BmsSwitch *charging_switch_ = new JkRS485BmsSwitch(false);
-  JkRS485BmsSwitch *discharging_switch_ = new JkRS485BmsSwitch(false);
-  JkRS485BmsSwitch *balancer_switch_ = new JkRS485BmsSwitch(false);
-  JkRS485BmsSwitch *emergency_switch_ = new JkRS485BmsSwitch(false);
-  JkRS485BmsSwitch *heating_switch_ = new JkRS485BmsSwitch(false);
-  JkRS485BmsSwitch *charging_float_mode_switch_ = new JkRS485BmsSwitch(false);
-  JkRS485BmsSwitch *disable_temperature_sensors_switch_ = new JkRS485BmsSwitch(false);
-  JkRS485BmsSwitch *display_always_on_switch_ = new JkRS485BmsSwitch(false);
-  JkRS485BmsSwitch *smart_sleep_on_switch_ = new JkRS485BmsSwitch(false);
-  JkRS485BmsSwitch *timed_stored_data_switch_ = new JkRS485BmsSwitch(false);
-  JkRS485BmsSwitch *disable_pcl_module_switch_ = new JkRS485BmsSwitch(false);
-  JkRS485BmsSwitch *gps_heartbeat_switch_ = new JkRS485BmsSwitch(false);
-  JkRS485BmsSwitch *port_selection_switch_ = new JkRS485BmsSwitch(false);
-  JkRS485BmsSwitch *special_charger_switch_ = new JkRS485BmsSwitch(false);*/
-
-  //auto *port_selection_switch = new JkRS485BmsSwitch(false);
-  //switch_::Switch *precharging_switch_;
-  //switch_::Switch *charging_switch_;
-  //switch_::Switch *discharging_switch_;
-  //switch_::Switch *balancer_switch_;
-  //switch_::Switch *emergency_switch_;  
-  //switch_::Switch *heating_switch_; 
-  //switch_::Switch *charging_float_mode_switch_;
-  //switch_::Switch *disable_temperature_sensors_switch_; 
-  //switch_::Switch *display_always_on_switch_;   
-  //switch_::Switch *smart_sleep_on_switch_;
-  //switch_::Switch *timed_stored_data_switch_;
-  //switch_::Switch *disable_pcl_module_switch_;
-  //switch_::Switch *gps_heartbeat_switch_;
-  //switch_::Switch *port_selection_switch_;
-  //switch_::Switch *special_charger_switch_;
-
-  text_sensor::TextSensor *battery_type_text_sensor_;
-  text_sensor::TextSensor *password_text_sensor_;
-  text_sensor::TextSensor *info_device_serial_number_text_sensor_;
-  text_sensor::TextSensor *device_type_text_sensor_;
-  text_sensor::TextSensor *software_version_text_sensor_;
-  text_sensor::TextSensor *manufacturer_text_sensor_;
-
-  text_sensor::TextSensor *network_nodes_available_text_sensor_;
-  text_sensor::TextSensor *errors_text_sensor_;
-  text_sensor::TextSensor *operation_status_text_sensor_;
-  text_sensor::TextSensor *total_runtime_formatted_text_sensor_;
-  text_sensor::TextSensor *info_vendorid_text_sensor_;
-  text_sensor::TextSensor *info_hardware_version_text_sensor_;
-  text_sensor::TextSensor *info_software_version_text_sensor_;
-  text_sensor::TextSensor *info_device_name_text_sensor_;
-  text_sensor::TextSensor *info_device_password_text_sensor_;
-  text_sensor::TextSensor *info_device_setup_passcode_text_sensor_;
-
-//  struct Cell {
-//    sensor::Sensor *cell_voltage_sensor_{nullptr};
-//  } cells_[24];
-
-    
+  //std::vector<JkRS485BmsSwitch *> switches_;    
   struct Cell {
     sensor::Sensor *cell_voltage_sensor_{nullptr};
     sensor::Sensor *cell_resistance_sensor_{nullptr};
@@ -1006,6 +767,189 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
     JkRS485BmsSwitch *gps_heartbeat_switch_;
     JkRS485BmsSwitch *port_selection_switch_;
     JkRS485BmsSwitch *special_charger_switch_;  
+
+    text_sensor::TextSensor *battery_type_text_sensor_;
+    text_sensor::TextSensor *password_text_sensor_;
+    text_sensor::TextSensor *info_device_serial_number_text_sensor_;
+    text_sensor::TextSensor *device_type_text_sensor_;
+    text_sensor::TextSensor *software_version_text_sensor_;
+    text_sensor::TextSensor *manufacturer_text_sensor_;
+    text_sensor::TextSensor *network_nodes_available_text_sensor_;
+    text_sensor::TextSensor *errors_text_sensor_;
+    text_sensor::TextSensor *operation_status_text_sensor_;
+    text_sensor::TextSensor *total_runtime_formatted_text_sensor_;
+    text_sensor::TextSensor *info_vendorid_text_sensor_;
+    text_sensor::TextSensor *info_hardware_version_text_sensor_;
+    text_sensor::TextSensor *info_software_version_text_sensor_;
+    text_sensor::TextSensor *info_device_name_text_sensor_;
+    text_sensor::TextSensor *info_device_password_text_sensor_;
+    text_sensor::TextSensor *info_device_setup_passcode_text_sensor_;
+
+    binary_sensor::BinarySensor *balancing_switch_binary_sensor_;
+    binary_sensor::BinarySensor *precharging_switch_binary_sensor_;
+    binary_sensor::BinarySensor *charging_switch_binary_sensor_;
+    binary_sensor::BinarySensor *discharging_switch_binary_sensor_;
+    binary_sensor::BinarySensor *dedicated_charger_switch_binary_sensor_;
+
+    binary_sensor::BinarySensor *status_online_binary_sensor_;
+    binary_sensor::BinarySensor *status_balancing_binary_sensor_;
+    binary_sensor::BinarySensor *status_precharging_binary_sensor_;  
+    binary_sensor::BinarySensor *status_charging_binary_sensor_;
+    binary_sensor::BinarySensor *status_discharging_binary_sensor_;
+    binary_sensor::BinarySensor *status_heating_binary_sensor_;
+
+    binary_sensor::BinarySensor *alarm_wireres_binary_sensor_;
+    binary_sensor::BinarySensor *alarm_mosotp_binary_sensor_;
+    binary_sensor::BinarySensor *alarm_cellquantity_binary_sensor_;
+    binary_sensor::BinarySensor *alarm_cursensorerr_binary_sensor_;
+    binary_sensor::BinarySensor *alarm_cellovp_binary_sensor_;
+    binary_sensor::BinarySensor *alarm_batovp_binary_sensor_;
+    binary_sensor::BinarySensor *alarm_chocp_binary_sensor_;
+    binary_sensor::BinarySensor *alarm_chscp_binary_sensor_;
+    binary_sensor::BinarySensor *alarm_chotp_binary_sensor_;
+    binary_sensor::BinarySensor *alarm_chutp_binary_sensor_;
+    binary_sensor::BinarySensor *alarm_cpuauxcommuerr_binary_sensor_;
+    binary_sensor::BinarySensor *alarm_celluvp_binary_sensor_;
+    binary_sensor::BinarySensor *alarm_batuvp_binary_sensor_;
+    binary_sensor::BinarySensor *alarm_dchocp_binary_sensor_;
+    binary_sensor::BinarySensor *alarm_dchscp_binary_sensor_;
+    binary_sensor::BinarySensor *alarm_dchotp_binary_sensor_;
+    binary_sensor::BinarySensor *alarm_chargemos_binary_sensor_;
+    binary_sensor::BinarySensor *alarm_dischargemos_binary_sensor_;
+    binary_sensor::BinarySensor *alarm_gpsdisconneted_binary_sensor_;
+    binary_sensor::BinarySensor *alarm_modifypwdintime_binary_sensor_;
+    binary_sensor::BinarySensor *alarm_dischargeonfailed_binary_sensor_;
+    binary_sensor::BinarySensor *alarm_batteryovertemp_binary_sensor_;
+    binary_sensor::BinarySensor *alarm_temperaturesensoranomaly_binary_sensor_;
+    binary_sensor::BinarySensor *alarm_plcmoduleanomaly_binary_sensor_;
+    binary_sensor::BinarySensor *alarm_mostempsensorabsent_binary_sensor_;
+    binary_sensor::BinarySensor *alarm_battempsensor1absent_binary_sensor_;
+    binary_sensor::BinarySensor *alarm_battempsensor2absent_binary_sensor_;
+    binary_sensor::BinarySensor *alarm_battempsensor3absent_binary_sensor_;
+    binary_sensor::BinarySensor *alarm_battempsensor4absent_binary_sensor_;
+    binary_sensor::BinarySensor *alarm_battempsensor5absent_binary_sensor_;
+
+    sensor::Sensor *battery_total_alarms_count_sensor_;
+    sensor::Sensor *battery_total_alarms_active_sensor_;
+    sensor::Sensor *smart_sleep_time_sensor_;
+    sensor::Sensor *emergency_time_countdown_sensor_;
+    sensor::Sensor *cell_undervoltage_protection_sensor_;  
+    sensor::Sensor *cell_undervoltage_protection_recovery_sensor_;
+    sensor::Sensor *cell_overvoltage_protection_sensor_; 
+    sensor::Sensor *cell_overvoltage_protection_recovery_sensor_; 
+    sensor::Sensor *cell_request_charge_voltage_sensor_;
+    sensor::Sensor *cell_request_float_voltage_sensor_; 
+
+    sensor::Sensor *balancing_trigger_voltage_sensor_;  
+    sensor::Sensor *cell_soc100_voltage_sensor_;
+    sensor::Sensor *cell_soc0_voltage_sensor_;  
+    sensor::Sensor *cell_power_off_voltage_sensor_;
+
+    sensor::Sensor *balancing_direction_sensor_; 
+    sensor::Sensor *cell_count_settings_sensor_;  
+    sensor::Sensor *cell_smart_sleep_voltage_sensor_;
+    sensor::Sensor *max_balancing_current_sensor_; 
+    sensor::Sensor *max_charging_current_sensor_;
+    sensor::Sensor *max_discharging_current_sensor_;
+    sensor::Sensor *charging_overcurrent_protection_delay_sensor_;
+    sensor::Sensor *charging_overcurrent_protection_recovery_delay_sensor_;  
+    sensor::Sensor *discharging_overcurrent_protection_delay_sensor_;
+    sensor::Sensor *discharging_overcurrent_protection_recovery_delay_sensor_;  
+    sensor::Sensor *short_circuit_protection_delay_sensor_;
+    sensor::Sensor *short_circuit_protection_recovery_delay_sensor_;
+    sensor::Sensor *charging_overtemperature_protection_sensor_;
+    sensor::Sensor *charging_overtemperature_protection_recovery_sensor_;
+    sensor::Sensor *discharging_overtemperature_protection_sensor_;
+    sensor::Sensor *discharging_overtemperature_protection_recovery_sensor_;
+    sensor::Sensor *charging_lowtemperature_protection_sensor_;
+    sensor::Sensor *charging_lowtemperature_protection_recovery_sensor_;
+    sensor::Sensor *mos_overtemperature_protection_sensor_;
+    sensor::Sensor *mos_overtemperature_protection_recovery_sensor_;  
+    sensor::Sensor *scp_recovery_time_number_;    
+    sensor::Sensor *total_battery_capacity_number_;  
+
+    sensor::Sensor *discharging_overcurrent_protection_release_time_sensor_;
+    sensor::Sensor *discharging_short_circuit_protection_release_time_sensor_;
+    sensor::Sensor *charging_overcurrent_protection_release_time_sensor_;
+    sensor::Sensor *charging_short_circuit_protection_release_time_sensor_;
+    sensor::Sensor *cell_undervoltage_protection_release_time_sensor_;
+    sensor::Sensor *cell_overvoltage_protection_release_time_sensor_;
+
+    sensor::Sensor *cell_count_real_sensor_;
+    sensor::Sensor *cell_voltage_min_sensor_;
+    sensor::Sensor *cell_voltage_max_sensor_;
+    sensor::Sensor *cell_resistance_min_sensor_;
+    sensor::Sensor *cell_resistance_max_sensor_;  
+    sensor::Sensor *cell_voltage_min_cell_number_sensor_;
+    sensor::Sensor *cell_voltage_max_cell_number_sensor_;
+    sensor::Sensor *cell_resistance_min_cell_number_sensor_;
+    sensor::Sensor *cell_resistance_max_cell_number_sensor_;  
+    sensor::Sensor *cell_delta_voltage_sensor_;
+    sensor::Sensor *cell_average_voltage_sensor_;
+    sensor::Sensor *temperature_powertube_sensor_;
+    sensor::Sensor *temperature_sensor_1_sensor_;
+    sensor::Sensor *temperature_sensor_2_sensor_;
+    sensor::Sensor *battery_voltage_sensor_;
+    sensor::Sensor *battery_current_sensor_;
+    sensor::Sensor *battery_power_sensor_;
+    sensor::Sensor *battery_power_charging_sensor_;
+    sensor::Sensor *battery_power_discharging_sensor_;
+    sensor::Sensor *battery_capacity_remaining_sensor_;
+    sensor::Sensor *battery_capacity_remaining_derived_sensor_;
+    sensor::Sensor *temperature_sensors_sensor_;
+    sensor::Sensor *charging_cycles_sensor_;
+    sensor::Sensor *battery_capacity_total_charging_cycle_sensor_;
+    sensor::Sensor *battery_strings_sensor_;
+    sensor::Sensor *errors_bitmask_sensor_;
+    sensor::Sensor *operation_mode_bitmask_sensor_;
+    sensor::Sensor *total_voltage_overvoltage_protection_sensor_;
+    sensor::Sensor *total_voltage_undervoltage_protection_sensor_;
+    sensor::Sensor *cell_voltage_overvoltage_delay_sensor_;
+    sensor::Sensor *cell_voltage_undervoltage_delay_sensor_;
+    sensor::Sensor *cell_pressure_difference_protection_sensor_;
+    sensor::Sensor *discharging_overcurrent_protection_sensor_;
+    sensor::Sensor *discharging_overcurrent_delay_sensor_;
+    sensor::Sensor *charging_overcurrent_protection_sensor_;
+    sensor::Sensor *charging_overcurrent_delay_sensor_;
+    sensor::Sensor *cell_balancing_starting_voltage_sensor_;
+    sensor::Sensor *balancing_opening_pressure_difference_sensor_;
+    sensor::Sensor *powertube_temperature_protection_sensor_;
+    sensor::Sensor *powertube_temperature_protection_recovery_sensor_;
+    sensor::Sensor *temperature_sensor_temperature_protection_sensor_;
+    sensor::Sensor *temperature_sensor_temperature_recovery_sensor_;
+    sensor::Sensor *temperature_sensor_temperature_difference_protection_sensor_;
+    sensor::Sensor *charging_high_temperature_protection_sensor_;
+    sensor::Sensor *discharging_high_temperature_protection_sensor_;
+    sensor::Sensor *charging_low_temperature_protection_sensor_;
+    sensor::Sensor *charging_low_temperature_recovery_sensor_;
+    sensor::Sensor *discharging_low_temperature_protection_sensor_;
+    sensor::Sensor *discharging_low_temperature_recovery_sensor_;
+    sensor::Sensor *battery_capacity_total_setting_sensor_;
+    sensor::Sensor *battery_soh_valuation_sensor_;
+
+    sensor::Sensor *charging_sensor_;
+    sensor::Sensor *discharging_sensor_;
+    sensor::Sensor *current_calibration_sensor_;
+    sensor::Sensor *device_address_sensor_;
+    sensor::Sensor *sleep_wait_time_sensor_;
+    sensor::Sensor *alarm_low_volume_sensor_;
+    sensor::Sensor *password_sensor_;
+    sensor::Sensor *manufacturing_date_sensor_;
+    sensor::Sensor *battery_total_runtime_sensor_;
+    sensor::Sensor *start_current_calibration_sensor_;
+    sensor::Sensor *actual_battery_capacity_sensor_;
+    sensor::Sensor *protocol_version_sensor_;
+
+    sensor::Sensor *battery_capacity_state_of_charge_sensor_;
+    sensor::Sensor *heating_current_sensor_;
+    sensor::Sensor *balancing_current_sensor_;
+    sensor::Sensor *uart1_protocol_number_sensor_;
+    sensor::Sensor *uart2_protocol_number_sensor_;  
+    sensor::Sensor *cell_request_charge_voltage_time_sensor_;
+    sensor::Sensor *cell_request_float_voltage_time_sensor_; 
+
+   sensor::Sensor *precharging_time_from_discharge_sensor_;
+
 };
 
 
