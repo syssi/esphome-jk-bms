@@ -43,7 +43,7 @@ void JkRS485Bms::set_smart_sleep_on_switch(JkRS485BmsSwitch *smart_sleep_on_swit
 
 static const char *const TAG = "jk_rs485_bms";
 
-static const uint8_t MAX_NO_RESPONSE_COUNT = 5;
+static const uint8_t MAX_NO_RESPONSE_COUNT = 100;
 
 static const uint8_t FUNCTION_READ_ALL = 0x06;
 static const uint8_t FUNCTION_WRITE_REGISTER = 0x02;
@@ -1173,7 +1173,7 @@ void JkRS485Bms::decode_device_info_(const std::vector<uint8_t> &data) {
 void JkRS485Bms::track_status_online_() {
   if (this->no_response_count_ < MAX_NO_RESPONSE_COUNT) {
     this->no_response_count_++;
-    ESP_LOGD(TAG, "  ######################################################################################## NO RESPONSE [0x%02X] count:%02d ",this->address_,this->no_response_count_);
+    //ESP_LOGD(TAG, "  ######################################################################################## NO RESPONSE [0x%02X] count:%02d ",this->address_,this->no_response_count_);
   } else {  
       if (this->no_response_count_ == MAX_NO_RESPONSE_COUNT) {
         this->publish_device_unavailable_();
