@@ -16,12 +16,9 @@ class JkRS485BmsSwitch : public switch_::Switch, public Component {
   // Constructor por defecto necesario para crear instancias sin argumentos
   JkRS485BmsSwitch() = default;
 
+  explicit JkRS485BmsSwitch(bool initial_state);
+  virtual ~JkRS485BmsSwitch() = default; // Destructor por defecto
 
-  explicit JkRS485BmsSwitch(bool initial_state) {
-    this->write_state(initial_state);
-  }
-
-  
   void set_parent(JkRS485Bms *parent) { this->parent_ = parent; };
   void set_register_address(uint8_t register_address) { this->register_address_ = register_address; };
   void dump_config() override;
