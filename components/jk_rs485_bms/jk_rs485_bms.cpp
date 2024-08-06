@@ -1047,11 +1047,11 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   //    bit6: ?                                      64
   //    bit7: ?                                      128
   value_tmp=this->check_bit_of_byte_(data[283], 0); 
-  ESP_LOGV(TAG, "[%02X] timed_stored_data_switch_            is bit 8 of 0x%02X is %02X address %p <------------",this->address_,data[283],value_tmp,(void *) this->timed_stored_data_switch_);     
+  ESP_LOGV(TAG, "[%02X] timed_stored_data_switch_            is bit 8 of 0x%02X is %02X address %p",this->address_,data[283],value_tmp,(void *) this->timed_stored_data_switch_);     
   this->publish_state_(this->timed_stored_data_switch_, value_tmp);
   // ESP_LOGI(TAG, "  timed_stored_data_switch: %s", ( this->check_bit_(data[283], 1)) ? "on" : "off");
   value_tmp=this->check_bit_of_byte_(data[283], 1); 
-  ESP_LOGV(TAG, "[%02X] charging_float_mode_switch_          is bit 9 of 0x%02X is %02X address %p <------------",this->address_,data[283],value_tmp,(void *) this->charging_float_mode_switch_);     
+  ESP_LOGV(TAG, "[%02X] charging_float_mode_switch_          is bit 9 of 0x%02X is %02X address %p",this->address_,data[283],value_tmp,(void *) this->charging_float_mode_switch_);     
   this->publish_state_(this->charging_float_mode_switch_, value_tmp);
   // ESP_LOGI(TAG, "  charging_float_mode_switch: %s", ( this->check_bit_(data[283], 2)) ? "on" : "off");
   // ESP_LOGI(TAG, "  switch bit2: %s", ( this->check_bit_(data[283], 2)) ? "on" : "off");
