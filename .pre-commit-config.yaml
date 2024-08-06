@@ -22,7 +22,6 @@ repos:
         args:
           - --safe
           - --quiet
-        files: ^((components|esphome|script|tests)/.+)?[^/]+\.py$
   - repo: https://github.com/PyCQA/flake8
     rev: 7.1.0
     hooks:
@@ -30,7 +29,6 @@ repos:
         additional_dependencies:
           - flake8-docstrings==1.5.0
           - pydocstyle==5.1.1
-        files: ^(components|esphome|tests)/.+\.py$
   - repo: https://github.com/asottile/pyupgrade
     rev: v3.17.0
     hooks:
