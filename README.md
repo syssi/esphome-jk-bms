@@ -222,13 +222,13 @@ logger:
   level: DEBUG
 
 uart:
-  id: uart_0
-  baud_rate: 115200
-  rx_buffer_size: 384
-  tx_pin: GPIO14
-  rx_pin: GPIO4
-  debug:
-    direction: BOTH
+  - id: uart_0
+    baud_rate: 115200
+    rx_buffer_size: 384
+    tx_pin: ${tx_pin}
+    rx_pin: ${rx_pin}
+    debug:
+      direction: BOTH
 ```
 
 ## References
