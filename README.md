@@ -12,7 +12,13 @@ ESPHome components to monitor Jikong Battery Management Systems (JK-BMS) via UAR
 
 **NEW:** monitor your new JK-PBx BMSs via internal RS485 network using 1 only ESP. [Click here](https://github.com/txubelaxu/esphome-jk-bms/blob/main/components/jk_rs485_bms/README.md) for more info. Home Assistant dashboards inside as well.
 
-Last: control your BMSs "balancing", "charging" and "discharging" switches. New "broadcast mode" to easy switch on/off every BMS in the network.
+**Last Change:** control your BMSs settings (Numbers): cell_smart_sleep_voltage, cell_undervoltage_protection, cell_undervoltage_protection_recovery, cell_overvoltage_protection, cell_overvoltage_protection_recovery, cell_balancing_trigger_voltage, cell_soc100_voltage, cell_soc0_voltage, cell_request_charge_voltage, cell_request_float_voltage, cell_power_off_voltage, cell_balancing_starting_voltage, max_charging_current, charging_overcurrent_protection_delay, charging_overcurrent_protection_recovery_delay, max_discharging_current, discharging_overcurrent_protection_delay, discharging_overcurrent_protection_recovery_delay, short_circuit_protection_delay, short_circuit_protection_recovery_delay, max_balancing_current, charging_overtemperature_protection, charging_overtemperature_protection_recovery, discharging_overtemperature_protection, discharging_overtemperature_protection_recovery, charging_lowtemperature_protection, charging_lowtemperature_protection_recovery, 
+mos_overtemperature_protection, mos_overtemperature_protection_recovery, cell_count_settings, battery_capacity_total_settings, precharging_time_from_discharge
+
+Broadcast is possible with those settings too.
+Updated: 0master_2slave example & 0master_7slave example
+
+Last: control your BMSs settings (Switches) "balancing", "charging" and "discharging" switches. New "broadcast mode" to easy switch on/off every BMS in the network.
 
 Last: new parameters added and new dashboards
 + New Dashboards (summary, cells, settings, protection) available [here](https://github.com/txubelaxu/esphome-jk-bms/tree/main/components/jk_rs485_bms/home_assistant_dashboards)
