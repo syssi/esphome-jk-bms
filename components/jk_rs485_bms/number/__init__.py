@@ -10,11 +10,27 @@ from esphome.const import (
     CONF_MODE,
     CONF_STEP,
     CONF_UNIT_OF_MEASUREMENT,
+    CONF_DEVICE_CLASS,
     ENTITY_CATEGORY_CONFIG,
     ICON_EMPTY,
     UNIT_AMPERE,
     UNIT_EMPTY,
     UNIT_VOLT,
+    DEVICE_CLASS_BATTERY,
+    DEVICE_CLASS_CURRENT,
+    DEVICE_CLASS_EMPTY,
+    DEVICE_CLASS_POWER,
+    DEVICE_CLASS_TEMPERATURE,
+    DEVICE_CLASS_VOLTAGE,
+    ICON_COUNTER,
+    ICON_TIMELAPSE,
+    STATE_CLASS_MEASUREMENT,
+    STATE_CLASS_TOTAL_INCREASING,
+    UNIT_AMPERE,
+    UNIT_CELSIUS,
+    UNIT_EMPTY,
+    UNIT_PERCENT,
+    UNIT_WATT,
 )
 
 #from .. import CONF_JK_BMS_BLE_ID, JK_BMS_BLE_COMPONENT_SCHEMA, jk_bms_ble_ns
@@ -27,30 +43,50 @@ CODEOWNERS = ["@syssi","@txubelaxu"]
 
 DEFAULT_STEP = 1
 
-# JK02_24S
-#
-# 06 04 03000000  Set balance trig voltage to 0.003
-# 1c 04 10000000  Set cell count settings to 16
-# 20 04 f0ba0400  Set battery cap to 310
-# 04 04 420e0000  Set Cell OVP to 3.65
-# 05 04 b0040000  Set Cell OVPR to 1.2
-# 02 04 b0040000  Set Cell UVP to 1.2
-# 03 04 b0040000  Set Cell UVPR to 1.2
-# 26 04 b0040000  Set Start Balance voltage to 1.2
-# 21 04 42d10000  Set cal voltage to 53.57
-# 24 04 64000000  Set cal current to 0.100
-# 0b 04 b0040000  Set Power Off value to 1.2
-# 13 04 2c010000  Set max Balance current to 0.3
-# 0c 04 e8030000  Set Max charge Current to 1.0
-# 0f 04 e8030000  Set Max discharge Current to 1.0
+UNIT_MICROSECONDS = "us"
+UNIT_SECONDS = "s"
+UNIT_HOURS = "h"
+UNIT_OHM = "Ω"
+UNIT_AMPERE_HOURS = "Ah"
 
-CONF_BALANCE_TRIGGER_VOLTAGE = "balance_trigger_voltage"
+CONF_CELL_SMART_SLEEP_VOLTAGE = "cell_smart_sleep_voltage"
+CONF_CELL_UNDERVOLTAGE_PROTECTION = "cell_undervoltage_protection"
+CONF_CELL_UNDERVOLTAGE_PROTECTION_RECOVERY = "cell_undervoltage_protection_recovery"
+CONF_CELL_OVERVOLTAGE_PROTECTION = "cell_overvoltage_protection"
+CONF_CELL_OVERVOLTAGE_PROTECTION_RECOVERY = "cell_overvoltage_protection_recovery"
+CONF_CELL_BALANCING_TRIGGER_VOLTAGE = "cell_balancing_trigger_voltage"
+CONF_CELL_SOC100_VOLTAGE = "cell_soc100_voltage"
+CONF_CELL_SOC0_VOLTAGE = "cell_soc0_voltage"
+CONF_CELL_REQUEST_CHARGE_VOLTAGE = "cell_request_charge_voltage"
+CONF_CELL_REQUEST_FLOAT_VOLTAGE = "cell_request_float_voltage"
+CONF_CELL_POWER_OFF_VOLTAGE = "cell_power_off_voltage"
+CONF_CELL_BALANCING_STARTING_VOLTAGE = "cell_balancing_starting_voltage"
+
+CONF_MAX_CHARGING_CURRENT ="max_charging_current"
+CONF_CHARGING_OVERCURRENT_PROTECTION_DELAY = "charging_overcurrent_protection_delay"
+CONF_CHARGING_OVERCURRENT_PROTECTION_RECOVERY_DELAY = "charging_overcurrent_protection_recovery_delay"
+CONF_MAX_DISCHARGING_CURRENT ="max_discharging_current"
+CONF_DISCHARGING_OVERCURRENT_PROTECTION_DELAY = "discharging_overcurrent_protection_delay"
+CONF_DISCHARGING_OVERCURRENT_PROTECTION_RECOVERY_DELAY = "discharging_overcurrent_protection_recovery_delay"
+CONF_SHORT_CIRCUIT_PROTECTION_DELAY ="short_circuit_protection_delay"
+CONF_SHORT_CIRCUIT_PROTECTION_RECOVERY_DELAY = "short_circuit_protection_recovery_delay"
+CONF_MAX_BALANCING_CURRENT = "max_balancing_current"
+
+CONF_CHARGING_OVERTEMPERATURE_PROTECTION = "charging_overtemperature_protection"
+CONF_CHARGING_OVERTEMPERATURE_PROTECTION_RECOVERY = "charging_overtemperature_protection_recovery"
+CONF_DISCHARGING_OVERTEMPERATURE_PROTECTION = "discharging_overtemperature_protection"
+CONF_DISCHARGING_OVERTEMPERATURE_PROTECTION_RECOVERY = "discharging_overtemperature_protection_recovery"
+CONF_CHARGING_LOWTEMPERATURE_PROTECTION = "charging_lowtemperature_protection"
+CONF_CHARGING_LOWTEMPERATURE_PROTECTION_RECOVERY = "charging_lowtemperature_protection_recovery"
+CONF_MOS_OVERTEMPERATURE_PROTECTION = "mos_overtemperature_protection"
+CONF_MOS_OVERTEMPERATURE_PROTECTION_RECOVERY = "mos_overtemperature_protection_recovery"
+
 CONF_CELL_COUNT_SETTINGS = "cell_count_settings"
-CONF_TOTAL_BATTERY_CAPACITY = "total_battery_capacity"
-CONF_CELL_VOLTAGE_OVERVOLTAGE_PROTECTION = "cell_voltage_overvoltage_protection"
-CONF_CELL_VOLTAGE_OVERVOLTAGE_RECOVERY = "cell_voltage_overvoltage_recovery"
-CONF_CELL_VOLTAGE_UNDERVOLTAGE_PROTECTION = "cell_voltage_undervoltage_protection"
-CONF_CELL_VOLTAGE_UNDERVOLTAGE_RECOVERY = "cell_voltage_undervoltage_recovery"
+CONF_BATTERY_CAPACITY_TOTAL_SETTINGS = "battery_capacity_total_settings"
+CONF_PRECHARGING_TIME_FROM_DISCHARGE = "precharging_time_from_discharge";
+
+
+
 CONF_BALANCE_STARTING_VOLTAGE = "balance_starting_voltage"
 CONF_VOLTAGE_CALIBRATION = "voltage_calibration"
 CONF_CURRENT_CALIBRATION = "current_calibration"
@@ -59,26 +95,31 @@ CONF_MAX_BALANCE_CURRENT = "max_balance_current"
 CONF_MAX_CHARGE_CURRENT = "max_charge_current"
 CONF_MAX_DISCHARGE_CURRENT = "max_discharge_current"
 
-# 0d 04 02000000  Set Charge OCP delay to 2
-# 0e 04 02000000  Set Charge OCPR Time to 2
-# 10 04 02000000  Set Discharge OCP delay to 2
-# 11 04 02000000  Set Discharge OCPR Time to 2
-# 25 04 0a000000  Set to SCP Delay to 10.000
-# 12 04 02000000  Set SCPR Time to 2
-# 14 04 2c010000  Set Charge OTP to 30
-# 15 04 2c010000  Set Charge OTPR to 30
-# 16 04 2c010000  Set Discharge OTP to 30
-# 17 04 2c010000  Set Discharge OTPR to 30
-# 18 04 00000000  Set Charge UTP to 0
-# 19 04 00000000  Set Charge UTPR to 0
+ICON_BALANCING = "mdi:seesaw"
+ICON_CURRENT_DC = "mdi:current-dc"
+ICON_CELL_VOLTAGE_MIN_CELL_NUMBER = "mdi:battery-minus-outline"
+ICON_CELL_VOLTAGE_MAX_CELL_NUMBER = "mdi:battery-plus-outline"
 
-# 9f 04 54657374  Set User Private Data (4 bytes) to TEST
-# 9f 0d 30313233343536373839303132 c6  Set User Private Data (4 bytes) to 0123456789012
-# 27 04 00000000  Set Con. Wire Res.01 to 0.00
-# ...
-# 3e 04 00000000  Set Con. Wire Res.24 to 0.00
-#
-# https://github.com/jblance/mpp-solar/issues/170#issuecomment-1050503970
+ICON_BATTERY_STRINGS = "mdi:car-battery"
+ICON_BATTERY_CAPACITY_REMAINING = "mdi:battery-50"
+ICON_BATTERY_CAPACITY_REMAINING_DERIVED = "mdi:battery-50"
+ICON_ACTUAL_BATTERY_CAPACITY = "mdi:battery-50"
+ICON_BATTERY_CAPACITY_TOTAL_SETTING = "mdi:battery-sync"
+
+ICON_DEVICE_ADDRESS = "mdi:identifier"
+ICON_ERRORS_BITMASK = "mdi:alert-circle-outline"
+ICON_OPERATION_MODE_BITMASK = "mdi:heart-pulse"
+ICON_CHARGING_CYCLES = "mdi:battery-sync"
+ICON_ALARM_LOW_VOLUME = "mdi:volume-high"
+
+ICON_CELL_RESISTANCE = "mdi:omega"
+ICON_BALANCING = "mdi:seesaw"
+ICON_DIRECTION = "mdi:swap-horizontal-bold"
+ICON_CLOCK ="mdi:clock-outline"
+
+ICON_HIGH_TEMPERATURE = "mdi:weather-sunny"
+ICON_LOW_TEMPERATURE = "mdi:snowflake"
+
 
 # JK02_32S
 #
@@ -117,27 +158,57 @@ UNIT_AMPERE_HOUR = "Ah"
 
 NUMBERS = {
     # JK04, JK02, JK02_32S, factor
-    CONF_BALANCE_TRIGGER_VOLTAGE: [0x00, 0x06, 0x06, 1000.0],
-    CONF_CELL_COUNT_SETTINGS: [0x00, 0x1C, 0x1C, 1.0],
-    CONF_TOTAL_BATTERY_CAPACITY: [0x00, 0x20, 0x20, 1000.0],
-    CONF_CELL_VOLTAGE_OVERVOLTAGE_PROTECTION: [0x00, 0x04, 0x04, 1000.0],
-    CONF_CELL_VOLTAGE_OVERVOLTAGE_RECOVERY: [0x00, 0x05, 0x05, 1000.0],
-    CONF_CELL_VOLTAGE_UNDERVOLTAGE_PROTECTION: [0x00, 0x02, 0x02, 1000.0],
-    CONF_CELL_VOLTAGE_UNDERVOLTAGE_RECOVERY: [0x00, 0x03, 0x03, 1000.0],
-    CONF_BALANCE_STARTING_VOLTAGE: [0x00, 0x26, 0x22, 1000.0],
-    CONF_VOLTAGE_CALIBRATION: [0x00, 0x21, 0x64, 1000.0],
-    CONF_CURRENT_CALIBRATION: [0x00, 0x24, 0x67, 1000.0],
-    CONF_POWER_OFF_VOLTAGE: [0x00, 0x0B, 0x0B, 1000.0],
-    CONF_MAX_BALANCE_CURRENT: [0x00, 0x13, 0x13, 1000.0],
-    CONF_MAX_CHARGE_CURRENT: [0x00, 0x0C, 0x0C, 1000.0],
-    CONF_MAX_DISCHARGE_CURRENT: [0x00, 0x0F, 0x0F, 1000.0],
+    CONF_CELL_SMART_SLEEP_VOLTAGE:                          [0x0000, 3, 0],
+    CONF_CELL_UNDERVOLTAGE_PROTECTION:                      [0x0004, 3, 0],
+    CONF_CELL_UNDERVOLTAGE_PROTECTION_RECOVERY:             [0x0008, 3, 0],
+    CONF_CELL_OVERVOLTAGE_PROTECTION:                       [0x000C, 3, 0],
+    CONF_CELL_OVERVOLTAGE_PROTECTION_RECOVERY:              [0x0010, 3, 0],
+    CONF_CELL_BALANCING_TRIGGER_VOLTAGE:                    [0x0014, 3, 0],
+    CONF_CELL_SOC100_VOLTAGE:                               [0x0018, 3, 0],
+    CONF_CELL_SOC0_VOLTAGE:                                 [0x001C, 3, 0],
+    CONF_CELL_REQUEST_CHARGE_VOLTAGE:                       [0x0020, 3, 0],
+    CONF_CELL_REQUEST_FLOAT_VOLTAGE:                        [0x0024, 3, 0],
+    CONF_CELL_POWER_OFF_VOLTAGE:                            [0x0028, 3, 0],
+    CONF_CELL_BALANCING_STARTING_VOLTAGE:                   [0x0084, 3, 0],
+    #
+    CONF_MAX_CHARGING_CURRENT:                              [0x002C, 3, 0],
+    CONF_CHARGING_OVERCURRENT_PROTECTION_DELAY:             [0x0030, 0, 0],
+    CONF_CHARGING_OVERCURRENT_PROTECTION_RECOVERY_DELAY:    [0x0034, 0, 0],
+    CONF_MAX_DISCHARGING_CURRENT:                           [0x0038, 3, 0],
+    CONF_DISCHARGING_OVERCURRENT_PROTECTION_DELAY:          [0x003C, 0, 0],
+    CONF_DISCHARGING_OVERCURRENT_PROTECTION_RECOVERY_DELAY: [0x0040, 0, 0],
+    CONF_SHORT_CIRCUIT_PROTECTION_DELAY:                    [0x0080, 6, 0],
+    CONF_SHORT_CIRCUIT_PROTECTION_RECOVERY_DELAY:           [0x0044, 0, 0],
+    CONF_MAX_BALANCING_CURRENT:                             [0x0048, 3, 0],
+    #
+    CONF_CHARGING_OVERTEMPERATURE_PROTECTION:               [0x004C, 1, 1],
+    CONF_CHARGING_OVERTEMPERATURE_PROTECTION_RECOVERY:      [0x0050, 1, 1],
+    CONF_DISCHARGING_OVERTEMPERATURE_PROTECTION:            [0x0054, 1, 1],
+    CONF_DISCHARGING_OVERTEMPERATURE_PROTECTION_RECOVERY:   [0x0058, 1, 1],
+    CONF_CHARGING_LOWTEMPERATURE_PROTECTION:                [0x005C, 1, 1],
+    CONF_CHARGING_LOWTEMPERATURE_PROTECTION_RECOVERY:       [0x0060, 1, 1],
+    CONF_MOS_OVERTEMPERATURE_PROTECTION:                    [0x0064, 1, 1],
+    CONF_MOS_OVERTEMPERATURE_PROTECTION_RECOVERY:           [0x0068, 1, 1],
+    #
+    CONF_CELL_COUNT_SETTINGS:                               [0x006C, 0, 0],
+    CONF_BATTERY_CAPACITY_TOTAL_SETTINGS:                   [0x007C, 3, 0],
+    CONF_PRECHARGING_TIME_FROM_DISCHARGE:                   [0x010C, 3, 0],   ############### TO VERIFY !!!
+
+    
+    CONF_BALANCE_STARTING_VOLTAGE:             [0x22, 1000.0],
+    CONF_VOLTAGE_CALIBRATION:                  [0x64, 1000.0],
+    CONF_CURRENT_CALIBRATION:                  [0x67, 1000.0],
+    CONF_POWER_OFF_VOLTAGE:                    [0x0B, 1000.0],
+    CONF_MAX_BALANCE_CURRENT:                  [0x13, 1000.0],
+    CONF_MAX_CHARGE_CURRENT:                   [0x0C, 1000.0],
+    CONF_MAX_DISCHARGE_CURRENT:                [0x0F, 1000.0],
 }
 
-JkRS485Number = jk_rs485_bms_ns.class_("JkRS485Number", number.Number, cg.Component)
+JkRS485BmsNumber = jk_rs485_bms_ns.class_("JkRS485BmsNumber", number.Number, cg.Component)
 
 JK_RS485_NUMBER_SCHEMA = number.NUMBER_SCHEMA.extend(
     {
-        cv.GenerateID(): cv.declare_id(JkRS485Number),
+        cv.GenerateID(): cv.declare_id(JkRS485BmsNumber),
         cv.Optional(CONF_ICON, default=ICON_EMPTY): cv.icon,
         cv.Optional(CONF_STEP, default=0.01): cv.float_,
         cv.Optional(CONF_UNIT_OF_MEASUREMENT, default=UNIT_VOLT): cv.string_strict,
@@ -145,66 +216,352 @@ JK_RS485_NUMBER_SCHEMA = number.NUMBER_SCHEMA.extend(
         cv.Optional(
             CONF_ENTITY_CATEGORY, default=ENTITY_CATEGORY_CONFIG
         ): cv.entity_category,
+        cv.Optional(CONF_DEVICE_CLASS, default=DEVICE_CLASS_EMPTY): cv.string_strict,
     }
 ).extend(cv.COMPONENT_SCHEMA)
 
-CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
+CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
     {
-        cv.Optional(CONF_BALANCE_TRIGGER_VOLTAGE): JK_RS485_NUMBER_SCHEMA.extend(
+        cv.Optional(CONF_CELL_SMART_SLEEP_VOLTAGE): JK_RS485_NUMBER_SCHEMA.extend(
             {
-                cv.Optional(CONF_MIN_VALUE, default=0.003): cv.float_,
+                cv.Optional(CONF_UNIT_OF_MEASUREMENT, default=UNIT_VOLT): cv.string_strict,
+                cv.Optional(CONF_ICON, default=ICON_EMPTY): cv.icon,             
+                cv.Optional(CONF_MIN_VALUE, default=1.2): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=4.350): cv.float_,
+                cv.Optional(CONF_STEP, default=0.001): cv.float_,      
+                cv.Optional(
+                    CONF_ENTITY_CATEGORY, default=ENTITY_CATEGORY_CONFIG
+                ): cv.entity_category,   
+                cv.Optional(CONF_DEVICE_CLASS, default=DEVICE_CLASS_VOLTAGE):cv.string_strict,                  
+            }
+        ),
+        cv.Optional(CONF_CELL_UNDERVOLTAGE_PROTECTION): JK_RS485_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_UNIT_OF_MEASUREMENT, default=UNIT_VOLT): cv.string_strict,
+                cv.Optional(CONF_ICON, default=ICON_EMPTY): cv.icon,             
+                cv.Optional(CONF_MIN_VALUE, default=1.2): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=4.350): cv.float_,
+                cv.Optional(CONF_STEP, default=0.001): cv.float_,
+                cv.Optional(CONF_DEVICE_CLASS, default=DEVICE_CLASS_VOLTAGE):cv.string_strict,                  
+            }
+        ),
+        cv.Optional(CONF_CELL_UNDERVOLTAGE_PROTECTION_RECOVERY): JK_RS485_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_UNIT_OF_MEASUREMENT, default=UNIT_VOLT): cv.string_strict,
+                cv.Optional(CONF_ICON, default=ICON_EMPTY): cv.icon,             
+                cv.Optional(CONF_MIN_VALUE, default=1.2): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=4.350): cv.float_,
+                cv.Optional(CONF_STEP, default=0.001): cv.float_,
+                cv.Optional(CONF_DEVICE_CLASS, default=DEVICE_CLASS_VOLTAGE):cv.string_strict,                  
+            }
+        ),        
+        cv.Optional(CONF_CELL_OVERVOLTAGE_PROTECTION): JK_RS485_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_UNIT_OF_MEASUREMENT, default=UNIT_VOLT): cv.string_strict,
+                cv.Optional(CONF_ICON, default=ICON_EMPTY): cv.icon,             
+                cv.Optional(CONF_MIN_VALUE, default=1.2): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=4.350): cv.float_,
+                cv.Optional(CONF_STEP, default=0.001): cv.float_,
+                cv.Optional(CONF_DEVICE_CLASS, default=DEVICE_CLASS_VOLTAGE):cv.string_strict,                  
+            }
+        ),
+        cv.Optional(CONF_CELL_OVERVOLTAGE_PROTECTION_RECOVERY): JK_RS485_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_UNIT_OF_MEASUREMENT, default=UNIT_VOLT): cv.string_strict,
+                cv.Optional(CONF_ICON, default=ICON_EMPTY): cv.icon,             
+                cv.Optional(CONF_MIN_VALUE, default=1.2): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=4.350): cv.float_,
+                cv.Optional(CONF_STEP, default=0.001): cv.float_,
+                cv.Optional(CONF_DEVICE_CLASS, default=DEVICE_CLASS_VOLTAGE):cv.string_strict,                  
+            }
+        ),    
+        cv.Optional(CONF_CELL_BALANCING_TRIGGER_VOLTAGE): JK_RS485_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_UNIT_OF_MEASUREMENT, default=UNIT_VOLT): cv.string_strict,
+                cv.Optional(CONF_ICON, default=ICON_EMPTY): cv.icon,             
+                cv.Optional(CONF_MIN_VALUE, default=0.001): cv.float_,
                 cv.Optional(CONF_MAX_VALUE, default=1.0): cv.float_,
                 cv.Optional(CONF_STEP, default=0.001): cv.float_,
+                cv.Optional(CONF_DEVICE_CLASS, default=DEVICE_CLASS_VOLTAGE):cv.string_strict,                  
+            }
+        ), 
+        cv.Optional(CONF_CELL_SOC100_VOLTAGE): JK_RS485_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_UNIT_OF_MEASUREMENT, default=UNIT_VOLT): cv.string_strict,
+                cv.Optional(CONF_ICON, default=ICON_EMPTY): cv.icon,             
+                cv.Optional(CONF_MIN_VALUE, default=1.2): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=4.350): cv.float_,
+                cv.Optional(CONF_STEP, default=0.001): cv.float_,
+                cv.Optional(CONF_DEVICE_CLASS, default=DEVICE_CLASS_VOLTAGE):cv.string_strict,                  
+            }
+        ), 
+        cv.Optional(CONF_CELL_SOC0_VOLTAGE): JK_RS485_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_UNIT_OF_MEASUREMENT, default=UNIT_VOLT): cv.string_strict,
+                cv.Optional(CONF_ICON, default=ICON_EMPTY): cv.icon,             
+                cv.Optional(CONF_MIN_VALUE, default=1.2): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=4.350): cv.float_,
+                cv.Optional(CONF_STEP, default=0.001): cv.float_,
+                cv.Optional(CONF_DEVICE_CLASS, default=DEVICE_CLASS_VOLTAGE):cv.string_strict,                  
+            }
+        ), 
+        cv.Optional(CONF_CELL_REQUEST_CHARGE_VOLTAGE): JK_RS485_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_UNIT_OF_MEASUREMENT, default=UNIT_VOLT): cv.string_strict,
+                cv.Optional(CONF_ICON, default=ICON_EMPTY): cv.icon,             
+                cv.Optional(CONF_MIN_VALUE, default=1.2): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=4.350): cv.float_,
+                cv.Optional(CONF_STEP, default=0.001): cv.float_,
+                cv.Optional(CONF_DEVICE_CLASS, default=DEVICE_CLASS_VOLTAGE):cv.string_strict,                  
+            }
+        ), 
+        cv.Optional(CONF_CELL_REQUEST_FLOAT_VOLTAGE): JK_RS485_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_UNIT_OF_MEASUREMENT, default=UNIT_VOLT): cv.string_strict,
+                cv.Optional(CONF_ICON, default=ICON_EMPTY): cv.icon,             
+                cv.Optional(CONF_MIN_VALUE, default=1.2): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=4.350): cv.float_,
+                cv.Optional(CONF_STEP, default=0.001): cv.float_,
+                cv.Optional(CONF_DEVICE_CLASS, default=DEVICE_CLASS_VOLTAGE):cv.string_strict,                  
             }
         ),
+        cv.Optional(CONF_CELL_POWER_OFF_VOLTAGE): JK_RS485_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_UNIT_OF_MEASUREMENT, default=UNIT_VOLT): cv.string_strict,
+                cv.Optional(CONF_ICON, default=ICON_EMPTY): cv.icon,             
+                cv.Optional(CONF_MIN_VALUE, default=1.2): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=4.350): cv.float_,
+                cv.Optional(CONF_STEP, default=0.001): cv.float_,
+                cv.Optional(CONF_DEVICE_CLASS, default=DEVICE_CLASS_VOLTAGE):cv.string_strict,                  
+            }
+        ),  
+        cv.Optional(CONF_CELL_BALANCING_STARTING_VOLTAGE): JK_RS485_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_UNIT_OF_MEASUREMENT, default=UNIT_VOLT): cv.string_strict,
+                cv.Optional(CONF_ICON, default=ICON_EMPTY): cv.icon,             
+                cv.Optional(CONF_MIN_VALUE, default=1.2): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=4.350): cv.float_,
+                cv.Optional(CONF_STEP, default=0.001): cv.float_,
+                cv.Optional(CONF_DEVICE_CLASS, default=DEVICE_CLASS_VOLTAGE):cv.string_strict,                  
+            }
+        ),         
+
+
+
+
+
+        cv.Optional(CONF_MAX_CHARGING_CURRENT): JK_RS485_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_UNIT_OF_MEASUREMENT, default=UNIT_AMPERE): cv.string_strict,
+                cv.Optional(CONF_ICON, default=ICON_CLOCK): cv.icon,             
+                cv.Optional(CONF_MIN_VALUE, default=0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=200): cv.float_,
+                cv.Optional(CONF_STEP, default=0.001): cv.float_,
+            }
+        ),  
+        cv.Optional(CONF_CHARGING_OVERCURRENT_PROTECTION_DELAY): JK_RS485_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_UNIT_OF_MEASUREMENT, default=UNIT_SECONDS): cv.string_strict,
+                cv.Optional(CONF_ICON, default=ICON_CLOCK): cv.icon,             
+                cv.Optional(CONF_MIN_VALUE, default=0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=3600): cv.float_,
+                cv.Optional(CONF_STEP, default=1): cv.float_,
+            }
+        ),  
+        cv.Optional(CONF_CHARGING_OVERCURRENT_PROTECTION_RECOVERY_DELAY): JK_RS485_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_UNIT_OF_MEASUREMENT, default=UNIT_SECONDS): cv.string_strict,
+                cv.Optional(CONF_ICON, default=ICON_CLOCK): cv.icon,             
+                cv.Optional(CONF_MIN_VALUE, default=0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=3600): cv.float_,
+                cv.Optional(CONF_STEP, default=1): cv.float_,
+            }
+        ), 
+        cv.Optional(CONF_MAX_DISCHARGING_CURRENT): JK_RS485_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_UNIT_OF_MEASUREMENT, default=UNIT_AMPERE): cv.string_strict,
+                cv.Optional(CONF_ICON, default=ICON_CURRENT_DC): cv.icon,             
+                cv.Optional(CONF_MIN_VALUE, default=0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=200): cv.float_,
+                cv.Optional(CONF_STEP, default=0.001): cv.float_,
+            }
+        ),  
+        cv.Optional(CONF_DISCHARGING_OVERCURRENT_PROTECTION_DELAY): JK_RS485_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_UNIT_OF_MEASUREMENT, default=UNIT_SECONDS): cv.string_strict,
+                cv.Optional(CONF_ICON, default=ICON_CLOCK): cv.icon,             
+                cv.Optional(CONF_MIN_VALUE, default=0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=3600): cv.float_,
+                cv.Optional(CONF_STEP, default=1): cv.float_,
+            }
+        ),  
+        cv.Optional(CONF_DISCHARGING_OVERCURRENT_PROTECTION_RECOVERY_DELAY): JK_RS485_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_UNIT_OF_MEASUREMENT, default=UNIT_SECONDS): cv.string_strict,
+                cv.Optional(CONF_ICON, default=ICON_CLOCK): cv.icon,             
+                cv.Optional(CONF_MIN_VALUE, default=0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=3600): cv.float_,
+                cv.Optional(CONF_STEP, default=1): cv.float_,
+            }
+        ), 
+
+        cv.Optional(CONF_SHORT_CIRCUIT_PROTECTION_DELAY): JK_RS485_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_UNIT_OF_MEASUREMENT, default=UNIT_SECONDS): cv.string_strict,
+                cv.Optional(CONF_ICON, default=ICON_CLOCK): cv.icon,             
+                cv.Optional(CONF_MIN_VALUE, default=0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=3600): cv.float_,
+                cv.Optional(CONF_STEP, default=1): cv.float_,
+            }
+        ),         
+        cv.Optional(CONF_SHORT_CIRCUIT_PROTECTION_RECOVERY_DELAY): JK_RS485_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_UNIT_OF_MEASUREMENT, default=UNIT_SECONDS): cv.string_strict,
+                cv.Optional(CONF_ICON, default=ICON_CLOCK): cv.icon,             
+                cv.Optional(CONF_MIN_VALUE, default=0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=3600): cv.float_,
+                cv.Optional(CONF_STEP, default=1): cv.float_,
+            }
+        ), 
+        cv.Optional(CONF_MAX_BALANCING_CURRENT): JK_RS485_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_UNIT_OF_MEASUREMENT, default=UNIT_AMPERE): cv.string_strict,
+                cv.Optional(CONF_ICON, default=ICON_CURRENT_DC): cv.icon,             
+                cv.Optional(CONF_MIN_VALUE, default=0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=2): cv.float_,
+                cv.Optional(CONF_STEP, default=0.001): cv.float_,
+            }
+        ),         
+
+
+
+        cv.Optional(CONF_CHARGING_OVERTEMPERATURE_PROTECTION): JK_RS485_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_UNIT_OF_MEASUREMENT, default=UNIT_CELSIUS): cv.string_strict,
+                cv.Optional(CONF_ICON, default=ICON_HIGH_TEMPERATURE): cv.icon,             
+                cv.Optional(CONF_MIN_VALUE, default=0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=200): cv.float_,
+                cv.Optional(CONF_STEP, default=0.1): cv.float_,
+            }
+        ), 
+
+        cv.Optional(CONF_CHARGING_OVERTEMPERATURE_PROTECTION_RECOVERY): JK_RS485_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_UNIT_OF_MEASUREMENT, default=UNIT_CELSIUS): cv.string_strict,
+                cv.Optional(CONF_ICON, default=ICON_HIGH_TEMPERATURE): cv.icon,             
+                cv.Optional(CONF_MIN_VALUE, default=0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=200): cv.float_,
+                cv.Optional(CONF_STEP, default=0.1): cv.float_,
+            }
+        ),
+        cv.Optional(CONF_DISCHARGING_OVERTEMPERATURE_PROTECTION): JK_RS485_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_UNIT_OF_MEASUREMENT, default=UNIT_CELSIUS): cv.string_strict,
+                cv.Optional(CONF_ICON, default=ICON_HIGH_TEMPERATURE): cv.icon,             
+                cv.Optional(CONF_MIN_VALUE, default=0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=200): cv.float_,
+                cv.Optional(CONF_STEP, default=0.1): cv.float_,
+            }
+        ),
+        cv.Optional(CONF_DISCHARGING_OVERTEMPERATURE_PROTECTION_RECOVERY): JK_RS485_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_UNIT_OF_MEASUREMENT, default=UNIT_CELSIUS): cv.string_strict,
+                cv.Optional(CONF_ICON, default=ICON_HIGH_TEMPERATURE): cv.icon,             
+                cv.Optional(CONF_MIN_VALUE, default=0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=200): cv.float_,
+                cv.Optional(CONF_STEP, default=0.1): cv.float_,
+            }
+        ),
+        cv.Optional(CONF_CHARGING_LOWTEMPERATURE_PROTECTION): JK_RS485_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_UNIT_OF_MEASUREMENT, default=UNIT_CELSIUS): cv.string_strict,
+                cv.Optional(CONF_ICON, default=ICON_LOW_TEMPERATURE): cv.icon,             
+                cv.Optional(CONF_MIN_VALUE, default=-100): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=200): cv.float_,
+                cv.Optional(CONF_STEP, default=0.1): cv.float_,
+            }
+        ), 
+
+        cv.Optional(CONF_CHARGING_LOWTEMPERATURE_PROTECTION_RECOVERY): JK_RS485_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_UNIT_OF_MEASUREMENT, default=UNIT_CELSIUS): cv.string_strict,
+                cv.Optional(CONF_ICON, default=ICON_LOW_TEMPERATURE): cv.icon,             
+                cv.Optional(CONF_MIN_VALUE, default=-100): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=200): cv.float_,
+                cv.Optional(CONF_STEP, default=0.1): cv.float_,
+            }
+        ),
+        cv.Optional(CONF_MOS_OVERTEMPERATURE_PROTECTION): JK_RS485_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_UNIT_OF_MEASUREMENT, default=UNIT_CELSIUS): cv.string_strict,
+                cv.Optional(CONF_ICON, default=ICON_HIGH_TEMPERATURE): cv.icon,             
+                cv.Optional(CONF_MIN_VALUE, default=0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=200): cv.float_,
+                cv.Optional(CONF_STEP, default=0.1): cv.float_,
+            }
+        ),
+        cv.Optional(CONF_MOS_OVERTEMPERATURE_PROTECTION_RECOVERY): JK_RS485_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_UNIT_OF_MEASUREMENT, default=UNIT_CELSIUS): cv.string_strict,
+                cv.Optional(CONF_ICON, default=ICON_HIGH_TEMPERATURE): cv.icon,             
+                cv.Optional(CONF_MIN_VALUE, default=0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=200): cv.float_,
+                cv.Optional(CONF_STEP, default=0.1): cv.float_,
+            }
+        ),        
+
         cv.Optional(CONF_CELL_COUNT_SETTINGS): JK_RS485_NUMBER_SCHEMA.extend(
             {
+                cv.Optional(CONF_UNIT_OF_MEASUREMENT, default=UNIT_EMPTY): cv.string_strict,
+                cv.Optional(CONF_ICON, default=ICON_EMPTY): cv.icon,             
                 cv.Optional(CONF_MIN_VALUE, default=3): cv.float_,
                 cv.Optional(CONF_MAX_VALUE, default=24): cv.float_,
-                cv.Optional(CONF_STEP, default=1.0): cv.float_,
-                cv.Optional(
-                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_EMPTY
-                ): cv.string_strict,
+                cv.Optional(CONF_STEP, default=1): cv.float_,
             }
         ),
-        cv.Optional(CONF_TOTAL_BATTERY_CAPACITY): JK_RS485_NUMBER_SCHEMA.extend(
+        cv.Optional(CONF_BATTERY_CAPACITY_TOTAL_SETTINGS): JK_RS485_NUMBER_SCHEMA.extend(
             {
-                cv.Optional(CONF_MIN_VALUE, default=5): cv.float_,
-                cv.Optional(CONF_MAX_VALUE, default=2000): cv.float_,
-                cv.Optional(CONF_STEP, default=1.0): cv.float_,
-                cv.Optional(
-                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_AMPERE_HOUR
-                ): cv.string_strict,
-            }
-        ),
-        cv.Optional(CONF_CELL_VOLTAGE_OVERVOLTAGE_PROTECTION): JK_RS485_NUMBER_SCHEMA.extend(
-            {
-                cv.Optional(CONF_MIN_VALUE, default=1.2): cv.float_,
-                cv.Optional(CONF_MAX_VALUE, default=4.350): cv.float_,
+                cv.Optional(CONF_UNIT_OF_MEASUREMENT, default=UNIT_AMPERE_HOURS): cv.string_strict,
+                cv.Optional(CONF_ICON, default=ICON_BATTERY_CAPACITY_TOTAL_SETTING): cv.icon,             
+                cv.Optional(CONF_MIN_VALUE, default=0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=500): cv.float_,
                 cv.Optional(CONF_STEP, default=0.001): cv.float_,
             }
         ),
-        cv.Optional(CONF_CELL_VOLTAGE_OVERVOLTAGE_RECOVERY): JK_RS485_NUMBER_SCHEMA.extend(
+        cv.Optional(CONF_BATTERY_CAPACITY_TOTAL_SETTINGS): JK_RS485_NUMBER_SCHEMA.extend(
             {
-                cv.Optional(CONF_MIN_VALUE, default=1.2): cv.float_,
-                cv.Optional(CONF_MAX_VALUE, default=4.350): cv.float_,
-                cv.Optional(CONF_STEP, default=0.001): cv.float_,
+                cv.Optional(CONF_UNIT_OF_MEASUREMENT, default=UNIT_MICROSECONDS): cv.string_strict,
+                cv.Optional(CONF_ICON, default=ICON_TIMELAPSE): cv.icon,             
+                cv.Optional(CONF_MIN_VALUE, default=0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=3600): cv.float_,
+                cv.Optional(CONF_STEP, default=0): cv.float_,
             }
-        ),
-        cv.Optional(CONF_CELL_VOLTAGE_UNDERVOLTAGE_PROTECTION): JK_RS485_NUMBER_SCHEMA.extend(
+        ),        
+        cv.Optional(CONF_PRECHARGING_TIME_FROM_DISCHARGE): JK_RS485_NUMBER_SCHEMA.extend(
             {
-                cv.Optional(CONF_MIN_VALUE, default=1.2): cv.float_,
-                cv.Optional(CONF_MAX_VALUE, default=4.350): cv.float_,
-                cv.Optional(CONF_STEP, default=0.001): cv.float_,
+                cv.Optional(CONF_UNIT_OF_MEASUREMENT, default=UNIT_SECONDS): cv.string_strict,
+                cv.Optional(CONF_ICON, default=ICON_CLOCK): cv.icon,             
+                cv.Optional(CONF_MIN_VALUE, default=0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=3600): cv.float_,
+                cv.Optional(CONF_STEP, default=1): cv.float_,
             }
-        ),
-        cv.Optional(CONF_CELL_VOLTAGE_UNDERVOLTAGE_RECOVERY): JK_RS485_NUMBER_SCHEMA.extend(
-            {
-                cv.Optional(CONF_MIN_VALUE, default=1.2): cv.float_,
-                cv.Optional(CONF_MAX_VALUE, default=4.350): cv.float_,
-                cv.Optional(CONF_STEP, default=0.001): cv.float_,
-            }
-        ),
+        ), 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         cv.Optional(CONF_BALANCE_STARTING_VOLTAGE): JK_RS485_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=1.20): cv.float_,
@@ -276,7 +633,7 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
 async def to_code(config):
     #hub = await cg.get_variable(config[CONF_JK_BMS_BLE_ID])
     hub = await cg.get_variable(config[CONF_JK_RS485_BMS_ID])
-    for key, address in NUMBERS.items():
+    for key, param_config in NUMBERS.items():
         if key in config:
             conf = config[key]
             var = cg.new_Pvariable(conf[CONF_ID])
@@ -290,7 +647,6 @@ async def to_code(config):
             )
             cg.add(getattr(hub, f"set_{key}_number")(var))
             cg.add(var.set_parent(hub))
-#            cg.add(var.set_jk04_holding_register(address[0]))
-#            cg.add(var.set_jk02_holding_register(address[1]))
-#            cg.add(var.set_jk02_32s_holding_register(address[2]))
-#            cg.add(var.set_factor(address[3]))
+            cg.add(var.set_register_address(param_config[0]))
+            cg.add(var.set_factor(param_config[1]))
+            cg.add(var.set_type(param_config[2]))

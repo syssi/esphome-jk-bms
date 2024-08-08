@@ -1,37 +1,39 @@
 #pragma once
 
-#include "../jk_bms_ble.h"
+#include "../jk_rs485_bms.h"
 #include "esphome/core/component.h"
 #include "esphome/components/number/number.h"
 
 namespace esphome {
-namespace jk_bms_ble {
+namespace jk_rs485_bms {
 
-class JkBmsBle;
+class JkRS485Bms;
 
-class JkNumber : public number::Number, public Component {
+class JkRS485BmsNumber : public number::Number, public Component {
  public:
-  void set_parent(JkBmsBle *parent) { this->parent_ = parent; };
-  void set_jk04_holding_register(uint8_t jk04_holding_register) {
-    this->jk04_holding_register_ = jk04_holding_register;
-  };
-  void set_jk02_holding_register(uint8_t jk02_holding_register) {
-    this->jk02_holding_register_ = jk02_holding_register;
-  };
-  void set_jk02_32s_holding_register(uint8_t jk02_32s_holding_register) {
-    this->jk02_32s_holding_register_ = jk02_32s_holding_register;
-  };
+  // Constructor por defecto necesario para crear instancias sin argumentos
+  JkRS485BmsNumber() = default;
+
+  explicit JkRS485BmsNumber(bool initial_state);
+  virtual ~JkRS485BmsNumber() = default; // Destructor por defecto
+
+
+  void set_parent(JkRS485Bms *parent) { this->parent_ = parent; };
+  void set_register_address(uint16_t register_address) { this->register_address_ = register_address; };
   void set_factor(float factor) { this->factor_ = factor; };
+  void set_type(uint8_t type) { this->type_ = type; };
   void dump_config() override;
+  void loop() override {}
+  float get_setup_priority() const override { return setup_priority::DATA; }
+
 
  protected:
   void control(float value) override;
 
-  JkBmsBle *parent_;
-  uint8_t jk04_holding_register_;
-  uint8_t jk02_holding_register_;
-  uint8_t jk02_32s_holding_register_;
+  JkRS485Bms *parent_;
+  uint16_t register_address_;
   float factor_{1000.0f};
+  uint8_t type_;
 };
 
 }  // namespace jk_bms_ble

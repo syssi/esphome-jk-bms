@@ -38,7 +38,6 @@ class JkRS485BmsSwitch : public switch_::Switch, public Component {
 
   JkRS485Bms *parent_;
   uint8_t register_address_;
-  uint8_t register_address_bit_;
 };
 
 

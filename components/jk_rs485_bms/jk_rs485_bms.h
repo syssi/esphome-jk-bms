@@ -1,6 +1,7 @@
 #pragma once
 
 #include "switch/jk_switch.h"
+#include "number/jk_number.h"
 #include "esphome/components/binary_sensor/binary_sensor.h"
 #include "esphome/components/sensor/sensor.h"
 #include "esphome/components/text_sensor/text_sensor.h"
@@ -17,6 +18,7 @@ class JkRS485Sniffer;  // Declaración anticipada
 namespace jk_rs485_bms {
 
 class JkRS485BmsSwitch;  // Declaración anticipada de JkRS485BmsSwitch
+class JkRS485BmsNumber;  // Declaración anticipada de JkRS485BmsNumber
 
 enum ProtocolVersion {
   PROTOCOL_VERSION_JK04,
@@ -55,7 +57,8 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   void trigger_bms2sniffer_event(std::string event, std::uint8_t frame_type);
 
   void trigger_bms2sniffer_switch16_event(std::uint8_t register_address);
-  void trigger_bms2sniffer_switch64_event(std::uint8_t register_address, std::uint64_t value);
+  void trigger_bms2sniffer_switch_or_number_uint32_event(std::uint16_t register_address, std::uint32_t value);
+  void trigger_bms2sniffer_switch_or_number_int32_event(std::uint16_t register_address, std::int32_t value);
 
   void set_smart_sleep_time_sensor(sensor::Sensor *smart_sleep_time_sensor) {
     smart_sleep_time_sensor_ = smart_sleep_time_sensor;
@@ -84,7 +87,6 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   void set_status_heating_binary_sensor(binary_sensor::BinarySensor *status_heating_binary_sensor) {
     status_heating_binary_sensor_ = status_heating_binary_sensor;
   }   
-  void set_cell_count_settings_sensor(sensor::Sensor *cell_count_settings_sensor) { cell_count_settings_sensor_ = cell_count_settings_sensor; }
 
   void set_balancing_switch_binary_sensor(binary_sensor::BinarySensor *balancing_switch_binary_sensor) {
     balancing_switch_binary_sensor_ = balancing_switch_binary_sensor;
@@ -115,9 +117,6 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
     dedicated_charger_switch_binary_sensor_ = dedicated_charger_switch_binary_sensor;
   }
 
-  void set_cell_smart_sleep_voltage_sensor(sensor::Sensor *cell_smart_sleep_voltage_sensor) {
-    cell_smart_sleep_voltage_sensor_ = cell_smart_sleep_voltage_sensor;
-  }
 
 
   
@@ -220,43 +219,15 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   void set_total_voltage_undervoltage_protection_sensor(sensor::Sensor *total_voltage_undervoltage_protection_sensor) {
     total_voltage_undervoltage_protection_sensor_ = total_voltage_undervoltage_protection_sensor;
   }
-  void set_cell_overvoltage_protection_sensor(sensor::Sensor *cell_overvoltage_protection_sensor) {
-    cell_overvoltage_protection_sensor_ = cell_overvoltage_protection_sensor;
-  }
-  void set_cell_overvoltage_protection_recovery_sensor(sensor::Sensor *cell_overvoltage_protection_recovery_sensor) {
-    cell_overvoltage_protection_recovery_sensor_ = cell_overvoltage_protection_recovery_sensor;
-  }
   void set_cell_voltage_overvoltage_delay_sensor(sensor::Sensor *cell_voltage_overvoltage_delay_sensor) {
     cell_voltage_overvoltage_delay_sensor_ = cell_voltage_overvoltage_delay_sensor;
   }
-  void set_cell_undervoltage_protection_sensor(sensor::Sensor *cell_undervoltage_protection_sensor) {
-    cell_undervoltage_protection_sensor_ = cell_undervoltage_protection_sensor;
-  }
-  void set_cell_undervoltage_protection_recovery_sensor(sensor::Sensor *cell_undervoltage_protection_recovery_sensor) {
-    cell_undervoltage_protection_recovery_sensor_ = cell_undervoltage_protection_recovery_sensor;
-  }
-  void set_cell_request_charge_voltage_sensor(sensor::Sensor *cell_request_charge_voltage_sensor) {
-    cell_request_charge_voltage_sensor_ = cell_request_charge_voltage_sensor;
-  }
-  void set_cell_request_float_voltage_sensor(sensor::Sensor *cell_request_float_voltage_sensor) {
-    cell_request_float_voltage_sensor_ = cell_request_float_voltage_sensor;
-  }
+
+
   void set_cell_voltage_undervoltage_delay_sensor(sensor::Sensor *cell_voltage_undervoltage_delay_sensor) {
     cell_voltage_undervoltage_delay_sensor_ = cell_voltage_undervoltage_delay_sensor;
   }
-  void set_cell_soc100_voltage_sensor(sensor::Sensor *cell_soc100_voltage_sensor) {
-    cell_soc100_voltage_sensor_ = cell_soc100_voltage_sensor;
-  }
-  void set_cell_soc0_voltage_sensor(sensor::Sensor *cell_soc0_voltage_sensor) {
-    cell_soc0_voltage_sensor_ = cell_soc0_voltage_sensor;
-  }
-  void set_balancing_trigger_voltage_sensor(sensor::Sensor *balancing_trigger_voltage_sensor) {
-    balancing_trigger_voltage_sensor_ = balancing_trigger_voltage_sensor;
-  }
   
-  void set_cell_power_off_voltage_sensor(sensor::Sensor *cell_power_off_voltage_sensor) {
-    cell_power_off_voltage_sensor_ = cell_power_off_voltage_sensor;
-  }
 
   void set_cell_pressure_difference_protection_sensor(sensor::Sensor *cell_pressure_difference_protection_sensor) {
     cell_pressure_difference_protection_sensor_ = cell_pressure_difference_protection_sensor;
@@ -306,9 +277,7 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
     mos_overtemperature_protection_recovery_sensor_ = mos_overtemperature_protection_recovery_sensor;
   }
 
-  void set_precharging_time_from_discharge_sensor(sensor::Sensor *precharging_time_from_discharge_sensor) {
-    precharging_time_from_discharge_sensor_ = precharging_time_from_discharge_sensor;
-  }
+
 
 
   void set_discharging_overcurrent_protection_release_time_sensor(sensor::Sensor *discharging_overcurrent_protection_release_time_sensor) {
@@ -413,12 +382,7 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   }
 
 
-  void set_max_balancing_current_sensor(sensor::Sensor *max_balancing_current_sensor) {
-    max_balancing_current_sensor_ = max_balancing_current_sensor;
-  }
-  void set_max_charging_current_sensor(sensor::Sensor *max_charging_current_sensor) {
-    max_charging_current_sensor_ = max_charging_current_sensor;
-  } 
+
   void set_max_discharging_current_sensor(sensor::Sensor *max_discharging_current_sensor) {
     max_discharging_current_sensor_ = max_discharging_current_sensor;
   }   
@@ -594,6 +558,48 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   void set_special_charger_switch(JkRS485BmsSwitch *special_charger_switch);
   void set_smart_sleep_on_switch(JkRS485BmsSwitch *smart_sleep_on_switch);
 
+  void set_cell_smart_sleep_voltage_number(JkRS485BmsNumber *cell_smart_sleep_voltage_number);
+  void set_cell_undervoltage_protection_number(JkRS485BmsNumber *cell_undervoltage_protection_number);
+  void set_cell_undervoltage_protection_recovery_number(JkRS485BmsNumber *cell_undervoltage_protection_recovery_number);
+  void set_cell_overvoltage_protection_number(JkRS485BmsNumber *cell_overvoltage_protection_number);
+  void set_cell_overvoltage_protection_recovery_number(JkRS485BmsNumber *cell_overvoltage_protection_recovery_number);
+  void set_cell_balancing_trigger_voltage_number(JkRS485BmsNumber *cell_balancing_trigger_voltage_number);
+  void set_cell_soc100_voltage_number(JkRS485BmsNumber *cell_soc100_voltage_number);
+  void set_cell_soc0_voltage_number(JkRS485BmsNumber *cell_soc0_voltage_number);
+  void set_cell_request_charge_voltage_number(JkRS485BmsNumber *cell_request_charge_voltage_number);
+  void set_cell_request_float_voltage_number(JkRS485BmsNumber *cell_request_float_voltage_number);
+  void set_cell_power_off_voltage_number(JkRS485BmsNumber *cell_power_off_voltage_number);
+  void set_cell_balancing_starting_voltage_number(JkRS485BmsNumber *cell_balancing_starting_voltage_number);
+  void set_max_charging_current_number(JkRS485BmsNumber *max_charging_current_number);
+  void set_charging_overcurrent_protection_delay_number(JkRS485BmsNumber *charging_overcurrent_protection_delay_number);
+  void set_charging_overcurrent_protection_recovery_delay_number(JkRS485BmsNumber *charging_overcurrent_protection_recovery_delay_number);
+  void set_max_discharging_current_number(JkRS485BmsNumber *max_discharging_current_number);
+  void set_discharging_overcurrent_protection_delay_number(JkRS485BmsNumber *discharging_overcurrent_protection_delay_number);
+  void set_discharging_overcurrent_protection_recovery_delay_number(JkRS485BmsNumber *discharging_overcurrent_protection_recovery_delay_number);
+  void set_short_circuit_protection_delay_number(JkRS485BmsNumber *short_circuit_protection_delay_number);
+  void set_short_circuit_protection_recovery_delay_number(JkRS485BmsNumber *short_circuit_protection_recovery_delay_number);
+  void set_max_balancing_current_number(JkRS485BmsNumber *max_balancing_current_number);
+
+  void set_charging_overtemperature_protection_number(JkRS485BmsNumber *charging_overtemperature_protection_number);
+  void set_charging_overtemperature_protection_recovery_number(JkRS485BmsNumber *charging_overtemperature_protection_recovery_number);
+  void set_discharging_overtemperature_protection_number(JkRS485BmsNumber *discharging_overtemperature_protection_number);
+  void set_discharging_overtemperature_protection_recovery_number(JkRS485BmsNumber *discharging_overtemperature_protection_recovery_number);
+  void set_charging_lowtemperature_protection_number(JkRS485BmsNumber *charging_lowtemperature_protection_number);
+  void set_charging_lowtemperature_protection_recovery_number(JkRS485BmsNumber *charging_lowtemperature_protection_recovery_number);
+  void set_mos_overtemperature_protection_number(JkRS485BmsNumber *mos_overtemperature_protection_number);
+  void set_mos_overtemperature_protection_recovery_number(JkRS485BmsNumber *mos_overtemperature_protection_recovery_number);
+
+  void set_cell_count_settings_number(JkRS485BmsNumber *cell_count_settings_number);
+  void set_battery_capacity_total_settings_number(JkRS485BmsNumber *battery_capacity_total_settings_number);
+  void set_precharging_time_from_discharge_number(JkRS485BmsNumber *precharging_time_from_discharge_number);
+
+  
+
+
+
+
+
+
 
 
 
@@ -688,6 +694,7 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   void publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state);
   void publish_state_(sensor::Sensor *sensor, float value);
   void publish_state_(JkRS485BmsSwitch *obj, const bool &state);
+  void publish_state_(JkRS485BmsNumber *number, float value);  
   void publish_state_(text_sensor::TextSensor *text_sensor, const std::string &state);
   void publish_alarm_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state);  
   void publish_device_unavailable_();
@@ -833,23 +840,10 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
     sensor::Sensor *battery_total_alarms_active_sensor_;
     sensor::Sensor *smart_sleep_time_sensor_;
     sensor::Sensor *emergency_time_countdown_sensor_;
-    sensor::Sensor *cell_undervoltage_protection_sensor_;  
-    sensor::Sensor *cell_undervoltage_protection_recovery_sensor_;
-    sensor::Sensor *cell_overvoltage_protection_sensor_; 
-    sensor::Sensor *cell_overvoltage_protection_recovery_sensor_; 
-    sensor::Sensor *cell_request_charge_voltage_sensor_;
-    sensor::Sensor *cell_request_float_voltage_sensor_; 
 
-    sensor::Sensor *balancing_trigger_voltage_sensor_;  
-    sensor::Sensor *cell_soc100_voltage_sensor_;
-    sensor::Sensor *cell_soc0_voltage_sensor_;  
-    sensor::Sensor *cell_power_off_voltage_sensor_;
 
-    sensor::Sensor *balancing_direction_sensor_; 
-    sensor::Sensor *cell_count_settings_sensor_;  
-    sensor::Sensor *cell_smart_sleep_voltage_sensor_;
-    sensor::Sensor *max_balancing_current_sensor_; 
-    sensor::Sensor *max_charging_current_sensor_;
+
+    sensor::Sensor *balancing_direction_sensor_;  
     sensor::Sensor *max_discharging_current_sensor_;
     sensor::Sensor *charging_overcurrent_protection_delay_sensor_;
     sensor::Sensor *charging_overcurrent_protection_recovery_delay_sensor_;  
@@ -948,7 +942,46 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
     sensor::Sensor *cell_request_charge_voltage_time_sensor_;
     sensor::Sensor *cell_request_float_voltage_time_sensor_; 
 
-   sensor::Sensor *precharging_time_from_discharge_sensor_;
+
+
+    
+    JkRS485BmsNumber *cell_smart_sleep_voltage_number_;
+    JkRS485BmsNumber *cell_undervoltage_protection_number_;  
+    JkRS485BmsNumber *cell_undervoltage_protection_recovery_number_;    
+    JkRS485BmsNumber *cell_overvoltage_protection_number_;  
+    JkRS485BmsNumber *cell_overvoltage_protection_recovery_number_; 
+    JkRS485BmsNumber *cell_balancing_trigger_voltage_number_; 
+    JkRS485BmsNumber *cell_soc100_voltage_number_;
+    JkRS485BmsNumber *cell_soc0_voltage_number_; 
+    JkRS485BmsNumber *cell_request_charge_voltage_number_; 
+    JkRS485BmsNumber *cell_request_float_voltage_number_; 
+    JkRS485BmsNumber *cell_power_off_voltage_number_;
+    JkRS485BmsNumber *cell_balancing_starting_voltage_number_;
+    JkRS485BmsNumber *max_charging_current_number_;    
+    JkRS485BmsNumber *charging_overcurrent_protection_delay_number_;  
+    JkRS485BmsNumber *charging_overcurrent_protection_recovery_delay_number_;  
+    JkRS485BmsNumber *max_discharging_current_number_;    
+    JkRS485BmsNumber *discharging_overcurrent_protection_delay_number_;  
+    JkRS485BmsNumber *discharging_overcurrent_protection_recovery_delay_number_;  
+    JkRS485BmsNumber *short_circuit_protection_delay_number_;     
+    JkRS485BmsNumber *short_circuit_protection_recovery_delay_number_; 
+    JkRS485BmsNumber *max_balancing_current_number_; 
+
+    JkRS485BmsNumber *charging_overtemperature_protection_number_; 
+    JkRS485BmsNumber *charging_overtemperature_protection_recovery_number_; 
+    JkRS485BmsNumber *discharging_overtemperature_protection_number_; 
+    JkRS485BmsNumber *discharging_overtemperature_protection_recovery_number_; 
+    JkRS485BmsNumber *charging_lowtemperature_protection_number_; 
+    JkRS485BmsNumber *charging_lowtemperature_protection_recovery_number_; 
+    JkRS485BmsNumber *mos_overtemperature_protection_number_; 
+    JkRS485BmsNumber *mos_overtemperature_protection_recovery_number_;
+
+    JkRS485BmsNumber *cell_count_settings_number_;
+    JkRS485BmsNumber *battery_capacity_total_settings_number_;
+    JkRS485BmsNumber *precharging_time_from_discharge_number_;
+
+    
+
 
 };
 

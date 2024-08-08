@@ -30,7 +30,7 @@ void JkRS485BmsSwitch::write_state(bool state) {
     if (this->register_address_==0x14){
        this->parent_->trigger_bms2sniffer_switch16_event(this->register_address_);
     } else {
-       this->parent_->trigger_bms2sniffer_switch64_event(this->register_address_, value_to_send);
+       this->parent_->trigger_bms2sniffer_switch_or_number_uint32_event(this->register_address_, value_to_send);
     }
     //this->publish_state(state);
     

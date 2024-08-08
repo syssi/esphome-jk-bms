@@ -82,8 +82,8 @@ ota:
 api:
 
 logger:
-  level: DEBUG #INFO #VERY_VERBOSE #VERBOSE #DEBUG #INFO #DEBUG
-  tx_buffer_size: 1024
+  level: DEBUG #VERBOSE #DEBUG #INFO #VERY_VERBOSE #VERBOSE #DEBUG #INFO #DEBUG
+  tx_buffer_size: 2048
 
 # If you use Home Assistant please remove this `mqtt` section and uncomment the `api` component!
 # The native API has many advantages over MQTT: https://esphome.io/components/api.html#advantages-over-mqtt
@@ -315,8 +315,6 @@ sensor:
     jk_rs485_bms_id: bms0
     balancing_direction:
       name: "${bms0_name} balancing direction"
-    cell_smart_sleep_voltage:
-      name: "${bms0_name} cell smart sleep voltage"
     cell_voltage_min:
       name: "${bms0_name} cell voltage min"
     cell_voltage_max:
@@ -459,8 +457,6 @@ sensor:
       name: "${bms0_name} battery capacity state of charge"
     battery_capacity_remaining:
       name: "${bms0_name} battery capacity remaining"
-    battery_capacity_total_setting:
-      name: "${bms0_name} battery capacity total setting"
     charging_cycles:
       name: "${bms0_name} charging cycles"
     battery_capacity_total_charging_cycle:
@@ -471,74 +467,14 @@ sensor:
       name: "${bms0_name} balancing current"
     errors_bitmask:
       name: "${bms0_name} errors bitmask"
-    cell_count_settings:
-      name: "${bms0_name} cell count settings"
     cell_count_real:
-      name: "${bms0_name} cell count real"      
-    cell_overvoltage_protection:
-      name: "${bms0_name} cell overvoltage protection"
-    cell_overvoltage_protection_recovery:
-      name: "${bms0_name} cell overvoltage protection recovery"
-    cell_request_charge_voltage:
-      name: "${bms0_name} cell request charge voltage"      
+      name: "${bms0_name} cell count real"         
     cell_request_charge_voltage_time:
-      name: "${bms0_name} cell request charge voltage time"    
-    cell_request_float_voltage:
-      name: "${bms0_name} cell request float voltage"   
+      name: "${bms0_name} cell request charge voltage time"   
     cell_request_float_voltage_time:
-      name: "${bms0_name} cell request float voltage time"        
-    balancing_trigger_voltage:
-      name: "${bms0_name} balancing trigger voltage"         
-    cell_balancing_starting_voltage:
-      name: "${bms0_name} cell balancing starting voltage"  
-    max_balancing_current:
-      name: "${bms0_name} max balancing current"          
-    cell_soc100_voltage:
-      name: "${bms0_name} cell soc100 voltage" 
-    cell_soc0_voltage:
-      name: "${bms0_name} cell soc0 voltage"  
-    cell_undervoltage_protection:
-      name: "${bms0_name} cell undervoltage protection"
-    cell_undervoltage_protection_recovery:
-      name: "${bms0_name} cell undervoltage protection recovery"                     
-    cell_power_off_voltage:
-      name: "${bms0_name} cell power off voltage"      
+      name: "${bms0_name} cell request float voltage time"                                              
     smart_sleep_time:
-      name: "${bms0_name} smart sleep time"
-    max_charging_current:
-      name: "${bms0_name} max charging current"      
-    max_discharging_current:
-      name: "${bms0_name} max discharging current"   
-    charging_overcurrent_protection_delay:
-      name: "${bms0_name} charging overcurrent protection delay"
-    charging_overcurrent_protection_recovery_delay:
-      name: "${bms0_name} charging overcurrent protection recovery delay"
-    discharging_overcurrent_protection_delay:
-      name: "${bms0_name} discharging overcurrent protection delay"
-    discharging_overcurrent_protection_recovery_delay:
-      name: "${bms0_name} discharging overcurrent protection recovery delay"   
-    short_circuit_protection_delay:
-      name: "${bms0_name} short circuit protection delay"  
-    short_circuit_protection_recovery_delay:
-      name: "${bms0_name} short circuit protection recovery delay"                     
-    precharging_time_from_discharge:
-      name: "${bms0_name} precharging time from discharge"       
-    charging_overtemperature_protection:
-      name: "${bms0_name} charging overtemperature protection"
-    charging_overtemperature_protection_recovery:
-      name: "${bms0_name} charging overtemperature protection recovery"
-    discharging_overtemperature_protection:
-      name: "${bms0_name} discharging overtemperature protection"
-    discharging_overtemperature_protection_recovery:
-      name: "${bms0_name} discharging overtemperature protection recovery" 
-    charging_lowtemperature_protection:
-      name: "${bms0_name} charging lowtemperature protection"
-    charging_lowtemperature_protection_recovery:
-      name: "${bms0_name} charging lowtemperature protection recovery"
-    mos_overtemperature_protection:
-      name: "${bms0_name} mos overtemperature protection"
-    mos_overtemperature_protection_recovery:
-      name: "${bms0_name} mos overtemperature protection recovery"   
+      name: "${bms0_name} smart sleep time"                              
     powertube_temperature_protection:
       name: "${bms0_name} powertube temperature protection" 
     powertube_temperature_protection_recovery:
@@ -573,8 +509,6 @@ sensor:
     jk_rs485_bms_id: bms1
     balancing_direction:
       name: "${bms1_name} balancing direction"
-    cell_smart_sleep_voltage:
-      name: "${bms1_name} cell smart sleep voltage"
     cell_voltage_min:
       name: "${bms1_name} cell voltage min"
     cell_voltage_max:
@@ -717,8 +651,6 @@ sensor:
       name: "${bms1_name} battery capacity state of charge"
     battery_capacity_remaining:
       name: "${bms1_name} battery capacity remaining"
-    battery_capacity_total_setting:
-      name: "${bms1_name} battery capacity total setting"
     charging_cycles:
       name: "${bms1_name} charging cycles"
     battery_capacity_total_charging_cycle:
@@ -729,74 +661,14 @@ sensor:
       name: "${bms1_name} balancing current"
     errors_bitmask:
       name: "${bms1_name} errors bitmask"
-    cell_count_settings:
-      name: "${bms1_name} cell count settings"
     cell_count_real:
-      name: "${bms1_name} cell count real"        
-    cell_overvoltage_protection:
-      name: "${bms1_name} cell overvoltage protection"
-    cell_overvoltage_protection_recovery:
-      name: "${bms1_name} cell overvoltage protection recovery"
-    cell_request_charge_voltage:
-      name: "${bms1_name} cell request charge voltage"      
+      name: "${bms1_name} cell count real"            
     cell_request_charge_voltage_time:
-      name: "${bms1_name} cell request charge voltage time"    
-    cell_request_float_voltage:
-      name: "${bms1_name} cell request float voltage"   
+      name: "${bms1_name} cell request charge voltage time"     
     cell_request_float_voltage_time:
-      name: "${bms1_name} cell request float voltage time"        
-    balancing_trigger_voltage:
-      name: "${bms1_name} balancing trigger voltage"         
-    cell_balancing_starting_voltage:
-      name: "${bms1_name} cell balancing starting voltage"   
-    max_balancing_current:
-      name: "${bms1_name} max balancing current"        
-    cell_soc100_voltage:
-      name: "${bms1_name} cell soc100 voltage" 
-    cell_soc0_voltage:
-      name: "${bms1_name} cell soc0 voltage"  
-    cell_undervoltage_protection:
-      name: "${bms1_name} cell undervoltage protection"
-    cell_undervoltage_protection_recovery:
-      name: "${bms1_name} cell undervoltage protection recovery"   
-    cell_power_off_voltage:
-      name: "${bms1_name} cell power off voltage"   
+      name: "${bms1_name} cell request float voltage time"                           
     smart_sleep_time:
-      name: "${bms1_name} smart sleep time" 
-    max_charging_current:
-      name: "${bms1_name} max_charging_current" 
-    max_discharging_current:
-      name: "${bms1_name} max discharging current"                       
-    charging_overcurrent_protection_delay:
-      name: "${bms1_name} charging overcurrent protection delay"
-    charging_overcurrent_protection_recovery_delay:
-      name: "${bms1_name} charging overcurrent protection recovery delay"
-    discharging_overcurrent_protection_delay:
-      name: "${bms1_name} discharging overcurrent protection delay"
-    discharging_overcurrent_protection_recovery_delay:
-      name: "${bms1_name} discharging overcurrent protection recovery delay"   
-    short_circuit_protection_delay:
-      name: "${bms1_name} short circuit protection delay"                    
-    short_circuit_protection_recovery_delay:
-      name: "${bms1_name} short circuit protection recovery delay"   
-    precharging_time_from_discharge:
-      name: "${bms1_name} precharging time from discharge"           
-    charging_overtemperature_protection:
-      name: "${bms1_name} charging overtemperature protection"
-    charging_overtemperature_protection_recovery:
-      name: "${bms1_name} charging overtemperature protection recovery"
-    discharging_overtemperature_protection:
-      name: "${bms1_name} discharging overtemperature protection"
-    discharging_overtemperature_protection_recovery:
-      name: "${bms1_name} discharging overtemperature protection recovery"        
-    charging_lowtemperature_protection:
-      name: "${bms1_name} charging lowtemperature protection"
-    charging_lowtemperature_protection_recovery:
-      name: "${bms1_name} charging lowtemperature protection recovery"
-    mos_overtemperature_protection:
-      name: "${bms1_name} mos overtemperature protection"
-    mos_overtemperature_protection_recovery:
-      name: "${bms1_name} mos overtemperature protection recovery"      
+      name: "${bms1_name} smart sleep time"                              
     powertube_temperature_protection:
       name: "${bms1_name} powertube temperature protection" 
     powertube_temperature_protection_recovery:
@@ -960,6 +832,140 @@ text_sensor:
     info_device_setup_passcode:
       name: "${bms1_name} info device setup passcode"            
 
+number:
+  - platform: jk_rs485_bms
+    jk_rs485_bms_id: bms0 
+    cell_smart_sleep_voltage:
+      name: "${bms0_name} cell smart sleep voltage"  
+    cell_undervoltage_protection:
+      name: "${bms0_name} cell undervoltage protection"
+    cell_undervoltage_protection_recovery:
+      name: "${bms0_name} cell undervoltage protection recovery" 
+    cell_overvoltage_protection:
+      name: "${bms0_name} cell overvoltage protection"
+    cell_overvoltage_protection_recovery:
+      name: "${bms0_name} cell overvoltage protection recovery"
+    cell_balancing_trigger_voltage:
+      name: "${bms0_name} cell balancing trigger voltage" 
+    cell_soc100_voltage:
+      name: "${bms0_name} cell soc100 voltage" 
+    cell_soc0_voltage:
+      name: "${bms0_name} cell soc0 voltage"    
+    cell_request_charge_voltage:
+      name: "${bms0_name} cell request charge voltage"          
+    cell_request_float_voltage:
+      name: "${bms0_name} cell request float voltage"   
+    cell_power_off_voltage:
+      name: "${bms0_name} cell power off voltage"  
+    cell_balancing_starting_voltage:
+      name: "${bms0_name} cell balancing starting voltage"        
+    max_charging_current:
+      name: "${bms0_name} max charging current"          
+    charging_overcurrent_protection_delay:
+      name: "${bms0_name} charging overcurrent protection delay"
+    charging_overcurrent_protection_recovery_delay:
+      name: "${bms0_name} charging overcurrent protection recovery delay"
+    max_discharging_current:
+      name: "${bms0_name} max discharging current"     
+    discharging_overcurrent_protection_delay:
+      name: "${bms0_name} discharging overcurrent protection delay"
+    discharging_overcurrent_protection_recovery_delay:
+      name: "${bms0_name} discharging overcurrent protection recovery delay"
+    short_circuit_protection_delay:
+      name: "${bms0_name} short circuit protection delay"        
+    short_circuit_protection_recovery_delay:
+      name: "${bms0_name} short circuit protection recovery delay" 
+    max_balancing_current:
+      name: "${bms0_name} max balancing current" 
+    charging_overtemperature_protection:
+      name: "${bms0_name} charging overtemperature protection"
+    charging_overtemperature_protection_recovery:
+      name: "${bms0_name} charging overtemperature protection recovery"
+    discharging_overtemperature_protection:
+      name: "${bms0_name} discharging overtemperature protection"
+    discharging_overtemperature_protection_recovery:
+      name: "${bms0_name} discharging overtemperature protection recovery" 
+    charging_lowtemperature_protection:
+      name: "${bms0_name} charging lowtemperature protection"
+    charging_lowtemperature_protection_recovery:
+      name: "${bms0_name} charging lowtemperature protection recovery"
+    mos_overtemperature_protection:
+      name: "${bms0_name} mos overtemperature protection"
+    mos_overtemperature_protection_recovery:
+      name: "${bms0_name} mos overtemperature protection recovery"   
+    cell_count_settings:
+      name: "${bms0_name} cell count settings"      
+    battery_capacity_total_settings:
+      name: "${bms0_name} battery capacity total settings"            
+    precharging_time_from_discharge:
+      name: "${bms0_name} precharging time from discharge"
+      
+  - platform: jk_rs485_bms
+    jk_rs485_bms_id: bms1 
+    cell_smart_sleep_voltage:
+      name: "${bms1_name} cell smart sleep voltage"  
+    cell_undervoltage_protection:
+      name: "${bms1_name} cell undervoltage protection"
+    cell_undervoltage_protection_recovery:
+      name: "${bms1_name} cell undervoltage protection recovery"   
+    cell_overvoltage_protection:
+      name: "${bms1_name} cell overvoltage protection"
+    cell_overvoltage_protection_recovery:
+      name: "${bms1_name} cell overvoltage protection recovery"      
+    cell_balancing_trigger_voltage:
+      name: "${bms1_name} cell balancing trigger voltage"   
+    cell_soc100_voltage:
+      name: "${bms1_name} cell soc100 voltage" 
+    cell_soc0_voltage:
+      name: "${bms1_name} cell soc0 voltage" 
+    cell_request_charge_voltage:
+      name: "${bms1_name} cell request charge voltage"          
+    cell_request_float_voltage:
+      name: "${bms1_name} cell request float voltage"   
+    cell_power_off_voltage:
+      name: "${bms1_name} cell power off voltage" 
+    cell_balancing_starting_voltage:
+      name: "${bms1_name} cell balancing starting voltage"        
+    max_charging_current:
+      name: "${bms1_name} max charging current"     
+    charging_overcurrent_protection_delay:
+      name: "${bms1_name} charging overcurrent protection delay"
+    charging_overcurrent_protection_recovery_delay:
+      name: "${bms1_name} charging overcurrent protection recovery delay"         
+    max_discharging_current:
+      name: "${bms1_name} max discharging current"     
+    discharging_overcurrent_protection_delay:
+      name: "${bms1_name} discharging overcurrent protection delay"
+    discharging_overcurrent_protection_recovery_delay:
+      name: "${bms1_name} discharging overcurrent protection recovery delay"
+    short_circuit_protection_delay:
+      name: "${bms1_name} short circuit protection delay"  
+    short_circuit_protection_recovery_delay:
+      name: "${bms1_name} short circuit protection recovery delay"   
+    max_balancing_current:
+      name: "${bms1_name} max balancing current"      
+    charging_overtemperature_protection:
+      name: "${bms1_name} charging overtemperature protection"
+    charging_overtemperature_protection_recovery:
+      name: "${bms1_name} charging overtemperature protection recovery"
+    discharging_overtemperature_protection:
+      name: "${bms1_name} discharging overtemperature protection"
+    discharging_overtemperature_protection_recovery:
+      name: "${bms1_name} discharging overtemperature protection recovery"        
+    charging_lowtemperature_protection:
+      name: "${bms1_name} charging lowtemperature protection"
+    charging_lowtemperature_protection_recovery:
+      name: "${bms1_name} charging lowtemperature protection recovery"
+    mos_overtemperature_protection:
+      name: "${bms1_name} mos overtemperature protection"
+    mos_overtemperature_protection_recovery:
+      name: "${bms1_name} mos overtemperature protection recovery"      
+    cell_count_settings:
+      name: "${bms1_name} cell count settings"
+    battery_capacity_total_settings:
+      name: "${bms1_name} battery capacity total settings"      
+    precharging_time_from_discharge:
+      name: "${bms1_name} precharging time from discharge"  
 
 light:
   # https://esphome.io/components/light/esp32_rmt_led_strip

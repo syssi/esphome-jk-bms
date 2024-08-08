@@ -42,7 +42,7 @@ SWITCHES = {
     CONF_TIMED_STORED_DATA: 0x14,              
     CONF_CHARGING_FLOAT_MODE: 0x14,             #02.10.11.14.00.01.   02.  02.10.   B0.19.
 
-    CONF_PRECHARGING: 0x00,
+    CONF_PRECHARGING: 0x00,                     #02.10.10.84.00.02.04.00.00.0D.70.3D.CC.
     CONF_EMERGENCY: 0x00,
   
     
