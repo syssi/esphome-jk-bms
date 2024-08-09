@@ -22,7 +22,7 @@ static const uint16_t MIN_SILENCE_NEEDED_BEFORE_SPEAKING_MILLISECONDS = 250;
 
 static const uint32_t TIME_BETWEEN_CELL_INFO_REQUESTS_MILLISECONDS       =  5000;
 static const uint32_t TIME_BETWEEN_DEVICE_SETTINGS_REQUESTS_MILLISECONDS = 10000; //5000
-static const uint32_t TIME_BETWEEN_DEVICE_INFO_REQUESTS_MILLISECONDS     = 10000; //3600000
+static const uint32_t TIME_BETWEEN_DEVICE_INFO_REQUESTS_MILLISECONDS     = 300000; //3600000
 
 static const uint16_t SILENCE_BEFORE_ACTING_AS_MASTER = 2000;
 static const uint16_t SILENCE_BEFORE_REUSING_NETWORK_ACTING_AS_MASTER=400;
@@ -503,9 +503,9 @@ void JkRS485Sniffer::loop() {
 
     do {
         cont_manage++;
-        ESP_LOGD(TAG, "Buffer before number %d:    %s",cont_manage,format_hex_pretty(&this->rx_buffer_.front(), this->rx_buffer_.size()).c_str());  
+        ESP_LOGV(TAG, "Buffer before number %d:    %s",cont_manage,format_hex_pretty(&this->rx_buffer_.front(), this->rx_buffer_.size()).c_str());  
         response=this->manage_rx_buffer_();
-        ESP_LOGD(TAG, "Response:            %d:",response);
+        ESP_LOGV(TAG, "Response:            %d:",response);
         if (original_buffer_size==rx_buffer_.size()){
            changed=false;
         } else {
@@ -515,7 +515,7 @@ void JkRS485Sniffer::loop() {
     } while (cont_manage<5 && changed==true && original_buffer_size>=JKPB_RS485_MASTER_SHORT_REQUEST_SIZE);
     
     if (original_buffer_size==0){
-      ESP_LOGD(TAG,     "Buffer empty");
+      ESP_LOGV(TAG,     "Buffer empty");
 //    } else {
 //      ESP_LOGD(TAG,     "Buffer after at the end:   %s",format_hex_pretty(&this->rx_buffer_.front(), this->rx_buffer_.size()).c_str());
     }
