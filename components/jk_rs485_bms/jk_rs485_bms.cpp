@@ -163,8 +163,6 @@ void JkRS485Bms::JkRS485Bms_init(void) {
     this->balancing_current_sensor_= new sensor::Sensor();
     this->uart1_protocol_number_sensor_= new sensor::Sensor();
     this->uart2_protocol_number_sensor_= new sensor::Sensor();  
-    this->cell_request_charge_voltage_time_sensor_= new sensor::Sensor();
-    this->cell_request_float_voltage_time_sensor_ = new sensor::Sensor(); 
 
 
     this->cell_smart_sleep_voltage_number_  = new JkRS485BmsNumber();
@@ -199,6 +197,9 @@ void JkRS485Bms::JkRS485Bms_init(void) {
     this->cell_count_settings_number_ = new JkRS485BmsNumber();   
     this->battery_capacity_total_settings_number_ = new JkRS485BmsNumber();   
     this->precharging_time_from_discharge_number_ = new JkRS485BmsNumber();   
+    this->cell_request_charge_voltage_time_number_ = new JkRS485BmsNumber();   
+    this->cell_request_float_voltage_time_number_ = new JkRS485BmsNumber();   
+    
 
     
     
@@ -258,6 +259,10 @@ void JkRS485Bms::set_mos_overtemperature_protection_recovery_number(JkRS485BmsNu
 void JkRS485Bms::set_cell_count_settings_number(JkRS485BmsNumber *cell_count_settings_number)   { this->cell_count_settings_number_ = cell_count_settings_number; }
 void JkRS485Bms::set_battery_capacity_total_settings_number(JkRS485BmsNumber *battery_capacity_total_settings_number)   { this->battery_capacity_total_settings_number_ = battery_capacity_total_settings_number; }
 void JkRS485Bms::set_precharging_time_from_discharge_number(JkRS485BmsNumber *precharging_time_from_discharge_number)   { this->precharging_time_from_discharge_number_ = precharging_time_from_discharge_number; }
+
+void JkRS485Bms::set_cell_request_charge_voltage_time_number(JkRS485BmsNumber *cell_request_charge_voltage_time_number)   { this->cell_request_charge_voltage_time_number_ = cell_request_charge_voltage_time_number; }
+void JkRS485Bms::set_cell_request_float_voltage_time_number(JkRS485BmsNumber *cell_request_float_voltage_time_number)   { this->cell_request_float_voltage_time_number_ = cell_request_float_voltage_time_number; }
+
 
 
 
@@ -373,8 +378,9 @@ void JkRS485Bms::trigger_bms2sniffer_event(std::string event, std::uint8_t frame
   }
 }
 
-void JkRS485Bms::trigger_bms2sniffer_switch_or_number_uint32_event(std::uint16_t register_address, std::uint32_t value){
+void JkRS485Bms::trigger_bms2sniffer_switch_or_number_uint32_event(std::uint16_t register_address,std::uint8_t third_element_of_frame, std::uint32_t value){
     ESP_LOGD(TAG, "Entering trigger_bms2sniffer_switch_or_number_uint32_event");
+    //[0x0000, 0x10,   0x04,  3,  0],
 
     // Verificación de `this`
     if (this == nullptr) {
@@ -383,11 +389,11 @@ void JkRS485Bms::trigger_bms2sniffer_switch_or_number_uint32_event(std::uint16_t
     }
 
 //    // Log final
-    ESP_LOGD(TAG, "BMS address %02X switch_register_address [32bit] %02X", this->address_, register_address);
-    this->parent_->handle_bms2sniffer_switch_or_number_uint32_event(this->address_, register_address, 4, value);
+    //ESP_LOGD(TAG, "BMS address %02X switch_register_address [32bit] %02X", this->address_, register_address);
+    this->parent_->handle_bms2sniffer_switch_or_number_uint32_event(this->address_, third_element_of_frame, register_address, value);
 }
 
-void JkRS485Bms::trigger_bms2sniffer_switch_or_number_int32_event(std::uint16_t register_address, std::int32_t value){
+void JkRS485Bms::trigger_bms2sniffer_switch_or_number_int32_event(std::uint16_t register_address,std::uint8_t third_element_of_frame, std::int32_t value){
     ESP_LOGD(TAG, "Entering trigger_bms2sniffer_switch_or_number_int32_event");
 
     // Verificación de `this`
@@ -398,7 +404,7 @@ void JkRS485Bms::trigger_bms2sniffer_switch_or_number_int32_event(std::uint16_t 
 
 //    // Log final
     ESP_LOGD(TAG, "BMS address %02X switch_register_address [32bit] %02X", this->address_, register_address);
-    this->parent_->handle_bms2sniffer_switch_or_number_int32_event(this->address_, register_address, 4, value);
+    this->parent_->handle_bms2sniffer_switch_or_number_int32_event(this->address_,third_element_of_frame, register_address, value);
 }
 
 /*void uint64_to_binary_str(uint64_t value, char *buffer, size_t buffer_size) {
@@ -412,8 +418,8 @@ void JkRS485Bms::trigger_bms2sniffer_switch_or_number_int32_event(std::uint16_t 
     }
 }*/
 
-void JkRS485Bms::trigger_bms2sniffer_switch16_event(std::uint8_t register_address){
-    ESP_LOGD(TAG, "Entering trigger_bms2sniffer_switch_event");
+void JkRS485Bms::trigger_bms2sniffer_switch16_event(std::uint16_t register_address,std::uint8_t third_element_of_frame){
+    ESP_LOGD(TAG, "Entering trigger_bms2sniffer_switch16_event");
 
     // Verificación de `this`
     if (this == nullptr) {
@@ -421,7 +427,7 @@ void JkRS485Bms::trigger_bms2sniffer_switch16_event(std::uint8_t register_addres
         return;
     }
 
-    uint64_t value_to_send=0;
+    uint16_t value_to_send=0;
 
     if (
       (this->heating_switch_->is_ready()) &&
@@ -451,7 +457,7 @@ void JkRS485Bms::trigger_bms2sniffer_switch16_event(std::uint8_t register_addres
       //uint64_to_binary_str(value_to_send, binary_str, sizeof(binary_str));
 
       ESP_LOGD(TAG, "BMS address %02X switch_register_address [16bit] %02X", this->address_, register_address);
-      this->parent_->handle_bms2sniffer_switch_or_number_uint32_event(this->address_, register_address, 2, value_to_send);
+      this->parent_->handle_bms2sniffer_switch_or_number_uint16_event(this->address_, third_element_of_frame, register_address, value_to_send);
     } else {
       ESP_LOGD(TAG, "BMS address %02X switch_register_address [16bit] %02X (NOT READY ALL SWITCHES)", this->address_, register_address);
     }
@@ -462,6 +468,44 @@ void JkRS485Bms::trigger_bms2sniffer_switch16_event(std::uint8_t register_addres
 
 }
 
+
+
+void JkRS485Bms::trigger_bms2sniffer_number16_event(std::uint16_t register_address,std::uint8_t third_element_of_frame){
+    ESP_LOGD(TAG, "Entering trigger_bms2sniffer_number16_event");
+
+    // Verificación de `this`
+    if (this == nullptr) {
+        ESP_LOGE(TAG, "switch THIS (this->) is null");
+        return;
+    }
+
+    uint16_t value_to_send=0;
+
+    if (
+      (this->cell_request_charge_voltage_time_number_ ->is_ready()) &&
+      (this->cell_request_float_voltage_time_number_->is_ready())
+    ) {
+
+      uint8_t high = static_cast<uint8_t>(this->cell_request_charge_voltage_time_number_->state*10);
+      uint8_t low = static_cast<uint8_t>(this->cell_request_float_voltage_time_number_->state*10);
+
+      value_to_send = (static_cast<uint16_t>(high) << 8) | low;      
+      
+      // Log final
+      //char binary_str[65]; // 64 bits + 1 for null terminator
+      //uint64_to_binary_str(value_to_send, binary_str, sizeof(binary_str));
+
+      //ESP_LOGD(TAG, "BMS address %02X switch_register_address [16bit] %02X", this->address_, register_address);
+      this->parent_->handle_bms2sniffer_switch_or_number_uint16_event(this->address_, third_element_of_frame, register_address, value_to_send);
+    } else {
+      ESP_LOGD(TAG, "BMS address %02X switch_register_address [16bit] %02X (NOT READY ALL SWITCHES)", this->address_, register_address);
+    }
+
+
+
+
+
+}
 
 
 
@@ -1406,8 +1450,8 @@ void JkRS485Bms::decode_device_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->uart1_protocol_number_sensor_, (uint8_t) data[178]);
   this->publish_state_(this->uart2_protocol_number_sensor_, (uint8_t) data[212]);
 
-  this->publish_state_(this->cell_request_charge_voltage_time_sensor_, (float) data[266]*0.1f);
-  this->publish_state_(this->cell_request_float_voltage_time_sensor_, (float) data[267]*0.1f);
+  this->publish_state_(this->cell_request_charge_voltage_time_number_, (float) data[266]*0.1f);
+  this->publish_state_(this->cell_request_float_voltage_time_number_, (float) data[267]*0.1f);
 
   this->trigger_bms2sniffer_event("WORKING ! #####",03);  
 }
@@ -1460,6 +1504,10 @@ void JkRS485Bms::publish_device_unavailable_() {
   this->publish_state_(cell_count_settings_number_, NAN);
   this->publish_state_(battery_capacity_total_settings_number_, NAN);
   this->publish_state_(precharging_time_from_discharge_number_, NAN);
+  this->publish_state_(cell_request_charge_voltage_time_number_, NAN);
+  this->publish_state_(cell_request_float_voltage_time_number_, NAN);
+
+  
   
   
   
@@ -1530,8 +1578,7 @@ void JkRS485Bms::publish_device_unavailable_() {
   this->publish_state_(start_current_calibration_sensor_, NAN);
   this->publish_state_(actual_battery_capacity_sensor_, NAN);
   this->publish_state_(protocol_version_sensor_, NAN);
-  this->publish_state_(cell_request_float_voltage_time_sensor_, NAN);
-  this->publish_state_(cell_request_charge_voltage_time_sensor_, NAN);
+
   
 
   for (auto &cell : this->cells_) {

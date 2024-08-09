@@ -468,11 +468,7 @@ sensor:
     errors_bitmask:
       name: "${bms0_name} errors bitmask"
     cell_count_real:
-      name: "${bms0_name} cell count real"         
-    cell_request_charge_voltage_time:
-      name: "${bms0_name} cell request charge voltage time"   
-    cell_request_float_voltage_time:
-      name: "${bms0_name} cell request float voltage time"                                              
+      name: "${bms0_name} cell count real"                                                       
     smart_sleep_time:
       name: "${bms0_name} smart sleep time"                              
     powertube_temperature_protection:
@@ -662,11 +658,7 @@ sensor:
     errors_bitmask:
       name: "${bms1_name} errors bitmask"
     cell_count_real:
-      name: "${bms1_name} cell count real"            
-    cell_request_charge_voltage_time:
-      name: "${bms1_name} cell request charge voltage time"     
-    cell_request_float_voltage_time:
-      name: "${bms1_name} cell request float voltage time"                           
+      name: "${bms1_name} cell count real"                                     
     smart_sleep_time:
       name: "${bms1_name} smart sleep time"                              
     powertube_temperature_protection:
@@ -899,6 +891,10 @@ number:
       name: "${bms0_name} battery capacity total settings"            
     precharging_time_from_discharge:
       name: "${bms0_name} precharging time from discharge"
+    cell_request_charge_voltage_time:
+      name: "${bms0_name} cell request charge voltage time" 
+    cell_request_float_voltage_time:
+      name: "${bms0_name} cell request float voltage time"       
       
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms1 
@@ -966,6 +962,10 @@ number:
       name: "${bms1_name} battery capacity total settings"      
     precharging_time_from_discharge:
       name: "${bms1_name} precharging time from discharge"  
+    cell_request_charge_voltage_time:
+      name: "${bms1_name} cell request charge voltage time"       
+    cell_request_float_voltage_time:
+      name: "${bms1_name} cell request float voltage time"       
 
 light:
   # https://esphome.io/components/light/esp32_rmt_led_strip

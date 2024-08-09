@@ -20,7 +20,9 @@ class JkRS485BmsSwitch : public switch_::Switch, public Component {
   virtual ~JkRS485BmsSwitch() = default; // Destructor por defecto
 
   void set_parent(JkRS485Bms *parent) { this->parent_ = parent; };
-  void set_register_address(uint8_t register_address) { this->register_address_ = register_address; };
+  void set_register_address(uint16_t register_address) { this->register_address_ = register_address; };
+  void set_third_element_of_frame(uint8_t third_element_of_frame) { this->third_element_of_frame_ = third_element_of_frame; };
+  void set_data_length(uint8_t data_length) { this->data_length_ = data_length; };
   void dump_config() override;
   void loop() override {}
   float get_setup_priority() const override { return setup_priority::DATA; }
@@ -37,7 +39,9 @@ class JkRS485BmsSwitch : public switch_::Switch, public Component {
  protected:
 
   JkRS485Bms *parent_;
-  uint8_t register_address_;
+  uint16_t register_address_;
+  uint8_t third_element_of_frame_;
+  uint8_t data_length_;
 };
 
 

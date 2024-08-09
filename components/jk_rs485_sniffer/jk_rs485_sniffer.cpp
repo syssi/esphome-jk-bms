@@ -20,9 +20,9 @@ static const uint16_t JKPB_RS485_ADDRESS_OF_RS485_ADDRESS = 300;
 static const uint16_t MIN_SILENCE_MILLISECONDS = 150;                           //MIN TIME THAT MEANS THAT THERE IS A SILENCE
 static const uint16_t MIN_SILENCE_NEEDED_BEFORE_SPEAKING_MILLISECONDS = 250;
 
-static const uint32_t TIME_BETWEEN_CELL_INFO_REQUESTS_MILLISECONDS = 5000;
-static const uint32_t TIME_BETWEEN_DEVICE_SETTINGS_REQUESTS_MILLISECONDS=10000;
-static const uint32_t TIME_BETWEEN_DEVICE_INFO_REQUESTS_MILLISECONDS = 3600000;
+static const uint32_t TIME_BETWEEN_CELL_INFO_REQUESTS_MILLISECONDS       =  5000;
+static const uint32_t TIME_BETWEEN_DEVICE_SETTINGS_REQUESTS_MILLISECONDS = 10000; //5000
+static const uint32_t TIME_BETWEEN_DEVICE_INFO_REQUESTS_MILLISECONDS     = 10000; //3600000
 
 static const uint16_t SILENCE_BEFORE_ACTING_AS_MASTER = 2000;
 static const uint16_t SILENCE_BEFORE_REUSING_NETWORK_ACTING_AS_MASTER=400;
@@ -97,22 +97,24 @@ void JkRS485Sniffer::handle_bms2sniffer_event(std::uint8_t slave_address, std::s
   }  
 }
 
-void JkRS485Sniffer::handle_bms2sniffer_switch_or_number_uint32_event(std::uint8_t slave_address, std::uint16_t register_address, std::uint8_t data_length, std::uint32_t value) {
+void JkRS485Sniffer::handle_bms2sniffer_switch_or_number_uint32_event(std::uint8_t slave_address, std::uint8_t third_element_of_frame, std::uint16_t register_address, std::uint32_t value) {
 
   // 02.10.10.78.00.02.04.00.00.00.00.37.A9
   // 02.10.10.78.00.02.04.00.00.00.01.F6.69.
 
   // 02.10.10.78.00.02.04.00.00.00.00.37.A9
 
+  // 02.10.10.00.00.02.04.00.00.0D.AC.35.C6 (13)
+
   if (rs485_network_node[slave_address].available) {
-    send_command_switch_or_number_to_slave_uint32(slave_address,register_address,data_length,value);
+    send_command_switch_or_number_to_slave_uint32(slave_address,third_element_of_frame,register_address,value);
   }
 
   if (this->broadcast_to_all_bms_==true){
     for (uint8_t j = 1; j < 16; ++j) {
         if (rs485_network_node[j].available && slave_address!=j) {
             delayMicroseconds(50000);
-            send_command_switch_or_number_to_slave_uint32(j,register_address,data_length,value);
+            send_command_switch_or_number_to_slave_uint32(j,third_element_of_frame,register_address,value);
         }
     }
   }
@@ -124,7 +126,7 @@ void JkRS485Sniffer::handle_bms2sniffer_switch_or_number_uint32_event(std::uint8
 }
 
 
-void JkRS485Sniffer::handle_bms2sniffer_switch_or_number_int32_event(std::uint8_t slave_address, std::uint16_t register_address, std::uint8_t data_length, std::int32_t value) {
+void JkRS485Sniffer::handle_bms2sniffer_switch_or_number_int32_event(std::uint8_t slave_address, std::uint8_t third_element_of_frame, std::uint16_t register_address, std::int32_t value) {
 
   // 02.10.10.78.00.02.04.00.00.00.00.37.A9
   // 02.10.10.78.00.02.04.00.00.00.01.F6.69.
@@ -132,14 +134,14 @@ void JkRS485Sniffer::handle_bms2sniffer_switch_or_number_int32_event(std::uint8_
   // 02.10.10.78.00.02.04.00.00.00.00.37.A9
 
   if (rs485_network_node[slave_address].available) {
-    send_command_switch_or_number_to_slave_int32(slave_address,register_address,data_length,value);
+    send_command_switch_or_number_to_slave_int32(slave_address,third_element_of_frame,register_address,value);
   }
 
   if (this->broadcast_to_all_bms_==true){
     for (uint8_t j = 1; j < 16; ++j) {
         if (rs485_network_node[j].available && slave_address!=j) {
             delayMicroseconds(50000);
-            send_command_switch_or_number_to_slave_int32(j,register_address,data_length,value);
+            send_command_switch_or_number_to_slave_int32(j,third_element_of_frame,register_address,value);
         }
     }
   }
@@ -150,48 +152,55 @@ void JkRS485Sniffer::handle_bms2sniffer_switch_or_number_int32_event(std::uint8_
 //  return (status == 0);
 }
 
-void JkRS485Sniffer::send_command_switch_or_number_to_slave_uint32(std::uint8_t slave_address, std::uint16_t register_address, std::uint8_t data_length, std::uint32_t value) {
+void JkRS485Sniffer::handle_bms2sniffer_switch_or_number_uint16_event(std::uint8_t slave_address, std::uint8_t third_element_of_frame, std::uint16_t register_address, std::uint16_t value) {
+
+  if (rs485_network_node[slave_address].available) {
+    send_command_switch_or_number_to_slave_uint16(slave_address,third_element_of_frame,register_address,value);
+  }
+
+  if (this->broadcast_to_all_bms_==true){
+    for (uint8_t j = 1; j < 16; ++j) {
+        if (rs485_network_node[j].available && slave_address!=j) {
+            delayMicroseconds(50000);
+            send_command_switch_or_number_to_slave_uint16(j,third_element_of_frame,register_address,value);
+        }
+    }
+  }
+
+
+  
+
+//  return (status == 0);
+}
+
+void JkRS485Sniffer::send_command_switch_or_number_to_slave_uint32(std::uint8_t slave_address, std::uint8_t third_element_of_frame, std::uint16_t register_address, std::uint32_t value) {
   uint8_t frame[13];
   uint8_t size=0;
-  if (data_length==4){
-    frame[0]  = slave_address ;                   // Slave Address
-    frame[1]  = 0x10;                             // 
-    frame[2]  = 0x10;                             // 
-    frame[3]  = register_address;                 // Register address
-    frame[4]  = 0x00;                             // 
-    frame[5]  = 0x02;                             // 
-    frame[6]  = data_length;                      // Length of data in number of Bytes
-    frame[7]  = (value & 0xFF000000) >> 24;       // Data Byte 1
-    frame[8]  = (value & 0x00FF0000) >> 16;       // Data Byte 2
-    frame[9]  = (value & 0x0000FF00) >> 8;        // Data Byte 3
-    frame[10] = (value & 0x000000FF) >> 0;        // Data Byte 4
-    size=13;
 
-    uint16_t computed_checksum = crc16_c(frame, size-2);
-    frame[11] = ((computed_checksum & 0xFF00)>>8);
-    frame[12] = ((computed_checksum & 0x00FF)>>0);
+  //[0x0000, 0x10,   0x04,  3,  0],
+  //SENT:02.10.00.04.00.02.04.00.00.0D.AC.F9.F5 (13)
+      // 02.10.10.78.00.02.04.00.00.00.00.37.A9
+      // 02.10.10.78.00.02.04.00.00.00.01.F6.69.
+      // 02.10.10.78.00.02.04.00.00.00.00.37.A9
 
-  } else {
-    if (data_length==2){
-      //02.10.11.14.00.01.   02.  02.10.   B0.19
 
-      frame[0]  = slave_address ;                   // Slave Address
-      frame[1]  = 0x10;                             // 
-      frame[2]  = 0x11;                             // 
-      frame[3]  = register_address;                 // Register address
-      frame[4]  = 0x00;                             // 
-      frame[5]  = 0x01;                             // 
-      frame[6]  = data_length;                      // Length of data in number of Bytes
-      frame[7]  = (value & 0xFF00) >> 8;            // Data Byte 1
-      frame[8]  = (value & 0x00FF) >> 0;            // Data Byte 2
-      size=11; 
+  frame[0]  = slave_address ;                   // Slave Address
+  frame[1]  = 0x10;                             // 
+  frame[2]  = third_element_of_frame;           // 
+  frame[3]  = (register_address & 0x00FF) >> 0;                 // Register address
+  frame[4]  = 0x00;                             // 
+  frame[5]  = 0x02;                             // 
+  frame[6]  = 4;                                // Length of data in number of Bytes
+  frame[7]  = (value & 0xFF000000) >> 24;       // Data Byte 1
+  frame[8]  = (value & 0x00FF0000) >> 16;       // Data Byte 2
+  frame[9]  = (value & 0x0000FF00) >> 8;        // Data Byte 3
+  frame[10] = (value & 0x000000FF) >> 0;        // Data Byte 4
+  size=13;
 
-      uint16_t computed_checksum = crc16_c(frame, size-2);
-      frame[9] = ((computed_checksum & 0xFF00)>>8);
-      frame[10] = ((computed_checksum & 0x00FF)>>0);
-     
-    }
-  }
+  uint16_t computed_checksum = crc16_c(frame, size-2);
+  frame[11] = ((computed_checksum & 0xFF00)>>8);
+  frame[12] = ((computed_checksum & 0x00FF)>>0);
+
 
   ESP_LOGD(TAG, "MESSAGE REQUEST TO SEND switch >>: %s",format_hex_pretty(frame, size).c_str());
 //  // Enviar el array de bytes por UART
@@ -209,50 +218,69 @@ void JkRS485Sniffer::send_command_switch_or_number_to_slave_uint32(std::uint8_t 
   this->last_jk_rs485_network_activity_=now;   
 }
 
-void JkRS485Sniffer::send_command_switch_or_number_to_slave_int32(std::uint8_t slave_address, std::uint16_t register_address, std::uint8_t data_length, std::int32_t value) {
+void JkRS485Sniffer::send_command_switch_or_number_to_slave_uint16(std::uint8_t slave_address, std::uint8_t third_element_of_frame, std::uint16_t register_address, std::uint16_t value) {
   uint8_t frame[13];
   uint8_t size=0;
-  if (data_length==4){
-    frame[0]  = slave_address ;                   // Slave Address
-    frame[1]  = 0x10;                             // 
-    frame[2]  = 0x10;                             // 
-    frame[3]  = register_address;                 // Register address
-    frame[4]  = 0x00;                             // 
-    frame[5]  = 0x02;                             // 
-    frame[6]  = data_length;                      // Length of data in number of Bytes
-    frame[7]  = (value & 0xFF000000) >> 24;       // Data Byte 1
-    frame[8]  = (value & 0x00FF0000) >> 16;       // Data Byte 2
-    frame[9]  = (value & 0x0000FF00) >> 8;        // Data Byte 3
-    frame[10] = (value & 0x000000FF) >> 0;        // Data Byte 4
-    size=13;
 
-    uint16_t computed_checksum = crc16_c(frame, size-2);
-    frame[11] = ((computed_checksum & 0xFF00)>>8);
-    frame[12] = ((computed_checksum & 0x00FF)>>0);
+  //02.10.11.14.00.01.   02.  02.10.   B0.19
 
-  } else {
-    if (data_length==2){
-      //02.10.11.14.00.01.   02.  02.10.   B0.19
+  frame[0]  = slave_address ;                   // Slave Address
+  frame[1]  = 0x10;                             // 
+  frame[2]  = third_element_of_frame;                      // 
+  frame[3]  = register_address;                 // Register address
+  frame[4]  = 0x00;                             // 
+  frame[5]  = 0x01;                             // 
+  frame[6]  = 2;                                // Length of data in number of Bytes
+  frame[7]  = (value & 0xFF00) >> 8;            // Data Byte 1
+  frame[8]  = (value & 0x00FF) >> 0;            // Data Byte 2
+  size=11; 
 
-      frame[0]  = slave_address ;                   // Slave Address
-      frame[1]  = 0x10;                             // 
-      frame[2]  = 0x11;                             // 
-      frame[3]  = register_address;                 // Register address
-      frame[4]  = 0x00;                             // 
-      frame[5]  = 0x01;                             // 
-      frame[6]  = data_length;                      // Length of data in number of Bytes
-      frame[7]  = (value & 0xFF00) >> 8;            // Data Byte 1
-      frame[8]  = (value & 0x00FF) >> 0;            // Data Byte 2
-      size=11; 
-
-      uint16_t computed_checksum = crc16_c(frame, size-2);
-      frame[9] = ((computed_checksum & 0xFF00)>>8);
-      frame[10] = ((computed_checksum & 0x00FF)>>0);
+  uint16_t computed_checksum = crc16_c(frame, size-2);
+  frame[9] = ((computed_checksum & 0xFF00)>>8);
+  frame[10] = ((computed_checksum & 0x00FF)>>0);
      
-    }
-  }
 
-  ESP_LOGD(TAG, "MESSAGE REQUEST TO SEND switch >>: %s",format_hex_pretty(frame, size).c_str());
+
+  ESP_LOGD(TAG, "MESSAGE REQUEST TO SEND switch or number >>: %s",format_hex_pretty(frame, size).c_str());
+//  // Enviar el array de bytes por UART
+  std::vector<uint8_t> data_to_send(frame, frame + size / sizeof(frame[0]));
+
+  if (talk_pin_needed_) { this->talk_pin_->digital_write(1); }
+  delayMicroseconds(50); //50us
+  this->write_array(data_to_send);
+  this->flush();
+  if (talk_pin_needed_) { this->talk_pin_->digital_write(0); } 
+  delayMicroseconds(50); //50us
+   
+  const uint32_t now=millis();
+  this->rs485_network_node[slave_address].last_request_sent=now;  
+  this->last_jk_rs485_network_activity_=now;   
+}
+
+void JkRS485Sniffer::send_command_switch_or_number_to_slave_int32(std::uint8_t slave_address, std::uint8_t third_element_of_frame, std::uint16_t register_address, std::int32_t value) {
+  uint8_t frame[13];
+  uint8_t size=0;
+
+  frame[0]  = slave_address ;                   // Slave Address
+  frame[1]  = 0x10;                             // 
+  frame[2]  = third_element_of_frame;           // 
+  frame[3]  = register_address;                 // Register address
+  frame[4]  = 0x00;                             // 
+  frame[5]  = 0x02;                             // 
+  frame[6]  = 4;                                // Length of data in number of Bytes
+  frame[7]  = (value & 0xFF000000) >> 24;       // Data Byte 1
+  frame[8]  = (value & 0x00FF0000) >> 16;       // Data Byte 2
+  frame[9]  = (value & 0x0000FF00) >> 8;        // Data Byte 3
+  frame[10] = (value & 0x000000FF) >> 0;        // Data Byte 4
+  size=13;
+
+  uint16_t computed_checksum = crc16_c(frame, size-2);
+  frame[11] = ((computed_checksum & 0xFF00)>>8);
+  frame[12] = ((computed_checksum & 0x00FF)>>0);
+
+
+
+  ESP_LOGD(TAG, "MESSAGE REQUEST TO SEND switch or number >>: %s",format_hex_pretty(frame, size).c_str());
 //  // Enviar el array de bytes por UART
   std::vector<uint8_t> data_to_send(frame, frame + size / sizeof(frame[0]));
 

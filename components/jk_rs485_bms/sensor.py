@@ -31,9 +31,6 @@ DEPENDENCIES = ["jk_rs485_bms"]
 
 CODEOWNERS = ["@syssi","txubelaxu"]
 
-CONF_CELL_REQUEST_CHARGE_VOLTAGE_TIME = "cell_request_charge_voltage_time"
-CONF_CELL_REQUEST_FLOAT_VOLTAGE_TIME = "cell_request_float_voltage_time"
-
 
 
 
@@ -296,9 +293,7 @@ SENSORS = [
     CONF_CELL_RESISTANCE_MAX,
     CONF_CELL_RESISTANCE_MIN_CELL_NUMBER,
     CONF_CELL_RESISTANCE_MAX_CELL_NUMBER,    
-    CONF_CELL_COUNT_REAL,    
-    CONF_CELL_REQUEST_CHARGE_VOLTAGE_TIME,
-    CONF_CELL_REQUEST_FLOAT_VOLTAGE_TIME,    
+    CONF_CELL_COUNT_REAL,      
     CONF_TEMPERATURE_POWERTUBE,
     CONF_BATTERY_VOLTAGE,
     CONF_BATTERY_CURRENT,
@@ -440,21 +435,7 @@ CONFIG_SCHEMA = JK_RS485_BMS_COMPONENT_SCHEMA.extend(
             accuracy_decimals=0,
             device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
-        ),                
-        cv.Optional(CONF_CELL_REQUEST_CHARGE_VOLTAGE_TIME): sensor.sensor_schema(
-            unit_of_measurement=UNIT_HOURS,
-            icon=ICON_EMPTY,
-            accuracy_decimals=3,
-            device_class=DEVICE_CLASS_EMPTY,
-            state_class=STATE_CLASS_MEASUREMENT,
-        ),   
-        cv.Optional(CONF_CELL_REQUEST_FLOAT_VOLTAGE_TIME): sensor.sensor_schema(
-            unit_of_measurement=UNIT_HOURS,
-            icon=ICON_EMPTY,
-            accuracy_decimals=3,
-            device_class=DEVICE_CLASS_EMPTY,
-            state_class=STATE_CLASS_MEASUREMENT,
-        ),                   
+        ),                                
         cv.Optional(CONF_CELL_VOLTAGE_01): sensor.sensor_schema(
             unit_of_measurement=UNIT_VOLT,
             icon=ICON_EMPTY,

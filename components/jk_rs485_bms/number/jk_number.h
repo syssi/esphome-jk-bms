@@ -20,6 +20,8 @@ class JkRS485BmsNumber : public number::Number, public Component {
 
   void set_parent(JkRS485Bms *parent) { this->parent_ = parent; };
   void set_register_address(uint16_t register_address) { this->register_address_ = register_address; };
+  void set_third_element_of_frame(uint8_t third_element_of_frame) { this->third_element_of_frame_ = third_element_of_frame; };
+  void set_data_length(uint8_t data_length) { this->data_length_ = data_length; };
   void set_factor(float factor) { this->factor_ = factor; };
   void set_type(uint8_t type) { this->type_ = type; };
   void dump_config() override;
@@ -32,8 +34,12 @@ class JkRS485BmsNumber : public number::Number, public Component {
 
   JkRS485Bms *parent_;
   uint16_t register_address_;
+  uint8_t third_element_of_frame_;
+  uint8_t data_length_;
   float factor_{1000.0f};
   uint8_t type_;
+
+
 };
 
 }  // namespace jk_bms_ble

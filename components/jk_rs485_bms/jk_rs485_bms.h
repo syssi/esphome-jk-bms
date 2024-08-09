@@ -56,9 +56,11 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
 
   void trigger_bms2sniffer_event(std::string event, std::uint8_t frame_type);
 
-  void trigger_bms2sniffer_switch16_event(std::uint8_t register_address);
-  void trigger_bms2sniffer_switch_or_number_uint32_event(std::uint16_t register_address, std::uint32_t value);
-  void trigger_bms2sniffer_switch_or_number_int32_event(std::uint16_t register_address, std::int32_t value);
+  void trigger_bms2sniffer_switch16_event(std::uint16_t register_address,std::uint8_t third_element_of_frame);
+  void trigger_bms2sniffer_number16_event(std::uint16_t register_address,std::uint8_t third_element_of_frame);
+  
+  void trigger_bms2sniffer_switch_or_number_uint32_event(std::uint16_t register_address,std::uint8_t third_element_of_frame, std::uint32_t value);
+  void trigger_bms2sniffer_switch_or_number_int32_event(std::uint16_t register_address,std::uint8_t third_element_of_frame, std::int32_t value);
 
   void set_smart_sleep_time_sensor(sensor::Sensor *smart_sleep_time_sensor) {
     smart_sleep_time_sensor_ = smart_sleep_time_sensor;
@@ -401,12 +403,6 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
     uart2_protocol_number_sensor_ = uart2_protocol_number_sensor;
   }
 
-  void set_cell_request_charge_voltage_time_sensor(sensor::Sensor *cell_request_charge_voltage_time_sensor) {
-    cell_request_charge_voltage_time_sensor_ = cell_request_charge_voltage_time_sensor;
-  }
-  void set_cell_request_float_voltage_time_sensor(sensor::Sensor *cell_request_float_voltage_time_sensor) {
-    cell_request_float_voltage_time_sensor_ = cell_request_float_voltage_time_sensor;
-  }
 
 
   //void set_battery_total_alarms_count(uint8_t battery_total_alarms_count) { battery_total_alarms_count_ = battery_total_alarms_count; }
@@ -592,6 +588,8 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   void set_cell_count_settings_number(JkRS485BmsNumber *cell_count_settings_number);
   void set_battery_capacity_total_settings_number(JkRS485BmsNumber *battery_capacity_total_settings_number);
   void set_precharging_time_from_discharge_number(JkRS485BmsNumber *precharging_time_from_discharge_number);
+  void set_cell_request_charge_voltage_time_number(JkRS485BmsNumber *cell_request_charge_voltage_time_number);
+  void set_cell_request_float_voltage_time_number(JkRS485BmsNumber *cell_request_float_voltage_time_number);
 
   
 
@@ -939,8 +937,7 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
     sensor::Sensor *balancing_current_sensor_;
     sensor::Sensor *uart1_protocol_number_sensor_;
     sensor::Sensor *uart2_protocol_number_sensor_;  
-    sensor::Sensor *cell_request_charge_voltage_time_sensor_;
-    sensor::Sensor *cell_request_float_voltage_time_sensor_; 
+
 
 
 
@@ -979,6 +976,9 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
     JkRS485BmsNumber *cell_count_settings_number_;
     JkRS485BmsNumber *battery_capacity_total_settings_number_;
     JkRS485BmsNumber *precharging_time_from_discharge_number_;
+
+    JkRS485BmsNumber *cell_request_charge_voltage_time_number_;
+    JkRS485BmsNumber *cell_request_float_voltage_time_number_;
 
     
 

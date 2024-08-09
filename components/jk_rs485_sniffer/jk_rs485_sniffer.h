@@ -85,10 +85,12 @@ class JkRS485Sniffer : public uart::UARTDevice, public output::TalkPin, public C
 
   void handle_bms2sniffer_event(std::uint8_t slave_address, std::string event, std::uint8_t frame_type);
 
-  void handle_bms2sniffer_switch_or_number_uint32_event(std::uint8_t slave_address, std::uint16_t register_address, std::uint8_t data_length, std::uint32_t value);
-  void handle_bms2sniffer_switch_or_number_int32_event(std::uint8_t slave_address, std::uint16_t register_address, std::uint8_t data_length, std::int32_t value);
-  void send_command_switch_or_number_to_slave_uint32(std::uint8_t slave_address, std::uint16_t register_address, std::uint8_t data_length, std::uint32_t value);
-  void send_command_switch_or_number_to_slave_int32(std::uint8_t slave_address, std::uint16_t register_address, std::uint8_t data_length, std::int32_t value);
+  void handle_bms2sniffer_switch_or_number_uint32_event(std::uint8_t slave_address, std::uint8_t third_element_of_frame, std::uint16_t register_address, std::uint32_t value);
+  void handle_bms2sniffer_switch_or_number_int32_event(std::uint8_t slave_address, std::uint8_t third_element_of_frame, std::uint16_t register_address, std::int32_t value);
+  void handle_bms2sniffer_switch_or_number_uint16_event(std::uint8_t slave_address, std::uint8_t third_element_of_frame,std::uint16_t register_address, std::uint16_t value);
+  void send_command_switch_or_number_to_slave_uint32(std::uint8_t slave_address, std::uint8_t third_element_of_frame, std::uint16_t register_address, std::uint32_t value);
+  void send_command_switch_or_number_to_slave_int32(std::uint8_t slave_address, std::uint8_t third_element_of_frame, std::uint16_t register_address, std::int32_t value);
+  void send_command_switch_or_number_to_slave_uint16(std::uint8_t slave_address, std::uint8_t third_element_of_frame, std::uint16_t register_address, std::uint16_t value);
 
  protected:
   ProtocolVersion protocol_version_{PROTOCOL_VERSION_JK02_32S};
