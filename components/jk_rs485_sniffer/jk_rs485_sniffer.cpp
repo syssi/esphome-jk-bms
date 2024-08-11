@@ -22,7 +22,7 @@ static const uint16_t MIN_SILENCE_NEEDED_BEFORE_SPEAKING_MILLISECONDS = 250;
 
 static const uint32_t TIME_BETWEEN_CELL_INFO_REQUESTS_MILLISECONDS       =  5000;
 static const uint32_t TIME_BETWEEN_DEVICE_SETTINGS_REQUESTS_MILLISECONDS = 10000; //5000
-static const uint32_t TIME_BETWEEN_DEVICE_INFO_REQUESTS_MILLISECONDS     = 300000; //3600000
+static const uint32_t TIME_BETWEEN_DEVICE_INFO_REQUESTS_MILLISECONDS     = 3600000; //3600000
 
 static const uint16_t SILENCE_BEFORE_ACTING_AS_MASTER = 2000;
 static const uint16_t SILENCE_BEFORE_REUSING_NETWORK_ACTING_AS_MASTER=400;
@@ -156,6 +156,7 @@ void JkRS485Sniffer::handle_bms2sniffer_switch_or_number_uint16_event(std::uint8
 
   if (rs485_network_node[slave_address].available) {
     send_command_switch_or_number_to_slave_uint16(slave_address,third_element_of_frame,register_address,value);
+    rs485_network_node[slave_address].last_device_info_request_received_OK=0;
   }
 
   if (this->broadcast_to_all_bms_==true){
@@ -163,6 +164,7 @@ void JkRS485Sniffer::handle_bms2sniffer_switch_or_number_uint16_event(std::uint8
         if (rs485_network_node[j].available && slave_address!=j) {
             delayMicroseconds(50000);
             send_command_switch_or_number_to_slave_uint16(j,third_element_of_frame,register_address,value);
+            rs485_network_node[j].last_device_info_request_received_OK=0;
         }
     }
   }

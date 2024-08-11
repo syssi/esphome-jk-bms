@@ -107,6 +107,7 @@ uart:
     rx_buffer_size: 500
     tx_pin: ${tx_pin_uart_0}
     rx_pin: ${rx_pin_uart_0}
+    
 jk_rs485_sniffer:
   - id: sniffer0
     protocol_version: "JK02_32S"
