@@ -1,0 +1,23 @@
+Offset  Content                                 Type     Unit    Remarks
+ 0      Battery voltage                        UINT16    10mV
+ 2      Battery current                         INT16    0.1A
+ 4      Reserved                               UINT16    -
+ 6      State of charge                        UINT16    %
+ 8      Maximum pressure difference            UINT16    mV
+10      MOSFET temperature                      INT16    ℃
+12      Battery temperature                     INT16    ℃
+14      System warning                         UINT16    -       0: no alarm, 1: alarm
+16      Cell average voltage                   UINT16    mV
+18      Balanced switch state                  UINT16    -       0: close, 1: open
+20      Charging MOS status                    UINT16    -       0: close, 1: open
+22      Discharging MOS status                 UINT16    -       0: close, 1: open
+24      Cell voltages[24]                   24*UINT16    mV
+72      Single unit over-discharge alarm       UINT16    -       0: no alarm, 1: alarm
+74      Cell overcharge alarm                  UINT16    -       0: no alarm, 1: alarm
+76      Overcurrent alarm                      UINT16    -       0: no alarm, 1: alarm
+78      MOS over temperature alarm             UINT16    -       0: no alarm, 1: alarm
+80      Battery over temperature alarm         UINT16    -       0: no alarm, 1: alarm
+82      Short circuit alarm                    UINT16    -       0: no alarm, 1: alarm
+84      Co-handling communication exceptions   UINT16    -       0: no alarm, 1: alarm
+86      Balance line resistance is too large   UINT16    -       0: no alarm, 1: alarm
+88      The number of strings does not match   UINT16    -       0: no alarm, 1: alarm
