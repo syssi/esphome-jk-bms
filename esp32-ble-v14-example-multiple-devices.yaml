@@ -593,9 +593,6 @@ sensor:
     balancing_current:
       name: "${bms0} balancing current"
       device_id: device0
-    errors_bitmask:
-      name: "${bms0} errors bitmask"
-      device_id: device0
     emergency_time_countdown:
       name: "${bms0} emergency time countdown"
       device_id: device0
@@ -825,9 +822,6 @@ sensor:
     balancing_current:
       name: "${bms1} balancing current"
       device_id: device1
-    errors_bitmask:
-      name: "${bms1} errors bitmask"
-      device_id: device1
     emergency_time_countdown:
       name: "${bms1} emergency time countdown"
       device_id: device1
@@ -921,6 +915,9 @@ text_sensor:
     errors:
       name: "${bms0} errors"
       device_id: device0
+    errors_bitmask_hex:
+      name: "${bms0} errors bitmask hex"
+      device_id: device0
     total_runtime_formatted:
       name: "${bms0} total runtime formatted"
       device_id: device0
@@ -935,6 +932,9 @@ text_sensor:
     jk_bms_ble_id: bms1
     errors:
       name: "${bms1} errors"
+      device_id: device1
+    errors_bitmask_hex:
+      name: "${bms1} errors bitmask hex"
       device_id: device1
     total_runtime_formatted:
       name: "${bms1} total runtime formatted"

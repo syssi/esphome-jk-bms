@@ -126,8 +126,7 @@ uint8_t crc(const uint8_t data[], const uint16_t len) {
 |          158-161 |      4 | Charge current | int32 | 0.001 | A | - |
 |          162-163 |      2 | Temperature Sensor 1 | int16 | 0.1 | °C | - |
 |          164-165 |      2 | Temperature Sensor 2 | int16 | 0.1 | °C | - |
-|          166-167 |      2 | Errors bitmask | uint16 | - | - | See errors bitmask notes below |
-|          168-169 |      2 | (Reserved in JK02_32S) | - | - | - | JK02_24S system alarm position; unused in JK02_32S |
+|          166-169 |      4 | Errors bitmask | uint32 | - | - | Little-endian; see errors bitmask notes below |
 |          170-171 |      2 | Balance current | int16 | 0.001 | A | - |
 |              172 |      1 | Balancing action | Raw | - | - | 0=Off, 1=Charging balancer, 2=Discharging balancer |
 |              173 |      1 | State of charge | uint8 | 1 | % | - |
@@ -161,23 +160,41 @@ uint8_t crc(const uint8_t data[], const uint16_t len) {
 |              281 |      1 | Dry contact switch status | Raw | - | - | JK02_32S only; see dry contact bitmask notes below |
 |              299 |      1 | CRC checksum | uint8 | - | - | - |
 
-Errors bitmask notes for bytes 166-167 (big-endian; bit0 = LSB of byte 167):
-- bit0: Charge overtemperature
-- bit1: Charge undertemperature
-- bit2: Coprocessor communication error
-- bit3: Cell undervoltage
-- bit4: Battery pack undervoltage
-- bit5: Discharge overcurrent
-- bit6: Discharge short circuit
-- bit7: Discharge overtemperature
-- bit8: Wire resistance
-- bit9: MOSFET overtemperature
-- bit10: Cell count mismatch
-- bit11: Current sensor anomaly
-- bit12: Cell overvoltage
-- bit13: Battery pack overvoltage
-- bit14: Charge overcurrent protection
-- bit15: Charge short circuit
+Errors bitmask notes (little-endian):
+- JK02_32S: bytes 166–169, 32-bit
+- JK02_24S: bytes 136–137, 16-bit (bits 0–15 only)
+
+| Bit | Label | Protocol |
+|----:|-------|---------|
+|  0 | Wire resistance | JK02_24S + JK02_32S |
+|  1 | MOS overtemperature | JK02_24S + JK02_32S |
+|  2 | Cell count mismatch | JK02_24S + JK02_32S |
+|  3 | Current sensor anomaly | JK02_24S + JK02_32S |
+|  4 | Cell overvoltage | JK02_24S + JK02_32S |
+|  5 | Battery pack overvoltage | JK02_24S + JK02_32S |
+|  6 | Charge overcurrent protection | JK02_24S + JK02_32S |
+|  7 | Charge short circuit | JK02_24S + JK02_32S |
+|  8 | Charge overtemperature | JK02_24S + JK02_32S |
+|  9 | Charge undertemperature | JK02_24S + JK02_32S |
+| 10 | Coprocessor communication error | JK02_24S + JK02_32S |
+| 11 | Cell undervoltage | JK02_24S + JK02_32S |
+| 12 | Battery pack undervoltage | JK02_24S + JK02_32S |
+| 13 | Discharge overcurrent | JK02_24S + JK02_32S |
+| 14 | Discharge short circuit | JK02_24S + JK02_32S |
+| 15 | Discharge overtemperature | JK02_24S + JK02_32S |
+| 16 | Charging MOS not normal | JK02_32S only |
+| 17 | Discharging MOS not normal | JK02_32S only |
+| 18 | GPS disconnected | JK02_32S only |
+| 19 | Modify password in time | JK02_32S only |
+| 20 | Discharge on failed | JK02_32S only |
+| 21 | Battery overtemperature | JK02_32S only |
+| 22 | Temperature sensor anomaly | JK02_32S only |
+| 23 | PCL module anomaly | JK02_32S only |
+| 24 | SCP release failed | JK02_32S only |
+| 25 | Discharge OCP II | JK02_32S only |
+| 26 | Discharge OCP III | JK02_32S only |
+| 27 | Discharge undertemperature alarm | JK02_32S only |
+| 28 | GPS remote lock | JK02_32S only |
 
 Dry contact bitmask notes for byte 281 (JK02_32S only):
 - bit1 (0x02): DRY1 active

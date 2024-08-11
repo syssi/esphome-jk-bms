@@ -118,7 +118,6 @@ CONF_CHARGING_CYCLES = "charging_cycles"
 CONF_TOTAL_CHARGING_CYCLE_CAPACITY = "total_charging_cycle_capacity"
 CONF_TOTAL_RUNTIME = "total_runtime"
 CONF_BALANCING_CURRENT = "balancing_current"
-CONF_ERRORS_BITMASK = "errors_bitmask"
 CONF_EMERGENCY_TIME_COUNTDOWN = "emergency_time_countdown"
 CONF_HEATING_CURRENT = "heating_current"
 CONF_CHARGE_STATUS_ID = "charge_status_id"
@@ -134,7 +133,6 @@ ICON_MIN_VOLTAGE_CELL = "mdi:battery-minus-outline"
 ICON_MAX_VOLTAGE_CELL = "mdi:battery-plus-outline"
 ICON_CAPACITY_REMAINING = "mdi:battery-50"
 ICON_CHARGING_CYCLES = "mdi:battery-sync"
-ICON_ERRORS_BITMASK = "mdi:alert-circle-outline"
 ICON_CELL_RESISTANCE = "mdi:omega"
 ICON_BALANCER = "mdi:seesaw"
 ICON_CHARGE_STATUS_ID = "mdi:battery-clock"
@@ -240,7 +238,6 @@ SENSORS = [
     CONF_TOTAL_CHARGING_CYCLE_CAPACITY,
     CONF_TOTAL_RUNTIME,
     CONF_BALANCING_CURRENT,
-    CONF_ERRORS_BITMASK,
     CONF_EMERGENCY_TIME_COUNTDOWN,
     CONF_HEATING_CURRENT,
     CONF_CHARGE_STATUS_ID,
@@ -876,13 +873,6 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
             icon=ICON_CURRENT_DC,
             accuracy_decimals=2,
             device_class=DEVICE_CLASS_CURRENT,
-            state_class=STATE_CLASS_MEASUREMENT,
-        ),
-        cv.Optional(CONF_ERRORS_BITMASK): sensor.sensor_schema(
-            unit_of_measurement=UNIT_EMPTY,
-            icon=ICON_ERRORS_BITMASK,
-            accuracy_decimals=0,
-            device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
         cv.Optional(CONF_EMERGENCY_TIME_COUNTDOWN): sensor.sensor_schema(

@@ -10,6 +10,7 @@ DEPENDENCIES = ["jk_bms_ble"]
 CODEOWNERS = ["@syssi", "@txubelaxu"]
 
 CONF_ERRORS = "errors"
+CONF_ERRORS_BITMASK_HEX = "errors_bitmask_hex"
 CONF_OPERATION_STATUS = "operation_status"
 CONF_TOTAL_RUNTIME_FORMATTED = "total_runtime_formatted"
 CONF_CHARGE_STATUS = "charge_status"
@@ -22,6 +23,7 @@ ICON_CHARGE_STATUS = "mdi:battery-clock"
 
 TEXT_SENSORS = [
     CONF_ERRORS,
+    CONF_ERRORS_BITMASK_HEX,
     CONF_OPERATION_STATUS,
     CONF_TOTAL_RUNTIME_FORMATTED,
     CONF_CHARGE_STATUS,
@@ -32,6 +34,9 @@ TEXT_SENSORS = [
 CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
     {
         cv.Optional(CONF_ERRORS): text_sensor.text_sensor_schema(
+            text_sensor.TextSensor, icon=ICON_ERRORS
+        ),
+        cv.Optional(CONF_ERRORS_BITMASK_HEX): text_sensor.text_sensor_schema(
             text_sensor.TextSensor, icon=ICON_ERRORS
         ),
         cv.Optional(CONF_OPERATION_STATUS): text_sensor.text_sensor_schema(
