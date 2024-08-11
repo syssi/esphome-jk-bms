@@ -45,9 +45,9 @@ uart:
     rx_pin: ${rx_pin}
 
 modbus:
-  id: modbus0
-  uart_id: uart_0
-  flow_control_pin: GPIO12
+  - id: modbus0
+    uart_id: uart_0
+    flow_control_pin: GPIO12
 
 modbus_controller:
   - id: bms0
