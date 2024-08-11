@@ -43,6 +43,26 @@ static const char *const ERRORS[ERRORS_SIZE] = {
     "Charge short circuit",                 // 1000 0000 0000 0000
 };
 
+static const uint8_t ERRORS2_SIZE = 16;
+static const char *const ERRORS2[ERRORS_SIZE] = {
+    "Charge MOS",                  // 0000 0001 0000 0000
+    "Discharge MOS",               // 0000 0010 0000 0000
+    "GPS Disconnected",            // 0000 0100 0000 0000
+    "Modify password in time",     // 0000 1000 0000 0000
+    "Discharge On failed",         // 0001 0000 0000 0000
+    "Battery overtemperature",     // 0010 0000 0000 0000
+    "Temperature sensor anomaly",  // 0100 0000 0000 0000
+    "PLC module anomaly",          // 1000 0000 0000 0000
+    "Reserved",                    // 0000 0000 0000 0001
+    "Reserved",                    // 0000 0000 0000 0010
+    "Reserved",                    // 0000 0000 0000 0100
+    "Reserved",                    // 0000 0000 0000 1000
+    "Reserved",                    // 0000 0000 0001 0000
+    "Reserved",                    // 0000 0000 0010 0000
+    "Reserved",                    // 0000 0000 0100 0000
+    "Reserved",                    // 0000 0000 1000 0000
+};
+
 uint8_t crc(const uint8_t data[], const uint16_t len) {
   uint8_t crc = 0;
   for (uint16_t i = 0; i < len; i++) {
@@ -453,6 +473,8 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
     uint16_t raw_errors_bitmask = (uint16_t(data[134 + offset]) << 8) | (uint16_t(data[134 + 1 + offset]) << 0);
     this->publish_state_(this->errors_bitmask_sensor_, (float) raw_errors_bitmask);
     this->publish_state_(this->errors_text_sensor_, this->error_bits_to_string_(raw_errors_bitmask));
+    ESP_LOGI(TAG, "Errors2: %s (%d)", this->error2_bits_to_string_(jk_get_16bit(136 + offset)).c_str(),
+             jk_get_16bit(136 + offset));
   } else {
     this->publish_state_(this->power_tube_temperature_sensor_, (float) ((int16_t) jk_get_16bit(134 + offset)) * 0.1f);
   }
@@ -1544,6 +1566,26 @@ std::string JkBmsBle::error_bits_to_string_(const uint16_t mask) {
           errors_list.append(";");
         }
         errors_list.append(ERRORS[i]);
+      }
+    }
+  }
+
+  return errors_list;
+}
+
+std::string JkBmsBle::error2_bits_to_string_(const uint16_t mask) {
+  bool first = true;
+  std::string errors_list = "";
+
+  if (mask) {
+    for (int i = 0; i < ERRORS2_SIZE; i++) {
+      if (mask & (1 << i)) {
+        if (first) {
+          first = false;
+        } else {
+          errors_list.append(";");
+        }
+        errors_list.append(ERRORS2[i]);
       }
     }
   }

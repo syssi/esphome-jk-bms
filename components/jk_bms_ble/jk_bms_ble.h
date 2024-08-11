@@ -386,6 +386,7 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   void reset_online_status_tracker_();
   void track_online_status_();
   std::string error_bits_to_string_(uint16_t bitmask);
+  std::string error2_bits_to_string_(uint16_t bitmask);
 
   std::string format_total_runtime_(const uint32_t value) {
     int seconds = (int) value;
