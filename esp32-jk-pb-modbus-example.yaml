@@ -46,12 +46,20 @@ uart:
     rx_pin: ${rx_pin}
 
 modbus:
-  id: modbus0
+  - id: modbus0
+    uart_id: uart_0
+    flow_control_pin: GPIO12
 
 modbus_controller:
   - id: bms0
-    # Address of the Modbus slave device on the bus
-    address: 0x00
+    # Dip switch configuration of a single pack setup / address 0x01
+    #  1    2    4    5
+    #  on, off, off, off (0x01)
+    #
+    # Don't turn off all dip switches / don't use device address 0x00.
+    # This is the Modbus Master mode. You must select a device address
+    # between 0x01 and 0x0f so the BMS acts as Modbus Slave.
+    address: 0x01
     modbus_id: modbus0
     setup_priority: -10
     update_interval: 5s
