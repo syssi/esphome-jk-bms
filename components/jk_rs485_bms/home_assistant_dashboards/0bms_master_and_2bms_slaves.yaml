@@ -313,6 +313,9 @@ views:
           - entity: sensor.esp_rs485_gw_uptime_sensor
             name: Uptime Sensor
         title: Esp-Rs485-Gw
+      - type: entities
+        entities:
+          - entity: switch.broadcast_changes_to_all_bmss
   - title: BMS Summary
     path: bmss-summary
     badges: []
@@ -706,7 +709,7 @@ views:
                 cards:
                   - type: markdown
                     content: >-
-                      <center><font color=#3090C7 size=4>bms01 [{{
+                      <center><font color=#3090C7 size=4>bms10 [{{
                       states('sensor.rs485_bms1_total_runtime_formatted') |
                       string }}]&nbsp;&nbsp;{{
                       (states('sensor.rs485_bms1_battery_capacity_state_of_charge')
@@ -806,9 +809,10 @@ views:
                       {%- set balancing_direction =
                       states('sensor.rs485_bms1_balancing_direction')%}   {%-
                       set is_working = "charging" if
-                      (balancing_direction|int)>0 
-                            else "discharging" if (balancing_direction|int)<0 
-                            else 'idle' %} 
+                      (balancing_direction|int)==1 
+                            else "discharging" if (balancing_direction|int)==2 
+                            else "idle" if (balancing_direction|int)==0
+                            else 'unknown' %} 
                       {%- set font_start = '<b><font size=2 color="#41CD52">' if
                       (balancing_direction|int)>0 
                             else '<b><font size=2 color=#3090C7>' if (balancing_direction|int)<0 
@@ -903,31 +907,31 @@ views:
                   - type: markdown
                     content: >-
                       <div> {%- set ovp =
-                      states('sensor.rs485_bms1_cell_overvoltage_protection')
+                      states('number.rs485_bms1_cell_overvoltage_protection')
                       %}  {%- set slv =
                       states('number.rs485_bms1_cell_smart_sleep_voltage') %} 
                       {%- set rcv =
-                      states('sensor.rs485_bms1_cell_request_charge_voltage')
+                      states('number.rs485_bms1_cell_request_charge_voltage')
                       %}  {%- set bsv =
-                      states('sensor.rs485_bms1_cell_balancing_starting_voltage')
+                      states('number.rs485_bms1_cell_balancing_starting_voltage')
                       %}  {%- set soc100 =
-                      states('sensor.rs485_bms1_cell_soc100_voltage') %}  {%-
+                      states('number.rs485_bms1_cell_soc100_voltage') %}  {%-
                       set ovpr =
-                      states('sensor.rs485_bms1_cell_overvoltage_protection_recovery')
+                      states('number.rs485_bms1_cell_overvoltage_protection_recovery')
                       %}  {%- set rfv =
-                      states('sensor.rs485_bms1_cell_request_float_voltage') %} 
+                      states('number.rs485_bms1_cell_request_float_voltage') %} 
                       {%- set uvpr =
-                      states('sensor.rs485_bms1_cell_undervoltage_protection_recovery')
+                      states('number.rs485_bms1_cell_undervoltage_protection_recovery')
                       %}  {%- set soc0 =
-                      states('sensor.rs485_bms1_cell_soc0_voltage') %}  {%- set
+                      states('number.rs485_bms1_cell_soc0_voltage') %}  {%- set
                       uvp =
-                      states('sensor.rs485_bms1_cell_undervoltage_protection')
+                      states('number.rs485_bms1_cell_undervoltage_protection')
                       %}  {%- set poff =
-                      states('sensor.rs485_bms1_cell_power_off_voltage') %}  {%-
+                      states('number.rs485_bms1_cell_power_off_voltage') %}  {%-
                       set rcvt =
-                      states('sensor.rs485_bms1_cell_request_charge_voltage_time')
+                      states('number.rs485_bms1_cell_request_charge_voltage_time')
                       %}     {%- set rfvt =
-                      states('sensor.rs485_bms1_cell_request_float_voltage_time') 
+                      states('number.rs485_bms1_cell_request_float_voltage_time') 
                       %}    {%- set TimeOVPR =
                       states('sensor.rs485_bms1_cell_overvoltage_protection_release_time') 
                       %}  {%- set TimeUVPR =
@@ -2138,15 +2142,16 @@ views:
             name: charging_lowtemperature_protection_recovery
           - entity: number.rs485_bms0_charging_lowtemperature_protection
             name: charging_lowtemperature_protection
+          - entity: number.rs485_bms0_cell_request_float_voltage_time
         title: TEMPERATURE
       - type: entities
         entities:
           - entity: number.rs485_bms0_max_charging_current
-            name: max_charging_current
+            name: MAX CURRENT
           - entity: number.rs485_bms0_charging_overcurrent_protection_delay
-            name: charging_overcurrent_protection_delay
+            name: OV.PRT. DLY
           - entity: number.rs485_bms0_charging_overcurrent_protection_recovery_delay
-            name: charging_overcurrent_protection_recovery_delay
+            name: OV.PRT. DLY RECOVERY
           - entity: sensor.rs485_bms0_charging_overcurrent_protection_release_time
             name: charging_overcurrent_protection_release_time
           - entity: sensor.rs485_bms0_charging_short_circuit_protection_release_time
@@ -2172,14 +2177,14 @@ views:
       - type: entities
         entities:
           - entity: number.rs485_bms0_short_circuit_protection_delay
-            name: short_circuit_protection_delay
+            name: PROTECTION
           - entity: number.rs485_bms0_short_circuit_protection_recovery_delay
-            name: short_circuit_protection_recovery_delay
+            name: RECOVERY
         title: SHORT CIRCUIT
       - type: entities
         entities:
           - entity: number.rs485_bms0_max_balancing_current
-            name: max_balancing_current
+            name: MAX CURRENT
         title: BALANCING
   - title: bms1 (PROTECTION)
     path: protection_bms1
@@ -2203,6 +2208,7 @@ views:
             name: charging_lowtemperature_protection_recovery
           - entity: number.rs485_bms1_charging_lowtemperature_protection
             name: charging_lowtemperature_protection
+          - entity: number.rs485_bms1_cell_request_float_voltage_time
         title: TEMPERATURE
       - type: entities
         entities:
@@ -2237,12 +2243,12 @@ views:
       - type: entities
         entities:
           - entity: number.rs485_bms1_short_circuit_protection_delay
-            name: short_circuit_protection_delay
+            name: PROTECTION
           - entity: number.rs485_bms1_short_circuit_protection_recovery_delay
-            name: short_circuit_protection_recovery_delay
+            name: RECOVERY
         title: SHORT CIRCUIT
       - type: entities
         entities:
           - entity: number.rs485_bms1_max_balancing_current
-            name: max_balancing_current
+            name: MAX CURRENT
         title: BALANCING
