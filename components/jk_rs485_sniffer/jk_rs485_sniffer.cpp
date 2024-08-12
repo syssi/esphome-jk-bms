@@ -69,6 +69,24 @@ uint16_t chksum(const uint8_t data[], const uint16_t len) {
 }
 
 
+void JkRS485Sniffer::set_broadcast_changes_to_all_bms(bool state) {
+    this->broadcast_changes_to_all_bms_ = state;
+    if (state) {
+      ESP_LOGD(TAG, "Broadcast to All BMSs ACTIVATED");
+      // Aquí puedes añadir el código que se ejecuta cuando se activa
+    } else {
+      ESP_LOGD(TAG, "Broadcast to All BMSs DEACTIVATED");
+      // Aquí puedes añadir el código que se ejecuta cuando se desactiva
+    }
+}
+
+
+
+bool JkRS485Sniffer::get_broadcast_changes_to_all_bms() const {
+    return this->broadcast_changes_to_all_bms_;
+}
+
+
 void JkRS485Sniffer::handle_bms2sniffer_event(std::uint8_t slave_address, std::string event, std::uint8_t frame_type){
   // Maneja el evento aquí. Por ejemplo, puedes imprimir el evento:
   ESP_LOGD(TAG,"Received Event from BMS.. [address:0x%02X] @ %d -->  %s", slave_address, frame_type, event.c_str());
@@ -110,7 +128,7 @@ void JkRS485Sniffer::handle_bms2sniffer_switch_or_number_uint32_event(std::uint8
     send_command_switch_or_number_to_slave_uint32(slave_address,third_element_of_frame,register_address,value);
   }
 
-  if (this->broadcast_to_all_bms_==true){
+  if (this->broadcast_changes_to_all_bms_==true){
     for (uint8_t j = 1; j < 16; ++j) {
         if (rs485_network_node[j].available && slave_address!=j) {
             delayMicroseconds(50000);
@@ -137,7 +155,7 @@ void JkRS485Sniffer::handle_bms2sniffer_switch_or_number_int32_event(std::uint8_
     send_command_switch_or_number_to_slave_int32(slave_address,third_element_of_frame,register_address,value);
   }
 
-  if (this->broadcast_to_all_bms_==true){
+  if (this->broadcast_changes_to_all_bms_==true){
     for (uint8_t j = 1; j < 16; ++j) {
         if (rs485_network_node[j].available && slave_address!=j) {
             delayMicroseconds(50000);
@@ -159,7 +177,7 @@ void JkRS485Sniffer::handle_bms2sniffer_switch_or_number_uint16_event(std::uint8
     rs485_network_node[slave_address].last_device_info_request_received_OK=0;
   }
 
-  if (this->broadcast_to_all_bms_==true){
+  if (this->broadcast_changes_to_all_bms_==true){
     for (uint8_t j = 1; j < 16; ++j) {
         if (rs485_network_node[j].available && slave_address!=j) {
             delayMicroseconds(50000);

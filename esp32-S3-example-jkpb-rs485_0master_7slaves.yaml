@@ -119,7 +119,6 @@ jk_rs485_sniffer:
     rx_timeout: 500ms
     uart_id: uart_0
     talk_pin: ${talk_pin_rs485}
-    broadcast_to_all_bms: true
 
 jk_rs485_bms:
   - id: bms0
@@ -2075,6 +2074,19 @@ sensor:
 
 
 switch:
+  - platform: template
+    name: "Broadcast changes to all BMSs"
+    id: broadcast_active
+    icon: "mdi:cast"
+    restore_mode: RESTORE_DEFAULT_ON
+    optimistic: true
+    turn_on_action:
+      - lambda: |-
+          id(sniffer0).set_broadcast_to_all_bms(true);  
+    turn_off_action:
+      - lambda: |-
+          id(sniffer0).set_broadcast_to_all_bms(false);   
+
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms0
     precharging:

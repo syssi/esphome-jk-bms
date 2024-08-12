@@ -27,6 +27,9 @@ class JkRS485Sniffer : public uart::UARTDevice, public output::TalkPin, public C
   JkRS485Sniffer() = default;
 
 
+  void set_broadcast_changes_to_all_bms(bool state);
+  bool get_broadcast_changes_to_all_bms() const;
+
   void set_talk_pin(GPIOPin *pin) { talk_pin_ = pin; }
   void set_talk_pin_needed(bool talk_pin_needed) { talk_pin_needed_= talk_pin_needed;}
 
@@ -51,7 +54,6 @@ class JkRS485Sniffer : public uart::UARTDevice, public output::TalkPin, public C
         rs485_network_node[cont].counter_cell_info_received=0;
         rs485_network_node[cont].counter_device_settings_received=0;
         rs485_network_node[cont].counter_device_info_received=0;  
-        
     }    
     last_master_activity=0;
     last_message_received_acting_as_master=0;
@@ -80,8 +82,6 @@ class JkRS485Sniffer : public uart::UARTDevice, public output::TalkPin, public C
   float get_setup_priority() const override;
 
   void set_rx_timeout(uint16_t rx_timeout) { rx_timeout_ = rx_timeout; }
-
-  void set_broadcast_to_all_bms (bool broadcast_to_all_bms) { broadcast_to_all_bms_ = broadcast_to_all_bms; }
 
   void handle_bms2sniffer_event(std::uint8_t slave_address, std::string event, std::uint8_t frame_type);
 
@@ -114,7 +114,7 @@ class JkRS485Sniffer : public uart::UARTDevice, public output::TalkPin, public C
 
   std::vector<uint8_t> rx_buffer_;
   uint16_t rx_timeout_{50};
-  bool broadcast_to_all_bms_;
+  bool broadcast_changes_to_all_bms_;
   uint32_t last_jk_rs485_network_activity_{0};
   uint32_t last_jk_rs485_pooling_trial_{0};
   std::vector<JkRS485SnifferDevice *> devices_;  
