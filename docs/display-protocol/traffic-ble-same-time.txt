@@ -1,0 +1,189 @@
+[jk_bms_ble:779]: Settings frame (300 bytes) received
+[number:012]: 'jk-bms smart sleep voltage': Sending state 0.600000
+[number:012]: 'jk-bms cell voltage undervoltage protection': Sending state 2.820000
+[number:012]: 'jk-bms cell voltage undervoltage recovery': Sending state 2.850000
+[number:012]: 'jk-bms cell voltage overvoltage protection': Sending state 4.250000
+[number:012]: 'jk-bms cell voltage overvoltage recovery': Sending state 4.180000
+[number:012]: 'jk-bms balance trigger voltage': Sending state 0.010000
+[number:012]: 'jk-bms cell soc100 voltage': Sending state 0.000000
+[number:012]: 'jk-bms cell soc0 voltage': Sending state 0.000000
+[number:012]: 'jk-bms cell request charge voltage': Sending state 0.000000
+[number:012]: 'jk-bms cell request float voltage': Sending state 0.000000
+[number:012]: 'jk-bms power off voltage': Sending state 2.800000
+[number:012]: 'jk-bms max charge current': Sending state 25.000002
+[number:012]: 'jk-bms charge overcurrent protection delay': Sending state 30.000000
+[number:012]: 'jk-bms charge overcurrent protection recovery time': Sending state 60.000000
+[number:012]: 'jk-bms max discharge current': Sending state 60.000004
+[number:012]: 'jk-bms discharge overcurrent protection delay': Sending state 300.000000
+[number:012]: 'jk-bms discharge overcurrent protection recovery time': Sending state 60.000000
+[number:012]: 'jk-bms short circuit protection recovery time': Sending state 60.000000
+[number:012]: 'jk-bms max balance current': Sending state 0.600000
+[number:012]: 'jk-bms charge overtemperature protection': Sending state 70.000000
+[number:012]: 'jk-bms charge overtemperature protection recovery': Sending state 60.000000
+[number:012]: 'jk-bms discharge overtemperature protection': Sending state 70.000000
+[number:012]: 'jk-bms discharge overtemperature protection recovery': Sending state 60.000000
+[number:012]: 'jk-bms charge undertemperature protection': Sending state 5.000000
+[number:012]: 'jk-bms charge undertemperature protection recovery': Sending state 10.000000
+[number:012]: 'jk-bms power tube overtemperature protection': Sending state 100.000000
+[number:012]: 'jk-bms power tube overtemperature protection recovery': Sending state 80.000000
+[number:012]: 'jk-bms cell count': Sending state 13.000000
+[switch:055]: 'jk-bms charging': Sending state ON
+[switch:055]: 'jk-bms discharging': Sending state ON
+[switch:055]: 'jk-bms balancer': Sending state OFF
+[number:012]: 'jk-bms total battery capacity': Sending state 40.000000
+[number:012]: 'jk-bms short circuit protection delay': Sending state 1500.000000
+[number:012]: 'jk-bms balance starting voltage': Sending state 3.000000
+[jk_bms_ble:992]:   Con. wire resistance 1: 0.000000 Ohm
+[jk_bms_ble:992]:   Con. wire resistance 2: 0.000000 Ohm
+[jk_bms_ble:992]:   Con. wire resistance 3: 0.000000 Ohm
+[jk_bms_ble:992]:   Con. wire resistance 4: 0.000000 Ohm
+[jk_bms_ble:992]:   Con. wire resistance 5: 0.000000 Ohm
+[jk_bms_ble:992]:   Con. wire resistance 6: 0.000000 Ohm
+[jk_bms_ble:992]:   Con. wire resistance 7: 0.000000 Ohm
+[jk_bms_ble:992]:   Con. wire resistance 8: 0.000000 Ohm
+[jk_bms_ble:992]:   Con. wire resistance 9: 0.000000 Ohm
+[jk_bms_ble:992]:   Con. wire resistance 10: 0.000000 Ohm
+[jk_bms_ble:992]:   Con. wire resistance 11: 0.000000 Ohm
+[jk_bms_ble:992]:   Con. wire resistance 12: 0.000000 Ohm
+[jk_bms_ble:992]:   Con. wire resistance 13: 0.000000 Ohm
+[jk_bms_ble:992]:   Con. wire resistance 14: 0.000000 Ohm
+[jk_bms_ble:992]:   Con. wire resistance 15: 0.000000 Ohm
+[jk_bms_ble:992]:   Con. wire resistance 16: 0.000000 Ohm
+[jk_bms_ble:992]:   Con. wire resistance 17: 0.000000 Ohm
+[jk_bms_ble:992]:   Con. wire resistance 18: 0.000000 Ohm
+[jk_bms_ble:992]:   Con. wire resistance 19: 0.000000 Ohm
+[jk_bms_ble:992]:   Con. wire resistance 20: 0.000000 Ohm
+[jk_bms_ble:992]:   Con. wire resistance 21: 0.000000 Ohm
+[jk_bms_ble:992]:   Con. wire resistance 22: 0.000000 Ohm
+[jk_bms_ble:992]:   Con. wire resistance 23: 0.000000 Ohm
+[jk_bms_ble:992]:   Con. wire resistance 24: 0.000000 Ohm
+[jk_bms_ble:992]:   Con. wire resistance 25: 0.000000 Ohm
+[jk_bms_ble:992]:   Con. wire resistance 26: 0.000000 Ohm
+[jk_bms_ble:992]:   Con. wire resistance 27: 0.000000 Ohm
+[jk_bms_ble:992]:   Con. wire resistance 28: 0.000000 Ohm
+[jk_bms_ble:992]:   Con. wire resistance 29: 0.000000 Ohm
+[jk_bms_ble:992]:   Con. wire resistance 30: 0.000000 Ohm
+[jk_bms_ble:992]:   Con. wire resistance 31: 0.000000 Ohm
+[jk_bms_ble:992]:   Con. wire resistance 32: 0.000000 Ohm
+[jk_bms_ble:1000]:   Device address: 0
+[jk_bms_ble:1002]:   Precharge time: 0 s
+[jk_bms_ble:1022]:   Heating switch: OFF
+[switch:055]: 'jk-bms heating': Sending state OFF
+[switch:055]: 'jk-bms disable temperature sensors': Sending state OFF
+[jk_bms_ble:1025]:   GPS Heartbeat: OFF
+[jk_bms_ble:1026]:   Port switch: RS485
+[switch:055]: 'jk-bms display always on': Sending state OFF
+[jk_bms_ble:1028]:   Special charger: OFF
+[switch:055]: 'jk-bms smart sleep': Sending state OFF
+[switch:055]: 'jk-bms disable pcl module': Sending state OFF
+[switch:055]: 'jk-bms timed stored data': Sending state OFF
+[switch:055]: 'jk-bms charging float mode': Sending state OFF
+[jk_bms_ble:1036]:   Smart sleep: 0 h
+[jk_bms_ble:1038]:   Data field enable control 0: 124
+
+[jk_bms_ble:330]: Cell info frame (version 3, 300 bytes) received
+[sensor:094]: 'jk-bms cell voltage 1': Sending state 4.04700 V with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell resistance 1': Sending state 0.16000 Ω with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell voltage 2': Sending state 4.04500 V with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell resistance 2': Sending state 0.16000 Ω with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell voltage 3': Sending state 4.04800 V with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell resistance 3': Sending state 0.16100 Ω with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell voltage 4': Sending state 4.14600 V with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell resistance 4': Sending state 0.16200 Ω with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell voltage 5': Sending state 4.14200 V with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell resistance 5': Sending state 0.16100 Ω with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell voltage 6': Sending state 3.93200 V with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell resistance 6': Sending state 0.16100 Ω with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell voltage 7': Sending state 3.92300 V with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell resistance 7': Sending state 0.16200 Ω with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell voltage 8': Sending state 4.03500 V with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell resistance 8': Sending state 0.16300 Ω with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell voltage 9': Sending state 4.03400 V with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell resistance 9': Sending state 0.16200 Ω with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell voltage 10': Sending state 4.04700 V with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell resistance 10': Sending state 0.16200 Ω with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell voltage 11': Sending state 4.03300 V with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell resistance 11': Sending state 0.16200 Ω with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell voltage 12': Sending state 4.04700 V with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell resistance 12': Sending state 0.17800 Ω with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell voltage 13': Sending state 4.04800 V with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell resistance 13': Sending state 0.17800 Ω with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell voltage 14': Sending state 0.00000 V with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell resistance 14': Sending state 0.00000 Ω with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell voltage 15': Sending state 0.00000 V with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell resistance 15': Sending state 0.00000 Ω with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell voltage 16': Sending state 0.00000 V with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell resistance 16': Sending state 0.00000 Ω with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell voltage 17': Sending state 0.00000 V with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell resistance 17': Sending state 0.00000 Ω with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell voltage 18': Sending state 0.00000 V with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell resistance 18': Sending state 0.00000 Ω with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell voltage 19': Sending state 0.00000 V with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell resistance 19': Sending state 0.00000 Ω with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell voltage 20': Sending state 0.00000 V with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell resistance 20': Sending state 0.00000 Ω with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell voltage 21': Sending state 0.00000 V with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell resistance 21': Sending state 0.00000 Ω with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell voltage 22': Sending state 0.00000 V with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell resistance 22': Sending state 0.00000 Ω with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell voltage 23': Sending state 0.00000 V with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell resistance 23': Sending state 0.00000 Ω with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell voltage 24': Sending state 0.00000 V with 3 decimals of accuracy
+[sensor:094]: 'jk-bms cell resistance 24': Sending state 0.00000 Ω with 3 decimals of accuracy
+[sensor:094]: 'jk-bms min cell voltage': Sending state 3.92300 V with 3 decimals of accuracy
+[sensor:094]: 'jk-bms max cell voltage': Sending state 4.14600 V with 3 decimals of accuracy
+[sensor:094]: 'jk-bms average cell voltage': Sending state 4.04100 V with 3 decimals of accuracy
+[sensor:094]: 'jk-bms delta cell voltage': Sending state 0.22300 V with 3 decimals of accuracy
+[sensor:094]: 'jk-bms max voltage cell': Sending state 4.00000  with 0 decimals of accuracy
+[sensor:094]: 'jk-bms min voltage cell': Sending state 7.00000  with 0 decimals of accuracy
+[sensor:094]: 'jk-bms power tube temperature': Sending state 26.80000 °C with 1 decimals of accuracy
+[jk_bms_ble:425]: Wire resistance warning bitmask: 0x00 0x00 0x00 0x00
+[sensor:094]: 'jk-bms total voltage': Sending state 52.52900 V with 2 decimals of accuracy
+[sensor:094]: 'jk-bms current': Sending state 0.00000 A with 2 decimals of accuracy
+[sensor:094]: 'jk-bms power': Sending state 0.00000 W with 2 decimals of accuracy
+[sensor:094]: 'jk-bms charging power': Sending state 0.00000 W with 2 decimals of accuracy
+[sensor:094]: 'jk-bms discharging power': Sending state 0.00000 W with 2 decimals of accuracy
+[sensor:094]: 'jk-bms temperature sensor 1': Sending state 24.90000 °C with 1 decimals of accuracy
+[sensor:094]: 'jk-bms temperature sensor 2': Sending state 24.80000 °C with 1 decimals of accuracy
+[sensor:094]: 'jk-bms errors bitmask': Sending state 0.00000  with 0 decimals of accuracy
+[text_sensor:064]: 'jk-bms errors': Sending state ''
+[sensor:094]: 'jk-bms balancing current': Sending state 0.00000 A with 2 decimals of accuracy
+[sensor:094]: 'jk-bms balancing': Sending state 0.00000  with 0 decimals of accuracy
+[jk_bms_ble:496]: Balancing indicator (legacy): NO
+[sensor:094]: 'jk-bms state of charge': Sending state 99.00000 % with 0 decimals of accuracy
+[sensor:094]: 'jk-bms capacity remaining': Sending state 39.96100 Ah with 3 decimals of accuracy
+[sensor:094]: 'jk-bms total battery capacity setting': Sending state 40.00000 Ah with 0 decimals of accuracy
+[sensor:094]: 'jk-bms charging cycles': Sending state 0.00000  with 0 decimals of accuracy
+[sensor:094]: 'jk-bms total charging cycle capacity': Sending state 0.00500 Ah with 3 decimals of accuracy
+[jk_bms_ble:514]: State of health: 100 %
+[jk_bms_ble:517]: Precharge: OFF
+[jk_bms_ble:520]: User alarm: 0x00 0x00 (always 0xC5 0x09?)
+[sensor:094]: 'jk-bms total runtime': Sending state 20251.00000 s with 0 decimals of accuracy
+[text_sensor:064]: 'jk-bms total runtime formatted': Sending state '5h'
+[jk_bms_ble:537]: Balancing indicator (new): NO
+[jk_bms_ble:539]: Discharge overcurrent protection release timer: 0
+[jk_bms_ble:540]: Discharge short circuit protection release timer: 0
+[jk_bms_ble:541]: Charge overcurrent protection release timer: 0
+[jk_bms_ble:542]: Charge short circuit protection release timer: 0
+[jk_bms_ble:543]: Undervoltage protection release timer: 0
+[jk_bms_ble:544]: Overvoltage protection release timer: 0
+[jk_bms_ble:545]: Temperature sensor absent bitmask: 255
+[jk_bms_ble:553]: Heating: OFF
+[jk_bms_ble:556]: Time emergency: 0 s
+[jk_bms_ble:557]: Discharge current correction factor: 848
+[jk_bms_ble:558]: Charging current sensor voltage: 0.000
+[jk_bms_ble:559]: Discharging current sensor voltage: 0.000
+[jk_bms_ble:560]: Battery voltage correction factor: 1077896448.000000
+[jk_bms_ble:562]: Battery voltage: 0.000
+[jk_bms_ble:563]: Heating current: 5.932 A
+[sensor:094]: 'jk-bms heating current': Sending state 5.93200 A with 2 decimals of accuracy
+[jk_bms_ble:566]: Charger Plugged: OFF
+[jk_bms_ble:567]: Temperature sensor 3: 26.8 °C
+[jk_bms_ble:568]: Temperature sensor 4: 0.0 °C
+[jk_bms_ble:569]: Temperature sensor 5: 0.0 °C
+[jk_bms_ble:570]: Time enter sleep: 0 s
+[jk_bms_ble:571]: PCL Module State: OFF
+[jk_bms_ble:575]: Emergency switch: OFF
+[sensor:094]: 'jk-bms emergency time countdown': Sending state 0.00000 s with 0 decimals of accuracy
+[sensor:094]: 'jk-bms temperature sensor 4': Sending state 0.00000 °C with 1 decimals of accuracy
+[sensor:094]: 'jk-bms temperature sensor 3': Sending state 0.00000 °C with 1 decimals of accuracy
