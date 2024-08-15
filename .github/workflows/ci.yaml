@@ -168,7 +168,7 @@ jobs:
 
       - name: Dont move consts
         run: |
-          sed -i 's#if len(uses) < 3:#if len(uses) < 4:#' script/ci-custom.py
+          sed -i 's#if len(uses) < 3:#if len(uses) < 5:#' script/ci-custom.py
           git update-index --assume-unchanged script/ci-custom.py
         working-directory: ${{ env.esphome_directory }}
 

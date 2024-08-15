@@ -1,0 +1,177 @@
+# JK-BD6A2xS10P, JK-BxA24SxxP
+#
+#  │           JK-BD6A2xS10P, JK-BxA24SxxP           │
+#  │                                                 │
+#  │     CAN   RS485    Display      Heat            │
+#  └────[ooo]─[oooo]───[oooooo]───[ooooooo]──────────┘
+#                       ││││││
+#                       │││││└─ VCC        ┌───────────────┐        ┌─────────────────┐
+#                       ││││└── A ──────── │A+          GND│────────│GND              │
+#                       │││└─── B ──────── │B-  RS485   RXD│────────│RX    ESP32/     │
+#                       ││└──── GND        │    to TTL  TXD│        │TX    ESP8266 GND│──────
+#                       │└───── K+         │    module  VCC│────────│5V            VCC│─────
+#                       └────── K-         └───────────────┘        └─────────────────┘
+#
+#  See https://github.com/syssi/esphome-jk-bms/blob/main/docs/display-port.md
+
+substitutions:
+  name: jk-bms-display
+  device_description: "Monitor a JK-BMS using the display port (RS485)"
+  external_components_source: github://syssi/esphome-jk-bms@main
+  rx_pin: GPIO17
+
+esphome:
+  name: ${name}
+  comment: ${device_description}
+  min_version: 2024.6.0
+  project:
+    name: "syssi.esphome-jk-bms"
+    version: 2.1.0
+
+esp32:
+  board: wemos_d1_mini32
+  framework:
+    type: esp-idf
+
+external_components:
+  - source: ${external_components_source}
+    refresh: 0s
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+ota:
+  platform: esphome
+
+logger:
+  level: DEBUG
+
+# If you use Home Assistant please remove this `mqtt` section and uncomment the `api` component!
+# The native API has many advantages over MQTT: https://esphome.io/components/api.html#advantages-over-mqtt
+mqtt:
+  broker: !secret mqtt_host
+  username: !secret mqtt_username
+  password: !secret mqtt_password
+  id: mqtt_client
+
+# api:
+
+uart:
+  - id: uart_0
+    baud_rate: 2400
+    rx_pin: ${rx_pin}
+    debug:
+      direction: BOTH
+
+jk_bms_display:
+  - id: display0
+    uart_id: uart_0
+
+binary_sensor:
+  - platform: jk_bms_display
+    system_warning:
+      name: "${name} system warning"
+    balancing_switch:
+      name: "${name} balancing switch"
+    charging:
+      name: "${name} charging"
+    discharging:
+      name: "${name} discharging"
+    cell_voltage_undervoltage_protection:
+      name: "${name} cell voltage undervoltage protection"
+    cell_voltage_overvoltage_protection:
+      name: "${name} cell voltage overvoltage protection"
+    overcurrent_protection:
+      name: "${name} overcurrent protection"
+    mosfet_overtemperature_protection:
+      name: "${name} mosfet overtemperature protection"
+    battery_temperature_protection:
+      name: "${name} battery temperature protection"
+    short_circuit_protection:
+      name: "${name} short circuit protection"
+    coprocessor_communication_error:
+      name: "${name} coprocessor communication error"
+    balancer_wire_resistance_too_high:
+      name: "${name} balancer wire resistance too high"
+    cell_count_mismatch:
+      name: "${name} cell count mismatch"
+
+sensor:
+  - platform: jk_bms_display
+    total_voltage:
+      name: "${name} total voltage"
+    current:
+      name: "${name} current"
+    power:
+      name: "${name} power"
+    charging_power:
+      name: "${name} charging power"
+    discharging_power:
+      name: "${name} discharging power"
+    min_cell_voltage:
+      name: "${name} min cell voltage"
+    max_cell_voltage:
+      name: "${name} max cell voltage"
+    min_voltage_cell:
+      name: "${name} min voltage cell"
+    max_voltage_cell:
+      name: "${name} max voltage cell"
+    state_of_charge:
+      name: "${name} state of charge"
+    delta_cell_voltage:
+      name: "${name} delta cell voltage"
+    mosfet_temperature:
+      name: "${name} mosfet temperature"
+    battery_temperature:
+      name: "${name} battery temperature"
+    average_cell_voltage:
+      name: "${name} average cell voltage"
+    cell_voltage_1:
+      name: "${name} cell voltage 1"
+    cell_voltage_2:
+      name: "${name} cell voltage 2"
+    cell_voltage_3:
+      name: "${name} cell voltage 3"
+    cell_voltage_4:
+      name: "${name} cell voltage 4"
+    cell_voltage_5:
+      name: "${name} cell voltage 5"
+    cell_voltage_6:
+      name: "${name} cell voltage 6"
+    cell_voltage_7:
+      name: "${name} cell voltage 7"
+    cell_voltage_8:
+      name: "${name} cell voltage 8"
+    cell_voltage_9:
+      name: "${name} cell voltage 9"
+    cell_voltage_10:
+      name: "${name} cell voltage 10"
+    cell_voltage_11:
+      name: "${name} cell voltage 11"
+    cell_voltage_12:
+      name: "${name} cell voltage 12"
+    cell_voltage_13:
+      name: "${name} cell voltage 13"
+    cell_voltage_14:
+      name: "${name} cell voltage 14"
+    cell_voltage_15:
+      name: "${name} cell voltage 15"
+    cell_voltage_16:
+      name: "${name} cell voltage 16"
+    cell_voltage_17:
+      name: "${name} cell voltage 17"
+    cell_voltage_18:
+      name: "${name} cell voltage 18"
+    cell_voltage_19:
+      name: "${name} cell voltage 19"
+    cell_voltage_20:
+      name: "${name} cell voltage 20"
+    cell_voltage_21:
+      name: "${name} cell voltage 21"
+    cell_voltage_22:
+      name: "${name} cell voltage 22"
+    cell_voltage_23:
+      name: "${name} cell voltage 23"
+    cell_voltage_24:
+      name: "${name} cell voltage 24"
