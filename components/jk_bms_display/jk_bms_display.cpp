@@ -26,14 +26,6 @@ void JkBmsDisplay::loop() {
   }
 }
 
-uint8_t chksum(const uint8_t data[], const uint8_t len) {
-  uint8_t checksum = 0xFF;
-  for (uint8_t i = 1; i < len; i++) {
-    checksum = checksum - data[i];
-  }
-  return checksum;
-}
-
 bool JkBmsDisplay::parse_jk_bms_display_byte_(uint8_t byte) {
   size_t at = this->rx_buffer_.size();
   this->rx_buffer_.push_back(byte);
@@ -43,7 +35,7 @@ bool JkBmsDisplay::parse_jk_bms_display_byte_(uint8_t byte) {
     return true;
 
   if (at == 1) {
-    if (raw[0] != 0xA5 && raw[1] != 0x5A) {
+    if (raw[0] != 0xA5 || raw[1] != 0x5A) {
       ESP_LOGVV(TAG, "Invalid header: 0x%02X 0x%02X", raw[0], raw[1]);
 
       // return false to reset buffer
