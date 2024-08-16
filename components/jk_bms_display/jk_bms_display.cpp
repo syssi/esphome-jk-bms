@@ -7,6 +7,9 @@ namespace jk_bms_display {
 
 static const char *const TAG = "jk_bms_display";
 
+static const uint8_t SOF_BYTE1 = 0xA5;
+static const uint8_t SOF_BYTE2 = 0x5A;
+
 void JkBmsDisplay::loop() {
   const uint32_t now = millis();
 
@@ -35,7 +38,7 @@ bool JkBmsDisplay::parse_jk_bms_display_byte_(uint8_t byte) {
     return true;
 
   if (at == 1) {
-    if (raw[0] != 0xA5 || raw[1] != 0x5A) {
+    if (raw[0] != SOF_BYTE1 || raw[1] != SOF_BYTE2) {
       ESP_LOGVV(TAG, "Invalid header: 0x%02X 0x%02X", raw[0], raw[1]);
 
       // return false to reset buffer
