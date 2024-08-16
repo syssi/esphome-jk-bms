@@ -12,6 +12,12 @@ CONF_JK_BMS_ID = "jk_bms_id"
 jk_bms_ns = cg.esphome_ns.namespace("jk_bms")
 JkBms = jk_bms_ns.class_("JkBms", cg.PollingComponent, jk_modbus.JkModbusDevice)
 
+JK_BMS_COMPONENT_SCHEMA = cv.Schema(
+    {
+        cv.GenerateID(CONF_JK_BMS_ID): cv.use_id(JkBms),
+    }
+)
+
 CONFIG_SCHEMA = (
     cv.Schema(
         {
@@ -20,12 +26,6 @@ CONFIG_SCHEMA = (
     )
     .extend(cv.polling_component_schema("5s"))
     .extend(jk_modbus.jk_modbus_device_schema(0x4E))
-)
-
-JK_BMS_COMPONENT_SCHEMA = cv.Schema(
-    {
-        cv.GenerateID(CONF_JK_BMS_ID): cv.use_id(JkBms),
-    }
 )
 
 
