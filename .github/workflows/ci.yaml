@@ -274,3 +274,7 @@ jobs:
       - name: Compile esp32 (modbus) example configurations
         run: |
           esphome -s name jk-bms-pb compile esp32-jk-pb-modbus-example.yaml
+      - name: Compile display port example configurations
+        run: |
+          esphome -s external_components_source components compile esp32-display-example.yaml
+          # esphome -s external_components_source components compile esp8266-display-example.yaml
