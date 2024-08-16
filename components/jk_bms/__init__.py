@@ -28,6 +28,7 @@ CONFIG_SCHEMA = (
     .extend(jk_modbus.jk_modbus_device_schema(0x4E))
 )
 
+
 async def to_code(config):
     var = cg.new_Pvariable(config[CONF_ID])
     await cg.register_component(var, config)
