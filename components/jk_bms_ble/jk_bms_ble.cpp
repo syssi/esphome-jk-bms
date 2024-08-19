@@ -376,7 +376,7 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   for (uint8_t i = 0; i < cells; i++) {
     float cell_voltage = (float) jk_get_16bit(i * 2 + 6) * 0.001f;
     float cell_resistance = (float) jk_get_16bit(i * 2 + 64 + offset) * 0.001f;
-    if(cell_voltage > 0) {
+    if (cell_voltage > 0) {
       average_cell_voltage = average_cell_voltage + cell_voltage;
       cells_enabled++;
     }
@@ -704,7 +704,7 @@ void JkBmsBle::decode_jk04_cell_info_(const std::vector<uint8_t> &data) {
     float cell_voltage = (float) ieee_float_(jk_get_32bit(i * 4 + 6));
     float cell_resistance = (float) ieee_float_(jk_get_32bit(i * 4 + 102));
     total_voltage = total_voltage + cell_voltage;
-    if(cell_voltage > 0) {
+    if (cell_voltage > 0) {
       average_cell_voltage = average_cell_voltage + cell_voltage;
       cells_enabled++;
     }

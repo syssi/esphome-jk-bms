@@ -411,7 +411,7 @@ void HeltecBalancerBle::decode_cell_info_(const std::vector<uint8_t> &data) {
   for (uint8_t i = 0; i < cells; i++) {
     float cell_voltage = ieee_float_(heltec_get_32bit(i * 4 + 9));
     float cell_resistance = ieee_float_(heltec_get_32bit(i * 4 + 105));
-    if(cell_voltage > 0) {
+    if (cell_voltage > 0) {
       average_cell_voltage = average_cell_voltage + cell_voltage;
       cells_enabled++;
     }

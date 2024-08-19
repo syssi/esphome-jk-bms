@@ -157,7 +157,7 @@ void JkBmsDisplay::on_jk_bms_display_status_data_(const std::vector<uint8_t> &da
   uint8_t max_voltage_cell = 0;
   for (uint8_t i = 0; i < cells; i++) {
     float cell_voltage = (float) jk_bms_get_16bit(i * 2 + 24 + offset) * 0.001f;
-    if(cell_voltage > 0) {
+    if (cell_voltage > 0) {
       average_cell_voltage = average_cell_voltage + cell_voltage;
       cells_enabled++;
     }
