@@ -367,22 +367,38 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // 10    2   0x01 0x0D              Voltage cell 03       0.001        V
   // ...
   uint8_t cells = 24 + (offset / 2);
+  uint8_t cells_enabled = 0;
   float min_cell_voltage = 100.0f;
   float max_cell_voltage = -100.0f;
+  float average_cell_voltage = 0.0f;
+  uint8_t min_voltage_cell = 0;
+  uint8_t max_voltage_cell = 0;
   for (uint8_t i = 0; i < cells; i++) {
     float cell_voltage = (float) jk_get_16bit(i * 2 + 6) * 0.001f;
     float cell_resistance = (float) jk_get_16bit(i * 2 + 64 + offset) * 0.001f;
+    if (cell_voltage > 0) {
+      average_cell_voltage = average_cell_voltage + cell_voltage;
+      cells_enabled++;
+    }
     if (cell_voltage > 0 && cell_voltage < min_cell_voltage) {
       min_cell_voltage = cell_voltage;
+      min_voltage_cell = i + 1;
     }
     if (cell_voltage > max_cell_voltage) {
       max_cell_voltage = cell_voltage;
+      max_voltage_cell = i + 1;
     }
     this->publish_state_(this->cells_[i].cell_voltage_sensor_, cell_voltage);
     this->publish_state_(this->cells_[i].cell_resistance_sensor_, cell_resistance);
   }
+  average_cell_voltage = average_cell_voltage / cells_enabled;
+
   this->publish_state_(this->min_cell_voltage_sensor_, min_cell_voltage);
   this->publish_state_(this->max_cell_voltage_sensor_, max_cell_voltage);
+  this->publish_state_(this->max_voltage_cell_sensor_, (float) max_voltage_cell);
+  this->publish_state_(this->min_voltage_cell_sensor_, (float) min_voltage_cell);
+  this->publish_state_(this->delta_cell_voltage_sensor_, max_cell_voltage - min_cell_voltage);
+  this->publish_state_(this->average_cell_voltage_sensor_, average_cell_voltage);
 
   // 54    4   0xFF 0xFF 0x00 0x00    Enabled cells bitmask
   //           0x0F 0x00 0x00 0x00    4 cells enabled
@@ -396,15 +412,17 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
            data[56 + offset], data[57 + offset]);
 
   // 58    2   0x00 0x0D              Average Cell Voltage  0.001        V
-  this->publish_state_(this->average_cell_voltage_sensor_, (float) jk_get_16bit(58 + offset) * 0.001f);
+  // this->publish_state_(this->average_cell_voltage_sensor_, (float) jk_get_16bit(58 + offset) * 0.001f);
 
   // 60    2   0x00 0x00              Delta Cell Voltage    0.001        V
-  this->publish_state_(this->delta_cell_voltage_sensor_, (float) jk_get_16bit(60 + offset) * 0.001f);
+  // this->publish_state_(this->delta_cell_voltage_sensor_, (float) jk_get_16bit(60 + offset) * 0.001f);
 
   // 62    1   0x00                   Max voltage cell      1
-  this->publish_state_(this->max_voltage_cell_sensor_, (float) data[62 + offset] + 1);
+  // this->publish_state_(this->max_voltage_cell_sensor_, (float) data[62 + offset] + 1);
+
   // 63    1   0x00                   Min voltage cell      1
-  this->publish_state_(this->min_voltage_cell_sensor_, (float) data[63 + offset] + 1);
+  // this->publish_state_(this->min_voltage_cell_sensor_, (float) data[63 + offset] + 1);
+
   // 64    2   0x9D 0x01              Resistance Cell 01    0.001        Ohm
   // 66    2   0x96 0x01              Resistance Cell 02    0.001        Ohm
   // 68    2   0x8C 0x01              Resistance Cell 03    0.001        Ohm
@@ -675,8 +693,10 @@ void JkBmsBle::decode_jk04_cell_info_(const std::vector<uint8_t> &data) {
   // 198   4   0x00 0x00 0x00 0x00    Cell resistance 25                 Ohm
   //                                  https://github.com/jblance/mpp-solar/issues/98#issuecomment-823701486
   uint8_t cells = 24;
+  uint8_t cells_enabled = 0;
   float min_cell_voltage = 100.0f;
   float max_cell_voltage = -100.0f;
+  float average_cell_voltage = 0.0f;
   float total_voltage = 0.0f;
   uint8_t min_voltage_cell = 0;
   uint8_t max_voltage_cell = 0;
@@ -684,6 +704,10 @@ void JkBmsBle::decode_jk04_cell_info_(const std::vector<uint8_t> &data) {
     float cell_voltage = (float) ieee_float_(jk_get_32bit(i * 4 + 6));
     float cell_resistance = (float) ieee_float_(jk_get_32bit(i * 4 + 102));
     total_voltage = total_voltage + cell_voltage;
+    if (cell_voltage > 0) {
+      average_cell_voltage = average_cell_voltage + cell_voltage;
+      cells_enabled++;
+    }
     if (cell_voltage > 0 && cell_voltage < min_cell_voltage) {
       min_cell_voltage = cell_voltage;
       min_voltage_cell = i + 1;
@@ -695,18 +719,21 @@ void JkBmsBle::decode_jk04_cell_info_(const std::vector<uint8_t> &data) {
     this->publish_state_(this->cells_[i].cell_voltage_sensor_, cell_voltage);
     this->publish_state_(this->cells_[i].cell_resistance_sensor_, cell_resistance);
   }
+  average_cell_voltage = average_cell_voltage / cells_enabled;
 
   this->publish_state_(this->min_cell_voltage_sensor_, min_cell_voltage);
   this->publish_state_(this->max_cell_voltage_sensor_, max_cell_voltage);
-  this->publish_state_(this->max_voltage_cell_sensor_, (float) max_voltage_cell);
   this->publish_state_(this->min_voltage_cell_sensor_, (float) min_voltage_cell);
+  this->publish_state_(this->max_voltage_cell_sensor_, (float) max_voltage_cell);
+  this->publish_state_(this->delta_cell_voltage_sensor_, max_cell_voltage - min_cell_voltage);
+  this->publish_state_(this->average_cell_voltage_sensor_, average_cell_voltage);
   this->publish_state_(this->total_voltage_sensor_, total_voltage);
 
   // 202   4   0x03 0x95 0x56 0x40    Average Cell Voltage               V
-  this->publish_state_(this->average_cell_voltage_sensor_, (float) ieee_float_(jk_get_32bit(202)));
+  // this->publish_state_(this->average_cell_voltage_sensor_, (float) ieee_float_(jk_get_32bit(202)));
 
   // 206   4   0x00 0xBE 0x90 0x3B    Delta Cell Voltage                 V
-  this->publish_state_(this->delta_cell_voltage_sensor_, (float) ieee_float_(jk_get_32bit(206)));
+  // this->publish_state_(this->delta_cell_voltage_sensor_, (float) ieee_float_(jk_get_32bit(206)));
 
   // 210   4   0x00 0x00 0x00 0x00    Unknown210
   ESP_LOGD(TAG, "Unknown210: 0x%02X 0x%02X 0x%02X 0x%02X (always 0x00 0x00 0x00 0x00)", data[210], data[211], data[212],

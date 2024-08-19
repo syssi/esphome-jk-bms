@@ -390,34 +390,50 @@ void HeltecBalancerBle::decode_cell_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->total_voltage_sensor_, ieee_float_(heltec_get_32bit(201)));
 
   // 205   4   0xDE 0x40 0x51 0x40              Average cell voltage
-  this->publish_state_(this->average_cell_voltage_sensor_, ieee_float_(heltec_get_32bit(205)));
+  // this->publish_state_(this->average_cell_voltage_sensor_, ieee_float_(heltec_get_32bit(205)));
 
   // 209   4   0x00 0x17 0x08 0x3C              Delta Cell Voltage
-  this->publish_state_(this->delta_cell_voltage_sensor_, ieee_float_(heltec_get_32bit(209)));
+  // this->publish_state_(this->delta_cell_voltage_sensor_, ieee_float_(heltec_get_32bit(209)));
 
   // 213   1   0x0A                             Max voltage cell
-  this->publish_state_(this->max_voltage_cell_sensor_, (float) data[213] + 1);
+  // this->publish_state_(this->max_voltage_cell_sensor_, (float) data[213] + 1);
 
   // 214   1   0x00                             Min voltage cell
-  this->publish_state_(this->min_voltage_cell_sensor_, (float) data[214] + 1);
+  // this->publish_state_(this->min_voltage_cell_sensor_, (float) data[214] + 1);
 
   uint8_t cells = 24;
+  uint8_t cells_enabled = 0;
   float min_cell_voltage = 100.0f;
   float max_cell_voltage = -100.0f;
+  float average_cell_voltage = 0.0f;
+  uint8_t min_voltage_cell = 0;
+  uint8_t max_voltage_cell = 0;
   for (uint8_t i = 0; i < cells; i++) {
     float cell_voltage = ieee_float_(heltec_get_32bit(i * 4 + 9));
     float cell_resistance = ieee_float_(heltec_get_32bit(i * 4 + 105));
+    if (cell_voltage > 0) {
+      average_cell_voltage = average_cell_voltage + cell_voltage;
+      cells_enabled++;
+    }
     if (cell_voltage > 0 && cell_voltage < min_cell_voltage) {
       min_cell_voltage = cell_voltage;
+      min_voltage_cell = i + 1;
     }
     if (cell_voltage > max_cell_voltage) {
       max_cell_voltage = cell_voltage;
+      max_voltage_cell = i + 1;
     }
     this->publish_state_(this->cells_[i].cell_voltage_sensor_, cell_voltage);
     this->publish_state_(this->cells_[i].cell_resistance_sensor_, cell_resistance);
   }
+  average_cell_voltage = average_cell_voltage / cells_enabled;
+
   this->publish_state_(this->min_cell_voltage_sensor_, min_cell_voltage);
   this->publish_state_(this->max_cell_voltage_sensor_, max_cell_voltage);
+  this->publish_state_(this->min_voltage_cell_sensor_, (float) min_voltage_cell);
+  this->publish_state_(this->max_voltage_cell_sensor_, (float) max_voltage_cell);
+  this->publish_state_(this->delta_cell_voltage_sensor_, max_cell_voltage - min_cell_voltage);
+  this->publish_state_(this->average_cell_voltage_sensor_, average_cell_voltage);
 
   // 215   1   0x0F                             Single number (not exposed at the android app)
   // ESP_LOGI(TAG, "  Cell count?: %d", data[215] + 1);

@@ -119,8 +119,8 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
 
   this->publish_state_(this->min_cell_voltage_sensor_, min_cell_voltage);
   this->publish_state_(this->max_cell_voltage_sensor_, max_cell_voltage);
-  this->publish_state_(this->max_voltage_cell_sensor_, (float) max_voltage_cell);
   this->publish_state_(this->min_voltage_cell_sensor_, (float) min_voltage_cell);
+  this->publish_state_(this->max_voltage_cell_sensor_, (float) max_voltage_cell);
   this->publish_state_(this->delta_cell_voltage_sensor_, max_cell_voltage - min_cell_voltage);
   this->publish_state_(this->average_cell_voltage_sensor_, average_cell_voltage);
 
