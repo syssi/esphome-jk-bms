@@ -401,13 +401,14 @@ void HeltecBalancerBle::decode_cell_info_(const std::vector<uint8_t> &data) {
   // 214   1   0x00                             Min voltage cell
   // this->publish_state_(this->min_voltage_cell_sensor_, (float) data[214] + 1);
 
+  uint8_t cells = 24;
   uint8_t cells_enabled = 0;
   float min_cell_voltage = 100.0f;
   float max_cell_voltage = -100.0f;
   float average_cell_voltage = 0.0f;
   uint8_t min_voltage_cell = 0;
   uint8_t max_voltage_cell = 0;
-  for (uint8_t i = 0; i < 24; i++) {
+  for (uint8_t i = 0; i < cells; i++) {
     float cell_voltage = ieee_float_(heltec_get_32bit(i * 4 + 9));
     float cell_resistance = ieee_float_(heltec_get_32bit(i * 4 + 105));
     if(cell_voltage > 0) {
