@@ -124,7 +124,7 @@ void JkBmsDisplay::on_jk_bms_display_status_data_(const std::vector<uint8_t> &da
   this->publish_state_(this->state_of_charge_sensor_, jk_bms_get_16bit(6 + offset));
 
   //  8      Maximum pressure difference            UINT16    mV
-  this->publish_state_(this->delta_cell_voltage_sensor_, jk_bms_get_16bit(8 + offset) * 0.001f);
+  // this->publish_state_(this->delta_cell_voltage_sensor_, jk_bms_get_16bit(8 + offset) * 0.001f);
 
   // 10      MOSFET temperature                      INT16    ℃
   this->publish_state_(this->mosfet_temperature_sensor_, ((int16_t) jk_bms_get_16bit(10 + offset)) * 1.0f);
@@ -136,7 +136,7 @@ void JkBmsDisplay::on_jk_bms_display_status_data_(const std::vector<uint8_t> &da
   this->publish_state_(this->system_warning_binary_sensor_, jk_bms_get_16bit(14 + offset) == 0x0001);
 
   // 16      Cell average voltage                   UINT16    mV
-  this->publish_state_(this->average_cell_voltage_sensor_, jk_bms_get_16bit(16 + offset) * 0.001f);
+  // this->publish_state_(this->average_cell_voltage_sensor_, jk_bms_get_16bit(16 + offset) * 0.001f);
 
   // 18      Balanced switch state                  UINT16    -       0: close, 1: open
   this->publish_state_(this->balancing_switch_binary_sensor_, jk_bms_get_16bit(18 + offset) == 0x0001);
@@ -149,12 +149,18 @@ void JkBmsDisplay::on_jk_bms_display_status_data_(const std::vector<uint8_t> &da
 
   // 24      Cell voltages[24]                   24*UINT16    mV
   uint8_t cells = 24;
+  uint8_t cells_enabled = 0;
   float min_cell_voltage = 100.0f;
   float max_cell_voltage = -100.0f;
+  float average_cell_voltage = 0.0f;
   uint8_t min_voltage_cell = 0;
   uint8_t max_voltage_cell = 0;
   for (uint8_t i = 0; i < cells; i++) {
     float cell_voltage = (float) jk_bms_get_16bit(i * 2 + 24 + offset) * 0.001f;
+    if(cell_voltage > 0) {
+      average_cell_voltage = average_cell_voltage + cell_voltage;
+      cells_enabled++;
+    }
     if (cell_voltage > 0 && cell_voltage < min_cell_voltage) {
       min_cell_voltage = cell_voltage;
       min_voltage_cell = i + 1;
@@ -167,11 +173,14 @@ void JkBmsDisplay::on_jk_bms_display_status_data_(const std::vector<uint8_t> &da
       this->publish_state_(this->cells_[i].cell_voltage_sensor_, cell_voltage);
     }
   }
+  average_cell_voltage = average_cell_voltage / cells_enabled;
 
   this->publish_state_(this->min_cell_voltage_sensor_, min_cell_voltage);
   this->publish_state_(this->max_cell_voltage_sensor_, max_cell_voltage);
   this->publish_state_(this->max_voltage_cell_sensor_, (float) max_voltage_cell);
   this->publish_state_(this->min_voltage_cell_sensor_, (float) min_voltage_cell);
+  this->publish_state_(this->delta_cell_voltage_sensor_, max_cell_voltage - min_cell_voltage);
+  this->publish_state_(this->average_cell_voltage_sensor_, average_cell_voltage);
 
   // 72      Cell voltage undervoltage alarm        UINT16    -       0: no alarm, 1: alarm
   this->publish_state_(this->cell_voltage_undervoltage_protection_binary_sensor_,
