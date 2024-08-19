@@ -369,20 +369,34 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   uint8_t cells = 24 + (offset / 2);
   float min_cell_voltage = 100.0f;
   float max_cell_voltage = -100.0f;
+  uint8_t min_voltage_cell = 0;
+  uint8_t max_voltage_cell = 0;
   for (uint8_t i = 0; i < cells; i++) {
     float cell_voltage = (float) jk_get_16bit(i * 2 + 6) * 0.001f;
     float cell_resistance = (float) jk_get_16bit(i * 2 + 64 + offset) * 0.001f;
     if (cell_voltage > 0 && cell_voltage < min_cell_voltage) {
       min_cell_voltage = cell_voltage;
+      min_voltage_cell = i + 1;
     }
     if (cell_voltage > max_cell_voltage) {
       max_cell_voltage = cell_voltage;
+      max_voltage_cell = i + 1;
     }
     this->publish_state_(this->cells_[i].cell_voltage_sensor_, cell_voltage);
     this->publish_state_(this->cells_[i].cell_resistance_sensor_, cell_resistance);
   }
   this->publish_state_(this->min_cell_voltage_sensor_, min_cell_voltage);
   this->publish_state_(this->max_cell_voltage_sensor_, max_cell_voltage);
+
+  ESP_LOGE(TAG, "Computed min_cell_voltage: %.3f V", min_cell_voltage);
+  ESP_LOGE(TAG, "Computed max_cell_voltage: %.3f V", max_cell_voltage);
+  ESP_LOGE(TAG, "Computed min_voltage_cell: %d", min_voltage_cell);
+  ESP_LOGE(TAG, "Computed max_voltage_cell: %d", max_voltage_cell);
+  ESP_LOGE(TAG, "Computed delta_cell_voltage: %.4f V", max_cell_voltage - min_cell_voltage);
+
+  ESP_LOGE(TAG, "Reported min_voltage_cell: %d", data[63 + offset] + 1);
+  ESP_LOGE(TAG, "Reported max_voltage_cell: %d", data[62 + offset] + 1);
+  ESP_LOGE(TAG, "Reported delta_cell_voltage: %.3f V", (float) jk_get_16bit(60 + offset) * 0.001f);
 
   // 54    4   0xFF 0xFF 0x00 0x00    Enabled cells bitmask
   //           0x0F 0x00 0x00 0x00    4 cells enabled
