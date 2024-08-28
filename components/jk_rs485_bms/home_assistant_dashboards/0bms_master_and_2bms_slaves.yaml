@@ -1,9 +1,237 @@
-title: JK-BMS monitor
+title: YAMBMS monitor
 views:
   - title: WHOLE SYSTEM
     path: default_view
     badges: []
     cards:
+      - type: entities
+        entities:
+          - entity: sensor.yambms_smart_bms_1_charging_instruction
+            name: Instruction
+          - entity: sensor.yambms_smart_bms_1_charging_status
+            name: Status
+          - entity: sensor.yambms_smart_bms_1_capacity_remaining_s
+            name: Remaining
+          - entity: sensor.yambms_smart_bms_1_battery_capacity_s
+            name: Battery Capacity (Σ)
+          - entity: sensor.yambms_smart_bms_1_charging_cycles_o
+            name: Cycles
+          - entity: sensor.yambms_smart_bms_1_current_s
+            name: Current
+          - entity: sensor.yambms_smart_bms_1_power_s
+            name: Power
+          - entity: sensor.yambms_smart_bms_1_total_voltage_o
+            name: Voltage
+          - entity: sensor.yambms_smart_bms_1_requested_charge_voltage
+            name: RCV
+          - entity: number.yambms_smart_bms_1_float_voltage
+            secondary_info: none
+            name: RFV
+          - entity: switch.broadcast_changes_to_all_bmss
+        state_color: false
+      - type: vertical-stack
+        cards:
+          - type: custom:stack-in-card
+            keep:
+              margin: false
+              box_shadow: false
+              background: false
+            cards:
+              - type: grid
+                square: false
+                columns: 1
+                cards:
+                  - type: markdown
+                    content: <CENTER><b><font size=5>BMS 01</font></b></CENTER>
+                    style: |
+                      ha-card {
+                        height: 10px;  /* Ajusta el valor según tu preferencia */
+                        overflow: hidden;
+                      }
+              - type: grid
+                square: false
+                columns: 2
+                cards:
+                  - type: markdown
+                    content: >-
+                      {% macro pad_right(w, s) %}  {{ s }} {% set slen =  w -
+                      (s|length) %} {% for idx in range(slen)%} &nbsp; {%endfor
+                      %} {%- endmacro %} {% macro green(s) %} <font
+                      color=#41CD52 family=Consolas> {{ s }} </font> {%-
+                      endmacro %} <div>    {{ pad_right(14, 'MOS  Temp.:') }} 
+                      {{
+                      green(states('sensor.yambms_jk_bms_1_temperature_powertube')
+                      + ' °C') }} <br>  {{ pad_right(15, 'Battery T1:') }}  {{
+                      green(states('sensor.yambms_jk_bms_1_temperature_sensor_1')
+                      +  ' °C') }} <br>  {{ pad_right(15, 'Battery T2:') }}  {{
+                      green(states('sensor.yambms_jk_bms_1_temperature_sensor_2')
+                      +  ' °C') }} <br>  {{ pad_right(15, 'Battery T3:') }}  {{
+                      green(states('sensor.yambms_jk_bms_1_temperature_sensor_3')
+                      +  ' °C') }}<br>  {{ pad_right(15, 'Battery T4:') }}  {{
+                      green(states('sensor.yambms_jk_bms_1_temperature_sensor_4')
+                      +  ' °C') }}           <br>  {{ pad_right(15, 'Battery
+                      T5:') }}  {{
+                      green(states('sensor.yambms_jk_bms_1_temperature_sensor_5')
+                      +  ' °C') }}</div><br>
+
+                      <div> {%- set alarm_active =
+                      states('sensor.yambms_jk_bms_1_battery_total_alarms_active')|int
+                      %} {%- set alarm_active = 0 %}                
+                        {%- set alarm_count = states('sensor.yambms_jk_bms_1_battery_total_alarms_count')|int %}
+                        {%- set alarm_label = '<font size=2>ALARMS</font>' if alarm_active==0
+                            else '<b><font size=5 color=red>ALARMS</font></b>' %}
+                        {{alarm_label}} ({{ alarm_active }}/{{ alarm_count -}})
+                  - type: markdown
+                    content: >-
+                      {%- set soc =
+                        states('sensor.yambms_jk_bms_1_battery_capacity_state_of_charge') %} 
+                      {%- set soh =
+                        states('sensor.yambms_jk_bms_1_battery_soh_valuation') %}   {%- set
+                      max_idx =
+                      states('sensor.yambms_jk_bms_1_cell_voltage_max_cell_number')
+                      %} {%- set min_idx =
+                      states('sensor.yambms_jk_bms_1_cell_voltage_min_cell_number')
+                      %}   {%- set max_idx =
+                      states('sensor.yambms_jk_bms_1_cell_voltage_max_cell_number')
+                      %}    {%- set min_idxr =
+                      states('sensor.yambms_jk_bms_1_cell_resistance_min_cell_number')
+                      %}   {%- set max_idxr =
+                      states('sensor.yambms_jk_bms_1_cell_resistance_max_cell_number')
+                      %}                  {%- set delta_voltage =
+                      (states('sensor.yambms_jk_bms_1_cell_delta_voltage')|float)
+                      %} {%- set average_voltage =
+                        (states('sensor.yambms_jk_bms_1_cell_average_voltage')|float) %}   {%-
+                      set max_voltage =
+                      (states('sensor.yambms_jk_bms_1_cell_voltage_max')|float)
+                      %}    {%- set min_voltage =
+                      (states('sensor.yambms_jk_bms_1_cell_voltage_min')|float)
+                      %}              {%- set max_resistance =
+                      (states('sensor.yambms_jk_bms_1_cell_resistance_max')|float)
+                      %}  {%- set min_resistance =
+                      (states('sensor.yambms_jk_bms_1_cell_resistance_min')|float)
+                      %}            <table>  
+                        <tr><td><b>SOC:</b></td><td width=125px>{{soc}} %</td></tr>              
+                        <tr><td><b>SOH:</b></td><td width=125px>{{soh}} %</td></tr>              
+                        <tr><td><b>delta:</b></td><td width=125px>{{delta_voltage}} V</td></tr>              
+                        <tr><td>avg:</b></td><td width=125px>{{average_voltage}} V</td></tr>                              
+                        <tr><td>Vmax:</td><td width=125px>{{max_voltage}} V [cell {{max_idx}}] </td></tr>
+                        <tr><td>Vmin:</td><td width=125px>{{min_voltage}} V [cell {{min_idx}}] </td></tr>                
+                        <tr><td>Rmax:</td><td width=125px>{{max_resistance}} Ω [cell {{max_idxr}}]</td></tr>
+                        <tr><td>Rmin:</td><td width=125px>{{min_resistance}} Ω [cell {{min_idxr}}]</td></tr>
+                      </table>
+      - type: vertical-stack
+        cards:
+          - type: custom:stack-in-card
+            keep:
+              margin: false
+              box_shadow: false
+              background: false
+            cards:
+              - type: grid
+                square: false
+                columns: 1
+                cards:
+                  - type: markdown
+                    content: <CENTER><b><font size=5>BMS 02</font></b></CENTER>
+                    style: |
+                      ha-card {
+                        height: 10px;  /* Ajusta el valor según tu preferencia */
+                        overflow: hidden;
+                      }
+              - type: grid
+                square: false
+                columns: 2
+                cards:
+                  - type: markdown
+                    content: >-
+                      {% macro pad_right(w, s) %}  {{ s }} {% set slen =  w -
+                      (s|length) %} {% for idx in range(slen)%} &nbsp; {%endfor
+                      %} {%- endmacro %} {% macro green(s) %} <font
+                      color=#41CD52 family=Consolas> {{ s }} </font> {%-
+                      endmacro %} <div>    {{ pad_right(14, 'MOS  Temp.:') }} 
+                      {{
+                      green(states('sensor.yambms_jk_bms_2_temperature_powertube')
+                      + ' °C') }} <br>  {{ pad_right(15, 'Battery T1:') }}  {{
+                      green(states('sensor.yambms_jk_bms_2_temperature_sensor_1')
+                      +  ' °C') }} <br>  {{ pad_right(15, 'Battery T2:') }}  {{
+                      green(states('sensor.yambms_jk_bms_2_temperature_sensor_2')
+                      +  ' °C') }} <br>  {{ pad_right(15, 'Battery T3:') }}  {{
+                      green(states('sensor.yambms_jk_bms_2_temperature_sensor_3')
+                      +  ' °C') }}<br>  {{ pad_right(15, 'Battery T4:') }}  {{
+                      green(states('sensor.yambms_jk_bms_2_temperature_sensor_4')
+                      +  ' °C') }}           <br>  {{ pad_right(15, 'Battery
+                      T5:') }}  {{
+                      green(states('sensor.yambms_jk_bms_2_temperature_sensor_5')
+                      +  ' °C') }}</div><br>
+
+                      <div> {%- set alarm_active =
+                      states('sensor.yambms_jk_bms_2_battery_total_alarms_active')|int
+                      %} {%- set alarm_active = 0 %}                
+                        {%- set alarm_count = states('sensor.yambms_jk_bms_2_battery_total_alarms_count')|int %}
+                        {%- set alarm_label = '<font size=2>ALARMS</font>' if alarm_active==0
+                            else '<b><font size=5 color=red>ALARMS</font></b>' %}
+                        {{alarm_label}} ({{ alarm_active }}/{{ alarm_count -}})
+                  - type: markdown
+                    content: >-
+                      {%- set soc =
+                        states('sensor.yambms_jk_bms_2_battery_capacity_state_of_charge') %} 
+                      {%- set soh =
+                        states('sensor.yambms_jk_bms_2_battery_soh_valuation') %}   {%- set
+                      max_idx =
+                      states('sensor.yambms_jk_bms_2_cell_voltage_max_cell_number')
+                      %} {%- set min_idx =
+                      states('sensor.yambms_jk_bms_2_cell_voltage_min_cell_number')
+                      %}   {%- set max_idx =
+                      states('sensor.yambms_jk_bms_2_cell_voltage_max_cell_number')
+                      %}    {%- set min_idxr =
+                      states('sensor.yambms_jk_bms_2_cell_resistance_min_cell_number')
+                      %}   {%- set max_idxr =
+                      states('sensor.yambms_jk_bms_2_cell_resistance_max_cell_number')
+                      %}                  {%- set delta_voltage =
+                      (states('sensor.yambms_jk_bms_2_cell_delta_voltage')|float)
+                      %} {%- set average_voltage =
+                        (states('sensor.yambms_jk_bms_2_cell_average_voltage')|float) %}   {%-
+                      set max_voltage =
+                      (states('sensor.yambms_jk_bms_2_cell_voltage_max')|float)
+                      %}    {%- set min_voltage =
+                      (states('sensor.yambms_jk_bms_2_cell_voltage_min')|float)
+                      %}              {%- set max_resistance =
+                      (states('sensor.yambms_jk_bms_2_cell_resistance_max')|float)
+                      %}  {%- set min_resistance =
+                      (states('sensor.yambms_jk_bms_2_cell_resistance_min')|float)
+                      %}            <table>  
+                        <tr><td><b>SOC:</b></td><td width=125px>{{soc}} %</td></tr>              
+                        <tr><td><b>SOH:</b></td><td width=125px>{{soh}} %</td></tr>              
+                        <tr><td><b>delta:</b></td><td width=125px>{{delta_voltage}} V</td></tr>              
+                        <tr><td>avg:</b></td><td width=125px>{{average_voltage}} V</td></tr>                              
+                        <tr><td>Vmax:</td><td width=125px>{{max_voltage}} V [cell {{max_idx}}] </td></tr>
+                        <tr><td>Vmin:</td><td width=125px>{{min_voltage}} V [cell {{min_idx}}] </td></tr>                
+                        <tr><td>Rmax:</td><td width=125px>{{max_resistance}} Ω [cell {{max_idxr}}]</td></tr>
+                        <tr><td>Rmin:</td><td width=125px>{{min_resistance}} Ω [cell {{min_idxr}}]</td></tr>
+                      </table>
+      - type: entities
+        entities:
+          - entity: button.yambms_esp32_restart
+          - entity: sensor.yambms_smart_bms_1_battery_capacity_s
+          - entity: sensor.yambms_smart_bms_1_capacity_remaining_s
+          - entity: sensor.yambms_smart_bms_1_cell_count
+          - entity: sensor.yambms_smart_bms_1_cell_ovp_min
+          - entity: sensor.yambms_smart_bms_1_cell_ovpr_min
+          - entity: sensor.yambms_smart_bms_1_cell_uvpr_max
+          - entity: sensor.yambms_smart_bms_1_charging_cycles_o
+          - entity: sensor.yambms_smart_bms_1_charging_instruction
+          - entity: sensor.yambms_smart_bms_1_charging_status
+          - entity: sensor.yambms_smart_bms_1_current_s
+          - entity: sensor.yambms_smart_bms_1_max_cell_voltage
+          - entity: sensor.yambms_smart_bms_1_max_charge_current_s
+          - entity: sensor.yambms_smart_bms_1_max_discharge_current_s
+          - entity: sensor.yambms_smart_bms_1_max_voltage_cell
+          - entity: sensor.yambms_smart_bms_1_min_cell_voltage
+          - entity: sensor.yambms_smart_bms_1_min_voltage_cell
+          - entity: sensor.yambms_smart_bms_1_power_s
+          - entity: sensor.yambms_smart_bms_1_total_voltage_o
+          - entity: sensor.yambms_smart_bms_1_warning
+        title: SMART BMS STATUS
       - type: vertical-stack
         cards:
           - type: custom:stack-in-card
@@ -22,9 +250,9 @@ views:
                       {%- set total_bms = namespace(value=0) %} {%- set
                       total_online_bms = namespace(value=0) %} {% for idx in
                       range(0, 16)-%} 
-                        {% if states('binary_sensor.rs485_bms%d_status_online' % idx)=='on' or states('binary_sensor.rs485_bms%d_status_online' % idx)=='off' %}
+                        {% if states('binary_sensor.yambms_jk_bms_%d_status_online' % idx)=='on' or states('binary_sensor.rs485_bms%d_status_online' % idx)=='off' %}
                          {% set total_bms.value = total_bms.value +1 %}
-                         {% if states('binary_sensor.rs485_bms%d_status_online' % idx)=='on' %}
+                         {% if states('binary_sensor.yambms_jk_bms_%d_status_online' % idx)=='on' %}
                             {% set total_online_bms.value = total_online_bms.value +1 %}
                          {% endif %}
                         {%- endif %}
@@ -38,15 +266,16 @@ views:
                   - type: markdown
                     content: >-
                       {%- set power_draw =
-                      states('sensor.rs485_bms1_battery_power')|float +
-                      states('sensor.rs485_bms1_battery_power')|float %}  {%-
-                      set power_charging =
-                      states('sensor.rs485_bms1_battery_power_charging')|float +
-                      states('sensor.rs485_bms1_battery_power_charging')|float
-                      %}  {%- set power_discharging =
-                      states('sensor.rs485_bms1_battery_power_discharging')|float
+                      states('sensor.yambms_jk_bms_1_battery_power')|float +
+                      states('sensor.yambms_jk_bms_2_battery_power')|float %} 
+                      {%- set power_charging =
+                      states('sensor.yambms_jk_bms_1_battery_power_charging')|float
                       +
-                      states('sensor.rs485_bms1_battery_power_discharging')|float
+                      states('sensor.yambms_jk_bms_2_battery_power_charging')|float
+                      %}  {%- set power_discharging =
+                      states('sensor.yambms_jk_bms_1_battery_power_discharging')|float
+                      +
+                      states('sensor.yambms_jk_bms_2_battery_power_discharging')|float
                       %} 
 
                       {%- set power_label = "(charging)" if (power_charging)>0 
@@ -84,8 +313,9 @@ views:
                   - type: markdown
                     content: >-
                       {%- set total_voltage =
-                      (states('sensor.rs485_bms1_battery_voltage')|float +
-                      states('sensor.rs485_bms1_battery_voltage')|float)/2 %}
+                      (states('sensor.yambms_jk_bms_1_battery_voltage')|float +
+                      states('sensor.yambms_jk_bms_2_battery_voltage')|float)/2
+                      %}
 
                       <center><b><font color=#41CD52 size=6>{{"%.3f" %
                       total_voltage}}V</font></b><br> </center>   {% macro
@@ -100,7 +330,7 @@ views:
                   - type: markdown
                     content: >-
                       {%- set total_current =
-                      (states('sensor.rs485_bms1_battery_current')|float)+(states('sensor.rs485_bms1_battery_current')|float)
+                      (states('sensor.yambms_jk_bms_1_battery_current')|float)+(states('sensor.yambms_jk_bms_2_battery_current')|float)
                       %}
                                   
                       <center><b><font color=#41CD52 size=6>{{"%.3f" %
@@ -109,213 +339,60 @@ views:
                       %} {% for idx in range(slen)%} &nbsp; {%endfor %} {%-
                       endmacro %} {% macro green(s) %} <font color=#41CD52
                       family=Consolas> {{ s }} </font> {%- endmacro %}
-              - type: grid
-                square: false
-                columns: 1
-                cards:
-                  - type: markdown
-                    content: >-
-                      {%- set uptime =
-                      (states('sensor.esp_rs485_gw_uptime_sensor')|float) %} {%-
-                      set uptime_human =
-                      (states('sensor.esp_rs485_gw_uptime_human_readable')) %}
-
-                      <font color=#aaaaaa size=3>UPTIME: {{"%s" % uptime_human}}
-                      ({{"%.0f" % uptime}}s) </font> {% macro pad_right(w, s)
-                      %}  {{ s }} {% set slen =  w - (s|length) %} {% for idx in
-                      range(slen)%} &nbsp; {%endfor %} {%- endmacro %} {% macro
-                      green(s) %} <font color=#41CD52 family=Consolas> {{ s }}
-                      </font> {%- endmacro %}
-      - type: vertical-stack
-        cards:
-          - type: custom:stack-in-card
-            keep:
-              margin: false
-              box_shadow: false
-              background: false
-            cards:
-              - type: grid
-                square: false
-                columns: 1
-                cards:
-                  - type: markdown
-                    content: <CENTER><b><font size=5>BMS 00</font></b></CENTER>
-                    style: |
-                      ha-card {
-                        height: 10px;  /* Ajusta el valor según tu preferencia */
-                        overflow: hidden;
-                      }
-              - type: grid
-                square: false
-                columns: 2
-                cards:
-                  - type: markdown
-                    content: >-
-                      {% macro pad_right(w, s) %}  {{ s }} {% set slen =  w -
-                      (s|length) %} {% for idx in range(slen)%} &nbsp; {%endfor
-                      %} {%- endmacro %} {% macro green(s) %} <font
-                      color=#41CD52 family=Consolas> {{ s }} </font> {%-
-                      endmacro %} <div>    {{ pad_right(14, 'MOS  Temp.:') }} 
-                      {{ green(states('sensor.rs485_bms0_temperature_powertube')
-                      + ' °C') }} <br>  {{ pad_right(15, 'Battery T1:') }}  {{
-                      green(states('sensor.rs485_bms0_temperature_sensor_1') + 
-                      ' °C') }} <br>  {{ pad_right(15, 'Battery T2:') }}  {{
-                      green(states('sensor.rs485_bms0_temperature_sensor_2') + 
-                      ' °C') }} <br>  {{ pad_right(15, 'Battery T3:') }}  {{
-                      green(states('sensor.rs485_bms0_temperature_sensor_3') + 
-                      ' °C') }}<br>  {{ pad_right(15, 'Battery T4:') }}  {{
-                      green(states('sensor.rs485_bms0_temperature_sensor_4') + 
-                      ' °C') }}           <br>  {{ pad_right(15, 'Battery T5:')
-                      }}  {{
-                      green(states('sensor.rs485_bms0_temperature_sensor_5') + 
-                      ' °C') }}</div><br>
-
-                      <div> {%- set alarm_active =
-                      states('sensor.rs485_bms0_battery_total_alarms_active')|int
-                      %} {%- set alarm_active = 0 %}                
-                        {%- set alarm_count = states('sensor.rs485_bms0_battery_total_alarms_count')|int %}
-                        {%- set alarm_label = '<font size=2>ALARMS</font>' if alarm_active==0
-                            else '<b><font size=5 color=red>ALARMS</font></b>' %}
-                        {{alarm_label}} ({{ alarm_active }}/{{ alarm_count -}})
-                  - type: markdown
-                    content: >-
-                      {%- set soc =
-                        states('sensor.rs485_bms0_battery_capacity_state_of_charge') %} 
-                      {%- set soh =
-                        states('sensor.rs485_bms0_battery_soh_valuation') %}   {%- set
-                      max_idx =
-                      states('sensor.rs485_bms0_cell_voltage_max_cell_number')
-                      %} {%- set min_idx =
-                      states('sensor.rs485_bms0_cell_voltage_min_cell_number')
-                      %}   {%- set max_idx =
-                      states('sensor.rs485_bms0_cell_voltage_max_cell_number')
-                      %}    {%- set min_idxr =
-                      states('sensor.rs485_bms0_cell_resistance_min_cell_number')
-                      %}   {%- set max_idxr =
-                      states('sensor.rs485_bms0_cell_resistance_max_cell_number')
-                      %}                  {%- set delta_voltage =
-                      (states('sensor.rs485_bms0_cell_delta_voltage')|float) %}
-                      {%- set average_voltage =
-                        (states('sensor.rs485_bms0_cell_average_voltage')|float) %}   {%-
-                      set max_voltage =
-                      (states('sensor.rs485_bms0_cell_voltage_max')|float) %}   
-                      {%- set min_voltage =
-                      (states('sensor.rs485_bms0_cell_voltage_min')|float)
-                      %}              {%- set max_resistance =
-                      (states('sensor.rs485_bms0_cell_resistance_max')|float)
-                      %}  {%- set min_resistance =
-                      (states('sensor.rs485_bms0_cell_resistance_min')|float)
-                      %}            <table>  
-                        <tr><td><b>SOC:</b></td><td width=125px>{{soc}} %</td></tr>              
-                        <tr><td><b>SOH:</b></td><td width=125px>{{soh}} %</td></tr>              
-                        <tr><td><b>delta:</b></td><td width=125px>{{delta_voltage}} V</td></tr>              
-                        <tr><td>avg:</b></td><td width=125px>{{average_voltage}} V</td></tr>                              
-                        <tr><td>Vmax:</td><td width=125px>{{max_voltage}} V [cell {{max_idx}}] </td></tr>
-                        <tr><td>Vmin:</td><td width=125px>{{min_voltage}} V [cell {{min_idx}}] </td></tr>                
-                        <tr><td>Rmax:</td><td width=125px>{{max_resistance}} Ω [cell {{max_idxr}}]</td></tr>
-                        <tr><td>Rmin:</td><td width=125px>{{min_resistance}} Ω [cell {{min_idxr}}]</td></tr>
-                      </table>
-      - type: vertical-stack
-        cards:
-          - type: custom:stack-in-card
-            keep:
-              margin: false
-              box_shadow: false
-              background: false
-            cards:
-              - type: grid
-                square: false
-                columns: 1
-                cards:
-                  - type: markdown
-                    content: <CENTER><b><font size=5>BMS 01</font></b></CENTER>
-                    style: |
-                      ha-card {
-                        height: 10px;  /* Ajusta el valor según tu preferencia */
-                        overflow: hidden;
-                      }
-              - type: grid
-                square: false
-                columns: 2
-                cards:
-                  - type: markdown
-                    content: >-
-                      {% macro pad_right(w, s) %}  {{ s }} {% set slen =  w -
-                      (s|length) %} {% for idx in range(slen)%} &nbsp; {%endfor
-                      %} {%- endmacro %} {% macro green(s) %} <font
-                      color=#41CD52 family=Consolas> {{ s }} </font> {%-
-                      endmacro %} <div>    {{ pad_right(14, 'MOS  Temp.:') }} 
-                      {{ green(states('sensor.rs485_bms1_temperature_powertube')
-                      + ' °C') }} <br>  {{ pad_right(15, 'Battery T1:') }}  {{
-                      green(states('sensor.rs485_bms1_temperature_sensor_1') + 
-                      ' °C') }} <br>  {{ pad_right(15, 'Battery T2:') }}  {{
-                      green(states('sensor.rs485_bms1_temperature_sensor_2') + 
-                      ' °C') }} <br>  {{ pad_right(15, 'Battery T3:') }}  {{
-                      green(states('sensor.rs485_bms1_temperature_sensor_3') + 
-                      ' °C') }}<br>  {{ pad_right(15, 'Battery T4:') }}  {{
-                      green(states('sensor.rs485_bms1_temperature_sensor_4') + 
-                      ' °C') }}           <br>  {{ pad_right(15, 'Battery T5:')
-                      }}  {{
-                      green(states('sensor.rs485_bms1_temperature_sensor_5') + 
-                      ' °C') }}</div><br>
-
-                      <div> {%- set alarm_active =
-                      states('sensor.rs485_bms1_battery_total_alarms_active')|int
-                      %} {%- set alarm_active = 0 %}                
-                        {%- set alarm_count = states('sensor.rs485_bms1_battery_total_alarms_count')|int %}
-                        {%- set alarm_label = '<font size=2>ALARMS</font>' if alarm_active==0
-                            else '<b><font size=5 color=red>ALARMS</font></b>' %}
-                        {{alarm_label}} ({{ alarm_active }}/{{ alarm_count -}})
-                  - type: markdown
-                    content: >-
-                      {%- set soc =
-                        states('sensor.rs485_bms1_battery_capacity_state_of_charge') %} 
-                      {%- set soh =
-                        states('sensor.rs485_bms1_battery_soh_valuation') %}   {%- set
-                      max_idx =
-                      states('sensor.rs485_bms1_cell_voltage_max_cell_number')
-                      %} {%- set min_idx =
-                      states('sensor.rs485_bms1_cell_voltage_min_cell_number')
-                      %}   {%- set max_idx =
-                      states('sensor.rs485_bms1_cell_voltage_max_cell_number')
-                      %}    {%- set min_idxr =
-                      states('sensor.rs485_bms1_cell_resistance_min_cell_number')
-                      %}   {%- set max_idxr =
-                      states('sensor.rs485_bms1_cell_resistance_max_cell_number')
-                      %}                  {%- set delta_voltage =
-                      (states('sensor.rs485_bms1_cell_delta_voltage')|float) %}
-                      {%- set average_voltage =
-                        (states('sensor.rs485_bms1_cell_average_voltage')|float) %}   {%-
-                      set max_voltage =
-                      (states('sensor.rs485_bms1_cell_voltage_max')|float) %}   
-                      {%- set min_voltage =
-                      (states('sensor.rs485_bms1_cell_voltage_min')|float)
-                      %}              {%- set max_resistance =
-                      (states('sensor.rs485_bms1_cell_resistance_max')|float)
-                      %}  {%- set min_resistance =
-                      (states('sensor.rs485_bms1_cell_resistance_min')|float)
-                      %}            <table>  
-                        <tr><td><b>SOC:</b></td><td width=125px>{{soc}} %</td></tr>              
-                        <tr><td><b>SOH:</b></td><td width=125px>{{soh}} %</td></tr>              
-                        <tr><td><b>delta:</b></td><td width=125px>{{delta_voltage}} V</td></tr>              
-                        <tr><td>avg:</b></td><td width=125px>{{average_voltage}} V</td></tr>                              
-                        <tr><td>Vmax:</td><td width=125px>{{max_voltage}} V [cell {{max_idx}}] </td></tr>
-                        <tr><td>Vmin:</td><td width=125px>{{min_voltage}} V [cell {{min_idx}}] </td></tr>                
-                        <tr><td>Rmax:</td><td width=125px>{{max_resistance}} Ω [cell {{max_idxr}}]</td></tr>
-                        <tr><td>Rmin:</td><td width=125px>{{min_resistance}} Ω [cell {{min_idxr}}]</td></tr>
-                      </table>
       - type: entities
         entities:
-          - entity: binary_sensor.rs485_bms0_status_online
-          - entity: binary_sensor.rs485_bms1_status_online
-          - entity: sensor.esp_rs485_gw_uptime_human_readable
+          - entity: sensor.yambms_jk_bms_1_temperature_powertube
+            name: powertube
+          - entity: sensor.yambms_jk_bms_1_temperature_sensor_1
+            name: T1
+          - entity: sensor.yambms_jk_bms_1_temperature_sensor_2
+            name: T2
+          - entity: sensor.yambms_jk_bms_1_temperature_sensor_3
+            name: T3
+          - entity: sensor.yambms_jk_bms_1_temperature_sensor_4
+            name: T4
+          - entity: sensor.yambms_jk_bms_1_temperature_sensor_5
+            name: T5
+        title: Temperatures BMS 01
+      - type: entities
+        entities:
+          - entity: sensor.yambms_jk_bms_2_temperature_powertube
+            name: Powertube
+          - entity: sensor.yambms_jk_bms_2_temperature_sensor_1
+            name: T1
+          - entity: sensor.yambms_jk_bms_2_temperature_sensor_2
+            name: T2
+          - entity: sensor.yambms_jk_bms_2_temperature_sensor_3
+            name: T3
+          - entity: sensor.yambms_jk_bms_2_temperature_sensor_4
+            name: T4
+          - entity: sensor.yambms_jk_bms_2_temperature_sensor_5
+            name: T5
+        title: Temperatures BMS 02
+      - type: entities
+        entities:
+          - entity: binary_sensor.yambms_canbus_1_status
+            name: CANBUS 1 Status
+          - entity: binary_sensor.yambms_esp32_online_status
+            name: ESP32 Online Status
+          - entity: binary_sensor.yambms_jk_bms_1_status_online
+            name: JK-BMS 1 status online
+          - entity: binary_sensor.yambms_jk_bms_2_status_online
+            name: JK-BMS 2 status online
+          - entity: sensor.yambms_smart_bms_1_alarm
+            name: Smart BMS 1 Alarm
+          - entity: sensor.yambms_smart_bms_1_last_complete_charge
+            name: Smart BMS 1 Last Complete Charge
+          - entity: sensor.yambms_smart_bms_1_last_complete_charge_human_readable
+            name: Smart BMS 1 Last Complete Charge Human Readable
+          - entity: sensor.yambms_smart_bms_1_warning
+            name: Smart BMS 1 Warning
+          - entity: sensor.yambms_uptime_human_readable
             name: Uptime Human Readable
-          - entity: sensor.esp_rs485_gw_uptime_sensor
+          - entity: sensor.yambms_uptime_sensor
             name: Uptime Sensor
-        title: Esp-Rs485-Gw
-      - type: entities
-        entities:
-          - entity: switch.broadcast_changes_to_all_bmss
+          - entity: sensor.yambms_esp32_uptime
+        title: Esp32-S3
   - title: BMS Summary
     path: bmss-summary
     badges: []
@@ -334,12 +411,12 @@ views:
                 cards:
                   - type: markdown
                     content: >-
-                      <center><font color=#3090C7 size=4>bms00 [{{
-                      states('sensor.rs485_bms0_total_runtime_formatted') |
+                      <center><font color=#3090C7 size=4>BMS_01 [{{
+                      states('sensor.yambms_jk_bms_1_total_runtime_formatted') |
                       string }}]&nbsp;&nbsp;{{
-                      (states('sensor.rs485_bms0_battery_capacity_state_of_charge')
+                      (states('sensor.yambms_jk_bms_1_battery_capacity_state_of_charge')
                       + ' %') }}   ({{
-                        (states('sensor.rs485_bms0_battery_capacity_remaining')) }}Ah)
+                        (states('sensor.yambms_jk_bms_1_battery_capacity_remaining')) }}Ah)
                       </center>
               - type: grid
                 square: false
@@ -348,7 +425,7 @@ views:
                   - type: markdown
                     content: >-
                       {%- set online =
-                      states('binary_sensor.rs485_bms0_status_online')
+                      states('binary_sensor.yambms_jk_bms_1_status_online')
                       %}                      
 
                       {%- set is_working = "online" if (online|bool) else
@@ -365,7 +442,7 @@ views:
 
 
                       {%- set precharging =
-                      states('binary_sensor.rs485_bms0_status_precharging')
+                      states('binary_sensor.yambms_jk_bms_1_status_precharging')
                       %}                      
 
                       {%- set is_working = "working" if (precharging|bool) else
@@ -382,7 +459,7 @@ views:
 
 
                       {%- set heating =
-                      states('binary_sensor.rs485_bms0_status_heating')
+                      states('binary_sensor.yambms_jk_bms_1_status_heating')
                       %}                      
 
                       {%- set is_working = "working" if (heating|bool) else
@@ -399,7 +476,7 @@ views:
                   - type: markdown
                     content: >-
                       {%- set charging =
-                      states('binary_sensor.rs485_bms0_status_charging')
+                      states('binary_sensor.yambms_jk_bms_1_status_charging')
                       %}                         
 
                       {%- set is_working = "working" if (charging|bool) else
@@ -416,7 +493,7 @@ views:
 
 
                       {%- set discharging =
-                      states('binary_sensor.rs485_bms0_status_discharging')
+                      states('binary_sensor.yambms_jk_bms_1_status_discharging')
                       %}                         
 
                       {%- set is_working = "working" if (discharging|bool) else
@@ -432,8 +509,8 @@ views:
                       font_end -}}
                         
                       {%- set balancing_direction =
-                      states('sensor.rs485_bms0_balancing_direction')%}   {%-
-                      set is_working = "charging" if
+                      states('sensor.yambms_jk_bms_1_balancing_direction')%}  
+                      {%- set is_working = "charging" if
                       (balancing_direction|int)==1 
                             else "discharging" if (balancing_direction|int)==2 
                             else "idle" if (balancing_direction|int)==0
@@ -459,11 +536,11 @@ views:
                   - type: markdown
                     content: >-
                       {%- set power_draw =
-                      states('sensor.rs485_bms0_battery_power')|float %}  {%-
-                      set power_charging =
-                      states('sensor.rs485_bms0_battery_power_charging')|float
+                      states('sensor.yambms_jk_bms_1_battery_power')|float %} 
+                      {%- set power_charging =
+                      states('sensor.yambms_jk_bms_1_battery_power_charging')|float
                       %}  {%- set power_discharging =
-                      states('sensor.rs485_bms0_battery_power_discharging')|float
+                      states('sensor.yambms_jk_bms_1_battery_power_discharging')|float
                       %} 
 
                       {%- set power_label = "(charging)" if (power_charging)>0 
@@ -501,7 +578,7 @@ views:
                   - type: markdown
                     content: >-
                       <center><b><font color=#41CD52
-                      size=6>{{states('sensor.rs485_bms0_battery_voltage')
+                      size=6>{{states('sensor.yambms_jk_bms_1_battery_voltage')
                       }}V</font></b><br> </center>   {% macro pad_right(w, s) %}
                       {{ s }} {% set slen =  w - (s|length) %} 
                         {% for idx in range(slen)%} &nbsp; {%endfor %}
@@ -513,7 +590,7 @@ views:
                   - type: markdown
                     content: >-
                       <center><b><font color=#41CD52 size=6>{{
-                      states('sensor.rs485_bms0_battery_current') }}
+                      states('sensor.yambms_jk_bms_1_battery_current') }}
                       A</font></b><br> </center> {% macro pad_right(w, s) %}  {{
                       s }} {% set slen =  w - (s|length) %} {% for idx in
                       range(slen)%} &nbsp; {%endfor %} {%- endmacro %} {% macro
@@ -532,35 +609,35 @@ views:
                   - type: markdown
                     content: >-
                       <div> {%- set ovp =
-                      states('number.rs485_bms0_cell_overvoltage_protection')
+                      states('number.yambms_jk_bms_1_cell_overvoltage_protection')
                       %}  {%- set slv =
-                      states('number.rs485_bms0_cell_smart_sleep_voltage') %} 
-                      {%- set rcv =
-                      states('number.rs485_bms0_cell_request_charge_voltage')
+                      states('number.yambms_jk_bms_1_cell_smart_sleep_voltage')
+                      %}  {%- set rcv =
+                      states('number.yambms_jk_bms_1_cell_request_charge_voltage')
                       %}  {%- set bsv =
-                      states('number.rs485_bms0_cell_balancing_starting_voltage')
+                      states('number.yambms_jk_bms_1_cell_balancing_starting_voltage')
                       %}  {%- set soc100 =
-                      states('number.rs485_bms0_cell_soc100_voltage') %}  {%-
-                      set ovpr =
-                      states('number.rs485_bms0_cell_overvoltage_protection_recovery')
+                      states('number.yambms_jk_bms_1_cell_soc100_voltage') %} 
+                      {%- set ovpr =
+                      states('number.yambms_jk_bms_1_cell_overvoltage_protection_recovery')
                       %}  {%- set rfv =
-                      states('number.rs485_bms0_cell_request_float_voltage') %} 
-                      {%- set uvpr =
-                      states('number.rs485_bms0_cell_undervoltage_protection_recovery')
+                      states('number.yambms_jk_bms_1_cell_request_float_voltage')
+                      %}  {%- set uvpr =
+                      states('number.yambms_jk_bms_1_cell_undervoltage_protection_recovery')
                       %}  {%- set soc0 =
-                      states('number.rs485_bms0_cell_soc0_voltage') %}  {%- set
-                      uvp =
-                      states('number.rs485_bms0_cell_undervoltage_protection')
+                      states('number.yambms_jk_bms_1_cell_soc0_voltage') %}  {%-
+                      set uvp =
+                      states('number.yambms_jk_bms_1_cell_undervoltage_protection')
                       %}  {%- set poff =
-                      states('number.rs485_bms0_cell_power_off_voltage') %}  {%-
-                      set rcvt =
-                      states('number.rs485_bms0_cell_request_charge_voltage_time')
+                      states('number.yambms_jk_bms_1_cell_power_off_voltage')
+                      %}  {%- set rcvt =
+                      states('number.yambms_jk_bms_1_cell_request_charge_voltage_time')
                       %}     {%- set rfvt =
-                      states('number.rs485_bms0_cell_request_float_voltage_time') 
+                      states('number.yambms_jk_bms_1_cell_request_float_voltage_time') 
                       %}    {%- set TimeOVPR =
-                      states('sensor.rs485_bms0_cell_overvoltage_protection_release_time') 
+                      states('sensor.yambms_jk_bms_1_cell_overvoltage_protection_release_time') 
                       %}  {%- set TimeUVPR =
-                      states('sensor.rs485_bms0_cell_undervoltage_protection_release_time') 
+                      states('sensor.yambms_jk_bms_1_cell_undervoltage_protection_release_time') 
                       %} 
 
 
@@ -589,39 +666,39 @@ views:
                       green(s) %} <font color=#41CD52 family=Consolas> {{ s }}
                       </font> {%- endmacro %} <div>    {{ pad_right(14, 'MOS 
                       Temp.:') }}  {{
-                      green(states('sensor.rs485_bms0_temperature_powertube') +
-                      ' °C') }} <br>  {{ pad_right(15, 'Battery T1:') }}  {{
-                      green(states('sensor.rs485_bms0_temperature_sensor_1') + 
-                      ' °C') }} <br>  {{ pad_right(15, 'Battery T2:') }}  {{
-                      green(states('sensor.rs485_bms0_temperature_sensor_2') + 
-                      ' °C') }} <br>  {{ pad_right(15, 'Battery T3:') }}  {{
-                      green(states('sensor.rs485_bms0_temperature_sensor_3') + 
-                      ' °C') }}<br>  {{ pad_right(15, 'Battery T4:') }}  {{
-                      green(states('sensor.rs485_bms0_temperature_sensor_4') + 
-                      ' °C') }}           <br>  {{ pad_right(15, 'Battery T5:')
-                      }}  {{
-                      green(states('sensor.rs485_bms0_temperature_sensor_5') + 
-                      ' °C') }}</div>
+                      green(states('sensor.yambms_jk_bms_1_temperature_powertube')
+                      + ' °C') }} <br>  {{ pad_right(15, 'Battery T1:') }}  {{
+                      green(states('sensor.yambms_jk_bms_1_temperature_sensor_1')
+                      +  ' °C') }} <br>  {{ pad_right(15, 'Battery T2:') }}  {{
+                      green(states('sensor.yambms_jk_bms_1_temperature_sensor_2')
+                      +  ' °C') }} <br>  {{ pad_right(15, 'Battery T3:') }}  {{
+                      green(states('sensor.yambms_jk_bms_1_temperature_sensor_3')
+                      +  ' °C') }}<br>  {{ pad_right(15, 'Battery T4:') }}  {{
+                      green(states('sensor.yambms_jk_bms_1_temperature_sensor_4')
+                      +  ' °C') }}           <br>  {{ pad_right(15, 'Battery
+                      T5:') }}  {{
+                      green(states('sensor.yambms_jk_bms_1_temperature_sensor_5')
+                      +  ' °C') }}</div>
                   - type: markdown
                     content: >-
                       {%- set min_idx =
-                      states('sensor.rs485_bms0_cell_voltage_min_cell_number')
+                      states('sensor.yambms_jk_bms_1_cell_voltage_min_cell_number')
                       %} 
 
                       {%- set max_idx =
-                      states('sensor.rs485_bms0_cell_voltage_max_cell_number')
+                      states('sensor.yambms_jk_bms_1_cell_voltage_max_cell_number')
                       %}  
 
                       {%- set min_idxr =
-                      states('sensor.rs485_bms0_cell_resistance_min_cell_number')
+                      states('sensor.yambms_jk_bms_1_cell_resistance_min_cell_number')
                       %} 
 
                       {%- set max_idxr =
-                      states('sensor.rs485_bms0_cell_resistance_max_cell_number')
+                      states('sensor.yambms_jk_bms_1_cell_resistance_max_cell_number')
                       %}  
 
                       {%- set delta =
-                      (states('sensor.rs485_bms0_cell_delta_voltage')|float)
+                      (states('sensor.yambms_jk_bms_1_cell_delta_voltage')|float)
                       %}  
 
                       <table> <tr><td colspan=4><b>CELL
@@ -631,8 +708,8 @@ views:
                         {%- set is_min = 1 if ((min_idx | int) == (idx | int)) else 0 %}
                         {%- set is_maxr = 1 if ((max_idxr | int) == (idx | int)) else 0 %} 
                         {%- set is_minr = 1 if ((min_idxr | int) == (idx | int)) else 0 %}            
-                        {%- set cell_volt = states('sensor.rs485_bms0_cell_voltage_%02d' % idx) %} 
-                        {%- set cell_resistance = states('sensor.rs485_bms0_cell_resistance_%02d' % idx) %} 
+                        {%- set cell_volt = states('sensor.yambms_jk_bms_1_cell_voltage_%02d' % idx) %} 
+                        {%- set cell_resistance = states('sensor.yambms_jk_bms_1_cell_resistance_%02d' % idx) %} 
                         {%- set font_start = '<font color="#3090C7">' if is_max 
                             else '<font color="red">' if is_min 
                             else '' %} 
@@ -645,8 +722,8 @@ views:
                             else '' %}                 
                         <tr><td>{{ "%02d" % idx}}.</td><td width=55px>{{ font_start }} {{ cell_volt }} V {{ font_end -}} </td><td width=8px align="center">/</td><td>{{ font_start_resistance }} {{ cell_resistance |float * 1000 }} mΩ  {{ font_end_resistance }}</td><tr>{% endfor %}
                       </table> {%- set network_nodes_available =
-                      states('sensor.rs485_bms0_network_nodes_available') %}  
-                      <b>NET:{{network_nodes_available}}</b>&nbsp;&nbsp;
+                      states('sensor.yambms_jk_bms_1_network_nodes_available')
+                      %}   <b>NET:{{network_nodes_available}}</b>&nbsp;&nbsp;
           - type: custom:stack-in-card
             keep:
               margin: false
@@ -668,12 +745,12 @@ views:
                       {% macro green(s) %} <font color=#41CD52 size=2
                       family=Consolas> {{ s }} </font> {%- endmacro %} <div>  
                       {{ pad_right(20, 'Cycle Capacity:') }}  {{
-                      green(states('sensor.rs485_bms0_battery_capacity_total_charging_cycle')
+                      green(states('sensor.yambms_jk_bms_1_battery_capacity_total_charging_cycle')
                       + " Ah") }}<br>    {{ pad_right(15, "Rem. Capacity:")
                       -}}    {{
-                      green(states('sensor.rs485_bms0_battery_capacity_remaining')
+                      green(states('sensor.yambms_jk_bms_1_battery_capacity_remaining')
                       + " Ah") }} <br>{{ pad_right(20, "Total Capacity:") -}} {{
-                      green(states('sensor.rs485_bms0_battery_capacity_total_setting')
+                      green(states('number.yambms_jk_bms_1_battery_capacity_total_setting')
                       + " Ah")}}</div>
                                 
                       </div>
@@ -684,16 +761,16 @@ views:
                       %} {%- endmacro %} {% macro green(s) %} <font
                       color=#41CD52 family=Consolas> {{ s }} </font> {%-
                       endmacro %} <div>  {{ pad_right(18, "SOC:") -}}  {{
-                      green(states('sensor.rs485_bms0_battery_capacity_state_of_charge')
+                      green(states('sensor.yambms_jk_bms_1_battery_capacity_state_of_charge')
                       + ' %') }}<br>{{ pad_right(18, "SOH:") -}}  {{
-                      green(states('sensor.rs485_bms0_battery_soh_valuation') +
-                      ' %') }}<br>   {{ pad_right(18, 'Cycle Count:') }}  {{
-                      green(states('sensor.rs485_bms0_charging_cycles' )+ '
+                      green(states('sensor.yambms_jk_bms_1_battery_soh_valuation')
+                      + ' %') }}<br>   {{ pad_right(18, 'Cycle Count:') }}  {{
+                      green(states('sensor.yambms_jk_bms_1_charging_cycles' )+ '
                       cycles') }}<br>  
                        {{ pad_right(20, 'Balance Curr:') }}   
-                      {{green(states('sensor.rs485_bms0_balancing_current') + '
-                      A') }}  <br>{{ pad_right(20, 'Balancing Trig.:') }}   
-                        {{green(states('sensor.rs485_bms0_balancing_trigger_voltage') + ' V') }} 
+                      {{green(states('sensor.yambms_jk_bms_1_balancing_current')
+                      + ' A') }}  <br>{{ pad_right(20, 'Balancing Trig.:') }}   
+                        {{green(states('number.yambms_jk_bms_1_balancing_trigger_voltage') + ' V') }} 
                       </div>
       - type: vertical-stack
         cards:
@@ -709,12 +786,12 @@ views:
                 cards:
                   - type: markdown
                     content: >-
-                      <center><font color=#3090C7 size=4>bms10 [{{
-                      states('sensor.rs485_bms1_total_runtime_formatted') |
+                      <center><font color=#3090C7 size=4>BMS_02 [{{
+                      states('sensor.yambms_jk_bms_2_total_runtime_formatted') |
                       string }}]&nbsp;&nbsp;{{
-                      (states('sensor.rs485_bms1_battery_capacity_state_of_charge')
+                      (states('sensor.yambms_jk_bms_2_battery_capacity_state_of_charge')
                       + ' %') }}   ({{
-                        (states('sensor.rs485_bms1_battery_capacity_remaining')) }}Ah)
+                        (states('sensor.yambms_jk_bms_2_battery_capacity_remaining')) }}Ah)
                       </center>
               - type: grid
                 square: false
@@ -723,7 +800,7 @@ views:
                   - type: markdown
                     content: >-
                       {%- set online =
-                      states('binary_sensor.rs485_bms1_status_online')
+                      states('binary_sensor.yambms_jk_bms_2_status_online')
                       %}                      
 
                       {%- set is_working = "online" if (online|bool) else
@@ -740,7 +817,7 @@ views:
 
 
                       {%- set precharging =
-                      states('binary_sensor.rs485_bms1_status_precharging')
+                      states('binary_sensor.yambms_jk_bms_2_status_precharging')
                       %}                      
 
                       {%- set is_working = "working" if (precharging|bool) else
@@ -757,7 +834,7 @@ views:
 
 
                       {%- set heating =
-                      states('binary_sensor.rs485_bms1_status_heating')
+                      states('binary_sensor.yambms_jk_bms_2_status_heating')
                       %}                      
 
                       {%- set is_working = "working" if (heating|bool) else
@@ -774,7 +851,7 @@ views:
                   - type: markdown
                     content: >-
                       {%- set charging =
-                      states('binary_sensor.rs485_bms1_status_charging')
+                      states('binary_sensor.yambms_jk_bms_2_status_charging')
                       %}                         
 
                       {%- set is_working = "working" if (charging|bool) else
@@ -791,7 +868,7 @@ views:
 
 
                       {%- set discharging =
-                      states('binary_sensor.rs485_bms1_status_discharging')
+                      states('binary_sensor.yambms_jk_bms_2_status_discharging')
                       %}                         
 
                       {%- set is_working = "working" if (discharging|bool) else
@@ -807,8 +884,8 @@ views:
                       font_end -}}
                         
                       {%- set balancing_direction =
-                      states('sensor.rs485_bms1_balancing_direction')%}   {%-
-                      set is_working = "charging" if
+                      states('sensor.yambms_jk_bms_2_balancing_direction')%}  
+                      {%- set is_working = "charging" if
                       (balancing_direction|int)==1 
                             else "discharging" if (balancing_direction|int)==2 
                             else "idle" if (balancing_direction|int)==0
@@ -834,11 +911,11 @@ views:
                   - type: markdown
                     content: >-
                       {%- set power_draw =
-                      states('sensor.rs485_bms1_battery_power')|float %}  {%-
-                      set power_charging =
-                      states('sensor.rs485_bms1_battery_power_charging')|float
+                      states('sensor.yambms_jk_bms_2_battery_power')|float %} 
+                      {%- set power_charging =
+                      states('sensor.yambms_jk_bms_2_battery_power_charging')|float
                       %}  {%- set power_discharging =
-                      states('sensor.rs485_bms1_battery_power_discharging')|float
+                      states('sensor.yambms_jk_bms_2_battery_power_discharging')|float
                       %} 
 
                       {%- set power_label = "(charging)" if (power_charging)>0 
@@ -876,7 +953,7 @@ views:
                   - type: markdown
                     content: >-
                       <center><b><font color=#41CD52
-                      size=6>{{states('sensor.rs485_bms1_battery_voltage')
+                      size=6>{{states('sensor.yambms_jk_bms_2_battery_voltage')
                       }}V</font></b><br> </center>   {% macro pad_right(w, s) %}
                       {{ s }} {% set slen =  w - (s|length) %} 
                         {% for idx in range(slen)%} &nbsp; {%endfor %}
@@ -888,7 +965,7 @@ views:
                   - type: markdown
                     content: >-
                       <center><b><font color=#41CD52 size=6>{{
-                      states('sensor.rs485_bms1_battery_current') }}
+                      states('sensor.yambms_jk_bms_2_battery_current') }}
                       A</font></b><br> </center> {% macro pad_right(w, s) %}  {{
                       s }} {% set slen =  w - (s|length) %} {% for idx in
                       range(slen)%} &nbsp; {%endfor %} {%- endmacro %} {% macro
@@ -907,35 +984,35 @@ views:
                   - type: markdown
                     content: >-
                       <div> {%- set ovp =
-                      states('number.rs485_bms1_cell_overvoltage_protection')
+                      states('number.yambms_jk_bms_2_cell_overvoltage_protection')
                       %}  {%- set slv =
-                      states('number.rs485_bms1_cell_smart_sleep_voltage') %} 
-                      {%- set rcv =
-                      states('number.rs485_bms1_cell_request_charge_voltage')
+                      states('number.yambms_jk_bms_2_cell_smart_sleep_voltage')
+                      %}  {%- set rcv =
+                      states('number.yambms_jk_bms_2_cell_request_charge_voltage')
                       %}  {%- set bsv =
-                      states('number.rs485_bms1_cell_balancing_starting_voltage')
+                      states('number.yambms_jk_bms_2_cell_balancing_starting_voltage')
                       %}  {%- set soc100 =
-                      states('number.rs485_bms1_cell_soc100_voltage') %}  {%-
-                      set ovpr =
-                      states('number.rs485_bms1_cell_overvoltage_protection_recovery')
+                      states('number.yambms_jk_bms_2_cell_soc100_voltage') %} 
+                      {%- set ovpr =
+                      states('number.yambms_jk_bms_2_cell_overvoltage_protection_recovery')
                       %}  {%- set rfv =
-                      states('number.rs485_bms1_cell_request_float_voltage') %} 
-                      {%- set uvpr =
-                      states('number.rs485_bms1_cell_undervoltage_protection_recovery')
+                      states('number.yambms_jk_bms_2_cell_request_float_voltage')
+                      %}  {%- set uvpr =
+                      states('number.yambms_jk_bms_2_cell_undervoltage_protection_recovery')
                       %}  {%- set soc0 =
-                      states('number.rs485_bms1_cell_soc0_voltage') %}  {%- set
-                      uvp =
-                      states('number.rs485_bms1_cell_undervoltage_protection')
+                      states('number.yambms_jk_bms_2_cell_soc0_voltage') %}  {%-
+                      set uvp =
+                      states('number.yambms_jk_bms_2_cell_undervoltage_protection')
                       %}  {%- set poff =
-                      states('number.rs485_bms1_cell_power_off_voltage') %}  {%-
-                      set rcvt =
-                      states('number.rs485_bms1_cell_request_charge_voltage_time')
+                      states('number.yambms_jk_bms_2_cell_power_off_voltage')
+                      %}  {%- set rcvt =
+                      states('number.yambms_jk_bms_2_cell_request_charge_voltage_time')
                       %}     {%- set rfvt =
-                      states('number.rs485_bms1_cell_request_float_voltage_time') 
+                      states('number.yambms_jk_bms_2_cell_request_float_voltage_time') 
                       %}    {%- set TimeOVPR =
-                      states('sensor.rs485_bms1_cell_overvoltage_protection_release_time') 
+                      states('sensor.yambms_jk_bms_2_cell_overvoltage_protection_release_time') 
                       %}  {%- set TimeUVPR =
-                      states('sensor.rs485_bms1_cell_undervoltage_protection_release_time') 
+                      states('sensor.yambms_jk_bms_2_cell_undervoltage_protection_release_time') 
                       %} 
 
 
@@ -964,39 +1041,39 @@ views:
                       green(s) %} <font color=#41CD52 family=Consolas> {{ s }}
                       </font> {%- endmacro %} <div>    {{ pad_right(14, 'MOS 
                       Temp.:') }}  {{
-                      green(states('sensor.rs485_bms1_temperature_powertube') +
-                      ' °C') }} <br>  {{ pad_right(15, 'Battery T1:') }}  {{
-                      green(states('sensor.rs485_bms1_temperature_sensor_1') + 
-                      ' °C') }} <br>  {{ pad_right(15, 'Battery T2:') }}  {{
-                      green(states('sensor.rs485_bms1_temperature_sensor_2') + 
-                      ' °C') }} <br>  {{ pad_right(15, 'Battery T3:') }}  {{
-                      green(states('sensor.rs485_bms1_temperature_sensor_3') + 
-                      ' °C') }}<br>  {{ pad_right(15, 'Battery T4:') }}  {{
-                      green(states('sensor.rs485_bms1_temperature_sensor_4') + 
-                      ' °C') }}           <br>  {{ pad_right(15, 'Battery T5:')
-                      }}  {{
-                      green(states('sensor.rs485_bms1_temperature_sensor_5') + 
-                      ' °C') }}</div>
+                      green(states('sensor.yambms_jk_bms_2_temperature_powertube')
+                      + ' °C') }} <br>  {{ pad_right(15, 'Battery T1:') }}  {{
+                      green(states('sensor.yambms_jk_bms_2_temperature_sensor_1')
+                      +  ' °C') }} <br>  {{ pad_right(15, 'Battery T2:') }}  {{
+                      green(states('sensor.yambms_jk_bms_2_temperature_sensor_2')
+                      +  ' °C') }} <br>  {{ pad_right(15, 'Battery T3:') }}  {{
+                      green(states('sensor.yambms_jk_bms_2_temperature_sensor_3')
+                      +  ' °C') }}<br>  {{ pad_right(15, 'Battery T4:') }}  {{
+                      green(states('sensor.yambms_jk_bms_2_temperature_sensor_4')
+                      +  ' °C') }}           <br>  {{ pad_right(15, 'Battery
+                      T5:') }}  {{
+                      green(states('sensor.yambms_jk_bms_2_temperature_sensor_5')
+                      +  ' °C') }}</div>
                   - type: markdown
                     content: >-
                       {%- set min_idx =
-                      states('sensor.rs485_bms1_cell_voltage_min_cell_number')
+                      states('sensor.yambms_jk_bms_2_cell_voltage_min_cell_number')
                       %} 
 
                       {%- set max_idx =
-                      states('sensor.rs485_bms1_cell_voltage_max_cell_number')
+                      states('sensor.yambms_jk_bms_2_cell_voltage_max_cell_number')
                       %}  
 
                       {%- set min_idxr =
-                      states('sensor.rs485_bms1_cell_resistance_min_cell_number')
+                      states('sensor.yambms_jk_bms_2_cell_resistance_min_cell_number')
                       %} 
 
                       {%- set max_idxr =
-                      states('sensor.rs485_bms1_cell_resistance_max_cell_number')
+                      states('sensor.yambms_jk_bms_2_cell_resistance_max_cell_number')
                       %}  
 
                       {%- set delta =
-                      (states('sensor.rs485_bms1_cell_delta_voltage')|float)
+                      (states('sensor.yambms_jk_bms_2_cell_delta_voltage')|float)
                       %}  
 
                       <table> <tr><td colspan=4><b>CELL
@@ -1006,8 +1083,8 @@ views:
                         {%- set is_min = 1 if ((min_idx | int) == (idx | int)) else 0 %}
                         {%- set is_maxr = 1 if ((max_idxr | int) == (idx | int)) else 0 %} 
                         {%- set is_minr = 1 if ((min_idxr | int) == (idx | int)) else 0 %}            
-                        {%- set cell_volt = states('sensor.rs485_bms1_cell_voltage_%02d' % idx) %} 
-                        {%- set cell_resistance = states('sensor.rs485_bms1_cell_resistance_%02d' % idx) %} 
+                        {%- set cell_volt = states('sensor.yambms_jk_bms_2_cell_voltage_%02d' % idx) %} 
+                        {%- set cell_resistance = states('sensor.yambms_jk_bms_2_cell_resistance_%02d' % idx) %} 
                         {%- set font_start = '<font color="#3090C7">' if is_max 
                             else '<font color="red">' if is_min 
                             else '' %} 
@@ -1020,8 +1097,8 @@ views:
                             else '' %}                 
                         <tr><td>{{ "%02d" % idx}}.</td><td width=55px>{{ font_start }} {{ cell_volt }} V {{ font_end -}} </td><td width=8px align="center">/</td><td>{{ font_start_resistance }} {{ cell_resistance |float * 1000 }} mΩ  {{ font_end_resistance }}</td><tr>{% endfor %}
                       </table> {%- set network_nodes_available =
-                      states('sensor.rs485_bms1_network_nodes_available') %}  
-                      <b>NET:{{network_nodes_available}}</b>&nbsp;&nbsp;
+                      states('sensor.yambms_jk_bms_2_network_nodes_available')
+                      %}   <b>NET:{{network_nodes_available}}</b>&nbsp;&nbsp;
           - type: custom:stack-in-card
             keep:
               margin: false
@@ -1043,12 +1120,12 @@ views:
                       {% macro green(s) %} <font color=#41CD52 size=2
                       family=Consolas> {{ s }} </font> {%- endmacro %} <div>  
                       {{ pad_right(20, 'Cycle Capacity:') }}  {{
-                      green(states('sensor.rs485_bms1_battery_capacity_total_charging_cycle')
+                      green(states('sensor.yambms_jk_bms_2_battery_capacity_total_charging_cycle')
                       + " Ah") }}<br>    {{ pad_right(15, "Rem. Capacity:")
                       -}}    {{
-                      green(states('sensor.rs485_bms1_battery_capacity_remaining')
+                      green(states('sensor.yambms_jk_bms_2_battery_capacity_remaining')
                       + " Ah") }} <br>{{ pad_right(20, "Total Capacity:") -}} {{
-                      green(states('sensor.rs485_bms1_battery_capacity_total_setting')
+                      green(states('number.yambms_jk_bms_2_battery_capacity_total_setting')
                       + " Ah")}}</div>
                                 
                       </div>
@@ -1059,19 +1136,18 @@ views:
                       %} {%- endmacro %} {% macro green(s) %} <font
                       color=#41CD52 family=Consolas> {{ s }} </font> {%-
                       endmacro %} <div>  {{ pad_right(18, "SOC:") -}}  {{
-                      green(states('sensor.rs485_bms1_battery_capacity_state_of_charge')
+                      green(states('sensor.yambms_jk_bms_2_battery_capacity_state_of_charge')
                       + ' %') }}<br>{{ pad_right(18, "SOH:") -}}  {{
-                      green(states('sensor.rs485_bms1_battery_soh_valuation') +
-                      ' %') }}<br>   {{ pad_right(18, 'Cycle Count:') }}  {{
-                      green(states('sensor.rs485_bms1_charging_cycles' )+ '
+                      green(states('sensor.yambms_jk_bms_2_battery_soh_valuation')
+                      + ' %') }}<br>   {{ pad_right(18, 'Cycle Count:') }}  {{
+                      green(states('sensor.yambms_jk_bms_2_charging_cycles' )+ '
                       cycles') }}<br>  
                        {{ pad_right(20, 'Balance Curr:') }}   
-                      {{green(states('sensor.rs485_bms1_balancing_current') + '
-                      A') }}  <br>{{ pad_right(20, 'Balancing Trig.:') }}   
-                        {{green(states('sensor.rs485_bms1_balancing_trigger_voltage') + ' V') }} 
+                      {{green(states('sensor.yambms_jk_bms_2_balancing_current')
+                      + ' A') }}  <br>{{ pad_right(20, 'Balancing Trig.:') }}   
+                        {{green(states('number.yambms_jk_bms_2_balancing_trigger_voltage') + ' V') }} 
                       </div>
-  - title: bms0 (cells)
-    badges: []
+  - title: BMS1 (cells)
     cards:
       - type: gauge
         needle: true
@@ -1092,7 +1168,7 @@ views:
             color: '#ffa600'
           - from: 3.65
             color: '#db4437'
-        entity: sensor.rs485_bms0_cell_voltage_01
+        entity: sensor.yambms_jk_bms_1_cell_voltage_01
       - type: gauge
         needle: true
         max: 3.65
@@ -1112,7 +1188,7 @@ views:
             color: '#ffa600'
           - from: 3.65
             color: '#db4437'
-        entity: sensor.rs485_bms0_cell_voltage_05
+        entity: sensor.yambms_jk_bms_1_cell_voltage_05
       - type: gauge
         needle: true
         max: 3.65
@@ -1132,7 +1208,7 @@ views:
             color: '#ffa600'
           - from: 3.65
             color: '#db4437'
-        entity: sensor.rs485_bms0_cell_voltage_02
+        entity: sensor.yambms_jk_bms_1_cell_voltage_02
       - type: gauge
         needle: true
         max: 3.65
@@ -1152,7 +1228,7 @@ views:
             color: '#ffa600'
           - from: 3.65
             color: '#db4437'
-        entity: sensor.rs485_bms0_cell_voltage_06
+        entity: sensor.yambms_jk_bms_1_cell_voltage_06
       - type: gauge
         needle: true
         max: 3.65
@@ -1172,7 +1248,7 @@ views:
             color: '#ffa600'
           - from: 3.65
             color: '#db4437'
-        entity: sensor.rs485_bms0_cell_voltage_03
+        entity: sensor.yambms_jk_bms_1_cell_voltage_03
       - type: gauge
         needle: true
         max: 3.65
@@ -1192,7 +1268,7 @@ views:
             color: '#ffa600'
           - from: 3.65
             color: '#db4437'
-        entity: sensor.rs485_bms0_cell_voltage_07
+        entity: sensor.yambms_jk_bms_1_cell_voltage_07
       - type: gauge
         needle: true
         max: 3.65
@@ -1212,7 +1288,7 @@ views:
             color: '#ffa600'
           - from: 3.65
             color: '#db4437'
-        entity: sensor.rs485_bms0_cell_voltage_04
+        entity: sensor.yambms_jk_bms_1_cell_voltage_04
       - type: gauge
         needle: true
         max: 3.65
@@ -1232,7 +1308,7 @@ views:
             color: '#ffa600'
           - from: 3.65
             color: '#db4437'
-        entity: sensor.rs485_bms0_cell_voltage_08
+        entity: sensor.yambms_jk_bms_1_cell_voltage_08
       - type: gauge
         needle: true
         max: 3.65
@@ -1252,7 +1328,7 @@ views:
             color: '#ffa600'
           - from: 3.65
             color: '#db4437'
-        entity: sensor.rs485_bms0_cell_voltage_09
+        entity: sensor.yambms_jk_bms_1_cell_voltage_09
       - type: gauge
         needle: true
         max: 3.65
@@ -1272,7 +1348,7 @@ views:
             color: '#ffa600'
           - from: 3.65
             color: '#db4437'
-        entity: sensor.rs485_bms0_cell_voltage_10
+        entity: sensor.yambms_jk_bms_1_cell_voltage_10
       - type: gauge
         needle: true
         max: 3.65
@@ -1292,7 +1368,7 @@ views:
             color: '#ffa600'
           - from: 3.65
             color: '#db4437'
-        entity: sensor.rs485_bms0_cell_voltage_11
+        entity: sensor.yambms_jk_bms_1_cell_voltage_11
       - type: gauge
         needle: true
         max: 3.65
@@ -1312,7 +1388,7 @@ views:
             color: '#ffa600'
           - from: 3.65
             color: '#db4437'
-        entity: sensor.rs485_bms0_cell_voltage_12
+        entity: sensor.yambms_jk_bms_1_cell_voltage_12
       - type: gauge
         needle: true
         max: 3.65
@@ -1332,7 +1408,7 @@ views:
             color: '#ffa600'
           - from: 3.65
             color: '#db4437'
-        entity: sensor.rs485_bms0_cell_voltage_13
+        entity: sensor.yambms_jk_bms_1_cell_voltage_13
       - type: gauge
         needle: true
         max: 3.65
@@ -1352,7 +1428,7 @@ views:
             color: '#ffa600'
           - from: 3.65
             color: '#db4437'
-        entity: sensor.rs485_bms0_cell_voltage_14
+        entity: sensor.yambms_jk_bms_1_cell_voltage_14
       - type: gauge
         needle: true
         max: 3.65
@@ -1372,7 +1448,7 @@ views:
             color: '#ffa600'
           - from: 3.65
             color: '#db4437'
-        entity: sensor.rs485_bms0_cell_voltage_15
+        entity: sensor.yambms_jk_bms_1_cell_voltage_15
       - type: gauge
         needle: true
         max: 3.65
@@ -1392,17 +1468,16 @@ views:
             color: '#ffa600'
           - from: 3.65
             color: '#db4437'
-        entity: sensor.rs485_bms0_cell_voltage_16
+        entity: sensor.yambms_jk_bms_1_cell_voltage_16
       - graph: line
         type: sensor
         detail: 1
-        entity: sensor.rs485_bms0_cell_voltage_max_cell_number
+        entity: sensor.yambms_jk_bms_1_cell_voltage_max_cell_number
       - graph: line
         type: sensor
         detail: 1
-        entity: sensor.rs485_bms0_cell_voltage_min_cell_number
-  - title: bms1 (cells)
-    badges: []
+        entity: sensor.yambms_jk_bms_1_cell_voltage_min_cell_number
+  - title: BMS2(cells)
     cards:
       - type: gauge
         needle: true
@@ -1423,7 +1498,7 @@ views:
             color: '#ffa600'
           - from: 3.65
             color: '#db4437'
-        entity: sensor.rs485_bms1_cell_voltage_01
+        entity: sensor.yambms_jk_bms_2_cell_voltage_01
       - type: gauge
         needle: true
         max: 3.65
@@ -1443,7 +1518,7 @@ views:
             color: '#ffa600'
           - from: 3.65
             color: '#db4437'
-        entity: sensor.rs485_bms1_cell_voltage_05
+        entity: sensor.yambms_jk_bms_2_cell_voltage_05
       - type: gauge
         needle: true
         max: 3.65
@@ -1463,7 +1538,7 @@ views:
             color: '#ffa600'
           - from: 3.65
             color: '#db4437'
-        entity: sensor.rs485_bms1_cell_voltage_02
+        entity: sensor.yambms_jk_bms_2_cell_voltage_02
       - type: gauge
         needle: true
         max: 3.65
@@ -1483,7 +1558,7 @@ views:
             color: '#ffa600'
           - from: 3.65
             color: '#db4437'
-        entity: sensor.rs485_bms1_cell_voltage_06
+        entity: sensor.yambms_jk_bms_2_cell_voltage_06
       - type: gauge
         needle: true
         max: 3.65
@@ -1503,7 +1578,7 @@ views:
             color: '#ffa600'
           - from: 3.65
             color: '#db4437'
-        entity: sensor.rs485_bms1_cell_voltage_03
+        entity: sensor.yambms_jk_bms_2_cell_voltage_03
       - type: gauge
         needle: true
         max: 3.65
@@ -1523,7 +1598,7 @@ views:
             color: '#ffa600'
           - from: 3.65
             color: '#db4437'
-        entity: sensor.rs485_bms1_cell_voltage_07
+        entity: sensor.yambms_jk_bms_2_cell_voltage_07
       - type: gauge
         needle: true
         max: 3.65
@@ -1543,7 +1618,7 @@ views:
             color: '#ffa600'
           - from: 3.65
             color: '#db4437'
-        entity: sensor.rs485_bms1_cell_voltage_04
+        entity: sensor.yambms_jk_bms_2_cell_voltage_04
       - type: gauge
         needle: true
         max: 3.65
@@ -1563,7 +1638,7 @@ views:
             color: '#ffa600'
           - from: 3.65
             color: '#db4437'
-        entity: sensor.rs485_bms1_cell_voltage_08
+        entity: sensor.yambms_jk_bms_2_cell_voltage_08
       - type: gauge
         needle: true
         max: 3.65
@@ -1583,7 +1658,7 @@ views:
             color: '#ffa600'
           - from: 3.65
             color: '#db4437'
-        entity: sensor.rs485_bms1_cell_voltage_09
+        entity: sensor.yambms_jk_bms_2_cell_voltage_09
       - type: gauge
         needle: true
         max: 3.65
@@ -1603,7 +1678,7 @@ views:
             color: '#ffa600'
           - from: 3.65
             color: '#db4437'
-        entity: sensor.rs485_bms1_cell_voltage_10
+        entity: sensor.yambms_jk_bms_2_cell_voltage_10
       - type: gauge
         needle: true
         max: 3.65
@@ -1623,7 +1698,7 @@ views:
             color: '#ffa600'
           - from: 3.65
             color: '#db4437'
-        entity: sensor.rs485_bms1_cell_voltage_11
+        entity: sensor.yambms_jk_bms_2_cell_voltage_11
       - type: gauge
         needle: true
         max: 3.65
@@ -1643,7 +1718,7 @@ views:
             color: '#ffa600'
           - from: 3.65
             color: '#db4437'
-        entity: sensor.rs485_bms1_cell_voltage_12
+        entity: sensor.yambms_jk_bms_2_cell_voltage_12
       - type: gauge
         needle: true
         max: 3.65
@@ -1663,7 +1738,7 @@ views:
             color: '#ffa600'
           - from: 3.65
             color: '#db4437'
-        entity: sensor.rs485_bms1_cell_voltage_13
+        entity: sensor.yambms_jk_bms_2_cell_voltage_13
       - type: gauge
         needle: true
         max: 3.65
@@ -1683,7 +1758,7 @@ views:
             color: '#ffa600'
           - from: 3.65
             color: '#db4437'
-        entity: sensor.rs485_bms1_cell_voltage_14
+        entity: sensor.yambms_jk_bms_2_cell_voltage_14
       - type: gauge
         needle: true
         max: 3.65
@@ -1703,7 +1778,7 @@ views:
             color: '#ffa600'
           - from: 3.65
             color: '#db4437'
-        entity: sensor.rs485_bms1_cell_voltage_15
+        entity: sensor.yambms_jk_bms_2_cell_voltage_15
       - type: gauge
         needle: true
         max: 3.65
@@ -1723,19 +1798,18 @@ views:
             color: '#ffa600'
           - from: 3.65
             color: '#db4437'
-        entity: sensor.rs485_bms1_cell_voltage_16
+        entity: sensor.yambms_jk_bms_2_cell_voltage_16
       - graph: line
         type: sensor
         detail: 1
-        entity: sensor.rs485_bms1_cell_voltage_max_cell_number
+        entity: sensor.yambms_jk_bms_2_cell_voltage_max_cell_number
       - graph: line
         type: sensor
         detail: 1
-        entity: sensor.rs485_bms1_cell_voltage_min_cell_number
+        entity: sensor.yambms_jk_bms_2_cell_voltage_min_cell_number
   - path: bms0_settings
-    title: bms0 (SETTINGS)
+    title: BMS1 (SETTINGS)
     icon: ''
-    badges: []
     cards:
       - type: custom:stack-in-card
         keep:
@@ -1749,23 +1823,27 @@ views:
             cards:
               - type: markdown
                 content: >-
-                  {%- set vid = states('sensor.rs485_bms0_info_vendorid') %} {%-
-                  set swv = states('sensor.rs485_bms0_info_software_version') %}
-                  {%- set hwv =
-                  states('sensor.rs485_bms0_info_hardware_version') %} {%- set
-                  dna = states('sensor.rs485_bms0_info_device_name') %} {%- set
-                  dsn = states('sensor.rs485_bms0_info_device_serial_number')
+                  {%- set vid = states('sensor.yambms_jk_bms_1_info_vendorid')
+                  %} {%- set swv =
+                  states('sensor.yambms_jk_bms_1_info_software_version') %} {%-
+                  set hwv =
+                  states('sensor.yambms_jk_bms_1_info_hardware_version') %} {%-
+                  set dna = states('sensor.yambms_jk_bms_1_info_device_name') %}
+                  {%- set dsn =
+                  states('sensor.yambms_jk_bms_1_info_device_serial_number')
                   %}               {%- set pin =
-                  states('sensor.rs485_bms0_info_device_password') %}  {%- set
-                  settings_pin =
-                  states('sensor.rs485_bms0_info_device_setup_passcode') %} {%-
-                  set uart1 = states('sensor.rs485_bms0_uart1_protocol_number')
-                  %}  {%- set uart2 =
-                  states('sensor.rs485_bms0_uart2_protocol_number') %} {%- set
-                  cell_number_settings =
-                  states('sensor.rs485_bms0_cell_count_settings') %} {%- set
-                  cell_number_real = states('sensor.rs485_bms0_cell_count_real')
-                  %} <table> <tr><td colspan=2><b>BMS INFO:</b></td></tr>
+                  states('sensor.yambms_jk_bms_1_info_device_password') %}  {%-
+                  set settings_pin =
+                  states('sensor.yambms_jk_bms_1_info_device_setup_passcode') %}
+                  {%- set uart1 =
+                  states('sensor.yambms_jk_bms_1_uart1_protocol_number') %}  {%-
+                  set uart2 =
+                  states('sensor.yambms_jk_bms_1_uart2_protocol_number') %} {%-
+                  set cell_number_settings =
+                  states('sensor.yambms_jk_bms_1_cell_count_settings') %} {%-
+                  set cell_number_real =
+                  states('sensor.yambms_jk_bms_1_cell_count_real') %} <table>
+                  <tr><td colspan=2><b>BMS INFO:</b></td></tr>
                   <tr><td>VendorID:</td><td>{{vid}}</tr> <tr><td>HARD
                   ver:</td><td>{{swv}}</tr> <tr><td>SOFT
                   ver:</td><td>{{hwv}}</tr>           <tr><td>DEV
@@ -1782,44 +1860,47 @@ views:
               - type: markdown
                 content: >-
                   {%- set min_idx =
-                  states('sensor.rs485_bms0_cell_voltage_min_cell_number') %} 
+                  states('sensor.yambms_jk_bms_1_cell_voltage_min_cell_number')
+                  %} 
 
                   {%- set max_idx =
-                  states('sensor.rs485_bms0_cell_voltage_max_cell_number') %}  
+                  states('sensor.yambms_jk_bms_1_cell_voltage_max_cell_number')
+                  %}  
 
                   {%- set delta =
-                  (states('sensor.rs485_bms0_cell_delta_voltage')|float) %}  
+                  (states('sensor.yambms_jk_bms_1_cell_delta_voltage')|float)
+                  %}  
 
                   <table> <tr><td colspan=4><b>NETWORK
                   DEVICES:</b>&nbsp;&nbsp;</td></tr> <tr><td>{%- set
                   network_nodes_available =
-                  states('sensor.rs485_bms0_network_nodes_available') %} 
+                  states('sensor.yambms_jk_bms_1_network_nodes_available') %} 
                   </td></tr></table>
 
                   {{network_nodes_available}}</b>&nbsp;&nbsp;
       - type: entities
         entities:
-          - entity: switch.rs485_bms0_charging
+          - entity: switch.yambms_jk_bms_1_charging
             name: CHARGE
-          - entity: switch.rs485_bms0_discharging
+          - entity: switch.yambms_jk_bms_1_discharging
             name: DISCHARGE
-          - entity: switch.rs485_bms0_balancing
+          - entity: switch.yambms_jk_bms_1_balancing
             name: BALANCING
-          - entity: switch.rs485_bms0_emergency
+          - entity: switch.yambms_jk_bms_1_emergency
             name: EMERGENCY
-          - entity: switch.rs485_bms0_heating
+          - entity: switch.yambms_jk_bms_1_heating
             name: HEATING
-          - entity: switch.rs485_bms0_disable_temperature_sensors
+          - entity: switch.yambms_jk_bms_1_disable_temperature_sensors
             name: DISABLE TEMPERATURE SENSORS
-          - entity: switch.rs485_bms0_display_always_on
+          - entity: switch.yambms_jk_bms_1_display_always_on
             name: DISPLAY ALWAYS ON
-          - entity: switch.rs485_bms0_smart_sleep_on
+          - entity: switch.yambms_jk_bms_1_smart_sleep_on
             name: SMART SLEEP ON
-          - entity: switch.rs485_bms0_disable_pcl_module
+          - entity: switch.yambms_jk_bms_1_disable_pcl_module
             name: DISABLE PCL MODULE
-          - entity: switch.rs485_bms0_timed_stored_data
+          - entity: switch.yambms_jk_bms_1_timed_stored_data
             name: TIMED_STORED_DATA
-          - entity: switch.rs485_bms0_charging_float_mode
+          - entity: switch.yambms_jk_bms_1_charging_float_mode
             name: CHARGE FLOAT MODE
         title: Switch (Read Only)
         show_header_toggle: false
@@ -1838,11 +1919,11 @@ views:
                   - type: markdown
                     content: |-
                       <center>
-                        {%- set alarm_active = states('sensor.rs485_bms0_battery_total_alarms_active')|int %}
+                        {%- set alarm_active = states('sensor.yambms_jk_bms_1_battery_total_alarms_active')|int %}
                         {%- set alarm_active = 0 %}                
-                        {%- set alarm_count = states('sensor.rs485_bms0_battery_total_alarms_count')|int %}
-                        {%- set alarm_label = '<font size=4>ALARMS bms00</font>' if alarm_active==0
-                            else '<b><font size=5 color=red>ALARMS bms00</font></b>' %}
+                        {%- set alarm_count = states('sensor.yambms_jk_bms_1_battery_total_alarms_count')|int %}
+                        {%- set alarm_label = '<font size=4>ALARMS BMS_00</font>' if alarm_active==0
+                            else '<b><font size=5 color=red>ALARMS BMS_00</font></b>' %}
                         {{alarm_label}} ({{ alarm_active }}/{{ alarm_count -}})<br></center>
               - type: grid
                 square: false
@@ -1851,11 +1932,11 @@ views:
                   - type: markdown
                     content: >-
                       {%- set alarm_active =
-                      states('sensor.rs485_bms0_battery_total_alarms_active')|int
+                      states('sensor.yambms_jk_bms_1_battery_total_alarms_active')|int
                       %}
 
                       {%- set alarm_count =
-                      states('sensor.rs485_bms0_battery_total_alarms_count')|int
+                      states('sensor.yambms_jk_bms_1_battery_total_alarms_count')|int
                       %}
 
                       {%- set alarm_active = 0 %} 
@@ -1866,7 +1947,7 @@ views:
                       {{ alarms_label }}    
 
                       <center>  {% for state in states -%} 
-                        {% if state.entity_id.startswith('binary_sensor.rs485_bms0_alarm_') and state.state!="off" %}
+                        {% if state.entity_id.startswith('binary_sensor.yambms_jk_bms_1_alarm_') and state.state!="off" %}
                           {% set last_word = state.name.split()[-1] | string %}
                           {% set last_status = state.state %}
                           {%- set font_start = '<font color="#3090C7">' if last_status=="off"
@@ -1884,11 +1965,11 @@ views:
               - type: markdown
                 content: |-
                   <center>
-                    {%- set alarm_active = states('sensor.rs485_bms1_battery_total_alarms_active')|int %}
+                    {%- set alarm_active = states('sensor.yambms_jk_bms_2_battery_total_alarms_active')|int %}
                     {%- set alarm_active = 0 %}                
-                    {%- set alarm_count = states('sensor.rs485_bms1_battery_total_alarms_count')|int %}
-                    {%- set alarm_label = '<font size=4>ALARMS bms01</font>' if alarm_active==0
-                        else '<b><font size=5 color=red>ALARMS bms01</font></b>' %}
+                    {%- set alarm_count = states('sensor.yambms_jk_bms_2_battery_total_alarms_count')|int %}
+                    {%- set alarm_label = '<font size=4>ALARMS BMS_01</font>' if alarm_active==0
+                        else '<b><font size=5 color=red>ALARMS BMS_01</font></b>' %}
                     {{alarm_label}} ({{ alarm_active }}/{{ alarm_count -}})<br></center>
           - type: grid
             square: false
@@ -1897,10 +1978,12 @@ views:
               - type: markdown
                 content: >-
                   {%- set alarm_active =
-                  states('sensor.rs485_bms1_battery_total_alarms_active')|int %}
+                  states('sensor.yambms_jk_bms_2_battery_total_alarms_active')|int
+                  %}
 
                   {%- set alarm_count =
-                  states('sensor.rs485_bms1_battery_total_alarms_count')|int %}
+                  states('sensor.yambms_jk_bms_2_battery_total_alarms_count')|int
+                  %}
 
                   {%- set alarm_active = 0 %} 
 
@@ -1910,7 +1993,7 @@ views:
                   {{ alarms_label }}    
 
                   <center>  {% for state in states -%} 
-                    {% if state.entity_id.startswith('binary_sensor.rs485_bms1_alarm_') and state.state!="off" %}
+                    {% if state.entity_id.startswith('binary_sensor.yambms_jk_bms_2_alarm_') and state.state!="off" %}
                       {% set last_word = state.name.split()[-1] | string %}
                       {% set last_status = state.state %}
                       {%- set font_start = '<font color="#3090C7">' if last_status=="off"
@@ -1922,9 +2005,8 @@ views:
                     {% endif %}
                   {% endfor %} </center>
   - path: bms1_settings
-    title: bms1 (SETTINGS)
+    title: BMS2 (SETTINGS)
     icon: ''
-    badges: []
     cards:
       - type: vertical-stack
         cards:
@@ -1940,27 +2022,29 @@ views:
                 cards:
                   - type: markdown
                     content: >-
-                      {%- set vid = states('sensor.rs485_bms1_info_vendorid') %}
-                      {%- set swv =
-                      states('sensor.rs485_bms1_info_software_version') %} {%-
-                      set hwv =
-                      states('sensor.rs485_bms1_info_hardware_version') %} {%-
-                      set dna = states('sensor.rs485_bms1_info_device_name') %}
-                      {%- set dsn =
-                      states('sensor.rs485_bms1_info_device_serial_number')
+                      {%- set vid =
+                      states('sensor.yambms_jk_bms_2_info_vendorid') %} {%- set
+                      swv =
+                      states('sensor.yambms_jk_bms_2_info_software_version') %}
+                      {%- set hwv =
+                      states('sensor.yambms_jk_bms_2_info_hardware_version') %}
+                      {%- set dna =
+                      states('sensor.yambms_jk_bms_2_info_device_name') %} {%-
+                      set dsn =
+                      states('sensor.yambms_jk_bms_2_info_device_serial_number')
                       %}               {%- set pin =
-                      states('sensor.rs485_bms1_info_device_password') %}  {%-
-                      set settings_pin =
-                      states('sensor.rs485_bms1_info_device_setup_passcode') %}
-                      {%- set uart1 =
-                      states('sensor.rs485_bms1_uart1_protocol_number') %}  {%-
-                      set uart2 =
-                      states('sensor.rs485_bms1_uart2_protocol_number') %} {%-
-                      set cell_number_settings =
-                      states('sensor.rs485_bms1_cell_count_settings') %} {%- set
-                      cell_number_real =
-                      states('sensor.rs485_bms1_cell_count_real') %} <table>
-                      <tr><td colspan=2><b>BMS INFO:</b></td></tr>
+                      states('sensor.yambms_jk_bms_2_info_device_password') %} 
+                      {%- set settings_pin =
+                      states('sensor.yambms_jk_bms_2_info_device_setup_passcode')
+                      %} {%- set uart1 =
+                      states('sensor.yambms_jk_bms_2_uart1_protocol_number') %} 
+                      {%- set uart2 =
+                      states('sensor.yambms_jk_bms_2_uart2_protocol_number') %}
+                      {%- set cell_number_settings =
+                      states('sensor.yambms_jk_bms_2_cell_count_settings') %}
+                      {%- set cell_number_real =
+                      states('sensor.yambms_jk_bms_2_cell_count_real') %}
+                      <table> <tr><td colspan=2><b>BMS INFO:</b></td></tr>
                       <tr><td>VendorID:</td><td>{{vid}}</tr> <tr><td>HARD
                       ver:</td><td>{{swv}}</tr> <tr><td>SOFT
                       ver:</td><td>{{hwv}}</tr>           <tr><td>DEV
@@ -1978,47 +2062,47 @@ views:
                   - type: markdown
                     content: >-
                       {%- set min_idx =
-                      states('sensor.rs485_bms1_cell_voltage_min_cell_number')
+                      states('sensor.yambms_jk_bms_2_cell_voltage_min_cell_number')
                       %} 
 
                       {%- set max_idx =
-                      states('sensor.rs485_bms1_cell_voltage_max_cell_number')
+                      states('sensor.yambms_jk_bms_2_cell_voltage_max_cell_number')
                       %}  
 
                       {%- set delta =
-                      (states('sensor.rs485_bms1_cell_delta_voltage')|float)
+                      (states('sensor.yambms_jk_bms_2_cell_delta_voltage')|float)
                       %}  
 
                       <table> <tr><td colspan=4><b>NETWORK
                       DEVICES:</b>&nbsp;&nbsp;</td></tr> <tr><td>{%- set
                       network_nodes_available =
-                      states('sensor.rs485_bms1_network_nodes_available') %} 
-                      </td></tr></table>
+                      states('sensor.yambms_jk_bms_2_network_nodes_available')
+                      %}  </td></tr></table>
 
                       {{network_nodes_available}}</b>&nbsp;&nbsp;
       - type: entities
         entities:
-          - entity: switch.rs485_bms1_charging
+          - entity: switch.yambms_jk_bms_2_charging
             name: CHARGE
-          - entity: switch.rs485_bms1_discharging
+          - entity: switch.yambms_jk_bms_2_discharging
             name: DISCHARGE
-          - entity: switch.rs485_bms1_balancing
+          - entity: switch.yambms_jk_bms_2_balancing
             name: BALANCING
-          - entity: switch.rs485_bms1_emergency
+          - entity: switch.yambms_jk_bms_2_emergency
             name: EMERGENCY
-          - entity: switch.rs485_bms1_heating
+          - entity: switch.yambms_jk_bms_2_heating
             name: HEATING
-          - entity: switch.rs485_bms1_disable_temperature_sensors
+          - entity: switch.yambms_jk_bms_2_disable_temperature_sensors
             name: DISABLE TEMPERATURE SENSORS
-          - entity: switch.rs485_bms1_display_always_on
+          - entity: switch.yambms_jk_bms_2_display_always_on
             name: DISPLAY ALWAYS ON
-          - entity: switch.rs485_bms1_smart_sleep_on
+          - entity: switch.yambms_jk_bms_2_smart_sleep_on
             name: SMART SLEEP ON
-          - entity: switch.rs485_bms1_disable_pcl_module
+          - entity: switch.yambms_jk_bms_2_disable_pcl_module
             name: DISABLE PCL MODULE
-          - entity: switch.rs485_bms1_timed_stored_data
+          - entity: switch.yambms_jk_bms_2_timed_stored_data
             name: TIMED_STORED_DATA
-          - entity: switch.rs485_bms1_charging_float_mode
+          - entity: switch.yambms_jk_bms_2_charging_float_mode
             name: CHARGE FLOAT MODE
         title: Switch (Read Only)
         show_header_toggle: false
@@ -2037,11 +2121,11 @@ views:
                   - type: markdown
                     content: |-
                       <center>
-                        {%- set alarm_active = states('sensor.rs485_bms0_battery_total_alarms_active')|int %}
+                        {%- set alarm_active = states('sensor.yambms_jk_bms_1_battery_total_alarms_active')|int %}
                         {%- set alarm_active = 0 %}                
-                        {%- set alarm_count = states('sensor.rs485_bms0_battery_total_alarms_count')|int %}
-                        {%- set alarm_label = '<font size=4>ALARMS bms00</font>' if alarm_active==0
-                            else '<b><font size=5 color=red>ALARMS bms00</font></b>' %}
+                        {%- set alarm_count = states('sensor.yambms_jk_bms_1_battery_total_alarms_count')|int %}
+                        {%- set alarm_label = '<font size=4>ALARMS BMS_00</font>' if alarm_active==0
+                            else '<b><font size=5 color=red>ALARMS BMS_00</font></b>' %}
                         {{alarm_label}} ({{ alarm_active }}/{{ alarm_count -}})<br></center>
               - type: grid
                 square: false
@@ -2050,11 +2134,11 @@ views:
                   - type: markdown
                     content: >-
                       {%- set alarm_active =
-                      states('sensor.rs485_bms0_battery_total_alarms_active')|int
+                      states('sensor.yambms_jk_bms_1_battery_total_alarms_active')|int
                       %}
 
                       {%- set alarm_count =
-                      states('sensor.rs485_bms0_battery_total_alarms_count')|int
+                      states('sensor.yambms_jk_bms_1_battery_total_alarms_count')|int
                       %}
 
                       {%- set alarm_active = 0 %} 
@@ -2065,7 +2149,7 @@ views:
                       {{ alarms_label }}    
 
                       <center>  {% for state in states -%} 
-                        {% if state.entity_id.startswith('binary_sensor.rs485_bms0_alarm_') and state.state!="off" %}
+                        {% if state.entity_id.startswith('binary_sensor.yambms_jk_bms_1_alarm_') and state.state!="off" %}
                           {% set last_word = state.name.split()[-1] | string %}
                           {% set last_status = state.state %}
                           {%- set font_start = '<font color="#3090C7">' if last_status=="off"
@@ -2083,11 +2167,11 @@ views:
               - type: markdown
                 content: |-
                   <center>
-                    {%- set alarm_active = states('sensor.rs485_bms1_battery_total_alarms_active')|int %}
+                    {%- set alarm_active = states('sensor.yambms_jk_bms_2_battery_total_alarms_active')|int %}
                     {%- set alarm_active = 0 %}                
-                    {%- set alarm_count = states('sensor.rs485_bms1_battery_total_alarms_count')|int %}
-                    {%- set alarm_label = '<font size=4>ALARMS bms01</font>' if alarm_active==0
-                        else '<b><font size=5 color=red>ALARMS bms01</font></b>' %}
+                    {%- set alarm_count = states('sensor.yambms_jk_bms_2_battery_total_alarms_count')|int %}
+                    {%- set alarm_label = '<font size=4>ALARMS BMS_01</font>' if alarm_active==0
+                        else '<b><font size=5 color=red>ALARMS BMS_01</font></b>' %}
                     {{alarm_label}} ({{ alarm_active }}/{{ alarm_count -}})<br></center>
           - type: grid
             square: false
@@ -2096,10 +2180,12 @@ views:
               - type: markdown
                 content: >-
                   {%- set alarm_active =
-                  states('sensor.rs485_bms1_battery_total_alarms_active')|int %}
+                  states('sensor.yambms_jk_bms_2_battery_total_alarms_active')|int
+                  %}
 
                   {%- set alarm_count =
-                  states('sensor.rs485_bms1_battery_total_alarms_count')|int %}
+                  states('sensor.yambms_jk_bms_2_battery_total_alarms_count')|int
+                  %}
 
                   {%- set alarm_active = 0 %} 
 
@@ -2109,7 +2195,7 @@ views:
                   {{ alarms_label }}    
 
                   <center>  {% for state in states -%} 
-                    {% if state.entity_id.startswith('binary_sensor.rs485_bms1_alarm_') and state.state!="off" %}
+                    {% if state.entity_id.startswith('binary_sensor.yambms_jk_bms_2_alarm_') and state.state!="off" %}
                       {% set last_word = state.name.split()[-1] | string %}
                       {% set last_status = state.state %}
                       {%- set font_start = '<font color="#3090C7">' if last_status=="off"
@@ -2120,135 +2206,143 @@ views:
                      {{ font_start }} {{ last_word }} (status: {{last_status}}) {{ font_end -}}<br>
                     {% endif %}
                   {% endfor %} </center>
-  - title: bms0 (PROTECTION)
-    path: protection_bms0
-    badges: []
-    cards:
-      - type: entities
-        entities:
-          - entity: number.rs485_bms0_mos_overtemperature_protection
-            name: mos_overtemperature_protection
-          - entity: number.rs485_bms0_mos_overtemperature_protection_recovery
-            name: mos_overtemperature_protection_recovery
-          - entity: number.rs485_bms0_charging_overtemperature_protection
-            name: charging_overtemperature_protection
-          - entity: number.rs485_bms0_discharging_overtemperature_protection
-            name: discharging_overtemperature_protection
-          - entity: number.rs485_bms0_charging_overtemperature_protection_recovery
-            name: charging_overtemperature_protection_recovery
-          - entity: number.rs485_bms0_discharging_overtemperature_protection_recovery
-            name: discharging_overtemperature_protection_recovery
-          - entity: number.rs485_bms0_charging_lowtemperature_protection_recovery
-            name: charging_lowtemperature_protection_recovery
-          - entity: number.rs485_bms0_charging_lowtemperature_protection
-            name: charging_lowtemperature_protection
-          - entity: number.rs485_bms0_cell_request_float_voltage_time
-        title: TEMPERATURE
-      - type: entities
-        entities:
-          - entity: number.rs485_bms0_max_charging_current
-            name: MAX CURRENT
-          - entity: number.rs485_bms0_charging_overcurrent_protection_delay
-            name: OV.PRT. DLY
-          - entity: number.rs485_bms0_charging_overcurrent_protection_recovery_delay
-            name: OV.PRT. DLY RECOVERY
-          - entity: sensor.rs485_bms0_charging_overcurrent_protection_release_time
-            name: charging_overcurrent_protection_release_time
-          - entity: sensor.rs485_bms0_charging_short_circuit_protection_release_time
-            name: charging_short_circuit_protection_release_time
-          - entity: number.rs485_bms0_precharging_time_from_discharge
-            name: precharging_time_from_discharge
-        title: CHARGING
-      - type: entities
-        entities:
-          - entity: number.rs485_bms0_max_discharging_current
-            name: max_discharging_current
-          - entity: number.rs485_bms0_discharging_overcurrent_protection_delay
-            name: discharging_overcurrent_protection_delay
-          - entity: >-
-              number.rs485_bms0_discharging_overcurrent_protection_recovery_delay
-            name: discharging_overcurrent_protection_recovery_delay
-          - entity: sensor.rs485_bms0_discharging_overcurrent_protection_release_time
-            name: discharging_overcurrent_protection_release_time
-          - entity: >-
-              sensor.rs485_bms0_discharging_short_circuit_protection_release_time
-            name: discharging_short_circuit_protection_release_time
-        title: DISCHARGING
-      - type: entities
-        entities:
-          - entity: number.rs485_bms0_short_circuit_protection_delay
-            name: PROTECTION
-          - entity: number.rs485_bms0_short_circuit_protection_recovery_delay
-            name: RECOVERY
-        title: SHORT CIRCUIT
-      - type: entities
-        entities:
-          - entity: number.rs485_bms0_max_balancing_current
-            name: MAX CURRENT
-        title: BALANCING
-  - title: bms1 (PROTECTION)
+  - title: BMS1 (PROTECTION)
     path: protection_bms1
-    badges: []
     cards:
       - type: entities
         entities:
-          - entity: number.rs485_bms1_mos_overtemperature_protection
-            name: mos_overtemperature_protection
-          - entity: number.rs485_bms1_mos_overtemperature_protection_recovery
-            name: mos_overtemperature_protection_recovery
-          - entity: number.rs485_bms1_charging_overtemperature_protection
-            name: charging_overtemperature_protection
-          - entity: number.rs485_bms1_discharging_overtemperature_protection
-            name: discharging_overtemperature_protection
-          - entity: number.rs485_bms1_charging_overtemperature_protection_recovery
-            name: charging_overtemperature_protection_recovery
-          - entity: number.rs485_bms1_discharging_overtemperature_protection_recovery
-            name: discharging_overtemperature_protection_recovery
-          - entity: number.rs485_bms1_charging_lowtemperature_protection_recovery
-            name: charging_lowtemperature_protection_recovery
-          - entity: number.rs485_bms1_charging_lowtemperature_protection
-            name: charging_lowtemperature_protection
-          - entity: number.rs485_bms1_cell_request_float_voltage_time
+          - entity: number.yambms_jk_bms_1_mos_overtemperature_protection
+            name: MOS overT
+          - entity: number.yambms_jk_bms_1_mos_overtemperature_protection_recovery
+            name: MOS overT recovery
+          - entity: number.yambms_jk_bms_1_charging_overtemperature_protection
+            name: charging overT
+          - entity: number.yambms_jk_bms_1_discharging_overtemperature_protection
+            name: discharging overT
+          - entity: >-
+              number.yambms_jk_bms_1_charging_overtemperature_protection_recovery
+            name: charging overT recovery
+          - entity: >-
+              number.yambms_jk_bms_1_discharging_overtemperature_protection_recovery
+            name: discharging overT recovery
+          - entity: number.yambms_jk_bms_1_charging_lowtemperature_protection_recovery
+            name: charging lowT recovery
+          - entity: number.yambms_jk_bms_1_charging_lowtemperature_protection
+            name: charging lowT
         title: TEMPERATURE
       - type: entities
         entities:
-          - entity: number.rs485_bms1_max_charging_current
-            name: max_charging_current
-          - entity: number.rs485_bms1_charging_overcurrent_protection_delay
-            name: charging_overcurrent_protection_delay
-          - entity: number.rs485_bms1_charging_overcurrent_protection_recovery_delay
-            name: charging_overcurrent_protection_recovery_delay
-          - entity: sensor.rs485_bms1_charging_overcurrent_protection_release_time
-            name: charging_overcurrent_protection_release_time
-          - entity: sensor.rs485_bms1_charging_short_circuit_protection_release_time
-            name: charging_short_circuit_protection_release_time
-          - entity: number.rs485_bms1_precharging_time_from_discharge
-            name: precharging_time_from_discharge
-        title: CHARGING
-      - type: entities
-        entities:
-          - entity: number.rs485_bms1_max_discharging_current
-            name: max_discharging_current
-          - entity: number.rs485_bms1_discharging_overcurrent_protection_delay
-            name: discharging_overcurrent_protection_delay
+          - entity: number.yambms_jk_bms_1_max_charging_current
+            name: MAX current
+          - entity: number.yambms_jk_bms_1_charging_overcurrent_protection_delay
+            name: Over current delay
           - entity: >-
-              number.rs485_bms1_discharging_overcurrent_protection_recovery_delay
-            name: discharging_overcurrent_protection_recovery_delay
-          - entity: sensor.rs485_bms1_discharging_overcurrent_protection_release_time
-            name: discharging_overcurrent_protection_release_time
+              number.yambms_jk_bms_1_charging_overcurrent_protection_recovery_delay
+            name: Over current recovery delay
           - entity: >-
-              sensor.rs485_bms1_discharging_short_circuit_protection_release_time
-            name: discharging_short_circuit_protection_release_time
-        title: DISCHARGING
+              sensor.yambms_jk_bms_1_charging_overcurrent_protection_release_time
+            name: Over current release time
+          - entity: >-
+              sensor.yambms_jk_bms_1_charging_short_circuit_protection_release_time
+            name: ShortCircuit release time
+          - entity: number.yambms_jk_bms_1_precharging_time_from_discharge
+            name: Precharging time from discharging
+        title: CHARGING protection
       - type: entities
         entities:
-          - entity: number.rs485_bms1_short_circuit_protection_delay
-            name: PROTECTION
-          - entity: number.rs485_bms1_short_circuit_protection_recovery_delay
-            name: RECOVERY
-        title: SHORT CIRCUIT
+          - entity: number.yambms_jk_bms_1_max_discharging_current
+            name: MAX current
+          - entity: number.yambms_jk_bms_1_discharging_overcurrent_protection_delay
+            name: Over current delay
+          - entity: >-
+              number.yambms_jk_bms_1_discharging_overcurrent_protection_recovery_delay
+            name: Over current recovery delay
+          - entity: >-
+              sensor.yambms_jk_bms_1_discharging_overcurrent_protection_release_time
+            name: Over current release time
+          - entity: >-
+              sensor.yambms_jk_bms_1_discharging_short_circuit_protection_release_time
+            name: ShortCircuit release time
+        title: DISCHARGING PROTECTION
       - type: entities
         entities:
-          - entity: number.rs485_bms1_max_balancing_current
-            name: MAX CURRENT
-        title: BALANCING
+          - entity: number.yambms_jk_bms_1_short_circuit_protection_delay
+            name: Delay
+          - entity: number.yambms_jk_bms_1_short_circuit_protection_recovery_delay
+            name: Recovery delay
+        title: SHORT CIRCUIT PROTECTION
+      - type: entities
+        entities:
+          - entity: number.yambms_jk_bms_1_max_balancing_current
+            name: MAX current
+        title: BALANCING PROTECTION
+  - title: BMS2 (PROTECTION)
+    path: protection_bms2
+    cards:
+      - type: entities
+        entities:
+          - entity: number.yambms_jk_bms_2_mos_overtemperature_protection
+            name: MOS overT
+          - entity: number.yambms_jk_bms_2_mos_overtemperature_protection_recovery
+            name: MOS overT recovery
+          - entity: number.yambms_jk_bms_2_charging_overtemperature_protection
+            name: charging overT
+          - entity: number.yambms_jk_bms_2_discharging_overtemperature_protection
+            name: discharging overT
+          - entity: >-
+              number.yambms_jk_bms_2_charging_overtemperature_protection_recovery
+            name: charging overT recovery
+          - entity: >-
+              number.yambms_jk_bms_2_discharging_overtemperature_protection_recovery
+            name: discharging overT recovery
+          - entity: number.yambms_jk_bms_2_charging_lowtemperature_protection_recovery
+            name: charging lowT recovery
+          - entity: number.yambms_jk_bms_2_charging_lowtemperature_protection
+            name: charging lowT
+        title: TEMPERATURE
+      - type: entities
+        entities:
+          - entity: number.yambms_jk_bms_2_max_charging_current
+            name: MAX current
+          - entity: number.yambms_jk_bms_2_charging_overcurrent_protection_delay
+            name: Over current delay
+          - entity: >-
+              number.yambms_jk_bms_2_charging_overcurrent_protection_recovery_delay
+            name: Over current recovery delay
+          - entity: >-
+              sensor.yambms_jk_bms_2_charging_overcurrent_protection_release_time
+            name: Over current release time
+          - entity: >-
+              sensor.yambms_jk_bms_2_charging_short_circuit_protection_release_time
+            name: ShortCircuit release time
+          - entity: number.yambms_jk_bms_2_precharging_time_from_discharge
+            name: Precharging time from discharging
+        title: CHARGING protection
+      - type: entities
+        entities:
+          - entity: number.yambms_jk_bms_2_max_discharging_current
+            name: MAX current
+          - entity: number.yambms_jk_bms_2_discharging_overcurrent_protection_delay
+            name: Over current delay
+          - entity: >-
+              number.yambms_jk_bms_2_discharging_overcurrent_protection_recovery_delay
+            name: Over current recovery delay
+          - entity: >-
+              sensor.yambms_jk_bms_2_discharging_overcurrent_protection_release_time
+            name: Over current release time
+          - entity: >-
+              sensor.yambms_jk_bms_2_discharging_short_circuit_protection_release_time
+            name: ShortCircuit release time
+        title: DISCHARGING PROTECTION
+      - type: entities
+        entities:
+          - entity: number.yambms_jk_bms_2_short_circuit_protection_delay
+            name: Delay
+          - entity: number.yambms_jk_bms_2_short_circuit_protection_recovery_delay
+            name: Recovery delay
+        title: SHORT CIRCUIT PROTECTION
+      - type: entities
+        entities:
+          - entity: number.yambms_jk_bms_2_max_balancing_current
+            name: MAX current
+        title: BALANCING PROTECTION
