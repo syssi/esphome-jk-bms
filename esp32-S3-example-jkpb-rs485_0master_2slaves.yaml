@@ -39,7 +39,7 @@ esphome:
   comment: ${device_description}
   project:
     name: "txubelaxu.esphome-jk-bms"
-    version: 1.3.1
+    version: 2.0.1
 #  libraries:
 #    - "ArduinoJson"
 #  includes:

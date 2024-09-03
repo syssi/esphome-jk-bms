@@ -123,31 +123,31 @@ jk_rs485_sniffer:
 
 jk_rs485_bms:
   - id: bms0
-    rs485_address: 0x01
+    rs485_address: 0x00
     jk_rs485_sniffer_id: sniffer0
     update_interval: 180s
   - id: bms1
-    rs485_address: 0x02
+    rs485_address: 0x01
     jk_rs485_sniffer_id: sniffer0
     update_interval: 180s
   - id: bms2
-    rs485_address: 0x03
+    rs485_address: 0x02
     jk_rs485_sniffer_id: sniffer0
     update_interval: 180s
   - id: bms3
-    rs485_address: 0x04
+    rs485_address: 0x03
     jk_rs485_sniffer_id: sniffer0
     update_interval: 180s
   - id: bms4
-    rs485_address: 0x05
+    rs485_address: 0x04
     jk_rs485_sniffer_id: sniffer0
     update_interval: 180s
   - id: bms5
-    rs485_address: 0x06
+    rs485_address: 0x05
     jk_rs485_sniffer_id: sniffer0
     update_interval: 180s
   - id: bms6
-    rs485_address: 0x07
+    rs485_address: 0x06
     jk_rs485_sniffer_id: sniffer0
     update_interval: 180s
 
