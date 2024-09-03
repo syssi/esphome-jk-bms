@@ -9,7 +9,7 @@ substitutions:
   bms6_name: rs485-bms6
 
   device_description: "Monitor two JK-BMS via RS485 internal"
-  external_components_source: ./components/ #github://txubelaxu/esphome-jk-bms@main #github://syssi/esphome-jk-bms@main
+  external_components_source: github://txubelaxu/esphome-jk-bms@main #github://syssi/esphome-jk-bms@main
   tx_pin_uart_0: GPIO17 #GPIO1 #GPIO16
   rx_pin_uart_0: GPIO18 #GPIO3 #GPIO17
   talk_pin_rs485: GPIO4
@@ -113,6 +113,7 @@ uart:
     rx_buffer_size: 500
     tx_pin: ${tx_pin_uart_0}
     rx_pin: ${rx_pin_uart_0}
+
 jk_rs485_sniffer:
   - id: sniffer0
     protocol_version: "JK02_32S"
@@ -149,11 +150,6 @@ jk_rs485_bms:
     rs485_address: 0x07
     jk_rs485_sniffer_id: sniffer0
     update_interval: 180s
-    
-    
-    
-    
-
 
 binary_sensor:
   - platform: jk_rs485_bms
@@ -305,6 +301,7 @@ binary_sensor:
       name: "${bms1_name} alarm BATTempSensor4Absent"
     alarm_battempsensor5absent:
       name: "${bms1_name} alarm BATTempSensor5Absent"
+
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms2
     status_balancing:
@@ -379,9 +376,6 @@ binary_sensor:
       name: "${bms2_name} alarm BATTempSensor4Absent"
     alarm_battempsensor5absent:
       name: "${bms2_name} alarm BATTempSensor5Absent"
-
-
-
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms3
@@ -458,7 +452,6 @@ binary_sensor:
     alarm_battempsensor5absent:
       name: "${bms3_name} alarm BATTempSensor5Absent"
 
-
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms4
     status_balancing:
@@ -533,7 +526,6 @@ binary_sensor:
       name: "${bms4_name} alarm BATTempSensor4Absent"
     alarm_battempsensor5absent:
       name: "${bms4_name} alarm BATTempSensor5Absent"
-
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms5
@@ -610,8 +602,6 @@ binary_sensor:
     alarm_battempsensor5absent:
       name: "${bms5_name} alarm BATTempSensor5Absent"
 
-
-
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms6
     status_balancing:
@@ -686,8 +676,6 @@ binary_sensor:
       name: "${bms6_name} alarm BATTempSensor4Absent"
     alarm_battempsensor5absent:
       name: "${bms6_name} alarm BATTempSensor5Absent"
-
-
 
 
 
@@ -880,7 +868,7 @@ sensor:
     errors_bitmask:
       name: "${bms0_name} errors bitmask"
     cell_count_real:
-      name: "${bms0_name} cell count real"                                                    
+      name: "${bms0_name} cell count real"                                                       
     smart_sleep_time:
       name: "${bms0_name} smart sleep time"                              
     powertube_temperature_protection:
@@ -1070,7 +1058,7 @@ sensor:
     errors_bitmask:
       name: "${bms1_name} errors bitmask"
     cell_count_real:
-      name: "${bms1_name} cell count real"                                      
+      name: "${bms1_name} cell count real"                                     
     smart_sleep_time:
       name: "${bms1_name} smart sleep time"                              
     powertube_temperature_protection:
@@ -1101,6 +1089,7 @@ sensor:
       name: "${bms1_name} cell undervoltage protection release time"
     cell_overvoltage_protection_release_time:    
       name: "${bms1_name} cell overvoltage protection release time"
+
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms2
@@ -1259,11 +1248,7 @@ sensor:
     errors_bitmask:
       name: "${bms2_name} errors bitmask"
     cell_count_real:
-      name: "${bms2_name} cell count real"            
-    cell_request_charge_voltage_time:
-      name: "${bms2_name} cell request charge voltage time"     
-    cell_request_float_voltage_time:
-      name: "${bms2_name} cell request float voltage time"                           
+      name: "${bms2_name} cell count real"                                     
     smart_sleep_time:
       name: "${bms2_name} smart sleep time"                              
     powertube_temperature_protection:
@@ -1294,7 +1279,6 @@ sensor:
       name: "${bms2_name} cell undervoltage protection release time"
     cell_overvoltage_protection_release_time:    
       name: "${bms2_name} cell overvoltage protection release time"
-
 
 
   - platform: jk_rs485_bms
@@ -1454,11 +1438,7 @@ sensor:
     errors_bitmask:
       name: "${bms3_name} errors bitmask"
     cell_count_real:
-      name: "${bms3_name} cell count real"            
-    cell_request_charge_voltage_time:
-      name: "${bms3_name} cell request charge voltage time"     
-    cell_request_float_voltage_time:
-      name: "${bms3_name} cell request float voltage time"                           
+      name: "${bms3_name} cell count real"                                     
     smart_sleep_time:
       name: "${bms3_name} smart sleep time"                              
     powertube_temperature_protection:
@@ -1648,11 +1628,7 @@ sensor:
     errors_bitmask:
       name: "${bms4_name} errors bitmask"
     cell_count_real:
-      name: "${bms4_name} cell count real"            
-    cell_request_charge_voltage_time:
-      name: "${bms4_name} cell request charge voltage time"     
-    cell_request_float_voltage_time:
-      name: "${bms4_name} cell request float voltage time"                           
+      name: "${bms4_name} cell count real"                                     
     smart_sleep_time:
       name: "${bms4_name} smart sleep time"                              
     powertube_temperature_protection:
@@ -1842,11 +1818,7 @@ sensor:
     errors_bitmask:
       name: "${bms5_name} errors bitmask"
     cell_count_real:
-      name: "${bms5_name} cell count real"            
-    cell_request_charge_voltage_time:
-      name: "${bms5_name} cell request charge voltage time"     
-    cell_request_float_voltage_time:
-      name: "${bms5_name} cell request float voltage time"                           
+      name: "${bms5_name} cell count real"                                     
     smart_sleep_time:
       name: "${bms5_name} smart sleep time"                              
     powertube_temperature_protection:
@@ -2036,11 +2008,7 @@ sensor:
     errors_bitmask:
       name: "${bms6_name} errors bitmask"
     cell_count_real:
-      name: "${bms6_name} cell count real"            
-    cell_request_charge_voltage_time:
-      name: "${bms6_name} cell request charge voltage time"     
-    cell_request_float_voltage_time:
-      name: "${bms6_name} cell request float voltage time"                           
+      name: "${bms6_name} cell count real"                                     
     smart_sleep_time:
       name: "${bms6_name} smart sleep time"                              
     powertube_temperature_protection:
@@ -2072,7 +2040,6 @@ sensor:
     cell_overvoltage_protection_release_time:    
       name: "${bms6_name} cell overvoltage protection release time"
 
-
 switch:
   - platform: template
     name: "Broadcast changes to all BMSs"
@@ -2082,10 +2049,10 @@ switch:
     optimistic: true
     turn_on_action:
       - lambda: |-
-          id(sniffer0).set_broadcast_to_all_bms(true);  
+          id(sniffer0).set_broadcast_changes_to_all_bms(true);  
     turn_off_action:
       - lambda: |-
-          id(sniffer0).set_broadcast_to_all_bms(false);   
+          id(sniffer0).set_broadcast_changes_to_all_bms(false);          
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms0
@@ -2153,6 +2120,40 @@ switch:
       name: "${bms1_name} port selection"
     special_charger:
       name: "${bms1_name} special charger" 
+      
+
+  - platform: jk_rs485_bms
+    jk_rs485_bms_id: bms2
+    precharging:
+      name: "${bms2_name} precharging"
+    charging:
+      name: "${bms2_name} charging"
+    discharging:
+      name: "${bms2_name} discharging"
+    balancing:
+      name: "${bms2_name} balancing"
+    emergency:
+      name: "${bms2_name} emergency"
+    heating:
+      name: "${bms2_name} heating"
+    display_always_on:
+      name: "${bms2_name} display_always_on"
+    charging_float_mode:
+      name: "${bms2_name} charging float mode"
+    timed_stored_data:
+      name: "${bms2_name} timed stored data"
+    disable_temperature_sensors:
+      name: "${bms2_name} disable temperature sensors"
+    smart_sleep_on:
+      name: "${bms2_name} smart sleep on"
+    disable_pcl_module:
+      name: "${bms2_name} disable pcl module"
+    gps_heartbeat:
+      name: "${bms2_name} gps heartbeat"
+    port_selection:
+      name: "${bms2_name} port selection"
+    special_charger:
+      name: "${bms2_name} special charger" 
 
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms3
@@ -2284,41 +2285,7 @@ switch:
     port_selection:
       name: "${bms6_name} port selection"
     special_charger:
-      name: "${bms6_name} special charger" 
-
-  - platform: jk_rs485_bms
-    jk_rs485_bms_id: bms6
-    precharging:
-      name: "${bms6_name} precharging"
-    charging:
-      name: "${bms6_name} charging"
-    discharging:
-      name: "${bms6_name} discharging"
-    balancing:
-      name: "${bms6_name} balancing"
-    emergency:
-      name: "${bms6_name} emergency"
-    heating:
-      name: "${bms6_name} heating"
-    display_always_on:
-      name: "${bms6_name} display_always_on"
-    charging_float_mode:
-      name: "${bms6_name} charging float mode"
-    timed_stored_data:
-      name: "${bms6_name} timed stored data"
-    disable_temperature_sensors:
-      name: "${bms6_name} disable temperature sensors"
-    smart_sleep_on:
-      name: "${bms6_name} smart sleep on"
-    disable_pcl_module:
-      name: "${bms6_name} disable pcl module"
-    gps_heartbeat:
-      name: "${bms6_name} gps heartbeat"
-    port_selection:
-      name: "${bms6_name} port selection"
-    special_charger:
-      name: "${bms6_name} special charger" 
-
+      name: "${bms6_name} special charger"                         
 
 text_sensor:
   # +--------------------------------------+
@@ -2358,7 +2325,7 @@ text_sensor:
       name: "${bms0_name} info device setup passcode"   
     # ...
   - platform: jk_rs485_bms
-    jk_rs485_bms_id: bms1            
+    jk_rs485_bms_id: bms1
     errors:
       name: "${bms1_name} errors"
     operation_status:
@@ -2380,12 +2347,12 @@ text_sensor:
     network_nodes_available:
       name: "${bms1_name} network nodes available"  
     info_device_serial_number:
-      name: "${bms1_name} info device serial number"     
+      name: "${bms1_name} info device serial number"  
     info_device_setup_passcode:
-      name: "${bms1_name} info device setup passcode"            
+      name: "${bms1_name} info device setup passcode"  
 
   - platform: jk_rs485_bms
-    jk_rs485_bms_id: bms2            
+    jk_rs485_bms_id: bms2
     errors:
       name: "${bms2_name} errors"
     operation_status:
@@ -2407,13 +2374,12 @@ text_sensor:
     network_nodes_available:
       name: "${bms2_name} network nodes available"  
     info_device_serial_number:
-      name: "${bms2_name} info device serial number"     
+      name: "${bms2_name} info device serial number"  
     info_device_setup_passcode:
-      name: "${bms2_name} info device setup passcode" 
-
+      name: "${bms2_name} info device setup passcode"  
 
   - platform: jk_rs485_bms
-    jk_rs485_bms_id: bms3            
+    jk_rs485_bms_id: bms3
     errors:
       name: "${bms3_name} errors"
     operation_status:
@@ -2435,13 +2401,12 @@ text_sensor:
     network_nodes_available:
       name: "${bms3_name} network nodes available"  
     info_device_serial_number:
-      name: "${bms3_name} info device serial number"     
+      name: "${bms3_name} info device serial number"  
     info_device_setup_passcode:
-      name: "${bms3_name} info device setup passcode" 
-
+      name: "${bms3_name} info device setup passcode"  
 
   - platform: jk_rs485_bms
-    jk_rs485_bms_id: bms4            
+    jk_rs485_bms_id: bms4
     errors:
       name: "${bms4_name} errors"
     operation_status:
@@ -2463,13 +2428,12 @@ text_sensor:
     network_nodes_available:
       name: "${bms4_name} network nodes available"  
     info_device_serial_number:
-      name: "${bms4_name} info device serial number"     
+      name: "${bms4_name} info device serial number"  
     info_device_setup_passcode:
-      name: "${bms4_name} info device setup passcode" 
-
+      name: "${bms4_name} info device setup passcode"  
 
   - platform: jk_rs485_bms
-    jk_rs485_bms_id: bms5            
+    jk_rs485_bms_id: bms5
     errors:
       name: "${bms5_name} errors"
     operation_status:
@@ -2491,13 +2455,12 @@ text_sensor:
     network_nodes_available:
       name: "${bms5_name} network nodes available"  
     info_device_serial_number:
-      name: "${bms5_name} info device serial number"     
+      name: "${bms5_name} info device serial number"  
     info_device_setup_passcode:
-      name: "${bms5_name} info device setup passcode" 
-
+      name: "${bms5_name} info device setup passcode"  
 
   - platform: jk_rs485_bms
-    jk_rs485_bms_id: bms6            
+    jk_rs485_bms_id: bms6
     errors:
       name: "${bms6_name} errors"
     operation_status:
@@ -2519,11 +2482,9 @@ text_sensor:
     network_nodes_available:
       name: "${bms6_name} network nodes available"  
     info_device_serial_number:
-      name: "${bms6_name} info device serial number"     
+      name: "${bms6_name} info device serial number"  
     info_device_setup_passcode:
-      name: "${bms6_name} info device setup passcode" 
-
-
+      name: "${bms6_name} info device setup passcode"                                        
 
 number:
   - platform: jk_rs485_bms
@@ -2595,7 +2556,7 @@ number:
     cell_request_charge_voltage_time:
       name: "${bms0_name} cell request charge voltage time" 
     cell_request_float_voltage_time:
-      name: "${bms0_name} cell request float voltage time"         
+      name: "${bms0_name} cell request float voltage time"       
       
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms1 
@@ -2664,11 +2625,11 @@ number:
     precharging_time_from_discharge:
       name: "${bms1_name} precharging time from discharge"  
     cell_request_charge_voltage_time:
-      name: "${bms1_name} cell request charge voltage time" 
+      name: "${bms1_name} cell request charge voltage time"       
     cell_request_float_voltage_time:
-      name: "${bms1_name} cell request float voltage time"         
+      name: "${bms1_name} cell request float voltage time"       
 
-
+      
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms2 
     cell_smart_sleep_voltage:
@@ -2736,12 +2697,11 @@ number:
     precharging_time_from_discharge:
       name: "${bms2_name} precharging time from discharge"  
     cell_request_charge_voltage_time:
-      name: "${bms2_name} cell request charge voltage time" 
+      name: "${bms2_name} cell request charge voltage time"       
     cell_request_float_voltage_time:
-      name: "${bms2_name} cell request float voltage time"   
+      name: "${bms2_name} cell request float voltage time"       
 
-
-
+      
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms3 
     cell_smart_sleep_voltage:
@@ -2809,11 +2769,11 @@ number:
     precharging_time_from_discharge:
       name: "${bms3_name} precharging time from discharge"  
     cell_request_charge_voltage_time:
-      name: "${bms3_name} cell request charge voltage time" 
+      name: "${bms3_name} cell request charge voltage time"       
     cell_request_float_voltage_time:
-      name: "${bms3_name} cell request float voltage time"   
+      name: "${bms3_name} cell request float voltage time"       
 
-
+      
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms4 
     cell_smart_sleep_voltage:
@@ -2881,13 +2841,11 @@ number:
     precharging_time_from_discharge:
       name: "${bms4_name} precharging time from discharge"  
     cell_request_charge_voltage_time:
-      name: "${bms4_name} cell request charge voltage time" 
+      name: "${bms4_name} cell request charge voltage time"       
     cell_request_float_voltage_time:
-      name: "${bms4_name} cell request float voltage time"         
+      name: "${bms4_name} cell request float voltage time"       
 
-
-
-
+      
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms5 
     cell_smart_sleep_voltage:
@@ -2955,13 +2913,11 @@ number:
     precharging_time_from_discharge:
       name: "${bms5_name} precharging time from discharge"  
     cell_request_charge_voltage_time:
-      name: "${bms5_name} cell request charge voltage time" 
+      name: "${bms5_name} cell request charge voltage time"       
     cell_request_float_voltage_time:
-      name: "${bms5_name} cell request float voltage time"         
+      name: "${bms5_name} cell request float voltage time"       
 
-
-
-
+      
   - platform: jk_rs485_bms
     jk_rs485_bms_id: bms6 
     cell_smart_sleep_voltage:
@@ -3029,13 +2985,9 @@ number:
     precharging_time_from_discharge:
       name: "${bms6_name} precharging time from discharge"  
     cell_request_charge_voltage_time:
-      name: "${bms6_name} cell request charge voltage time" 
+      name: "${bms6_name} cell request charge voltage time"       
     cell_request_float_voltage_time:
-      name: "${bms6_name} cell request float voltage time"         
-
-
-
-
+      name: "${bms6_name} cell request float voltage time"       
 
 light:
   # https://esphome.io/components/light/esp32_rmt_led_strip
