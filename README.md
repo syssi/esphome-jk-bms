@@ -45,6 +45,7 @@ All JK-BMS models with software version `>=6.0` are using the implemented protoc
 * JK-B2A8S20P, hw 9.x, sw 9.08W (reported by [@vrabi-cv](https://github.com/syssi/esphome-jk-bms/discussions/144#discussioncomment-3285901))
 * JK-B2A8S20P, hw 11.XW, sw 11.17, using `JK02_32S` (reported by [@senfkorn](https://github.com/syssi/esphome-jk-bms/issues/147))
 * JK-B2A8S20P, hw 11.XW, sw 11.26, using `JK02_32S` (reported by [@riker65](https://github.com/syssi/esphome-jk-bms/issues/276))
+* JK-B2A8S20P, hw 11.XA, sw 11.48, using UART-TTL (reported by [@BytEvil](https://github.com/syssi/esphome-jk-bms/issues/588))
 * JK-B2A20S20P, hw 10.XW, sw 10.09 (reported by [@markusgg84](https://github.com/syssi/esphome-jk-bms/discussions/173))
 * JK-B2A20S20P, hw 10.XW, sw 11.21h, using `JK02_32S` (reported by [@Salve87](https://github.com/syssi/esphome-jk-bms/issues/308#issuecomment-1505614325))
 * JK-B2A20S20P, hw 11.XW, sw 11.24H, using `JK02_32S` (reported by [@austin202220](https://github.com/syssi/esphome-jk-bms/discussions/232))
