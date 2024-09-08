@@ -1629,7 +1629,7 @@ void JkRS485Bms::publish_state_(JkRS485BmsNumber *number, float value) {
   const size_t free_heap = heap_caps_get_largest_free_block(MALLOC_CAP_8BIT);
 
   if (reinterpret_cast<uintptr_t>(number) > 0x3f000000) {
-    ESP_LOGV(TAG, "       ]* Publishing state %d for object with address %p [%f] %s", state, (void*)number, ((float)free_heap/1024), number->get_name().c_str());
+    ESP_LOGV(TAG, "       ]* Publishing state %f for object with address %p [%f] %s", value, (void*)number, ((float)free_heap/1024), number->get_name().c_str());
     number->publish_state(value);
     ESP_LOGV(TAG, "  --------------------------------------- PUBLISHED     0x%02X publish_state(state) of %s", reinterpret_cast<uintptr_t>(number), number->get_name().c_str());
   } else {
