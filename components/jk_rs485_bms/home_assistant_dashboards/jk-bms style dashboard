@@ -1,0 +1,262 @@
+type: vertical-stack
+title: Battery 1
+cards:
+  - type: custom:stack-in-card
+    keep:
+      margin: false
+      box_shadow: false
+      background: false
+    cards:
+      - type: grid
+        square: false
+        columns: 1
+        cards:
+          - type: markdown
+            content: >-
+              <center>Time:&nbsp;<b><font color=#3090C7>{{
+              states('sensor.bms1_total_runtime_formatted') | upper
+              }}</font>
+      - type: grid
+        square: false
+        columns: 3
+        cards:
+          - type: markdown
+            content: >-
+              <center>Charge:&nbsp;<b>{% if states('switch.bms1_charging')
+              == 'on' %} <font color=#41CD52>{{
+              states('switch.bms1_charging') | upper }}</font> {% else %}
+              <font color=red>{{ states('switch.bms1_charging') | upper
+              }}</font> {% endif %} 
+          - type: markdown
+            content: >-
+              <center>Discharge:&nbsp;<b> {% if
+              states('switch.bms1_discharging') == 'on' %} <font
+              color=#41CD52>{{ states('switch.bms1_discharging') | upper
+              }}</font> {% else %} <font color=red>{{
+              states('switch.bms1_discharging') | upper }}</font> {% endif
+              %} 
+          - type: markdown
+            content: >-
+              <center>Balance:&nbsp;<b> {% if
+              states('switch.bms1_balancing') == 'on' %} <font
+              color=#41CD52>{{ states('switch.bms1_balancing') | upper
+              }}</font> {% else %} <font color=red>{{
+              states('switch.bms1_balancing') | upper }}</font> {% endif
+              %} 
+
+  - type: custom:stack-in-card
+    keep:
+      margin: false
+      box_shadow: false
+      background: false
+    cards:
+      - type: grid
+        square: false
+        columns: 2
+        cards:
+          - type: markdown
+            content: >-
+              <center><b><font color=#41CD52 size=6>{{
+              states('sensor.bms1_battery_voltage') }} V</font></b><br>
+              Battery Power:&nbsp;&nbsp;<font color=#41CD52>{{
+              states('sensor.bms1_battery_power') }} W</font><br> Battery
+              Capacity:&nbsp;&nbsp;<font color=#41CD52>{{
+              states('number.bms1_battery_capacity_total_settings') }}
+              Ah</font><br> Cycle Capacity:&nbsp;&nbsp;<font color=#41CD52>{{
+              states('sensor.bms1_battery_capacity_total_charging_cycle') }}
+              Ah</font><br> Ave. Cell Vol.:&nbsp;&nbsp;<font color=#41CD52>{{
+              states('sensor.bms1_cell_average_voltage') }} V</font><br>
+              Balance Cur.:&nbsp;&nbsp;<font color=#41CD52>{{
+              states('sensor.bms1_balancing_current') }} A</font><br>
+              Battery T1:&nbsp;&nbsp;<font color=#41CD52>{{
+              states('sensor.bms1_temperature_sensor_1') }} °C</font>
+          - type: markdown
+            content: >-
+              <center><b><font color=#41CD52 size=6>{{
+              states('sensor.bms1_battery_current') }} A</font></b><br> Remain
+              Battery:&nbsp;&nbsp;<font color=#41CD52>{{
+              states('sensor.bms1_battery_capacity_state_of_charge') }} %</font><br> Remain
+              Capacity:&nbsp;&nbsp;<font color=#41CD52>{{
+              states('sensor.bms1_battery_capacity_remaining') }} Ah</font><br>
+              Cycle Count:&nbsp;&nbsp;<font color=#41CD52>{{
+              states('sensor.bms1_charging_cycles') }}</font><br> Delta
+              Cell Vol.:&nbsp;&nbsp;<font color=#41CD52>{{
+              states('sensor.bms1_cell_delta_voltage') }} V</font><br> MOS
+              Temp.:&nbsp;&nbsp;<font color=#41CD52>{{
+              states('sensor.bms1_temperature_powertube') }}
+              °C</font><br> Battery T2:&nbsp;&nbsp;<font color=#41CD52>{{
+              states('sensor.bms1_temperature_sensor_2') }} °C</font>
+
+  - type: custom:stack-in-card
+    keep:
+      margin: false
+      box_shadow: false
+      background: false
+    cards:
+      - type: grid
+        square: false
+        columns: 1
+        cards:
+          - type: markdown
+            content: <center><b>Cells
+      - type: grid
+        square: false
+        columns: 2
+        cards:
+          - type: markdown
+            content: >-
+              <center>01.&nbsp;&nbsp;&nbsp; {% if
+              states('sensor.bms1_cell_voltage_max_cell_number') == '1' %}  <font
+              color="#3090C7">{{ states('sensor.bms1_cell_voltage_01') }}
+              V</font> {% elif states('sensor.bms1_cell_voltage_min_cell_number') ==
+              '1' %}  <font color="red">{{
+              states('sensor.bms1_cell_voltage_01') }} V</font> {% else %}
+              {{ states('sensor.bms1_cell_voltage_01') }} V {% endif %}
+              &nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp; {{
+              states('sensor.bms1_cell_resistance_01') }} Ω <br>
+              02.&nbsp;&nbsp;&nbsp; {% if
+              states('sensor.bms1_cell_voltage_max_cell_number') == '2' %}  <font
+              color="#3090C7">{{ states('sensor.bms1_cell_voltage_02') }}
+              V</font> {% elif states('sensor.bms1_cell_voltage_min_cell_number') ==
+              '2' %} <font color="red">{{
+              states('sensor.bms1_cell_voltage_02') }} V</font> {% else %}
+              {{ states('sensor.bms1_cell_voltage_02') }} V {% endif %}
+              &nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp; {{
+              states('sensor.bms1_cell_resistance_02') }} Ω <br>
+              03.&nbsp;&nbsp;&nbsp; {% if
+              states('sensor.bms1_cell_voltage_max_cell_number') == '3' %}  <font
+              color="#3090C7">{{ states('sensor.bms1_cell_voltage_03') }}
+              V</font> {% elif states('sensor.bms1_cell_voltage_min_cell_number') ==
+              '3' %} <font color="red">{{
+              states('sensor.bms1_cell_voltage_03') }} V</font> {% else %}
+              {{ states('sensor.bms1_cell_voltage_03') }} V {% endif %}
+              &nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp; {{
+              states('sensor.bms1_cell_resistance_03') }} Ω <br>
+              04.&nbsp;&nbsp;&nbsp; {% if
+              states('sensor.bms1_cell_voltage_max_cell_number') == '4' %}  <font
+              color="#3090C7">{{ states('sensor.bms1_cell_voltage_04') }}
+              V</font> {% elif states('sensor.bms1_cell_voltage_min_cell_number') ==
+              '4' %} <font color="red">{{
+              states('sensor.bms1_cell_voltage_04') }} V</font> {% else %}
+              {{ states('sensor.bms1_cell_voltage_04') }} V {% endif %}
+              &nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp; {{
+              states('sensor.bms1_cell_resistance_04') }} Ω <br>
+              05.&nbsp;&nbsp;&nbsp; {% if
+              states('sensor.bms1_cell_voltage_max_cell_number') == '5' %}  <font
+              color="#3090C7">{{ states('sensor.bms1_cell_voltage_05') }}
+              V</font> {% elif states('sensor.bms1_cell_voltage_min_cell_number') ==
+              '5' %} <font color="red">{{
+              states('sensor.bms1_cell_voltage_05') }} V</font> {% else %}
+              {{ states('sensor.bms1_cell_voltage_05') }} V {% endif %}
+              &nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp; {{
+              states('sensor.bms1_cell_resistance_05') }} Ω <br>
+              06.&nbsp;&nbsp;&nbsp; {% if
+              states('sensor.bms1_cell_voltage_max_cell_number') == '6' %}  <font
+              color="#3090C7">{{ states('sensor.bms1_cell_voltage_06') }}
+              V</font> {% elif states('sensor.bms1_cell_voltage_min_cell_number') ==
+              '6' %} <font color="red">{{
+              states('sensor.bms1_cell_voltage_06') }} V</font> {% else %}
+              {{ states('sensor.bms1_cell_voltage_06') }} V {% endif %}
+              &nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp; {{
+              states('sensor.bms1_cell_resistance_06') }} Ω <br>
+              07.&nbsp;&nbsp;&nbsp; {% if
+              states('sensor.bms1_cell_voltage_max_cell_number') == '7' %}  <font
+              color="#3090C7">{{ states('sensor.bms1_cell_voltage_07') }}
+              V</font> {% elif states('sensor.bms1_cell_voltage_min_cell_number') ==
+              '7' %} <font color="red">{{
+              states('sensor.bms1_cell_voltage_07') }} V</font> {% else %}
+              {{ states('sensor.bms1_cell_voltage_07') }} V {% endif %}
+              &nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp; {{
+              states('sensor.bms1_cell_resistance_07') }} Ω <br>
+              08.&nbsp;&nbsp;&nbsp; {% if
+              states('sensor.bms1_cell_voltage_max_cell_number') == '8' %}  <font
+              color="#3090C7">{{ states('sensor.bms1_cell_voltage_08') }}
+              V</font> {% elif states('sensor.bms1_cell_voltage_min_cell_number') ==
+              '8' %} <font color="red">{{
+              states('sensor.bms1_cell_voltage_08') }} V</font> {% else %}
+              {{ states('sensor.bms1_cell_voltage_08') }} V {% endif %}
+              &nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp; {{
+              states('sensor.bms1_cell_resistance_08') }} Ω <br></center>
+          - type: markdown
+            content: >-
+              <center>09.&nbsp;&nbsp;&nbsp; {% if
+              states('sensor.bms1_cell_voltage_max_cell_number') == '9' %}  <font
+              color="#3090C7">{{ states('sensor.bms1_cell_voltage_09') }}
+              V</font> {% elif states('sensor.bms1_cell_voltage_min_cell_number') ==
+              '9' %}  <font color="red">{{
+              states('sensor.bms1_cell_voltage_09') }} V</font> {% else %}
+              {{ states('sensor.bms1_cell_voltage_09') }} V {% endif %}
+              &nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp; {{
+              states('sensor.bms1_cell_resistance_09') }} Ω <br>
+              10.&nbsp;&nbsp;&nbsp; {% if
+              states('sensor.bms1_cell_voltage_max_cell_number') == '10' %}  <font
+              color="#3090C7">{{ states('sensor.bms1_cell_voltage_10') }}
+              V</font> {% elif states('sensor.bms1_cell_voltage_min_cell_number') ==
+              '10' %} <font color="red">{{
+              states('sensor.bms1_cell_voltage_10') }} V</font> {% else %}
+              {{ states('sensor.bms1_cell_voltage_10') }} V {% endif %}
+              &nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp; {{
+              states('sensor.bms1_cell_resistance_10') }} Ω <br>
+              11.&nbsp;&nbsp;&nbsp; {% if
+              states('sensor.bms1_cell_voltage_max_cell_number') == '11' %}  <font
+              color="#3090C7">{{ states('sensor.bms1_cell_voltage_11') }}
+              V</font> {% elif states('sensor.bms1_cell_voltage_min_cell_number') ==
+              '11' %} <font color="red">{{
+              states('sensor.bms1_cell_voltage_11') }} V</font> {% else %}
+              {{ states('sensor.bms1_cell_voltage_11') }} V {% endif %}
+              &nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp; {{
+              states('sensor.bms1_cell_resistance_11') }} Ω <br>
+              12.&nbsp;&nbsp;&nbsp; {% if
+              states('sensor.bms1_cell_voltage_max_cell_number') == '12' %}  <font
+              color="#3090C7">{{ states('sensor.bms1_cell_voltage_12') }}
+              V</font> {% elif states('sensor.bms1_cell_voltage_min_cell_number') ==
+              '12' %} <font color="red">{{
+              states('sensor.bms1_cell_voltage_12') }} V</font> {% else %}
+              {{ states('sensor.bms1_cell_voltage_12') }} V {% endif %}
+              &nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp; {{
+              states('sensor.bms1_cell_resistance_12') }} Ω <br>
+              13.&nbsp;&nbsp;&nbsp; {% if
+              states('sensor.bms1_cell_voltage_max_cell_number') == '13' %}  <font
+              color="#3090C7">{{ states('sensor.bms1_cell_voltage_13') }}
+              V</font> {% elif states('sensor.bms1_cell_voltage_min_cell_number') ==
+              '13' %} <font color="red">{{
+              states('sensor.bms1_cell_voltage_13') }} V</font> {% else %}
+              {{ states('sensor.bms1_cell_voltage_13') }} V {% endif %}
+              &nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp; {{
+              states('sensor.bms1_cell_resistance_13') }} Ω <br>
+              14.&nbsp;&nbsp;&nbsp; {% if
+              states('sensor.bms1_cell_voltage_max_cell_number') == '14' %}  <font
+              color="#3090C7">{{ states('sensor.bms1_cell_voltage_14') }}
+              V</font> {% elif states('sensor.bms1_cell_voltage_min_cell_number') ==
+              '14' %} <font color="red">{{
+              states('sensor.bms1_cell_voltage_14') }} V</font> {% else %}
+              {{ states('sensor.bms1_cell_voltage_14') }} V {% endif %}
+              &nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp; {{
+              states('sensor.bms1_cell_resistance_14') }} Ω <br>
+              15.&nbsp;&nbsp;&nbsp; {% if
+              states('sensor.bms1_cell_voltage_max_cell_number') == '15' %}  <font
+              color="#3090C7">{{ states('sensor.bms1_cell_voltage_15') }}
+              V</font> {% elif states('sensor.bms1_cell_voltage_min_cell_number') ==
+              '15' %} <font color="red">{{
+              states('sensor.bms1_cell_voltage_15') }} V</font> {% else %}
+              {{ states('sensor.bms1_cell_voltage_15') }} V {% endif %}
+              &nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp; {{
+              states('sensor.bms1_cell_resistance_15') }} Ω <br>
+              16.&nbsp;&nbsp;&nbsp; {% if
+              states('sensor.bms1_cell_voltage_max_cell_number') == '16' %}  <font
+              color="#3090C7">{{ states('sensor.bms1_cell_voltage_16') }}
+              V</font> {% elif states('sensor.bms1_cell_voltage_min_cell_number') ==
+              '16' %} <font color="red">{{
+              states('sensor.bms1_cell_voltage_16') }} V</font> {% else %}
+              {{ states('sensor.bms1_cell_voltage_16') }} V {% endif %}
+              &nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp; {{
+              states('sensor.bms1_cell_resistance_16') }} Ω <br></center>
+  - type: entities
+    entities:
+      - entity: switch.bms1_balancing
+        name: Balancer
+      - entity: switch.bms1_charging
+        name: Charging
+      - entity: switch.bms1_discharging
+        name: Discharging
+    show_header_toggle: false
