@@ -50,18 +50,6 @@ api:
 esp32_ble_tracker:
   scan_parameters:
     active: false
-  on_ble_advertise:
-    then:
-      - lambda: |-
-          if (x.get_name().rfind("GW-", 0) == 0) {
-            ESP_LOGI("ble_adv", "New Heltec/NEEY balancer found");
-            ESP_LOGI("ble_adv", "  Name: %s", x.get_name().c_str());
-            ESP_LOGI("ble_adv", "  MAC address: %s", x.address_str().c_str());
-            ESP_LOGD("ble_adv", "  Advertised service UUIDs:");
-            for (auto uuid : x.get_service_uuids()) {
-              ESP_LOGD("ble_adv", "    - %s", uuid.to_string().c_str());
-            }
-          }
 
 ble_client:
   - mac_address: ${mac_address}
