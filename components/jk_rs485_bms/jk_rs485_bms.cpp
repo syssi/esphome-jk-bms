@@ -654,6 +654,13 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
     cells=cells_from_settings;
   }
 
+  bool update_voltage_resistance_values=false;
+
+  const uint32_t now = millis();
+  if (now - this->last_cell_info_ > 10000) {
+    update_voltage_resistance_values=true;
+  }
+
   for (uint8_t i = 0; i < cells; i++) {
     cell_voltage    = uint16_to_float(&data[i * 2 + 6]) * 0.001f;              //(float) jk_get_16bit(i * 2 + 6) * 0.001f;
     cell_resistance = uint16_to_float(&data[(i * 2 + 64 + offset)]) * 0.001f;  //(float) jk_get_16bit(i * 2 + 64 + offset) * 0.001f;
@@ -679,12 +686,29 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
 
     ESP_LOGVV(TAG, "Debug point 000 %d (--> %f) (--> %f)",i, cell_voltage, cell_resistance);
 
-    this->publish_state_(this->cells_[i].cell_voltage_sensor_, cell_voltage);
-    this->publish_state_(this->cells_[i].cell_resistance_sensor_, cell_resistance);
+    if (update_voltage_resistance_values) {
+      ESP_LOGD(TAG, "[ADDRESS: %02X]  %02d --> V: %fV",this->address_,i, cell_voltage);
+      if(this->address_==1 && i==2){
+      } else {
+        this->publish_state_(this->cells_[i].cell_voltage_sensor_, cell_voltage);
+      }
+      ESP_LOGD(TAG, "                  --> R: %fohm",cell_resistance);
+//      if(this->address_==1 && i==2){
+//      } else {
+        this->publish_state_(this->cells_[i].cell_resistance_sensor_, cell_resistance);  
+//      }
+    }
+
+
+
 
     //ESP_LOGV(TAG, "Cell %02d voltage:    %f", i, cell_voltage);
     //ESP_LOGV(TAG, "Cell %02d resistance: %f", i, cell_resistance);
   }
+  if (update_voltage_resistance_values) {
+    this->last_cell_info_ = now;
+  }
+
   
   ESP_LOGVV(TAG, "Debug point 001");
   this->publish_state_(this->cell_count_real_sensor_, (float) cell_count_real);
