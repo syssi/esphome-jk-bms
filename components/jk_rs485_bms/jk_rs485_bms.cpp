@@ -2,6 +2,52 @@
 
 
 
+float uint32_to_float(const uint8_t* byteArray) {
+
+    // Combina los bytes en un uint32_t, asumiendo formato little-endian
+    uint32_t uintValue = (static_cast<uint32_t>(byteArray[0]) << 0) |
+                         (static_cast<uint32_t>(byteArray[1]) << 8) |
+                         (static_cast<uint32_t>(byteArray[2]) << 16) |
+                         (static_cast<uint32_t>(byteArray[3]) << 24);
+
+    // Convierte el valor combinado a float
+    float floatValue = static_cast<float>(uintValue);
+
+    return floatValue;
+}
+
+float int32_to_float(const uint8_t* byteArray) {
+    // Combina los bytes en un int32_t, asumiendo formato little-endian
+    int32_t intValue = (static_cast<int32_t>(byteArray[0]) << 0) |
+                       (static_cast<int32_t>(byteArray[1]) << 8) |
+                       (static_cast<int32_t>(byteArray[2]) << 16)|
+                       (static_cast<int32_t>(byteArray[3]) << 24);
+
+    // Convierte el valor combinado a float
+    float floatValue = static_cast<float>(intValue);
+
+    return floatValue;
+}
+
+float uint16_to_float(const uint8_t *byteArray) {
+  // Combine the bytes into an int32_t
+  uint32_t uintValue = (static_cast<uint16_t>(byteArray[0]) << 0) | (static_cast<uint16_t>(byteArray[1]) << 8);
+
+  float floatValue = static_cast<float>(uintValue);
+
+  return floatValue;
+}
+
+float int16_to_float(const uint8_t *byteArray) {
+  // Combine the bytes into an int32_t
+  int32_t intValue = (static_cast<int16_t>(byteArray[0]) << 0) | (static_cast<int16_t>(byteArray[1]) << 8);
+
+  float floatValue = static_cast<float>(intValue);
+
+  return floatValue;
+}
+
+
 namespace esphome {
 namespace jk_rs485_bms {
 
@@ -23,7 +69,7 @@ void JkRS485Bms::JkRS485Bms_init(void) {
     this->port_selection_switch_ = new JkRS485BmsSwitch(false);
     this->special_charger_switch_ = new JkRS485BmsSwitch(false);
 
-    this->battery_type_text_sensor_ = new text_sensor::TextSensor();
+/*  this->battery_type_text_sensor_ = new text_sensor::TextSensor();
     this->password_text_sensor_ = new text_sensor::TextSensor();
     this->info_device_serial_number_text_sensor_ = new text_sensor::TextSensor();
     this->device_type_text_sensor_ = new text_sensor::TextSensor();
@@ -45,7 +91,7 @@ void JkRS485Bms::JkRS485Bms_init(void) {
     this->charging_switch_binary_sensor_= new binary_sensor::BinarySensor();
     this->discharging_switch_binary_sensor_= new binary_sensor::BinarySensor();
     this->dedicated_charger_switch_binary_sensor_= new binary_sensor::BinarySensor();
-
+*/
     this->status_online_binary_sensor_= new binary_sensor::BinarySensor();
     this->status_balancing_binary_sensor_= new binary_sensor::BinarySensor();
     this->status_precharging_binary_sensor_= new binary_sensor::BinarySensor();  
@@ -145,18 +191,18 @@ void JkRS485Bms::JkRS485Bms_init(void) {
 
     this->battery_soh_valuation_sensor_= new sensor::Sensor();
 
-    this->charging_sensor_= new sensor::Sensor();
+   /*this->charging_sensor_= new sensor::Sensor();
     this->discharging_sensor_= new sensor::Sensor();
     this->current_calibration_sensor_= new sensor::Sensor();
     this->device_address_sensor_= new sensor::Sensor();
     this->sleep_wait_time_sensor_= new sensor::Sensor();
     this->alarm_low_volume_sensor_= new sensor::Sensor();
     this->password_sensor_= new sensor::Sensor();
-    this->manufacturing_date_sensor_= new sensor::Sensor();
+    this->manufacturing_date_sensor_= new sensor::Sensor();*/
     this->battery_total_runtime_sensor_= new sensor::Sensor();
-    this->start_current_calibration_sensor_= new sensor::Sensor();
+    /*this->start_current_calibration_sensor_= new sensor::Sensor();
     this->actual_battery_capacity_sensor_= new sensor::Sensor();
-    this->protocol_version_sensor_= new sensor::Sensor();
+    this->protocol_version_sensor_= new sensor::Sensor();*/
 
     this->battery_capacity_state_of_charge_sensor_= new sensor::Sensor();
     this->heating_current_sensor_= new sensor::Sensor();
@@ -201,12 +247,13 @@ void JkRS485Bms::JkRS485Bms_init(void) {
     this->cell_request_float_voltage_time_number_ = new JkRS485BmsNumber();   
     
 
-    for (int i = 0; i < 32; ++i) {
+    for (uint8_t i = 0; i < 32; ++i) {
         cells_[i].cell_voltage_sensor_ = new sensor::Sensor();
         cells_[i].cell_resistance_sensor_ = new sensor::Sensor();
+        //cells_[i].cell_voltage3_sensor_ = new sensor::Sensor();
     }
     
-    for (int i = 0; i < 32; ++i) {
+    for (uint8_t i = 0; i < 32; ++i) {
         cells_[i].cell_voltage_sensor_ = nullptr;
         cells_[i].cell_resistance_sensor_ = nullptr;
     }
@@ -317,65 +364,7 @@ static const char *const BATTERY_TYPES[BATTERY_TYPES_SIZE] = {
     "Lithium Titanate",        // 0x02
 };
 
-float uint32_to_float(const uint8_t* byteArray) {
-    if (byteArray == nullptr) {
-        ESP_LOGE("uint32_to_float", "Null pointer received.");
-        return NAN;  // Devuelve NaN si el puntero es nulo
-    }
 
-    // Combina los bytes en un uint32_t, asumiendo formato little-endian
-    uint32_t uintValue = (static_cast<uint32_t>(byteArray[0]) << 0) |
-                         (static_cast<uint32_t>(byteArray[1]) << 8) |
-                         (static_cast<uint32_t>(byteArray[2]) << 16) |
-                         (static_cast<uint32_t>(byteArray[3]) << 24);
-
-    // Convierte el valor combinado a float
-    float floatValue = static_cast<float>(uintValue);
-
-    ESP_LOGD("uint32_to_float", "Bytes: %02X %02X %02X %02X, Combined uint32_t: %u, Float value: %f",
-             byteArray[0], byteArray[1], byteArray[2], byteArray[3], uintValue, floatValue);
-
-    return floatValue;
-}
-
-float int32_to_float(const uint8_t* byteArray) {
-    if (byteArray == nullptr) {
-        ESP_LOGE("int32_to_float", "Null pointer received.");
-        return NAN;  // Retorna NaN si el puntero es nulo
-    }
-
-    // Combina los bytes en un int32_t, asumiendo formato little-endian
-    int32_t intValue = (static_cast<int32_t>(byteArray[0]) << 0) |
-                       (static_cast<int32_t>(byteArray[1]) << 8) |
-                       (static_cast<int32_t>(byteArray[2]) << 16)|
-                       (static_cast<int32_t>(byteArray[3]) << 24);
-
-    // Convierte el valor combinado a float
-    float floatValue = static_cast<float>(intValue);
-
-    ESP_LOGD("int32_to_float", "Bytes: %02X %02X %02X %02X, Combined int32_t: %d, Float value: %f",
-             byteArray[0], byteArray[1], byteArray[2], byteArray[3], intValue, floatValue);
-
-    return floatValue;
-}
-
-float uint16_to_float(const uint8_t *byteArray) {
-  // Combine the bytes into an int32_t
-  uint32_t uintValue = (static_cast<uint16_t>(byteArray[0]) << 0) | (static_cast<uint16_t>(byteArray[1]) << 8);
-
-  float floatValue = static_cast<float>(uintValue);
-
-  return floatValue;
-}
-
-float int16_to_float(const uint8_t *byteArray) {
-  // Combine the bytes into an int32_t
-  int32_t intValue = (static_cast<int16_t>(byteArray[0]) << 0) | (static_cast<int16_t>(byteArray[1]) << 8);
-
-  float floatValue = static_cast<float>(intValue);
-
-  return floatValue;
-}
 
 
 //void JkRS485Bms::set_parent(JkRS485Sniffer *parent) { 
@@ -654,12 +643,6 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
     cells=cells_from_settings;
   }
 
-  bool update_voltage_resistance_values=false;
-
-  const uint32_t now = millis();
-  if (now - this->last_cell_info_ > 10000) {
-    update_voltage_resistance_values=true;
-  }
 
   for (uint8_t i = 0; i < cells; i++) {
     cell_voltage    = uint16_to_float(&data[i * 2 + 6]) * 0.001f;              //(float) jk_get_16bit(i * 2 + 6) * 0.001f;
@@ -686,18 +669,16 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
 
     ESP_LOGVV(TAG, "Debug point 000 %d (--> %f) (--> %f)",i, cell_voltage, cell_resistance);
 
-    if (update_voltage_resistance_values) {
-      ESP_LOGD(TAG, "[ADDRESS: %02X]  %02d --> V: %fV",this->address_,i, cell_voltage);
-      if(this->address_==1 && i==2){
-      } else {
-        this->publish_state_(this->cells_[i].cell_voltage_sensor_, cell_voltage);
-      }
-      ESP_LOGD(TAG, "                  --> R: %fohm",cell_resistance);
-//      if(this->address_==1 && i==2){
-//      } else {
-        this->publish_state_(this->cells_[i].cell_resistance_sensor_, cell_resistance);  
-//      }
+
+    ESP_LOGD(TAG, "[ADDRESS: %02X]  %02d --> V: %fV",this->address_,i, cell_voltage);
+    if(this->address_==1 && i==2){
+      this->publish_state_(this->cells_[i].cell_voltage_sensor_, cell_voltage);
+    } else {
+      this->publish_state_(this->cells_[i].cell_voltage_sensor_, cell_voltage);
     }
+    ESP_LOGD(TAG, "                  --> R: %fohm",cell_resistance);
+    this->publish_state_(this->cells_[i].cell_resistance_sensor_, cell_resistance);  
+
 
 
 
@@ -705,9 +686,7 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
     //ESP_LOGV(TAG, "Cell %02d voltage:    %f", i, cell_voltage);
     //ESP_LOGV(TAG, "Cell %02d resistance: %f", i, cell_resistance);
   }
-  if (update_voltage_resistance_values) {
-    this->last_cell_info_ = now;
-  }
+
 
   
   ESP_LOGVV(TAG, "Debug point 001");
@@ -1563,21 +1542,9 @@ void JkRS485Bms::publish_device_unavailable_() {
   this->publish_state_(precharging_time_from_discharge_number_, NAN);
   this->publish_state_(cell_request_charge_voltage_time_number_, NAN);
   this->publish_state_(cell_request_float_voltage_time_number_, NAN);
-
   
-  
-  
-  
-
-
-
-
-
-
-
-  this->publish_state_(this->status_online_binary_sensor_, false);
-  this->publish_state_(this->errors_text_sensor_, "Offline");
-
+  this->publish_state_(status_online_binary_sensor_, false);
+  this->publish_state_(errors_text_sensor_, "Offline");
   this->publish_state_(cell_voltage_min_sensor_, NAN);
   this->publish_state_(cell_voltage_max_sensor_, NAN);
   this->publish_state_(cell_voltage_min_cell_number_sensor_, NAN);
@@ -1641,6 +1608,8 @@ void JkRS485Bms::publish_device_unavailable_() {
   for (auto &cell : this->cells_) {
     this->publish_state_(cell.cell_voltage_sensor_, NAN);
   }
+
+
 }
 
 

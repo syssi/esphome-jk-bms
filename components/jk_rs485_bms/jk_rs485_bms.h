@@ -8,6 +8,11 @@
 #include "../jk_rs485_sniffer/jk_rs485_sniffer.h"
 //#include "esphome/core/component.h"
 
+float uint32_to_float(const uint8_t* byteArray);
+float int32_to_float(const uint8_t* byteArray);
+float uint16_to_float(const uint8_t *byteArray);
+float int16_to_float(const uint8_t *byteArray);
+
 namespace esphome {
 
 namespace jk_rs485_sniffer {
@@ -677,14 +682,25 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   uint8_t battery_total_alarms_count_;
   uint8_t battery_total_alarms_active_;
   std::string nodes_available;
-  //std::vector<JkRS485BmsSwitch *> switches_;    
-  struct Cell {
-    sensor::Sensor *cell_voltage_sensor_{nullptr};
-    sensor::Sensor *cell_resistance_sensor_{nullptr};
-  } cells_[32];
+  //std::vector<JkRS485BmsSwitch *> switches_; 
+
+  struct CellInfo {
+    sensor::Sensor* cell_voltage_sensor_;  // Puntero al sensor de voltaje
+    sensor::Sensor* cell_resistance_sensor_;  // Puntero al sensor de resistencia
+  };  
+
+  struct CellInformation {
+    sensor::Sensor *cell_voltage_sensor_; 
+    sensor::Sensor *cell_resistance_sensor_; 
+  };
   struct Temperature {
     sensor::Sensor *temperature_sensor_{nullptr};
-  } temperatures_[5];
+  };
+
+  //IF I insert follow array of 4 elements (despite it is not used at all), the "0x01 address 3th cell voltage' problem goes away
+  CellInfo cellsinfo_[4];
+  CellInfo cells_[32];
+  Temperature temperatures_[5];
 
   uint8_t no_response_count_{0};
 
