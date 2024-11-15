@@ -531,7 +531,6 @@ void JkRS485Bms::on_jk_rs485_sniffer_data(const uint8_t &origin_address, const u
   }
 
   if (origin_address == this->address_) {
-    this->reset_status_online_tracker_();
 
     ESP_LOGD(TAG, "This BMS address is: %d  and address received %d ==> WORKING (frame type:%d)",
              this->address_, origin_address, frame_type);
@@ -547,7 +546,12 @@ void JkRS485Bms::on_jk_rs485_sniffer_data(const uint8_t &origin_address, const u
         if (this->protocol_version_ == PROTOCOL_VERSION_JK04) {
           // this->decode_jk04_cell_info_(data);
         } else {
-          this->decode_jk02_cell_info_(data);
+          if (this->cell_count_settings_number_->state>0){
+            this->decode_jk02_cell_info_(data);
+          } else {
+            ESP_LOGI(TAG, "Frame type 0x%02X received from address 0x%02X. But 0x01 frame type must be processed first", frame_type,origin_address);      
+          }
+          
         }
         break;
       case 0x03:
@@ -558,9 +562,15 @@ void JkRS485Bms::on_jk_rs485_sniffer_data(const uint8_t &origin_address, const u
         break;
       default:
         ESP_LOGW(TAG, "Unsupported FRAME TYPE (0x%02X)", frame_type);
-        ESP_LOGD(TAG, "Decoding cell info frame.... [ADDRESS: %02X] %d bytes received", origin_address, data.size());
         ESP_LOGD(TAG, "  %s", format_hex_pretty(&data.front(), 150).c_str());
     }
+
+    if (this->cell_count_real_sensor_->state>0 && this->cell_count_settings_number_->state>0){
+      this->reset_status_online_tracker_();
+    } else {
+      ESP_LOGI(TAG, "Cannot set ONLINE until arrived both 0x01 and 0x02 frame types");
+    }
+      
   } else {
     ESP_LOGD(TAG, "This BMS address is: %d  and address received %d ==> IDLE", this->address_, origin_address);
   }
@@ -679,10 +689,7 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
     ESP_LOGD(TAG, "                  --> R: %fohm",cell_resistance);
     this->publish_state_(this->cells_[i].cell_resistance_sensor_, cell_resistance);  
 
-
-
-
-
+    cell_count_real=i;
     //ESP_LOGV(TAG, "Cell %02d voltage:    %f", i, cell_voltage);
     //ESP_LOGV(TAG, "Cell %02d resistance: %f", i, cell_resistance);
   }
@@ -1510,6 +1517,46 @@ void JkRS485Bms::reset_status_online_tracker_() {
 }
 
 void JkRS485Bms::publish_device_unavailable_() {
+
+
+    this->publish_state_(status_online_binary_sensor_, NAN);
+    this->publish_state_(status_balancing_binary_sensor_, NAN);
+    this->publish_state_(status_precharging_binary_sensor_, NAN);  
+    this->publish_state_(status_charging_binary_sensor_, NAN);
+    this->publish_state_(status_discharging_binary_sensor_, NAN);
+    this->publish_state_(status_heating_binary_sensor_, NAN);
+
+    this->publish_state_(alarm_wireres_binary_sensor_, NAN);
+    this->publish_state_(alarm_mosotp_binary_sensor_, NAN);
+    this->publish_state_(alarm_cellquantity_binary_sensor_, NAN);
+    this->publish_state_(alarm_cursensorerr_binary_sensor_, NAN);
+    this->publish_state_(alarm_cellovp_binary_sensor_, NAN);
+    this->publish_state_(alarm_batovp_binary_sensor_, NAN);
+    this->publish_state_(alarm_chocp_binary_sensor_, NAN);
+    this->publish_state_(alarm_chscp_binary_sensor_, NAN);
+    this->publish_state_(alarm_chotp_binary_sensor_, NAN);
+    this->publish_state_(alarm_chutp_binary_sensor_, NAN);
+    this->publish_state_(alarm_cpuauxcommuerr_binary_sensor_, NAN);
+    this->publish_state_(alarm_celluvp_binary_sensor_, NAN);
+    this->publish_state_(alarm_batuvp_binary_sensor_, NAN);
+    this->publish_state_(alarm_dchocp_binary_sensor_, NAN);
+    this->publish_state_(alarm_dchscp_binary_sensor_, NAN);
+    this->publish_state_(alarm_dchotp_binary_sensor_, NAN);
+    this->publish_state_(alarm_chargemos_binary_sensor_, NAN);
+    this->publish_state_(alarm_dischargemos_binary_sensor_, NAN);
+    this->publish_state_(alarm_gpsdisconneted_binary_sensor_, NAN);
+    this->publish_state_(alarm_modifypwdintime_binary_sensor_, NAN);
+    this->publish_state_(alarm_dischargeonfailed_binary_sensor_, NAN);
+    this->publish_state_(alarm_batteryovertemp_binary_sensor_, NAN);
+    this->publish_state_(alarm_temperaturesensoranomaly_binary_sensor_, NAN);
+    this->publish_state_(alarm_plcmoduleanomaly_binary_sensor_, NAN);
+    this->publish_state_(alarm_mostempsensorabsent_binary_sensor_, NAN);
+    this->publish_state_(alarm_battempsensor1absent_binary_sensor_, NAN);
+    this->publish_state_(alarm_battempsensor2absent_binary_sensor_, NAN);
+    this->publish_state_(alarm_battempsensor3absent_binary_sensor_, NAN);
+    this->publish_state_(alarm_battempsensor4absent_binary_sensor_, NAN);
+    this->publish_state_(alarm_battempsensor5absent_binary_sensor_, NAN); 
+
   this->publish_state_(cell_smart_sleep_voltage_number_, NAN);
   this->publish_state_(cell_undervoltage_protection_number_, NAN);
   this->publish_state_(cell_undervoltage_protection_recovery_number_, NAN);
@@ -1545,6 +1592,7 @@ void JkRS485Bms::publish_device_unavailable_() {
   
   this->publish_state_(status_online_binary_sensor_, false);
   this->publish_state_(errors_text_sensor_, "Offline");
+  this->publish_state_(cell_count_real_sensor_, NAN);
   this->publish_state_(cell_voltage_min_sensor_, NAN);
   this->publish_state_(cell_voltage_max_sensor_, NAN);
   this->publish_state_(cell_voltage_min_cell_number_sensor_, NAN);
