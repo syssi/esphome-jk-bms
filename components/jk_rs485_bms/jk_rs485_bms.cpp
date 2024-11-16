@@ -322,7 +322,7 @@ void JkRS485Bms::set_cell_request_float_voltage_time_number(JkRS485BmsNumber *ce
 
 static const char *const TAG = "jk_rs485_bms";
 
-static const uint8_t MAX_NO_RESPONSE_COUNT = 100;
+static const uint8_t MAX_NO_RESPONSE_COUNT = 10;
 
 static const uint8_t FUNCTION_READ_ALL = 0x06;
 static const uint8_t FUNCTION_WRITE_REGISTER = 0x02;
