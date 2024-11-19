@@ -455,7 +455,7 @@ bool JkRS485Sniffer::calculate_next_pooling(void){
 
   if (found==true){
     const uint32_t now=millis();
-    ESP_LOGI(TAG, "POOLING NEXT AVAILABLE... [address:0x%02X] @ %d [%lu,%lu,%lu]",this->pooling_index.node_address,this->pooling_index.frame_type,
+    ESP_LOGI(TAG, "POOLING NEXT AVAILABLE... [address:0x%02X] @ %d [%u,%u,%u]",this->pooling_index.node_address,this->pooling_index.frame_type,
                                                           now-this->rs485_network_node[this->pooling_index.node_address].last_device_settings_request_received_OK,
                                                           now-this->rs485_network_node[this->pooling_index.node_address].last_cell_info_request_received_OK,
                                                           now-this->rs485_network_node[this->pooling_index.node_address].last_device_info_request_received_OK);
