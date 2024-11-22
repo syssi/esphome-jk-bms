@@ -31,7 +31,7 @@ float int32_to_float(const uint8_t* byteArray) {
 
 float uint16_to_float(const uint8_t *byteArray) {
   // Combine the bytes into an int32_t
-  uint32_t uintValue = (static_cast<uint16_t>(byteArray[0]) << 0) | (static_cast<uint16_t>(byteArray[1]) << 8);
+  uint16_t uintValue = (static_cast<uint16_t>(byteArray[0]) << 0) | (static_cast<uint16_t>(byteArray[1]) << 8);
 
   float floatValue = static_cast<float>(uintValue);
 
@@ -40,7 +40,7 @@ float uint16_to_float(const uint8_t *byteArray) {
 
 float int16_to_float(const uint8_t *byteArray) {
   // Combine the bytes into an int32_t
-  int32_t intValue = (static_cast<int16_t>(byteArray[0]) << 0) | (static_cast<int16_t>(byteArray[1]) << 8);
+  int16_t intValue = (static_cast<int16_t>(byteArray[0]) << 0) | (static_cast<int16_t>(byteArray[1]) << 8);
 
   float floatValue = static_cast<float>(intValue);
 
