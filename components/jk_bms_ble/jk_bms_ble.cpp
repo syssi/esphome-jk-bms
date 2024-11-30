@@ -585,7 +585,7 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   ESP_LOGD(TAG, "Temperature sensor 3: %.1f °C", (float) jk_get_16bit(222 + offset) * 0.1f);
   ESP_LOGD(TAG, "Temperature sensor 4: %.1f °C", (float) jk_get_16bit(224 + offset) * 0.1f);
   ESP_LOGD(TAG, "Temperature sensor 5: %.1f °C", (float) jk_get_16bit(226 + offset) * 0.1f);
-  ESP_LOGD(TAG, "Time enter sleep: %u s", jk_get_32bit(238 + offset));
+  ESP_LOGD(TAG, "Time enter sleep: %lu s", jk_get_32bit(238 + offset));
   ESP_LOGD(TAG, "PCL Module State: %s", ONOFF((bool) data[242 + offset]));
 
   if (frame_version == FRAME_VERSION_JK02_32S) {
@@ -1251,10 +1251,10 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
   ESP_LOGI(TAG, "  Software version: %s", std::string(data.begin() + 30, data.begin() + 30 + 8).c_str());
 
   // 38    4   0x54 0xE6 0x01 0x00
-  ESP_LOGI(TAG, "  Uptime: %d s", jk_get_32bit(38));
+  ESP_LOGI(TAG, "  Uptime: %ld s", jk_get_32bit(38));
 
   // 42    4   0x9C 0x00 0x00 0x00
-  ESP_LOGI(TAG, "  Power on count: %d", jk_get_32bit(42));
+  ESP_LOGI(TAG, "  Power on count: %ld", jk_get_32bit(42));
 
   // 46   16   0x4A 0x4B 0x5F 0x50 0x42 0x32 0x41 0x31 0x36 0x53 0x31 0x35 0x50 0x00 0x00 0x00
   ESP_LOGI(TAG, "  Device name: %s", std::string(data.begin() + 46, data.begin() + 46 + 16).c_str());
