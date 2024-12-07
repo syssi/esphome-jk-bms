@@ -80,36 +80,36 @@ binary_sensor:
   - platform: jk_bms_ble
     jk_bms_ble_id: bms0
     balancing:
-      name: "${name} balancing"
+      name: "${bms0} balancing"
     charging:
-      name: "${name} charging"
+      name: "${bms0} charging"
     discharging:
-      name: "${name} discharging"
+      name: "${bms0} discharging"
     heating:
-      name: "${name} heating"
+      name: "${bms0} heating"
     online_status:
-      name: "${name} online status"
+      name: "${bms0} online status"
 
   - platform: jk_bms_ble
     jk_bms_ble_id: bms1
     balancing:
-      name: "${name} balancing"
+      name: "${bms1} balancing"
     charging:
-      name: "${name} charging"
+      name: "${bms1} charging"
     discharging:
-      name: "${name} discharging"
+      name: "${bms1} discharging"
     heating:
-      name: "${name} heating"
+      name: "${bms1} heating"
     online_status:
-      name: "${name} online status"
+      name: "${bms1} online status"
 
 button:
   - platform: jk_bms_ble
     jk_bms_ble_id: bms0
     retrieve_settings:
-      name: "${name} retrieve settings"
+      name: "${bms0} retrieve settings"
     retrieve_device_info:
-      name: "${name} retrieve device info"
+      name: "${bms0} retrieve device info"
 
   - platform: jk_bms_ble
     jk_bms_ble_id: bms1
@@ -122,514 +122,514 @@ number:
   - platform: jk_bms_ble
     jk_bms_ble_id: bms0
     balance_trigger_voltage:
-      name: "${name} balance trigger voltage"
+      name: "${bms0} balance trigger voltage"
     cell_count:
-      name: "${name} cell count"
+      name: "${bms0} cell count"
     total_battery_capacity:
-      name: "${name} total battery capacity"
+      name: "${bms0} total battery capacity"
     cell_voltage_overvoltage_protection:
-      name: "${name} cell voltage overvoltage protection"
+      name: "${bms0} cell voltage overvoltage protection"
     cell_voltage_overvoltage_recovery:
-      name: "${name} cell voltage overvoltage recovery"
+      name: "${bms0} cell voltage overvoltage recovery"
     cell_voltage_undervoltage_protection:
-      name: "${name} cell voltage undervoltage protection"
+      name: "${bms0} cell voltage undervoltage protection"
     cell_voltage_undervoltage_recovery:
-      name: "${name} cell voltage undervoltage recovery"
+      name: "${bms0} cell voltage undervoltage recovery"
     balance_starting_voltage:
-      name: "${name} balance starting voltage"
+      name: "${bms0} balance starting voltage"
     voltage_calibration:
-      name: "${name} voltage calibration"
+      name: "${bms0} voltage calibration"
     current_calibration:
-      name: "${name} current calibration"
+      name: "${bms0} current calibration"
     power_off_voltage:
-      name: "${name} power off voltage"
+      name: "${bms0} power off voltage"
     max_balance_current:
-      name: "${name} max balance current"
+      name: "${bms0} max balance current"
     max_charge_current:
-      name: "${name} max charge current"
+      name: "${bms0} max charge current"
     max_discharge_current:
-      name: "${name} max discharge current"
+      name: "${bms0} max discharge current"
     smart_sleep_voltage:
-      name: "${name} smart sleep voltage"
+      name: "${bms0} smart sleep voltage"
     cell_soc100_voltage:
-      name: "${name} cell soc100 voltage"
+      name: "${bms0} cell soc100 voltage"
     cell_soc0_voltage:
-      name: "${name} cell soc0 voltage"
+      name: "${bms0} cell soc0 voltage"
     cell_request_charge_voltage:
-      name: "${name} cell request charge voltage"
+      name: "${bms0} cell request charge voltage"
     cell_request_float_voltage:
-      name: "${name} cell request float voltage"
+      name: "${bms0} cell request float voltage"
     cell_request_charge_voltage_time:
-      name: "${name} cell request charge voltage time"
+      name: "${bms0} cell request charge voltage time"
     cell_request_float_voltage_time:
-      name: "${name} cell request float voltage time"
+      name: "${bms0} cell request float voltage time"
     charge_overcurrent_protection_delay:
-      name: "${name} charge overcurrent protection delay"
+      name: "${bms0} charge overcurrent protection delay"
     charge_overcurrent_protection_recovery_time:
-      name: "${name} charge overcurrent protection recovery time"
+      name: "${bms0} charge overcurrent protection recovery time"
     discharge_overcurrent_protection_delay:
-      name: "${name} discharge overcurrent protection delay"
+      name: "${bms0} discharge overcurrent protection delay"
     discharge_overcurrent_protection_recovery_time:
-      name: "${name} discharge overcurrent protection recovery time"
+      name: "${bms0} discharge overcurrent protection recovery time"
     short_circuit_protection_delay:
-      name: "${name} short circuit protection delay"
+      name: "${bms0} short circuit protection delay"
     short_circuit_protection_recovery_time:
-      name: "${name} short circuit protection recovery time"
+      name: "${bms0} short circuit protection recovery time"
     charge_overtemperature_protection:
-      name: "${name} charge overtemperature protection"
+      name: "${bms0} charge overtemperature protection"
     charge_overtemperature_protection_recovery:
-      name: "${name} charge overtemperature protection recovery"
+      name: "${bms0} charge overtemperature protection recovery"
     discharge_overtemperature_protection:
-      name: "${name} discharge overtemperature protection"
+      name: "${bms0} discharge overtemperature protection"
     discharge_overtemperature_protection_recovery:
-      name: "${name} discharge overtemperature protection recovery"
+      name: "${bms0} discharge overtemperature protection recovery"
     charge_undertemperature_protection:
-      name: "${name} charge undertemperature protection"
+      name: "${bms0} charge undertemperature protection"
     charge_undertemperature_protection_recovery:
-      name: "${name} charge undertemperature protection recovery"
+      name: "${bms0} charge undertemperature protection recovery"
     power_tube_overtemperature_protection:
-      name: "${name} power tube overtemperature protection"
+      name: "${bms0} power tube overtemperature protection"
     power_tube_overtemperature_protection_recovery:
-      name: "${name} power tube overtemperature protection recovery"
+      name: "${bms0} power tube overtemperature protection recovery"
     # ...
 
   - platform: jk_bms_ble
     jk_bms_ble_id: bms1
     balance_trigger_voltage:
-      name: "${name} balance trigger voltage"
+      name: "${bms1} balance trigger voltage"
     cell_count:
-      name: "${name} cell count"
+      name: "${bms1} cell count"
     total_battery_capacity:
-      name: "${name} total battery capacity"
+      name: "${bms1} total battery capacity"
     cell_voltage_overvoltage_protection:
-      name: "${name} cell voltage overvoltage protection"
+      name: "${bms1} cell voltage overvoltage protection"
     cell_voltage_overvoltage_recovery:
-      name: "${name} cell voltage overvoltage recovery"
+      name: "${bms1} cell voltage overvoltage recovery"
     cell_voltage_undervoltage_protection:
-      name: "${name} cell voltage undervoltage protection"
+      name: "${bms1} cell voltage undervoltage protection"
     cell_voltage_undervoltage_recovery:
-      name: "${name} cell voltage undervoltage recovery"
+      name: "${bms1} cell voltage undervoltage recovery"
     balance_starting_voltage:
-      name: "${name} balance starting voltage"
+      name: "${bms1} balance starting voltage"
     voltage_calibration:
-      name: "${name} voltage calibration"
+      name: "${bms1} voltage calibration"
     current_calibration:
-      name: "${name} current calibration"
+      name: "${bms1} current calibration"
     power_off_voltage:
-      name: "${name} power off voltage"
+      name: "${bms1} power off voltage"
     max_balance_current:
-      name: "${name} max balance current"
+      name: "${bms1} max balance current"
     max_charge_current:
-      name: "${name} max charge current"
+      name: "${bms1} max charge current"
     max_discharge_current:
-      name: "${name} max discharge current"
+      name: "${bms1} max discharge current"
     smart_sleep_voltage:
-      name: "${name} smart sleep voltage"
+      name: "${bms1} smart sleep voltage"
     cell_soc100_voltage:
-      name: "${name} cell soc100 voltage"
+      name: "${bms1} cell soc100 voltage"
     cell_soc0_voltage:
-      name: "${name} cell soc0 voltage"
+      name: "${bms1} cell soc0 voltage"
     cell_request_charge_voltage:
-      name: "${name} cell request charge voltage"
+      name: "${bms1} cell request charge voltage"
     cell_request_float_voltage:
-      name: "${name} cell request float voltage"
+      name: "${bms1} cell request float voltage"
     cell_request_charge_voltage_time:
-      name: "${name} cell request charge voltage time"
+      name: "${bms1} cell request charge voltage time"
     cell_request_float_voltage_time:
-      name: "${name} cell request float voltage time"
+      name: "${bms1} cell request float voltage time"
     charge_overcurrent_protection_delay:
-      name: "${name} charge overcurrent protection delay"
+      name: "${bms1} charge overcurrent protection delay"
     charge_overcurrent_protection_recovery_time:
-      name: "${name} charge overcurrent protection recovery time"
+      name: "${bms1} charge overcurrent protection recovery time"
     discharge_overcurrent_protection_delay:
-      name: "${name} discharge overcurrent protection delay"
+      name: "${bms1} discharge overcurrent protection delay"
     discharge_overcurrent_protection_recovery_time:
-      name: "${name} discharge overcurrent protection recovery time"
+      name: "${bms1} discharge overcurrent protection recovery time"
     short_circuit_protection_delay:
-      name: "${name} short circuit protection delay"
+      name: "${bms1} short circuit protection delay"
     short_circuit_protection_recovery_time:
-      name: "${name} short circuit protection recovery time"
+      name: "${bms1} short circuit protection recovery time"
     charge_overtemperature_protection:
-      name: "${name} charge overtemperature protection"
+      name: "${bms1} charge overtemperature protection"
     charge_overtemperature_protection_recovery:
-      name: "${name} charge overtemperature protection recovery"
+      name: "${bms1} charge overtemperature protection recovery"
     discharge_overtemperature_protection:
-      name: "${name} discharge overtemperature protection"
+      name: "${bms1} discharge overtemperature protection"
     discharge_overtemperature_protection_recovery:
-      name: "${name} discharge overtemperature protection recovery"
+      name: "${bms1} discharge overtemperature protection recovery"
     charge_undertemperature_protection:
-      name: "${name} charge undertemperature protection"
+      name: "${bms1} charge undertemperature protection"
     charge_undertemperature_protection_recovery:
-      name: "${name} charge undertemperature protection recovery"
+      name: "${bms1} charge undertemperature protection recovery"
     power_tube_overtemperature_protection:
-      name: "${name} power tube overtemperature protection"
+      name: "${bms1} power tube overtemperature protection"
     power_tube_overtemperature_protection_recovery:
-      name: "${name} power tube overtemperature protection recovery"
+      name: "${bms1} power tube overtemperature protection recovery"
     # ...
 
 sensor:
   - platform: jk_bms_ble
     jk_bms_ble_id: bms0
     min_cell_voltage:
-      name: "${name} min cell voltage"
+      name: "${bms0} min cell voltage"
     max_cell_voltage:
-      name: "${name} max cell voltage"
+      name: "${bms0} max cell voltage"
     min_voltage_cell:
-      name: "${name} min voltage cell"
+      name: "${bms0} min voltage cell"
     max_voltage_cell:
-      name: "${name} max voltage cell"
+      name: "${bms0} max voltage cell"
     delta_cell_voltage:
-      name: "${name} delta cell voltage"
+      name: "${bms0} delta cell voltage"
     average_cell_voltage:
-      name: "${name} average cell voltage"
+      name: "${bms0} average cell voltage"
     cell_voltage_1:
-      name: "${name} cell voltage 1"
+      name: "${bms0} cell voltage 1"
     cell_voltage_2:
-      name: "${name} cell voltage 2"
+      name: "${bms0} cell voltage 2"
     cell_voltage_3:
-      name: "${name} cell voltage 3"
+      name: "${bms0} cell voltage 3"
     cell_voltage_4:
-      name: "${name} cell voltage 4"
+      name: "${bms0} cell voltage 4"
     cell_voltage_5:
-      name: "${name} cell voltage 5"
+      name: "${bms0} cell voltage 5"
     cell_voltage_6:
-      name: "${name} cell voltage 6"
+      name: "${bms0} cell voltage 6"
     cell_voltage_7:
-      name: "${name} cell voltage 7"
+      name: "${bms0} cell voltage 7"
     cell_voltage_8:
-      name: "${name} cell voltage 8"
+      name: "${bms0} cell voltage 8"
     cell_voltage_9:
-      name: "${name} cell voltage 9"
+      name: "${bms0} cell voltage 9"
     cell_voltage_10:
-      name: "${name} cell voltage 10"
+      name: "${bms0} cell voltage 10"
     cell_voltage_11:
-      name: "${name} cell voltage 11"
+      name: "${bms0} cell voltage 11"
     cell_voltage_12:
-      name: "${name} cell voltage 12"
+      name: "${bms0} cell voltage 12"
     cell_voltage_13:
-      name: "${name} cell voltage 13"
+      name: "${bms0} cell voltage 13"
     cell_voltage_14:
-      name: "${name} cell voltage 14"
+      name: "${bms0} cell voltage 14"
     cell_voltage_15:
-      name: "${name} cell voltage 15"
+      name: "${bms0} cell voltage 15"
     cell_voltage_16:
-      name: "${name} cell voltage 16"
+      name: "${bms0} cell voltage 16"
     cell_voltage_17:
-      name: "${name} cell voltage 17"
+      name: "${bms0} cell voltage 17"
     cell_voltage_18:
-      name: "${name} cell voltage 18"
+      name: "${bms0} cell voltage 18"
     cell_voltage_19:
-      name: "${name} cell voltage 19"
+      name: "${bms0} cell voltage 19"
     cell_voltage_20:
-      name: "${name} cell voltage 20"
+      name: "${bms0} cell voltage 20"
     cell_voltage_21:
-      name: "${name} cell voltage 21"
+      name: "${bms0} cell voltage 21"
     cell_voltage_22:
-      name: "${name} cell voltage 22"
+      name: "${bms0} cell voltage 22"
     cell_voltage_23:
-      name: "${name} cell voltage 23"
+      name: "${bms0} cell voltage 23"
     cell_voltage_24:
-      name: "${name} cell voltage 24"
+      name: "${bms0} cell voltage 24"
     cell_resistance_1:
-      name: "${name} cell resistance 1"
+      name: "${bms0} cell resistance 1"
     cell_resistance_2:
-      name: "${name} cell resistance 2"
+      name: "${bms0} cell resistance 2"
     cell_resistance_3:
-      name: "${name} cell resistance 3"
+      name: "${bms0} cell resistance 3"
     cell_resistance_4:
-      name: "${name} cell resistance 4"
+      name: "${bms0} cell resistance 4"
     cell_resistance_5:
-      name: "${name} cell resistance 5"
+      name: "${bms0} cell resistance 5"
     cell_resistance_6:
-      name: "${name} cell resistance 6"
+      name: "${bms0} cell resistance 6"
     cell_resistance_7:
-      name: "${name} cell resistance 7"
+      name: "${bms0} cell resistance 7"
     cell_resistance_8:
-      name: "${name} cell resistance 8"
+      name: "${bms0} cell resistance 8"
     cell_resistance_9:
-      name: "${name} cell resistance 9"
+      name: "${bms0} cell resistance 9"
     cell_resistance_10:
-      name: "${name} cell resistance 10"
+      name: "${bms0} cell resistance 10"
     cell_resistance_11:
-      name: "${name} cell resistance 11"
+      name: "${bms0} cell resistance 11"
     cell_resistance_12:
-      name: "${name} cell resistance 12"
+      name: "${bms0} cell resistance 12"
     cell_resistance_13:
-      name: "${name} cell resistance 13"
+      name: "${bms0} cell resistance 13"
     cell_resistance_14:
-      name: "${name} cell resistance 14"
+      name: "${bms0} cell resistance 14"
     cell_resistance_15:
-      name: "${name} cell resistance 15"
+      name: "${bms0} cell resistance 15"
     cell_resistance_16:
-      name: "${name} cell resistance 16"
+      name: "${bms0} cell resistance 16"
     cell_resistance_17:
-      name: "${name} cell resistance 17"
+      name: "${bms0} cell resistance 17"
     cell_resistance_18:
-      name: "${name} cell resistance 18"
+      name: "${bms0} cell resistance 18"
     cell_resistance_19:
-      name: "${name} cell resistance 19"
+      name: "${bms0} cell resistance 19"
     cell_resistance_20:
-      name: "${name} cell resistance 20"
+      name: "${bms0} cell resistance 20"
     cell_resistance_21:
-      name: "${name} cell resistance 21"
+      name: "${bms0} cell resistance 21"
     cell_resistance_22:
-      name: "${name} cell resistance 22"
+      name: "${bms0} cell resistance 22"
     cell_resistance_23:
-      name: "${name} cell resistance 23"
+      name: "${bms0} cell resistance 23"
     cell_resistance_24:
-      name: "${name} cell resistance 24"
+      name: "${bms0} cell resistance 24"
     total_voltage:
-      name: "${name} total voltage"
+      name: "${bms0} total voltage"
     current:
-      name: "${name} current"
+      name: "${bms0} current"
     heating_current:
-      name: "${name} heating current"
+      name: "${bms0} heating current"
     power:
-      name: "${name} power"
+      name: "${bms0} power"
     charging_power:
-      name: "${name} charging power"
+      name: "${bms0} charging power"
     discharging_power:
-      name: "${name} discharging power"
+      name: "${bms0} discharging power"
     temperature_sensor_1:
-      name: "${name} temperature sensor 1"
+      name: "${bms0} temperature sensor 1"
     temperature_sensor_2:
-      name: "${name} temperature sensor 2"
+      name: "${bms0} temperature sensor 2"
     temperature_sensor_3:
-      name: "${name} temperature sensor 3"
+      name: "${bms0} temperature sensor 3"
     temperature_sensor_4:
-      name: "${name} temperature sensor 4"
+      name: "${bms0} temperature sensor 4"
     temperature_sensor_5:
-      name: "${name} temperature sensor 5"
+      name: "${bms0} temperature sensor 5"
     power_tube_temperature:
-      name: "${name} power tube temperature"
+      name: "${bms0} power tube temperature"
     balancing:
-      name: "${name} balancing"
+      name: "${bms0} balancing"
     state_of_charge:
-      name: "${name} state of charge"
+      name: "${bms0} state of charge"
     capacity_remaining:
-      name: "${name} capacity remaining"
+      name: "${bms0} capacity remaining"
     total_battery_capacity_setting:
-      name: "${name} total battery capacity setting"
+      name: "${bms0} total battery capacity setting"
     charging_cycles:
-      name: "${name} charging cycles"
+      name: "${bms0} charging cycles"
     total_charging_cycle_capacity:
-      name: "${name} total charging cycle capacity"
+      name: "${bms0} total charging cycle capacity"
     total_runtime:
-      name: "${name} total runtime"
+      name: "${bms0} total runtime"
     balancing_current:
-      name: "${name} balancing current"
+      name: "${bms0} balancing current"
     errors_bitmask:
-      name: "${name} errors bitmask"
+      name: "${bms0} errors bitmask"
     emergency_time_countdown:
-      name: "${name} emergency time countdown"
+      name: "${bms0} emergency time countdown"
     # ...
 
   - platform: jk_bms_ble
     jk_bms_ble_id: bms1
     min_cell_voltage:
-      name: "${name} min cell voltage"
+      name: "${bms1} min cell voltage"
     max_cell_voltage:
-      name: "${name} max cell voltage"
+      name: "${bms1} max cell voltage"
     min_voltage_cell:
-      name: "${name} min voltage cell"
+      name: "${bms1} min voltage cell"
     max_voltage_cell:
-      name: "${name} max voltage cell"
+      name: "${bms1} max voltage cell"
     delta_cell_voltage:
-      name: "${name} delta cell voltage"
+      name: "${bms1} delta cell voltage"
     average_cell_voltage:
-      name: "${name} average cell voltage"
+      name: "${bms1} average cell voltage"
     cell_voltage_1:
-      name: "${name} cell voltage 1"
+      name: "${bms1} cell voltage 1"
     cell_voltage_2:
-      name: "${name} cell voltage 2"
+      name: "${bms1} cell voltage 2"
     cell_voltage_3:
-      name: "${name} cell voltage 3"
+      name: "${bms1} cell voltage 3"
     cell_voltage_4:
-      name: "${name} cell voltage 4"
+      name: "${bms1} cell voltage 4"
     cell_voltage_5:
-      name: "${name} cell voltage 5"
+      name: "${bms1} cell voltage 5"
     cell_voltage_6:
-      name: "${name} cell voltage 6"
+      name: "${bms1} cell voltage 6"
     cell_voltage_7:
-      name: "${name} cell voltage 7"
+      name: "${bms1} cell voltage 7"
     cell_voltage_8:
-      name: "${name} cell voltage 8"
+      name: "${bms1} cell voltage 8"
     cell_voltage_9:
-      name: "${name} cell voltage 9"
+      name: "${bms1} cell voltage 9"
     cell_voltage_10:
-      name: "${name} cell voltage 10"
+      name: "${bms1} cell voltage 10"
     cell_voltage_11:
-      name: "${name} cell voltage 11"
+      name: "${bms1} cell voltage 11"
     cell_voltage_12:
-      name: "${name} cell voltage 12"
+      name: "${bms1} cell voltage 12"
     cell_voltage_13:
-      name: "${name} cell voltage 13"
+      name: "${bms1} cell voltage 13"
     cell_voltage_14:
-      name: "${name} cell voltage 14"
+      name: "${bms1} cell voltage 14"
     cell_voltage_15:
-      name: "${name} cell voltage 15"
+      name: "${bms1} cell voltage 15"
     cell_voltage_16:
-      name: "${name} cell voltage 16"
+      name: "${bms1} cell voltage 16"
     cell_voltage_17:
-      name: "${name} cell voltage 17"
+      name: "${bms1} cell voltage 17"
     cell_voltage_18:
-      name: "${name} cell voltage 18"
+      name: "${bms1} cell voltage 18"
     cell_voltage_19:
-      name: "${name} cell voltage 19"
+      name: "${bms1} cell voltage 19"
     cell_voltage_20:
-      name: "${name} cell voltage 20"
+      name: "${bms1} cell voltage 20"
     cell_voltage_21:
-      name: "${name} cell voltage 21"
+      name: "${bms1} cell voltage 21"
     cell_voltage_22:
-      name: "${name} cell voltage 22"
+      name: "${bms1} cell voltage 22"
     cell_voltage_23:
-      name: "${name} cell voltage 23"
+      name: "${bms1} cell voltage 23"
     cell_voltage_24:
-      name: "${name} cell voltage 24"
+      name: "${bms1} cell voltage 24"
     cell_resistance_1:
-      name: "${name} cell resistance 1"
+      name: "${bms1} cell resistance 1"
     cell_resistance_2:
-      name: "${name} cell resistance 2"
+      name: "${bms1} cell resistance 2"
     cell_resistance_3:
-      name: "${name} cell resistance 3"
+      name: "${bms1} cell resistance 3"
     cell_resistance_4:
-      name: "${name} cell resistance 4"
+      name: "${bms1} cell resistance 4"
     cell_resistance_5:
-      name: "${name} cell resistance 5"
+      name: "${bms1} cell resistance 5"
     cell_resistance_6:
-      name: "${name} cell resistance 6"
+      name: "${bms1} cell resistance 6"
     cell_resistance_7:
-      name: "${name} cell resistance 7"
+      name: "${bms1} cell resistance 7"
     cell_resistance_8:
-      name: "${name} cell resistance 8"
+      name: "${bms1} cell resistance 8"
     cell_resistance_9:
-      name: "${name} cell resistance 9"
+      name: "${bms1} cell resistance 9"
     cell_resistance_10:
-      name: "${name} cell resistance 10"
+      name: "${bms1} cell resistance 10"
     cell_resistance_11:
-      name: "${name} cell resistance 11"
+      name: "${bms1} cell resistance 11"
     cell_resistance_12:
-      name: "${name} cell resistance 12"
+      name: "${bms1} cell resistance 12"
     cell_resistance_13:
-      name: "${name} cell resistance 13"
+      name: "${bms1} cell resistance 13"
     cell_resistance_14:
-      name: "${name} cell resistance 14"
+      name: "${bms1} cell resistance 14"
     cell_resistance_15:
-      name: "${name} cell resistance 15"
+      name: "${bms1} cell resistance 15"
     cell_resistance_16:
-      name: "${name} cell resistance 16"
+      name: "${bms1} cell resistance 16"
     cell_resistance_17:
-      name: "${name} cell resistance 17"
+      name: "${bms1} cell resistance 17"
     cell_resistance_18:
-      name: "${name} cell resistance 18"
+      name: "${bms1} cell resistance 18"
     cell_resistance_19:
-      name: "${name} cell resistance 19"
+      name: "${bms1} cell resistance 19"
     cell_resistance_20:
-      name: "${name} cell resistance 20"
+      name: "${bms1} cell resistance 20"
     cell_resistance_21:
-      name: "${name} cell resistance 21"
+      name: "${bms1} cell resistance 21"
     cell_resistance_22:
-      name: "${name} cell resistance 22"
+      name: "${bms1} cell resistance 22"
     cell_resistance_23:
-      name: "${name} cell resistance 23"
+      name: "${bms1} cell resistance 23"
     cell_resistance_24:
-      name: "${name} cell resistance 24"
+      name: "${bms1} cell resistance 24"
     total_voltage:
-      name: "${name} total voltage"
+      name: "${bms1} total voltage"
     current:
-      name: "${name} current"
+      name: "${bms1} current"
     heating_current:
-      name: "${name} heating current"
+      name: "${bms1} heating current"
     power:
-      name: "${name} power"
+      name: "${bms1} power"
     charging_power:
-      name: "${name} charging power"
+      name: "${bms1} charging power"
     discharging_power:
-      name: "${name} discharging power"
+      name: "${bms1} discharging power"
     temperature_sensor_1:
-      name: "${name} temperature sensor 1"
+      name: "${bms1} temperature sensor 1"
     temperature_sensor_2:
-      name: "${name} temperature sensor 2"
+      name: "${bms1} temperature sensor 2"
     temperature_sensor_3:
-      name: "${name} temperature sensor 3"
+      name: "${bms1} temperature sensor 3"
     temperature_sensor_4:
-      name: "${name} temperature sensor 4"
+      name: "${bms1} temperature sensor 4"
     temperature_sensor_5:
-      name: "${name} temperature sensor 5"
+      name: "${bms1} temperature sensor 5"
     power_tube_temperature:
-      name: "${name} power tube temperature"
+      name: "${bms1} power tube temperature"
     balancing:
-      name: "${name} balancing"
+      name: "${bms1} balancing"
     state_of_charge:
-      name: "${name} state of charge"
+      name: "${bms1} state of charge"
     capacity_remaining:
-      name: "${name} capacity remaining"
+      name: "${bms1} capacity remaining"
     total_battery_capacity_setting:
-      name: "${name} total battery capacity setting"
+      name: "${bms1} total battery capacity setting"
     charging_cycles:
-      name: "${name} charging cycles"
+      name: "${bms1} charging cycles"
     total_charging_cycle_capacity:
-      name: "${name} total charging cycle capacity"
+      name: "${bms1} total charging cycle capacity"
     total_runtime:
-      name: "${name} total runtime"
+      name: "${bms1} total runtime"
     balancing_current:
-      name: "${name} balancing current"
+      name: "${bms1} balancing current"
     errors_bitmask:
-      name: "${name} errors bitmask"
+      name: "${bms1} errors bitmask"
     emergency_time_countdown:
-      name: "${name} emergency time countdown"
+      name: "${bms1} emergency time countdown"
     # ...
 
 switch:
   - platform: jk_bms_ble
     jk_bms_ble_id: bms0
     charging:
-      name: "${name} charging"
+      name: "${bms0} charging"
     discharging:
-      name: "${name} discharging"
+      name: "${bms0} discharging"
     balancer:
-      name: "${name} balancer"
+      name: "${bms0} balancer"
     emergency:
-      name: "${name} emergency"
+      name: "${bms0} emergency"
     heating:
-      name: "${name} heating"
+      name: "${bms0} heating"
     disable_temperature_sensors:
-      name: "${name} disable temperature sensors"
+      name: "${bms0} disable temperature sensors"
     display_always_on:
-      name: "${name} display always on"
+      name: "${bms0} display always on"
     smart_sleep:
-      name: "${name} smart sleep"
+      name: "${bms0} smart sleep"
     disable_pcl_module:
-      name: "${name} disable pcl module"
+      name: "${bms0} disable pcl module"
     timed_stored_data:
-      name: "${name} timed stored data"
+      name: "${bms0} timed stored data"
     charging_float_mode:
-      name: "${name} charging float mode"
+      name: "${bms0} charging float mode"
 
   - platform: jk_bms_ble
     jk_bms_ble_id: bms1
     charging:
-      name: "${name} charging"
+      name: "${bms1} charging"
     discharging:
-      name: "${name} discharging"
+      name: "${bms1} discharging"
     balancer:
-      name: "${name} balancer"
+      name: "${bms1} balancer"
     emergency:
-      name: "${name} emergency"
+      name: "${bms1} emergency"
     heating:
-      name: "${name} heating"
+      name: "${bms1} heating"
     disable_temperature_sensors:
-      name: "${name} disable temperature sensors"
+      name: "${bms1} disable temperature sensors"
     display_always_on:
-      name: "${name} display always on"
+      name: "${bms1} display always on"
     smart_sleep:
-      name: "${name} smart sleep"
+      name: "${bms1} smart sleep"
     disable_pcl_module:
-      name: "${name} disable pcl module"
+      name: "${bms1} disable pcl module"
     timed_stored_data:
-      name: "${name} timed stored data"
+      name: "${bms1} timed stored data"
     charging_float_mode:
-      name: "${name} charging float mode"
+      name: "${bms1} charging float mode"
 
   - platform: ble_client
     ble_client_id: client0
