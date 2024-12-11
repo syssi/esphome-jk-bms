@@ -1251,7 +1251,7 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
   ESP_LOGI(TAG, "  Software version: %s", std::string(data.begin() + 30, data.begin() + 30 + 8).c_str());
 
   // 38    4   0x54 0xE6 0x01 0x00
-  ESP_LOGI(TAG, "  Uptime: %ld s", jk_get_32bit(38));
+  ESP_LOGI(TAG, "  Uptime: %lu s", jk_get_32bit(38));
 
   // 42    4   0x9C 0x00 0x00 0x00
   ESP_LOGI(TAG, "  Power on count: %ld", jk_get_32bit(42));
