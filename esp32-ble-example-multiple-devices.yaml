@@ -55,6 +55,7 @@ api:
 #   username: !secret mqtt_username
 #   password: !secret mqtt_password
 #   id: mqtt_client
+#   disconvery: true
 
 esp32_ble_tracker:
   scan_parameters:
