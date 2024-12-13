@@ -47,6 +47,7 @@ api:
 #   username: !secret mqtt_username
 #   password: !secret mqtt_password
 #   id: mqtt_client
+#   discovery: true
 
 time:
   - platform: sntp
