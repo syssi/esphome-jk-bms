@@ -215,7 +215,7 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
             unit_of_measurement=UNIT_EMPTY,
             icon=ICON_BALANCER,
             accuracy_decimals=0,
-            device_class=DEVICE_CLASS_CURRENT,
+            device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
         cv.Optional(CONF_MIN_CELL_VOLTAGE): sensor.sensor_schema(
