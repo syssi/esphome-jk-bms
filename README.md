@@ -122,7 +122,7 @@ mqtt_password: MY_MQTT_PASSWORD
 EOF
 
 # Validate the configuration, create a binary, upload it, and start logs
-# If you use a esp8266 run the esp8266-examle.yaml
+# If you use a esp8266 run the esp8266-example.yaml
 esphome run esp32-example.yaml
 
 ```
