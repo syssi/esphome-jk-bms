@@ -65,7 +65,141 @@ modbus_controller:
     update_interval: 5s
     command_throttle: 50ms
 
+binary_sensor:
+  - platform: modbus_controller
+    modbus_controller_id: bms0
+    name: "${name} charging"
+    address: 0x12C0
+    register_type: holding
+    lambda: |-
+      return data[0] == 1;
+
+  - platform: modbus_controller
+    modbus_controller_id: bms0
+    name: "${name} discharging"
+    address: 0x12C0
+    register_type: holding
+    lambda: |-
+      return data[1] == 1;
+
+  - platform: modbus_controller
+    modbus_controller_id: bms0
+    name: "${name} balancing"
+    address: 0x12A6
+    register_type: holding
+    lambda: |-
+      return data[0] == 1;
+
 sensor:
+  - platform: modbus_controller
+    modbus_controller_id: bms0
+    name: "${name} cell undervoltage protection"
+    address: 0x1004
+    register_type: holding
+    value_type: U_DWORD
+    register_count: 118
+    unit_of_measurement: "V"
+    device_class: voltage
+    state_class: measurement
+    accuracy_decimals: 3
+    filters:
+      - multiply: 0.001
+
+  - platform: modbus_controller
+    modbus_controller_id: bms0
+    name: "${name} cell overvoltage protection"
+    address: 0x100C
+    register_type: holding
+    value_type: U_DWORD
+    unit_of_measurement: "V"
+    device_class: voltage
+    state_class: measurement
+    accuracy_decimals: 3
+    filters:
+      - multiply: 0.001
+
+  - platform: modbus_controller
+    modbus_controller_id: bms0
+    name: "${name} charging overcurrent protection"
+    address: 0x102C
+    register_type: holding
+    value_type: U_DWORD
+    unit_of_measurement: "A"
+    device_class: voltage
+    state_class: measurement
+    accuracy_decimals: 3
+    filters:
+      - multiply: 0.001
+
+  - platform: modbus_controller
+    modbus_controller_id: bms0
+    name: "${name} discharging overcurrent protection"
+    address: 0x1038
+    register_type: holding
+    value_type: U_DWORD
+    unit_of_measurement: "A"
+    device_class: voltage
+    state_class: measurement
+    accuracy_decimals: 3
+    filters:
+      - multiply: 0.001
+
+  - platform: modbus_controller
+    modbus_controller_id: bms0
+    name: "${name} charging overtemperature protection"
+    address: 0x104C
+    register_type: holding
+    value_type: U_DWORD
+    unit_of_measurement: "°C"
+    state_class: measurement
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: bms0
+    name: "${name} discharging overtemperature protection"
+    address: 0x1054
+    register_type: holding
+    value_type: U_DWORD
+    unit_of_measurement: "°C"
+    state_class: measurement
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: bms0
+    name: "${name} charging undertemperature protection"
+    address: 0x105C
+    register_type: holding
+    value_type: S_DWORD
+    unit_of_measurement: "°C"
+    state_class: measurement
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: bms0
+    name: "${name} MOS high temperature protection"
+    address: 0x1064
+    register_type: holding
+    value_type: U_DWORD
+    unit_of_measurement: "°C"
+    state_class: measurement
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: bms0
+    name: "${name} cell count"
+    address: 0x106C
+    register_type: holding
+    value_type: U_DWORD
+    accuracy_decimals: 0
+
   # 0x1200    0    UINT16    2    R    CellVol0    mV
   - platform: modbus_controller
     modbus_controller_id: bms0
@@ -534,6 +668,19 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: bms0
+    name: "${name} delta cell voltage"
+    address: 0x1246
+    register_type: holding
+    value_type: U_WORD
+    unit_of_measurement: "V"
+    device_class: voltage
+    state_class: measurement
+    accuracy_decimals: 3
+    filters:
+      - multiply: 0.001
+
+  - platform: modbus_controller
+    modbus_controller_id: bms0
     name: "${name} min voltage cell number"
     address: 0x1248
     register_type: holding
@@ -990,18 +1137,166 @@ sensor:
       - multiply: 0.001
 
   # 0x1294   148   UINT32    4    R    BatWatt         mW
+  - platform: modbus_controller
+    modbus_controller_id: bms0
+    name: "${name} power"
+    address: 0x1294
+    register_type: holding
+    value_type: S_DWORD
+    unit_of_measurement: "W"
+    device_class: power
+    state_class: measurement
+    accuracy_decimals: 2
+    filters:
+      - lambda: |-
+          return id(current).state < 0
+            ? x * -1
+            : x;
+      - multiply: 0.001
+
   # 0x1298   152    INT32    4    R    BatCurrent      mA
+  - platform: modbus_controller
+    modbus_controller_id: bms0
+    id: current
+    name: "${name} current"
+    address: 0x1298
+    register_type: holding
+    value_type: S_DWORD
+    unit_of_measurement: "A"
+    device_class: current
+    state_class: measurement
+    accuracy_decimals: 2
+    filters:
+      - multiply: 0.001
+
   # 0x129C   156    INT16    2    R    TempBat 1       0.1 °C
+  - platform: modbus_controller
+    modbus_controller_id: bms0
+    name: "${name} temperature sensor 1"
+    address: 0x129C
+    register_type: holding
+    value_type: S_WORD
+    state_class: measurement
+    unit_of_measurement: "°C"
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+
   # 0x129E   158    INT16    2    R    TempBat 2       0.1 °C
+  - platform: modbus_controller
+    modbus_controller_id: bms0
+    name: "${name} temperature sensor 2"
+    address: 0x129E
+    register_type: holding
+    value_type: S_WORD
+    state_class: measurement
+    unit_of_measurement: "°C"
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+
   # 0x12A0   160   UINT32    4    R    AlarmBitmask
+  - platform: modbus_controller
+    modbus_controller_id: bms0
+    id: alarms_bitmask
+    name: "${name} alarms bitmask"
+    address: 0x12A0
+    register_type: holding
+    value_type: U_DWORD
+    on_value:
+      - component.update: alarms
+
   # 0x12A4   164    INT16    2    R    BalanCurrent    mA
+  - platform: modbus_controller
+    modbus_controller_id: bms0
+    name: "${name} balance current"
+    address: 0x12A4
+    register_type: holding
+    value_type: S_WORD
+    unit_of_measurement: "A"
+    device_class: current
+    state_class: measurement
+    accuracy_decimals: 2
+    filters:
+      - multiply: 0.001
+
   # 0x12A6   166 UINT8+UINT8 2    R    BalanStatatus (2:放电; 1:充电 ; 0:关闭) / SOCStateOfcharge %
+  - platform: modbus_controller
+    modbus_controller_id: bms0
+    name: "${name} state of charge"
+    address: 0x12A6
+    register_type: holding
+    value_type: U_WORD
+    state_class: measurement
+    unit_of_measurement: "%"
+    accuracy_decimals: 0
+    lambda: |-
+      return data[1];
+
   # 0x12A8   168    INT32    2    R    SOCCapRemain    mAH
+  - platform: modbus_controller
+    modbus_controller_id: bms0
+    name: "${name} capacity remaining derived"
+    address: 0x12A8
+    register_type: holding
+    value_type: U_DWORD
+    state_class: measurement
+    unit_of_measurement: "Ah"
+    accuracy_decimals: 0
+    filters:
+      - multiply: 0.001
+
   # 0x12AC   172   UINT32    4    R    SOCFullChargeCap    mAH
+  - platform: modbus_controller
+    modbus_controller_id: bms0
+    name: "${name} actual battery capacity"
+    address: 0x12AC
+    register_type: holding
+    value_type: U_DWORD
+    state_class: measurement
+    unit_of_measurement: "Ah"
+    accuracy_decimals: 0
+    filters:
+      - multiply: 0.001
+
   # 0x12B0   176   UINT32    4    R    SOCCycleCount   次
+  - platform: modbus_controller
+    modbus_controller_id: bms0
+    name: "${name} charging cycles"
+    address: 0x12B0
+    register_type: holding
+    value_type: U_DWORD
+    state_class: measurement
+    accuracy_decimals: 0
+
   # 0x12B4   180   UINT32    4    R    SOCCycleCap     mAH
+  - platform: modbus_controller
+    modbus_controller_id: bms0
+    name: "${name} total charging cycle capacity"
+    address: 0x12B4
+    register_type: holding
+    value_type: U_DWORD
+    state_class: measurement
+    unit_of_measurement: "Ah"
+    accuracy_decimals: 0
+    filters:
+      - multiply: 0.001
+
   # 0x12B8   184 UINT8+UINT8 2    R    StateOfHealth % / Precharge stats (1:打开 ; 0:关闭)
+  - platform: modbus_controller
+    modbus_controller_id: bms0
+    name: "${name} state of health"
+    address: 0x12B8
+    register_type: holding
+    value_type: U_WORD
+    state_class: measurement
+    unit_of_measurement: "%"
+    accuracy_decimals: 0
+    lambda: |-
+      return data[0];
+
   # 0x12BA   186   UINT16    2    R    UserAlarm
+
   # 0x12BC   188   UINT32    4    R    RunTime         S
   - platform: modbus_controller
     modbus_controller_id: bms0
@@ -1027,6 +1322,31 @@ sensor:
   # 0x12D6   214   UINT16    2    R    BatCurCorrect
   # 0x12D8   216   UINT16    2    R    VolChargCur     mV
   # 0x12DA   218   UINT16    2    R    VolDischargCur  mV
+
+  - platform: modbus_controller
+    modbus_controller_id: bms0
+    name: "${name} temperature sensor 3"
+    address: 0x12FA
+    register_type: holding
+    value_type: S_WORD
+    state_class: measurement
+    unit_of_measurement: "°C"
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: bms0
+    id: jkbms_bat_temp4
+    name: "${name} temperature sensor 4"
+    address: 0x12FC
+    register_type: holding
+    value_type: S_WORD
+    state_class: measurement
+    unit_of_measurement: "°C"
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
 
 switch:
   - platform: modbus_controller
@@ -1118,3 +1438,48 @@ text_sensor:
                 (hours ? to_string(hours) + "h" : "");
       }
       return value;
+
+  - platform: template
+    id: alarms
+    name: "${name} alarms"
+    update_interval: never
+    lambda: |-
+      static const uint8_t alarms_size = 22;
+      static const char *const alarms[alarms_size] = {
+        "Wire resistance",
+        "MOS OTP",
+        "Cell quantity",
+        "Current sensor error",
+        "Cell OVP",
+        "Battery OVP",
+        "Charge OCP",
+        "Charge SCP",
+        "Charge OTP",
+        "Charge UTP",
+        "CPU Aux comm error",
+        "Cell UVP",
+        "Batt UVP",
+        "Discharge OCP",
+        "Discharge SCP",
+        "Discharge OTP",
+        "Charge MOS",
+        "Disacharge MOS",
+        "GPS Disconneted",
+        "Modify PWD. in time",
+        "Discharge On Failed",
+        "Battery Over Temp Alarm"
+      };
+      std::string values = "";
+      uint16_t mask = id(alarms_bitmask)->state;
+      if (mask) {
+        for (int i = 0; i < alarms_size; i++) {
+          if (mask & (1 << i)) {
+            values.append(alarms[i]);
+            values.append(";");
+          }
+        }
+        if (!values.empty()) {
+          values.pop_back();
+        }
+      }
+      return values;
