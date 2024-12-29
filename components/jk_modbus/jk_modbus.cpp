@@ -54,12 +54,8 @@ bool JkModbus::parse_jk_modbus_byte_(uint8_t byte) {
 
   // Byte 0: Start sequence (0x4E)
   if (at == 0) {
-    if (raw[0] != 0x4E) {
-      // return false to reset buffer
-      return false;
-    }
-
-    return true;
+    // return false to reset buffer
+    return raw[0] == 0x4E;
   }
   uint8_t address = raw[0];
 
