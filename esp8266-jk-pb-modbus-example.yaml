@@ -34,6 +34,7 @@ mqtt:
   username: !secret mqtt_username
   password: !secret mqtt_password
   id: mqtt_client
+  discovery: true
 
 # api:
 
