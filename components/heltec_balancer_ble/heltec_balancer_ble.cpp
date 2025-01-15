@@ -709,7 +709,7 @@ void HeltecBalancerBle::decode_device_info_(const std::vector<uint8_t> &data) {
   // 56    4   0x05 0x00 0x00 0x00    Power on count                                 5
   ESP_LOGI(TAG, "  Power on count: %d", heltec_get_16bit(56));
   // 60    4   0x01 0x91 0x0A 0x00    Total runtime                                  7D
-  ESP_LOGI(TAG, "  Total runtime: %s (%ds)", format_total_runtime_(heltec_get_32bit(60)).c_str(), heltec_get_32bit(60));
+  ESP_LOGI(TAG, "  Total runtime: %s (%lus)", format_total_runtime_(heltec_get_32bit(60)).c_str(), (unsigned long) heltec_get_32bit(60));
   this->publish_state_(this->total_runtime_sensor_, (float) heltec_get_32bit(60));
   this->publish_state_(this->total_runtime_formatted_text_sensor_, format_total_runtime_(heltec_get_32bit(60)));
 
