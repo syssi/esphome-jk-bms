@@ -278,3 +278,10 @@ jobs:
         run: |
           esphome -s external_components_source components compile esp32-display-example.yaml
           # esphome -s external_components_source components compile esp8266-display-example.yaml
+
+      - name: Write tests/secrets.yaml
+        shell: bash
+        run: 'echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password" > tests/secrets.yaml'
+      - name: Compile test configurations
+        run: |
+          esphome -s external_components_source ../components compile tests/esp32c6-compatibility-test.yaml
