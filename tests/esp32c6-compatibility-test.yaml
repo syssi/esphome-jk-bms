@@ -10,7 +10,7 @@ esphome:
   project:
     name: "syssi.esphome-jk-bms"
     version: 2.1.0
-  platformio_options: 
+  platformio_options:
     # board_build.f_cpu: 160000000L
     # board_build.f_flash: 80000000L
     board_build.flash_size: 8MB
@@ -44,7 +44,7 @@ logger:
   level: INFO
 
 api:
- reboot_timeout: 0s
+  reboot_timeout: 0s
 
 uart:
   - id: uart_0
