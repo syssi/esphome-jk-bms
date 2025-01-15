@@ -136,7 +136,7 @@ uint8_t crc(const uint8_t data[], const uint16_t len) {
 | 224-225 | 2 | Temperature Sensor 4 | int16 | 0.1 | °C | - |
 | 226-227 | 2 | Temperature Sensor 3 | int16 | 0.1 | °C | - |
 | 186-187 | 2 | Emergency time countdown | uint16 | 1 | s | >0 = Emergency active |
-| 299 | 1 | CRC checksum | Raw | - | - | - |
+| 299 | 1 | CRC checksum | uint8 | - | - | - |
 
 ### Device Info Frame Specification (`JK02_32S`)
 
@@ -175,4 +175,4 @@ uint8_t crc(const uint8_t data[], const uint16_t len) {
 | 266 | 1 | RCV Time | uint8 | 0.1 | hours | Request Charge Voltage Time |
 | 267 | 1 | RFV Time | uint8 | 0.1 | hours | Request Float Voltage Time |
 | 268 | 1 | CAN protocol library version | uint8 | - | - | Protocol version |
-| 299 | 1 | CRC | uint8 | - | - | Frame checksum |
+| 299 | 1 | CRC checksum | uint8 | - | - | - |
