@@ -48,6 +48,7 @@ All JK-BMS models with software version `>=6.0` are using the implemented protoc
 * JK-B2A8S20P, hw 11.XW, sw 11.26, using `JK02_32S` (reported by [@riker65](https://github.com/syssi/esphome-jk-bms/issues/276))
 * JK-B2A8S20P, hw 11.XA, sw 11.48, using UART-TTL (reported by [@BytEvil](https://github.com/syssi/esphome-jk-bms/issues/588))
 * JK-B2A20S20P, hw 10.XW, sw 10.09 (reported by [@markusgg84](https://github.com/syssi/esphome-jk-bms/discussions/173))
+* JK-B2A20S20P, hw 10.XW, sw 10.10, using `JK02_24S` (reported by [@cygeus](https://github.com/syssi/esphome-jk-bms/issues/455))
 * JK-B2A20S20P, hw 10.XW, sw 11.21h, using `JK02_32S` (reported by [@Salve87](https://github.com/syssi/esphome-jk-bms/issues/308#issuecomment-1505614325))
 * JK-B2A20S20P, hw 11.XW, sw 11.24H, using `JK02_32S` (reported by [@austin202220](https://github.com/syssi/esphome-jk-bms/discussions/232))
 * JK-B2A20S20P, hw 11.XW, sw 11.25H, using `JK02_32S` (reported by [@iovcharyk](https://github.com/syssi/esphome-jk-bms/issues/249))
@@ -122,7 +123,7 @@ mqtt_password: MY_MQTT_PASSWORD
 EOF
 
 # Validate the configuration, create a binary, upload it, and start logs
-# If you use a esp8266 run the esp8266-examle.yaml
+# If you use a esp8266 run the esp8266-example.yaml
 esphome run esp32-example.yaml
 
 ```
