@@ -495,7 +495,8 @@ void HeltecBalancerBle::decode_cell_info_(const std::vector<uint8_t> &data) {
   //                                              Bit1: Write failed
   // 248   6   0x00 0x00 0x00 0x00 0x00 0x00    Reserved
   // 254   4   0x76 0x2E 0x09 0x00              Uptime?
-  ESP_LOGI(TAG, "  Uptime: %s (%ds)", format_total_runtime_(heltec_get_32bit(254)).c_str(), heltec_get_32bit(254));
+  ESP_LOGI(TAG, "  Uptime: %s (%lus)", format_total_runtime_(heltec_get_32bit(254)).c_str(),
+           (unsigned long) heltec_get_32bit(254));
 
   // 258   40  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
   //           0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
@@ -657,10 +658,10 @@ void HeltecBalancerBle::decode_factory_defaults_(const std::vector<uint8_t> &dat
   ESP_LOGI(TAG, "  Min temperature: %.3f °C", ieee_float_(heltec_get_32bit(60)));
 
   // 64    4   0x08 0x00 0x00 0x00    Power on counter
-  ESP_LOGI(TAG, "  Power on counter: %d", heltec_get_32bit(64));
+  ESP_LOGI(TAG, "  Power on counter: %lu", (unsigned long) heltec_get_32bit(64));
 
   // 68    4   0xF6 0xE1 0x0B 0x00    Total runtime
-  ESP_LOGI(TAG, "  Total runtime: %d", heltec_get_32bit(68));
+  ESP_LOGI(TAG, "  Total runtime: %lu", (unsigned long) heltec_get_32bit(68));
 
   // 72    8   0x32 0x30 0x32 0x32 0x30 0x35 0x33 0x31    Production date
   ESP_LOGI(TAG, "  Protocol version: %s", std::string(data.begin() + 72, data.begin() + 72 + 8).c_str());
