@@ -159,7 +159,7 @@ void HeltecBalancerBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt
 
       if (this->char_handle_ != 0) {
         auto status = esp_ble_gattc_unregister_for_notify(this->parent()->get_gattc_if(),
-                                                          this->parent()->get_remote_bda(), this->notify_handle_);
+                                                          this->parent()->get_remote_bda(), this->char_handle_);
         if (status) {
           ESP_LOGW(TAG, "esp_ble_gattc_unregister_for_notify failed, status=%d", status);
         }
