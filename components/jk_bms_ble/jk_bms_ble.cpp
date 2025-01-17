@@ -145,9 +145,9 @@ void JkBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gat
       this->node_state = espbt::ClientState::IDLE;
       this->status_notification_received_ = false;
 
-      if(this->notify_handle_ != 0) {
-        auto status = esp_ble_gattc_unregister_for_notify(this->parent()->get_gattc_if(), this->parent()->get_remote_bda(),
-                                                        this->notify_handle_);
+      if (this->notify_handle_ != 0) {
+        auto status = esp_ble_gattc_unregister_for_notify(this->parent()->get_gattc_if(),
+                                                          this->parent()->get_remote_bda(), this->notify_handle_);
         if (status) {
           ESP_LOGW(TAG, "esp_ble_gattc_unregister_for_notify failed, status=%d", status);
         }
