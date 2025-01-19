@@ -41,7 +41,7 @@ ota:
   platform: esphome
 
 logger:
-  level: INFO
+  level: VERY_VERBOSE
 
 api:
   reboot_timeout: 0s
