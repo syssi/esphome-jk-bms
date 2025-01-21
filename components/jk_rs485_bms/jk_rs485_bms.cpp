@@ -1,6 +1,15 @@
 #include "jk_rs485_bms.h"
 
 
+//std::string uint32_to_binary(uint32_t value) {
+//    std::string binary_representation(32, '0');
+//    for (int i = 31; i >= 0; --i) {
+//        if (value & (1 << i)) {
+//            binary_representation[31 - i] = '1';
+//        }
+//    }
+//    return binary_representation;
+//}
 
 float uint32_to_float(const uint8_t* byteArray) {
 
@@ -331,22 +340,32 @@ static const uint8_t FRAME_VERSION_JK04 = 0x01;
 static const uint8_t FRAME_VERSION_JK02_24S = 0x02;
 static const uint8_t FRAME_VERSION_JK02_32S = 0x03;
 
-static const uint8_t ERRORS_SIZE = 14;
+static const uint8_t ERRORS_SIZE = 24;
 static const char *const ERRORS[ERRORS_SIZE] = {
-    "Low capacity",                              // Byte 0.0, warning
-    "Powertube overtemperature",                 // Byte 0.1, alarm
-    "Charging overvoltage",                      // Byte 0.2, alarm
-    "Discharging undervoltage",                  // Byte 0.3, alarm
-    "Battery over temperature",                  // Byte 0.4, alarm
-    "Charging overcurrent",                      // Byte 0.5, alarm
-    "Discharging overcurrent",                   // Byte 0.6, alarm
-    "Cell pressure difference",                  // Byte 0.7, alarm
-    "Overtemperature alarm in the battery box",  // Byte 1.0, alarm
-    "Battery low temperature",                   // Byte 1.1, alarm
-    "Cell overvoltage",                          // Byte 1.2, alarm
-    "Cell undervoltage",                         // Byte 1.3, alarm
-    "309_A protection",                          // Byte 1.4, alarm
-    "309_A protection",                          // Byte 1.5, alarm
+    "Wire resistance",                   // Bit 0
+    "MOS OTP",                           // Bit 1
+    "Cell quantity",                     // Bit 2
+    "Current sensor error",              // Bit 3
+    "Cell OVP",                          // Bit 4
+    "Battery OVP",                       // Bit 5
+    "Charge OCP",                        // Bit 6
+    "Charge SCP",                        // Bit 7
+    "Charge OTP",                        // Bit 8
+    "Charge UTP",                        // Bit 9
+    "CPU aux comm error",                // Bit 10
+    "Cell UVP",                          // Bit 11
+    "Battery UVP",                       // Bit 12
+    "Discharge OCP",                     // Bit 13
+    "Discharge SCP",                     // Bit 14
+    "Discharge OTP",                     // Bit 15
+    "Charge MOS",                        // Bit 16
+    "Discharge MOS",                     // Bit 17
+    "GPS disconneted",                   // Bit 18
+    "Modify PWD. in time",               // Bit 19
+    "Discharge On Failed",               // Bit 20
+    "Battery Over Temp Alarm",           // Bit 21
+    "Temperature sensor anomaly",        // Bit 22
+    "PLCModule anomaly",                 // Bit 23
 };
 
 static const uint8_t OPERATION_MODES_SIZE = 4;
@@ -878,11 +897,13 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
     this->publish_alarm_state_(this->alarm_plcmoduleanomaly_binary_sensor_, this->check_bit_of_byte_(data[136], 7));
   }
 
-  if (frame_version != FRAME_VERSION_JK02_32S) {
+  if (frame_version == FRAME_VERSION_JK02_32S) {
 
   // 134   2   0xD2 0x00              error bitmastk
-    uint32_t raw_errors_bitmask = (uint16_t(data[134 + offset]) << 0) | (uint16_t(data[135 + offset]) << 8);
-    raw_errors_bitmask = (((uint16_t(data[136 + offset]) << 0) | (uint16_t(data[137 + offset]) << 8)) << 16) | raw_errors_bitmask;
+    //uint32_t raw_errors_bitmask = (uint16_t(data[134 + offset]) << 0) | (uint16_t(data[135 + offset]) << 8);
+    //raw_errors_bitmask = (((uint16_t(data[136 + offset]) << 0) | (uint16_t(data[137 + offset]) << 8)) << 16) | raw_errors_bitmask;
+    uint32_t raw_errors_bitmask = uint32_t(data[134 + offset]);
+    //ESP_LOGD(TAG, "raw_errors_bitmask: %s",uint32_to_binary(raw_errors_bitmask).c_str());
     this->publish_state_(this->errors_bitmask_sensor_, (float) raw_errors_bitmask);
     this->publish_state_(this->errors_text_sensor_, this->error_bits_to_string_(raw_errors_bitmask));
   }
@@ -1788,7 +1809,7 @@ void JkRS485Bms::publish_alarm_state_(binary_sensor::BinarySensor *binary_sensor
   }
   binary_sensor->publish_state(state);
 }
-std::string JkRS485Bms::error_bits_to_string_(const uint16_t mask) {
+std::string JkRS485Bms::error_bits_to_string_(const uint32_t mask) {
   bool first = true;
   std::string errors_list = "";
 
