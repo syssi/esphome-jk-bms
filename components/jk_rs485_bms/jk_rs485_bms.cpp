@@ -806,11 +806,33 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
         ESP_LOGI(TAG, "alarm_ChSCP_binary_sensor_:                    %d", this->check_bit_of_byte_(data[134], 7));*/
   }
 
+//  # Bit 0     Wire resistance                              0000 0000 0000 0001         0x0001 
+//  # Bit 1     MOS OTP                                      0000 0000 0000 0010         0x0002
+//  # Bit 2     Cell quantity                                0000 0000 0000 0100         0x0004
+//  # Bit 3     Current sensor error                         0000 0000 0000 1000         0x0008
+//  # Bit 4     Cell OVP                                     0000 0000 0001 0000         0x0010
+//  # Bit 5     Battery OVP                                  0000 0000 0010 0000         0x0020
+//  # Bit 6     Charge OCP                                   0000 0000 0100 0000         0x0040
+//  # Bit 7     Charge SCP                                   0000 0000 1000 0000         0x0080
+//  # Bit 8     Charge OTP                                   0000 0001 0000 0000         0x0100
+//  # Bit 9     Charge UTP                                   0000 0010 0000 0000         0x0200
+//  # Bit 10    CPU Aux comm error                           0000 0100 0000 0000         0x0400
+//  # Bit 11    Cell UVP                                     0000 1000 0000 0000         0x0800
+//  # Bit 12    Batt UVP                                     0001 0000 0000 0000         0x1000
+//  # Bit 13    Discharge OCP                                0010 0000 0000 0000         0x2000
+//  # Bit 14    Discharge SCP                                0100 0000 0000 0000         0x4000
+//  # Bit 15    Charge MOS                                   1000 0000 0000 0000         0x8000
+//  # Bit 16    Discharge MOS                           0001 0000 0000 0000 0000        0x10000
+//  # Bit 17    GPS Disconneted                         0010 0000 0000 0000 0000        0x20000
+//  # Bit 18    Modify PWD. in time                     0100 0000 0000 0000 0000        0x40000
+//  # Bit 19    Discharge On Failed                     1000 0000 0000 0000 0000        0x80000
+//  # Bit 20    Battery Over Temp Alarm            0001 0000 0000 0000 0000 0000       0x100000
+//  # Bit 21    Temperature sensor anomaly         0010 0000 0000 0000 0000 0000       0x200000
+//  # Bit 22    PLCModule anomaly                  0100 0000 0000 0000 0000 0000       0x400000
+//  # Bit 23    Reserved                           1000 0000 0000 0000 0000 0000       0x800000
+
   if (frame_version == FRAME_VERSION_JK02_32S) {
-  // 134   2   0xD2 0x00              error bitmastk
-    uint16_t raw_errors_bitmask = (uint16_t(data[134 + offset]) << 8) | (uint16_t(data[134 + 1 + offset]) << 0);
-    this->publish_state_(this->errors_bitmask_sensor_, (float) raw_errors_bitmask);
-    this->publish_state_(this->errors_text_sensor_, this->error_bits_to_string_(raw_errors_bitmask));
+
   } else {
   // 134   2   0xD2 0x00              MOS Temperature       0.1          °C
     this->publish_state_(this->temperature_powertube_sensor_, int16_to_float(&data[134+offset]) * 0.1f);    //  (float) ((int16_t) jk_get_16bit(134 + offset)) * 0.1f);
@@ -857,7 +879,10 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   }
 
   if (frame_version != FRAME_VERSION_JK02_32S) {
-    uint16_t raw_errors_bitmask = (uint16_t(data[136 + offset]) << 8) | (uint16_t(data[136 + 1 + offset]) << 0);
+
+  // 134   2   0xD2 0x00              error bitmastk
+    uint32_t raw_errors_bitmask = (uint16_t(data[134 + offset]) << 0) | (uint16_t(data[135 + offset]) << 8);
+    raw_errors_bitmask = (((uint16_t(data[136 + offset]) << 0) | (uint16_t(data[137 + offset]) << 8)) << 16) | raw_errors_bitmask;
     this->publish_state_(this->errors_bitmask_sensor_, (float) raw_errors_bitmask);
     this->publish_state_(this->errors_text_sensor_, this->error_bits_to_string_(raw_errors_bitmask));
   }
