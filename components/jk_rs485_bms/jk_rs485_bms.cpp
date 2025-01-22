@@ -902,7 +902,7 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // 134   2   0xD2 0x00              error bitmastk
     //uint32_t raw_errors_bitmask = (uint16_t(data[134 + offset]) << 0) | (uint16_t(data[135 + offset]) << 8);
     //raw_errors_bitmask = (((uint16_t(data[136 + offset]) << 0) | (uint16_t(data[137 + offset]) << 8)) << 16) | raw_errors_bitmask;
-    uint32_t raw_errors_bitmask = uint32_t(data[134 + offset]);
+    uint32_t raw_errors_bitmask = (uint32_t(data[134 + 3 + offset])<<24) | (uint32_t(data[134 + 2 + offset])<<16) | (uint32_t(data[134 + 1 + offset])<<8) | (uint32_t(data[134 + 0 + offset])<<0);
     //ESP_LOGD(TAG, "raw_errors_bitmask: %s",uint32_to_binary(raw_errors_bitmask).c_str());
     this->publish_state_(this->errors_bitmask_sensor_, (float) raw_errors_bitmask);
     this->publish_state_(this->errors_text_sensor_, this->error_bits_to_string_(raw_errors_bitmask));
