@@ -84,6 +84,8 @@ uint8_t crc(const uint8_t data[], const uint16_t len) {
 
 void HeltecBalancerBle::dump_config() {  // NOLINT(google-readability-function-size,readability-function-size)
   ESP_LOGCONFIG(TAG, "HeltecBalancerBle");
+  LOG_BINARY_SENSOR("", "Balancing", this->balancing_binary_sensor_);
+  LOG_BINARY_SENSOR("", "Online Status", this->online_status_binary_sensor_);
   LOG_SENSOR("", "Minimum Cell Voltage", this->min_cell_voltage_sensor_);
   LOG_SENSOR("", "Maximum Cell Voltage", this->max_cell_voltage_sensor_);
   LOG_SENSOR("", "Minimum Voltage Cell", this->min_voltage_cell_sensor_);
@@ -144,7 +146,6 @@ void HeltecBalancerBle::dump_config() {  // NOLINT(google-readability-function-s
   LOG_SENSOR("", "Total Runtime", this->total_runtime_sensor_);
   LOG_TEXT_SENSOR("", "Operation Status", this->operation_status_text_sensor_);
   LOG_TEXT_SENSOR("", "Total Runtime Formatted", this->total_runtime_formatted_text_sensor_);
-  LOG_BINARY_SENSOR("", "Balancing", this->balancing_binary_sensor_);
 }
 
 void HeltecBalancerBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if,

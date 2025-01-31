@@ -544,6 +544,14 @@ std::string JkBms::mode_bits_to_string_(const uint16_t mask) {
 void JkBms::dump_config() {  // NOLINT(google-readability-function-size,readability-function-size)
   ESP_LOGCONFIG(TAG, "JkBms:");
   ESP_LOGCONFIG(TAG, "  Address: 0x%02X", this->address_);
+  LOG_BINARY_SENSOR("", "Balancing", this->balancing_binary_sensor_);
+  LOG_BINARY_SENSOR("", "Balancing Switch", this->balancing_switch_binary_sensor_);
+  LOG_BINARY_SENSOR("", "Charging", this->charging_binary_sensor_);
+  LOG_BINARY_SENSOR("", "Charging Switch", this->charging_switch_binary_sensor_);
+  LOG_BINARY_SENSOR("", "Discharging", this->discharging_binary_sensor_);
+  LOG_BINARY_SENSOR("", "Discharging Switch", this->discharging_switch_binary_sensor_);
+  LOG_BINARY_SENSOR("", "Dedicated Charger Switch", this->dedicated_charger_switch_binary_sensor_);
+  LOG_BINARY_SENSOR("", "Online Status", this->online_status_binary_sensor_);
   LOG_SENSOR("", "Minimum Cell Voltage", this->min_cell_voltage_sensor_);
   LOG_SENSOR("", "Maximum Cell Voltage", this->max_cell_voltage_sensor_);
   LOG_SENSOR("", "Minimum Voltage Cell", this->min_voltage_cell_sensor_);
@@ -631,14 +639,8 @@ void JkBms::dump_config() {  // NOLINT(google-readability-function-size,readabil
   LOG_SENSOR("", "Start Current Calibration", this->start_current_calibration_sensor_);
   LOG_TEXT_SENSOR("", "Manufacturer", this->manufacturer_text_sensor_);
   LOG_SENSOR("", "Protocol Version", this->protocol_version_sensor_);
-  LOG_BINARY_SENSOR("", "Balancing", this->balancing_binary_sensor_);
-  LOG_BINARY_SENSOR("", "Balancing Switch", this->balancing_switch_binary_sensor_);
-  LOG_BINARY_SENSOR("", "Charging", this->charging_binary_sensor_);
-  LOG_BINARY_SENSOR("", "Charging Switch", this->charging_switch_binary_sensor_);
-  LOG_BINARY_SENSOR("", "Discharging", this->discharging_binary_sensor_);
-  LOG_BINARY_SENSOR("", "Discharging Switch", this->discharging_switch_binary_sensor_);
-  LOG_BINARY_SENSOR("", "Dedicated Charger Switch", this->dedicated_charger_switch_binary_sensor_);
   LOG_TEXT_SENSOR("", "Total Runtime Formatted", this->total_runtime_formatted_text_sensor_);
+  LOG_TEXT_SENSOR("", "Errors", this->errors_text_sensor_);
 }
 
 }  // namespace jk_bms
