@@ -124,8 +124,3 @@ text_sensor:
       name: "${name} buzzer mode"
     battery_type:
       name: "${name} battery type"
-
-interval:
-  - interval: 30min
-    then:
-      - button.press: retrieve_settings_button0
