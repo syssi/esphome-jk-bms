@@ -53,6 +53,12 @@ uint8_t crc(const uint8_t data[], const uint16_t len) {
 
 void JkBmsBle::dump_config() {  // NOLINT(google-readability-function-size,readability-function-size)
   ESP_LOGCONFIG(TAG, "JkBmsBle");
+  LOG_BINARY_SENSOR("", "Balancing", this->balancing_binary_sensor_);
+  LOG_BINARY_SENSOR("", "Precharging", this->precharging_binary_sensor_);
+  LOG_BINARY_SENSOR("", "Charging", this->charging_binary_sensor_);
+  LOG_BINARY_SENSOR("", "Discharging", this->discharging_binary_sensor_);
+  LOG_BINARY_SENSOR("", "Heating", this->heating_binary_sensor_);
+  LOG_BINARY_SENSOR("", "Online Status", this->online_status_binary_sensor_);
   LOG_SENSOR("", "Minimum Cell Voltage", this->min_cell_voltage_sensor_);
   LOG_SENSOR("", "Maximum Cell Voltage", this->max_cell_voltage_sensor_);
   LOG_SENSOR("", "Minimum Voltage Cell", this->min_voltage_cell_sensor_);
@@ -118,7 +124,7 @@ void JkBmsBle::dump_config() {  // NOLINT(google-readability-function-size,reada
   LOG_SENSOR("", "Temperature Sensor 3", this->temperatures_[2].temperature_sensor_);
   LOG_SENSOR("", "Temperature Sensor 4", this->temperatures_[3].temperature_sensor_);
   LOG_SENSOR("", "Temperature Sensor 5", this->temperatures_[4].temperature_sensor_);
-  LOG_SENSOR("", "Balacing", this->balancing_sensor_);
+  LOG_SENSOR("", "Balancing", this->balancing_sensor_);
   LOG_SENSOR("", "State Of Charge", this->state_of_charge_sensor_);
   LOG_SENSOR("", "Capacity Remaining", this->capacity_remaining_sensor_);
   LOG_SENSOR("", "Total Battery Capacity Setting", this->total_battery_capacity_setting_sensor_);
@@ -128,11 +134,6 @@ void JkBmsBle::dump_config() {  // NOLINT(google-readability-function-size,reada
   LOG_SENSOR("", "Heating Current", this->heating_current_sensor_);
   LOG_TEXT_SENSOR("", "Operation Status", this->operation_status_text_sensor_);
   LOG_TEXT_SENSOR("", "Total Runtime Formatted", this->total_runtime_formatted_text_sensor_);
-  LOG_BINARY_SENSOR("", "Balancing", this->balancing_binary_sensor_);
-  LOG_BINARY_SENSOR("", "Precharging", this->precharging_binary_sensor_);
-  LOG_BINARY_SENSOR("", "Charging", this->charging_binary_sensor_);
-  LOG_BINARY_SENSOR("", "Discharging", this->discharging_binary_sensor_);
-  LOG_BINARY_SENSOR("", "Heating", this->heating_binary_sensor_);
 }
 
 void JkBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if,

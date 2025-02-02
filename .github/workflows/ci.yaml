@@ -168,7 +168,7 @@ jobs:
 
       - name: Dont move consts
         run: |
-          sed -i 's#if len(uses) < 3:#if len(uses) < 5:#' script/ci-custom.py
+          sed -i 's#if len(uses) < 3:#if len(uses) < 6:#' script/ci-custom.py
           git update-index --assume-unchanged script/ci-custom.py
         working-directory: ${{ env.esphome_directory }}
 
@@ -278,6 +278,10 @@ jobs:
         run: |
           esphome -s external_components_source components compile esp32-display-example.yaml
           # esphome -s external_components_source components compile esp8266-display-example.yaml
+      - name: Compile active balancer example configurations
+        run: |
+          esphome -s external_components_source components compile esp32-active-balancer-example.yaml
+          # esphome -s external_components_source components compile esp8266-active-balancer-example.yaml
 
       - name: Write tests/secrets.yaml
         shell: bash
