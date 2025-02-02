@@ -1,7 +1,7 @@
 substitutions:
   name: jk-balancer
   device_description: "Monitor a JK-Balancer using RS485"
-  external_components_source: github://syssi/esphome-jk-bms@add-jk-balancer-support
+  external_components_source: github://syssi/esphome-jk-bms@main
   tx_pin: GPIO16
   rx_pin: GPIO17
 
