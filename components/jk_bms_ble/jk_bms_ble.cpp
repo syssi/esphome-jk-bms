@@ -463,7 +463,7 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // 122   4   0x00 0x00 0x00 0x00    Battery power         0.001        W
   // 126   4   0x00 0x00 0x00 0x00    Charge current        0.001        A
   float current = (float) ((int32_t) jk_get_32bit(126 + offset)) * 0.001f;
-  this->publish_state_(this->current_sensor_, (float) ((int32_t) jk_get_32bit(126 + offset)) * 0.001f);
+  this->publish_state_(this->current_sensor_, current);
 
   // Don't use byte 122 because it's unsigned
   // float power = (float) ((int32_t) jk_get_32bit(122 + offset)) * 0.001f;
