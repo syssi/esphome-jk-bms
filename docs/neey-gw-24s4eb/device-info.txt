@@ -1,0 +1,7 @@
+[16:42:13][I][heltec_balancer_ble:713]:   Model: GW-24S4EB
+[16:42:13][I][heltec_balancer_ble:715]:   Hardware version: HW-2.8.0
+[16:42:13][I][heltec_balancer_ble:717]:   Software version: SW-1.1.0
+[16:42:13][I][heltec_balancer_ble:719]:   Protocol version: V1.0.0
+[16:42:13][I][heltec_balancer_ble:721]:   Manufacturing date: 20210915
+[16:42:13][I][heltec_balancer_ble:723]:   Power on count: 33
+[16:42:13][I][heltec_balancer_ble:725]:   Total runtime: 47d  (4064370s)
