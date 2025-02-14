@@ -1,0 +1,8 @@
+[13:05:06][I][heltec_balancer_ble:695]: Device info frame (100 bytes):
+[13:05:06][I][heltec_balancer_ble:713]:   Model: EK-24S4EB
+[13:05:06][I][heltec_balancer_ble:715]:   Hardware version: HW-3.2.0
+[13:05:06][I][heltec_balancer_ble:717]:   Software version: ZH-2.0.8
+[13:05:06][I][heltec_balancer_ble:719]:   Protocol version: V1.2.73
+[13:05:06][I][heltec_balancer_ble:721]:   Manufacturing date: 20240920
+[13:05:06][I][heltec_balancer_ble:723]:   Power on count: 3
+[13:05:06][I][heltec_balancer_ble:725]:   Total runtime: 48d 19h (4218212s)
