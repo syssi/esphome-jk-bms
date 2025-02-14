@@ -1,8 +1,8 @@
 substitutions:
   name: heltec-balancer
   device_description: "Monitor and control a Heltec/NEEY 4A balancer via bluetooth"
-  external_components_source: github://syssi/esphome-jk-bms@neey-ek-24s4eb-support
-  mac_address: 2B:80:03:F5:7A:21
+  external_components_source: github://syssi/esphome-jk-bms@main
+  mac_address: C8:47:8C:E1:E2:AA
 
 esphome:
   name: ${name}
@@ -33,15 +33,10 @@ ota:
       - logger.log: "BLE connection suspended for OTA update"
 
 logger:
-  level: VERY_VERBOSE
+  level: DEBUG
   logs:
-    esp32_ble_tracker: VERY_VERBOSE
-    heltec_balancer_ble: VERY_VERBOSE
-    scheduler: DEBUG
-    component: DEBUG
-    sensor: DEBUG
-    api.service: INFO
-    api: INFO
+    esp32_ble_tracker: INFO
+    esp32_ble_client: INFO
 
 # If you don't use Home Assistant please remove this `api` section and uncomment the `mqtt` component!
 api:
@@ -54,7 +49,7 @@ api:
 
 esp32_ble_tracker:
   scan_parameters:
-    active: true
+    active: false
 
 ble_client:
   - mac_address: ${mac_address}
@@ -73,6 +68,33 @@ binary_sensor:
     online_status:
       name: "${name} online status"
 
+button:
+  - platform: heltec_balancer_ble
+    heltec_balancer_ble_id: balancer0
+    retrieve_settings:
+      name: "${name} retrieve settings"
+      id: retrieve_settings_button0
+    retrieve_device_info:
+      name: "${name} retrieve device info"
+    retrieve_factory_defaults:
+      name: "${name} retrieve factory defaults"
+
+number:
+  - platform: heltec_balancer_ble
+    heltec_balancer_ble_id: balancer0
+    cell_count:
+      name: "${name} cell count"
+    balance_trigger_voltage:
+      name: "${name} balance trigger voltage"
+    max_balance_current:
+      name: "${name} max balance current"
+    balance_sleep_voltage:
+      name: "${name} balance sleep voltage"
+    balance_start_voltage:
+      name: "${name} balance start voltage"
+    nominal_battery_capacity:
+      name: "${name} nominal battery capacity"
+
 sensor:
   - platform: heltec_balancer_ble
     heltec_balancer_ble_id: balancer0
@@ -88,6 +110,102 @@ sensor:
       name: "${name} delta cell voltage"
     average_cell_voltage:
       name: "${name} average cell voltage"
+    cell_voltage_1:
+      name: "${name} cell voltage 1"
+    cell_voltage_2:
+      name: "${name} cell voltage 2"
+    cell_voltage_3:
+      name: "${name} cell voltage 3"
+    cell_voltage_4:
+      name: "${name} cell voltage 4"
+    cell_voltage_5:
+      name: "${name} cell voltage 5"
+    cell_voltage_6:
+      name: "${name} cell voltage 6"
+    cell_voltage_7:
+      name: "${name} cell voltage 7"
+    cell_voltage_8:
+      name: "${name} cell voltage 8"
+    cell_voltage_9:
+      name: "${name} cell voltage 9"
+    cell_voltage_10:
+      name: "${name} cell voltage 10"
+    cell_voltage_11:
+      name: "${name} cell voltage 11"
+    cell_voltage_12:
+      name: "${name} cell voltage 12"
+    cell_voltage_13:
+      name: "${name} cell voltage 13"
+    cell_voltage_14:
+      name: "${name} cell voltage 14"
+    cell_voltage_15:
+      name: "${name} cell voltage 15"
+    cell_voltage_16:
+      name: "${name} cell voltage 16"
+    cell_voltage_17:
+      name: "${name} cell voltage 17"
+    cell_voltage_18:
+      name: "${name} cell voltage 18"
+    cell_voltage_19:
+      name: "${name} cell voltage 19"
+    cell_voltage_20:
+      name: "${name} cell voltage 20"
+    cell_voltage_21:
+      name: "${name} cell voltage 21"
+    cell_voltage_22:
+      name: "${name} cell voltage 22"
+    cell_voltage_23:
+      name: "${name} cell voltage 23"
+    cell_voltage_24:
+      name: "${name} cell voltage 24"
+    cell_resistance_1:
+      name: "${name} cell resistance 1"
+    cell_resistance_2:
+      name: "${name} cell resistance 2"
+    cell_resistance_3:
+      name: "${name} cell resistance 3"
+    cell_resistance_4:
+      name: "${name} cell resistance 4"
+    cell_resistance_5:
+      name: "${name} cell resistance 5"
+    cell_resistance_6:
+      name: "${name} cell resistance 6"
+    cell_resistance_7:
+      name: "${name} cell resistance 7"
+    cell_resistance_8:
+      name: "${name} cell resistance 8"
+    cell_resistance_9:
+      name: "${name} cell resistance 9"
+    cell_resistance_10:
+      name: "${name} cell resistance 10"
+    cell_resistance_11:
+      name: "${name} cell resistance 11"
+    cell_resistance_12:
+      name: "${name} cell resistance 12"
+    cell_resistance_13:
+      name: "${name} cell resistance 13"
+    cell_resistance_14:
+      name: "${name} cell resistance 14"
+    cell_resistance_15:
+      name: "${name} cell resistance 15"
+    cell_resistance_16:
+      name: "${name} cell resistance 16"
+    cell_resistance_17:
+      name: "${name} cell resistance 17"
+    cell_resistance_18:
+      name: "${name} cell resistance 18"
+    cell_resistance_19:
+      name: "${name} cell resistance 19"
+    cell_resistance_20:
+      name: "${name} cell resistance 20"
+    cell_resistance_21:
+      name: "${name} cell resistance 21"
+    cell_resistance_22:
+      name: "${name} cell resistance 22"
+    cell_resistance_23:
+      name: "${name} cell resistance 23"
+    cell_resistance_24:
+      name: "${name} cell resistance 24"
     total_voltage:
       name: "${name} total voltage"
     temperature_sensor_1:
@@ -98,6 +216,19 @@ sensor:
       name: "${name} total runtime"
     balancing_current:
       name: "${name} balancing current"
+    # Not implemented
+    # errors_bitmask:
+    #   name: "${name} errors bitmask"
+    cell_detection_failed_bitmask:
+      name: "${name} cell detection failed bitmask"
+    cell_overvoltage_bitmask:
+      name: "${name} cell overvoltage bitmask"
+    cell_undervoltage_bitmask:
+      name: "${name} cell undervoltage bitmask"
+    cell_polarity_error_bitmask:
+      name: "${name} cell polarity error bitmask"
+    cell_excessive_line_resistance_bitmask:
+      name: "${name} cell excessive line resistance bitmask"
 
 switch:
   - platform: heltec_balancer_ble
@@ -124,3 +255,8 @@ text_sensor:
       name: "${name} buzzer mode"
     battery_type:
       name: "${name} battery type"
+
+interval:
+  - interval: 30min
+    then:
+      - button.press: retrieve_settings_button0
