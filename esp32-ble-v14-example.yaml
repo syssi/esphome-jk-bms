@@ -77,6 +77,10 @@ binary_sensor:
       name: "${name} heating"
     online_status:
       name: "${name} online status"
+    dry_contact_1:
+      name: "${name} dry contact 1"
+    dry_contact_2:
+      name: "${name} dry contact 2"
 
 button:
   - platform: jk_bms_ble
