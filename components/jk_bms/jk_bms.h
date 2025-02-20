@@ -351,7 +351,7 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
 
   float get_temperature_(const uint16_t value) {
     if (value > 99)
-      return (float) (100 - (int16_t) value);
+      return (float) (99 - (int16_t) value);
 
     return (float) value;
   };
