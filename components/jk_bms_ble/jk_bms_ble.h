@@ -164,6 +164,12 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   void set_heating_binary_sensor(binary_sensor::BinarySensor *heating_binary_sensor) {
     heating_binary_sensor_ = heating_binary_sensor;
   }
+  void set_dry_contact_1_binary_sensor(binary_sensor::BinarySensor *dry_contact_1_binary_sensor) {
+    dry_contact_1_binary_sensor_ = dry_contact_1_binary_sensor;
+  }
+  void set_dry_contact_2_binary_sensor(binary_sensor::BinarySensor *dry_contact_2_binary_sensor) {
+    dry_contact_2_binary_sensor_ = dry_contact_2_binary_sensor;
+  }
 
   void set_throttle(uint32_t throttle) { this->throttle_ = throttle; }
   void set_min_cell_voltage_sensor(sensor::Sensor *min_cell_voltage_sensor) {
@@ -286,6 +292,8 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   binary_sensor::BinarySensor *discharging_binary_sensor_;
   binary_sensor::BinarySensor *online_status_binary_sensor_;
   binary_sensor::BinarySensor *heating_binary_sensor_;
+  binary_sensor::BinarySensor *dry_contact_1_binary_sensor_;
+  binary_sensor::BinarySensor *dry_contact_2_binary_sensor_;
 
   number::Number *smart_sleep_voltage_number_;
   number::Number *balance_trigger_voltage_number_;

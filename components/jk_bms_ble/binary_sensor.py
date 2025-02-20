@@ -11,11 +11,15 @@ DEPENDENCIES = ["jk_bms_ble"]
 CODEOWNERS = ["@syssi", "@txubelaxu"]
 
 CONF_ONLINE_STATUS = "online_status"
+CONF_DRY_CONTACT_1 = "dry_contact_1"
+CONF_DRY_CONTACT_2 = "dry_contact_2"
 
 ICON_CHARGING = "mdi:battery-charging"
 ICON_DISCHARGING = "mdi:power-plug"
 ICON_BALANCING = "mdi:battery-heart-variant"
 ICON_HEATING = "mdi:radiator"
+ICON_DRY_CONTACT_1 = "mdi:alarm-bell"
+ICON_DRY_CONTACT_2 = "mdi:alarm-bell"
 
 BINARY_SENSORS = [
     CONF_CHARGING,
@@ -23,6 +27,8 @@ BINARY_SENSORS = [
     CONF_BALANCING,
     CONF_ONLINE_STATUS,
     CONF_HEATING,
+    CONF_DRY_CONTACT_1,
+    CONF_DRY_CONTACT_2,
 ]
 
 CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
@@ -38,6 +44,12 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
         ),
         cv.Optional(CONF_HEATING): binary_sensor.binary_sensor_schema(
             icon=ICON_HEATING
+        ),
+        cv.Optional(CONF_DRY_CONTACT_1): binary_sensor.binary_sensor_schema(
+            icon=ICON_DRY_CONTACT_1
+        ),
+        cv.Optional(CONF_DRY_CONTACT_2): binary_sensor.binary_sensor_schema(
+            icon=ICON_DRY_CONTACT_2
         ),
         cv.Optional(CONF_ONLINE_STATUS): binary_sensor.binary_sensor_schema(
             device_class=DEVICE_CLASS_CONNECTIVITY,

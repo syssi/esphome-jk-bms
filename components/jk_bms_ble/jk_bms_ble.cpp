@@ -603,6 +603,13 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   ESP_LOGD(TAG, "PCL Module State: %s", ONOFF((bool) data[242 + offset]));
 
   if (frame_version == FRAME_VERSION_JK02_32S) {
+    // 249+32   1   0x02                   Dry contact bitmask                          0x00: DRY and DRY2 off
+    //                                                                                  0x02: DRY1 on
+    //                                                                                  0x04: DRY2 on
+    //                                                                                  0x06: DRY1 and DRY2 on
+    this->publish_state_(this->dry_contact_1_binary_sensor_, check_bit_(data[249 + offset], 2));
+    this->publish_state_(this->dry_contact_2_binary_sensor_, check_bit_(data[249 + offset], 4));
+
     uint16_t raw_emergency_time_countdown = jk_get_16bit(186 + offset);
     ESP_LOGI(TAG, "Emergency switch: %s", ONOFF(raw_emergency_time_countdown > 0));
     this->publish_state_(this->emergency_switch_, raw_emergency_time_countdown > 0);
