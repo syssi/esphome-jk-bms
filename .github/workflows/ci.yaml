@@ -176,7 +176,7 @@ jobs:
         run: script/ci-custom.py -c
         working-directory: ${{ env.esphome_directory }}
       - name: Run Ruff
-        run: ruff format .
+        run: ruff format esphome tests
         working-directory: ${{ env.esphome_directory }}
       - name: Suggest changes
         run: script/ci-suggest-changes
