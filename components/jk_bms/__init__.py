@@ -19,12 +19,7 @@ JK_BMS_COMPONENT_SCHEMA = cv.Schema(
 )
 
 CONFIG_SCHEMA = (
-    cv.Schema(
-        {
-            cv.GenerateID(): cv.declare_id(JkBms),
-        }
-    )
-    .extend(cv.polling_component_schema("5s"))
+    cv.Schema({cv.GenerateID(): cv.declare_id(JkBms),}).extend(cv.polling_component_schema("5s"))
     .extend(jk_modbus.jk_modbus_device_schema(0x4E))
 )
 
