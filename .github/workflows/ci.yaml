@@ -175,8 +175,11 @@ jobs:
       - name: Lint Custom
         run: script/ci-custom.py -c
         working-directory: ${{ env.esphome_directory }}
-      - name: Lint Python
-        run: script/lint-python -c
+      - name: Run Ruff
+        run: ruff format esphome tests
+        working-directory: ${{ env.esphome_directory }}
+      - name: Suggest changes
+        run: script/ci-suggest-changes
         working-directory: ${{ env.esphome_directory }}
 
   esphome-config:
