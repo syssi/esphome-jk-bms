@@ -33,7 +33,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Cache pip modules
-        uses: actions/cache@v1
+        uses: actions/cache@v4
         with:
           path: ~/.cache/pip
           key: esphome-pip-3.12-${{ hashFiles('setup.py') }}
@@ -82,7 +82,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Cache pip modules
-        uses: actions/cache@v1
+        uses: actions/cache@v4
         with:
           path: ~/.cache/pip
           key: esphome-pip-3.12-${{ hashFiles('setup.py') }}
@@ -136,7 +136,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Cache pip modules
-        uses: actions/cache@v1
+        uses: actions/cache@v4
         with:
           path: ~/.cache/pip
           key: esphome-pip-3.12-${{ hashFiles('setup.py') }}
