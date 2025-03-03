@@ -33,7 +33,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Cache pip modules
-        uses: actions/cache@v1
+        uses: actions/cache@v4
         with:
           path: ~/.cache/pip
           key: esphome-pip-3.12-${{ hashFiles('setup.py') }}
@@ -82,7 +82,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Cache pip modules
-        uses: actions/cache@v1
+        uses: actions/cache@v4
         with:
           path: ~/.cache/pip
           key: esphome-pip-3.12-${{ hashFiles('setup.py') }}
@@ -136,7 +136,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Cache pip modules
-        uses: actions/cache@v1
+        uses: actions/cache@v4
         with:
           path: ~/.cache/pip
           key: esphome-pip-3.12-${{ hashFiles('setup.py') }}
@@ -231,13 +231,13 @@ jobs:
       - name: ⤵️ Check out configuration from GitHub
         uses: actions/checkout@v2
       - name: Cache .esphome
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: .esphome
           key: esphome-compile-esphome-${{ hashFiles('*.yaml') }}
           restore-keys: esphome-compile-esphome-
       - name: Cache .pioenvs
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: .pioenvs
           key: esphome-compile-pioenvs-${{ hashFiles('*.yaml') }}
