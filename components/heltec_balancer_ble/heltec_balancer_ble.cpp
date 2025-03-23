@@ -224,6 +224,9 @@ void HeltecBalancerBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt
       if (param->notify.handle != this->char_handle_)
         break;
 
+      ESP_LOGVV(TAG, "Notification received: %s",
+                format_hex_pretty(param->notify.value, param->notify.value_len).c_str());
+
       this->assemble(param->notify.value, param->notify.value_len);
 
       break;
