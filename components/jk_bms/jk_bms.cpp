@@ -152,7 +152,7 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
 
   // 0x85 0x0F: Battery remaining capacity                       15 %
   //uint8_t raw_battery_remaining_capacity = data[offset + 3 * 5];
-  float raw_battery_remaining_capacity = jk_get_16bit(offset + 3 * 5) / 25.60f;
+  float raw_battery_remaining_capacity = jk_get_16bit(offset + 3 * 5) / 256.0f;
   this->publish_state_(this->capacity_remaining_sensor_, (float) raw_battery_remaining_capacity);
 
   // 0x86 0x02: Number of battery temperature sensors             2                        1.0  count
@@ -543,6 +543,9 @@ std::string JkBms::mode_bits_to_string_(const uint16_t mask) {
 }
 
 void JkBms::dump_config() {  // NOLINT(google-readability-function-size,readability-function-size)
+  if (this->capacity_remaining_sensor_ != nullptr) {
+    this->capacity_remaining_sensor_->set_accuracy_decimals(2);
+  }  
   ESP_LOGCONFIG(TAG, "JkBms:");
   ESP_LOGCONFIG(TAG, "  Address: 0x%02X", this->address_);
   LOG_BINARY_SENSOR("", "Balancing", this->balancing_binary_sensor_);
