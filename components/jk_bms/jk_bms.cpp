@@ -151,7 +151,8 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->discharging_power_sensor_, std::abs(std::min(0.0f, power)));  // -500W vs 0W -> 500W
 
   // 0x85 0x0F: Battery remaining capacity                       15 %
-  uint8_t raw_battery_remaining_capacity = data[offset + 3 * 5];
+  //uint8_t raw_battery_remaining_capacity = data[offset + 3 * 5];
+  float raw_battery_remaining_capacity=jk_get_16bit(offset + 3 * 5) / 256.0f  
   this->publish_state_(this->capacity_remaining_sensor_, (float) raw_battery_remaining_capacity);
 
   // 0x86 0x02: Number of battery temperature sensors             2                        1.0  count
