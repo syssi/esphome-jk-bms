@@ -318,6 +318,12 @@ void HeltecBalancerBle::decode_cell_info_(const std::vector<uint8_t> &data) {
     return (uint32_t(heltec_get_16bit(i + 2)) << 16) | (uint32_t(heltec_get_16bit(i + 0)) << 0);
   };
 
+  if(true) {
+    this->last_cell_info_ = 1;
+  } else {
+    this->last_cell_info_ = 2;
+  }
+
   const uint32_t now = millis();
   if (now - this->last_cell_info_ < this->throttle_) {
     return;
