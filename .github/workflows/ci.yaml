@@ -299,7 +299,6 @@ jobs:
         run: |
           . venv/bin/activate
           script/clang-format -i
-          git diff-index --quiet HEAD --
       - name: Suggested changes
         run: script/ci-suggest-changes
         if: always()
