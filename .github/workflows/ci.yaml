@@ -14,8 +14,8 @@ permissions:
 
 env:
   FORCE_COLOR: 1
-  DEFAULT_PYTHON: "3.9"
-  PYUPGRADE_TARGET: "--py39-plus"
+  DEFAULT_PYTHON: "3.10"
+  PYUPGRADE_TARGET: "--py310-plus"
 
 concurrency:
   # yamllint disable-line rule:line-length

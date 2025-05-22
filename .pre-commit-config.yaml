@@ -30,10 +30,10 @@ repos:
           - flake8-docstrings==1.5.0
           - pydocstyle==5.1.1
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.17.0
+    rev: v3.19.1
     hooks:
       - id: pyupgrade
-        args: [--py39-plus]
+        args: [--py310-plus]
   - repo: https://github.com/adrienverge/yamllint.git
     rev: v1.35.1
     hooks:
