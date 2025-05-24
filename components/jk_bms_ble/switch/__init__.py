@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 from esphome.components import switch
 import esphome.config_validation as cv
-from esphome.const import CONF_ICON, CONF_ID
+from esphome.const import CONF_ID
 
 from .. import CONF_JK_BMS_BLE_ID, JK_BMS_BLE_COMPONENT_SCHEMA, jk_bms_ble_ns
 from ..const import (
@@ -53,73 +53,49 @@ JkSwitch = jk_bms_ble_ns.class_("JkSwitch", switch.Switch, cg.Component)
 
 CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
     {
-        cv.Optional(CONF_CHARGING): switch.SWITCH_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(JkSwitch),
-                cv.Optional(CONF_ICON, default=ICON_CHARGING): cv.icon,
-            }
+        cv.Optional(CONF_CHARGING): switch.switch_schema(
+            JkSwitch,
+            icon=ICON_CHARGING,
         ).extend(cv.COMPONENT_SCHEMA),
-        cv.Optional(CONF_DISCHARGING): switch.SWITCH_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(JkSwitch),
-                cv.Optional(CONF_ICON, default=ICON_DISCHARGING): cv.icon,
-            }
+        cv.Optional(CONF_DISCHARGING): switch.switch_schema(
+            JkSwitch,
+            icon=ICON_DISCHARGING,
         ).extend(cv.COMPONENT_SCHEMA),
-        cv.Optional(CONF_BALANCER): switch.SWITCH_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(JkSwitch),
-                cv.Optional(CONF_ICON, default=ICON_BALANCER): cv.icon,
-            }
+        cv.Optional(CONF_BALANCER): switch.switch_schema(
+            JkSwitch,
+            icon=ICON_BALANCER,
         ).extend(cv.COMPONENT_SCHEMA),
-        cv.Optional(CONF_EMERGENCY): switch.SWITCH_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(JkSwitch),
-                cv.Optional(CONF_ICON, default=ICON_EMERGENCY): cv.icon,
-            }
+        cv.Optional(CONF_EMERGENCY): switch.switch_schema(
+            JkSwitch,
+            icon=ICON_EMERGENCY,
         ).extend(cv.COMPONENT_SCHEMA),
-        cv.Optional(CONF_HEATING): switch.SWITCH_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(JkSwitch),
-                cv.Optional(CONF_ICON, default=ICON_HEATING): cv.icon,
-            }
+        cv.Optional(CONF_HEATING): switch.switch_schema(
+            JkSwitch,
+            icon=ICON_HEATING,
         ).extend(cv.COMPONENT_SCHEMA),
-        cv.Optional(CONF_DISABLE_TEMPERATURE_SENSORS): switch.SWITCH_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(JkSwitch),
-                cv.Optional(
-                    CONF_ICON, default=ICON_DISABLE_TEMPERATURE_SENSORS
-                ): cv.icon,
-            }
+        cv.Optional(CONF_DISABLE_TEMPERATURE_SENSORS): switch.switch_schema(
+            JkSwitch,
+            icon=ICON_DISABLE_TEMPERATURE_SENSORS,
         ).extend(cv.COMPONENT_SCHEMA),
-        cv.Optional(CONF_DISPLAY_ALWAYS_ON): switch.SWITCH_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(JkSwitch),
-                cv.Optional(CONF_ICON, default=ICON_DISPLAY_ALWAYS_ON): cv.icon,
-            }
+        cv.Optional(CONF_DISPLAY_ALWAYS_ON): switch.switch_schema(
+            JkSwitch,
+            icon=ICON_DISPLAY_ALWAYS_ON,
         ).extend(cv.COMPONENT_SCHEMA),
-        cv.Optional(CONF_SMART_SLEEP): switch.SWITCH_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(JkSwitch),
-                cv.Optional(CONF_ICON, default=ICON_SMART_SLEEP): cv.icon,
-            }
+        cv.Optional(CONF_SMART_SLEEP): switch.switch_schema(
+            JkSwitch,
+            icon=ICON_SMART_SLEEP,
         ).extend(cv.COMPONENT_SCHEMA),
-        cv.Optional(CONF_DISABLE_PCL_MODULE): switch.SWITCH_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(JkSwitch),
-                cv.Optional(CONF_ICON, default=ICON_DISABLE_PCL_MODULE): cv.icon,
-            }
+        cv.Optional(CONF_DISABLE_PCL_MODULE): switch.switch_schema(
+            JkSwitch,
+            icon=ICON_DISABLE_PCL_MODULE,
         ).extend(cv.COMPONENT_SCHEMA),
-        cv.Optional(CONF_TIMED_STORED_DATA): switch.SWITCH_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(JkSwitch),
-                cv.Optional(CONF_ICON, default=ICON_TIMED_STORED_DATA): cv.icon,
-            }
+        cv.Optional(CONF_TIMED_STORED_DATA): switch.switch_schema(
+            JkSwitch,
+            icon=ICON_TIMED_STORED_DATA,
         ).extend(cv.COMPONENT_SCHEMA),
-        cv.Optional(CONF_CHARGING_FLOAT_MODE): switch.SWITCH_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(JkSwitch),
-                cv.Optional(CONF_ICON, default=ICON_CHARGING_FLOAT_MODE): cv.icon,
-            }
+        cv.Optional(CONF_CHARGING_FLOAT_MODE): switch.switch_schema(
+            JkSwitch,
+            icon=ICON_CHARGING_FLOAT_MODE,
         ).extend(cv.COMPONENT_SCHEMA),
     }
 )

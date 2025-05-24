@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 from esphome.components import switch
 import esphome.config_validation as cv
-from esphome.const import CONF_ICON, CONF_ID
+from esphome.const import CONF_ID
 
 from .. import CONF_JK_BALANCER_ID, JK_BALANCER_COMPONENT_SCHEMA, jk_balancer_ns
 
@@ -21,11 +21,9 @@ JkSwitch = jk_balancer_ns.class_("JkSwitch", switch.Switch, cg.Component)
 
 CONFIG_SCHEMA = JK_BALANCER_COMPONENT_SCHEMA.extend(
     {
-        cv.Optional(CONF_BALANCER): switch.SWITCH_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(JkSwitch),
-                cv.Optional(CONF_ICON, default=ICON_BALANCER): cv.icon,
-            }
+        cv.Optional(CONF_BALANCER): switch.switch_schema(
+            JkSwitch,
+            icon=ICON_BALANCER,
         ).extend(cv.COMPONENT_SCHEMA),
     }
 )
