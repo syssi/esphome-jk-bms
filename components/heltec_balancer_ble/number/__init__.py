@@ -2,8 +2,6 @@ import esphome.codegen as cg
 from esphome.components import number
 import esphome.config_validation as cv
 from esphome.const import (
-    CONF_ENTITY_CATEGORY,
-    CONF_ICON,
     CONF_ID,
     CONF_MAX_VALUE,
     CONF_MIN_VALUE,
@@ -83,18 +81,23 @@ HeltecNumber = heltec_balancer_ble_ns.class_(
     "HeltecNumber", number.Number, cg.Component
 )
 
-HELTEC_NUMBER_SCHEMA = number.NUMBER_SCHEMA.extend(
-    {
-        cv.GenerateID(): cv.declare_id(HeltecNumber),
-        cv.Optional(CONF_ICON, default=ICON_EMPTY): cv.icon,
-        cv.Optional(CONF_STEP, default=0.01): cv.float_,
-        cv.Optional(CONF_UNIT_OF_MEASUREMENT, default=UNIT_VOLT): cv.string_strict,
-        cv.Optional(CONF_MODE, default="BOX"): cv.enum(number.NUMBER_MODES, upper=True),
-        cv.Optional(
-            CONF_ENTITY_CATEGORY, default=ENTITY_CATEGORY_CONFIG
-        ): cv.entity_category,
-    }
-).extend(cv.COMPONENT_SCHEMA)
+HELTEC_NUMBER_SCHEMA = (
+    number.number_schema(
+        HeltecNumber,
+        icon=ICON_EMPTY,
+        entity_category=ENTITY_CATEGORY_CONFIG,
+        unit_of_measurement=UNIT_VOLT,
+    )
+    .extend(
+        {
+            cv.Optional(CONF_STEP, default=0.01): cv.float_,
+            cv.Optional(CONF_MODE, default="BOX"): cv.enum(
+                number.NUMBER_MODES, upper=True
+            ),
+        }
+    )
+    .extend(cv.COMPONENT_SCHEMA)
+)
 
 CONFIG_SCHEMA = HELTEC_BALANCER_BLE_COMPONENT_SCHEMA.extend(
     {

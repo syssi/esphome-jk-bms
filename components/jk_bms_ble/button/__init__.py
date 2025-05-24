@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 from esphome.components import button
 import esphome.config_validation as cv
-from esphome.const import CONF_ICON, CONF_ID
+from esphome.const import CONF_ID
 
 from .. import CONF_JK_BMS_BLE_ID, JK_BMS_BLE_COMPONENT_SCHEMA, jk_bms_ble_ns
 
@@ -25,17 +25,13 @@ JkButton = jk_bms_ble_ns.class_("JkButton", button.Button, cg.Component)
 
 CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
     {
-        cv.Optional(CONF_RETRIEVE_SETTINGS): button.BUTTON_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(JkButton),
-                cv.Optional(CONF_ICON, default=ICON_RETRIEVE_SETTINGS): cv.icon,
-            }
+        cv.Optional(CONF_RETRIEVE_SETTINGS): button.button_schema(
+            JkButton,
+            icon=ICON_RETRIEVE_SETTINGS,
         ).extend(cv.COMPONENT_SCHEMA),
-        cv.Optional(CONF_RETRIEVE_DEVICE_INFO): button.BUTTON_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(JkButton),
-                cv.Optional(CONF_ICON, default=ICON_RETRIEVE_DEVICE_INFO): cv.icon,
-            }
+        cv.Optional(CONF_RETRIEVE_DEVICE_INFO): button.button_schema(
+            JkButton,
+            icon=ICON_RETRIEVE_DEVICE_INFO,
         ).extend(cv.COMPONENT_SCHEMA),
     }
 )

@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 from esphome.components import button
 import esphome.config_validation as cv
-from esphome.const import CONF_ICON, CONF_ID
+from esphome.const import CONF_ID
 
 from .. import (
     CONF_HELTEC_BALANCER_BLE_ID,
@@ -33,23 +33,17 @@ HeltecButton = heltec_balancer_ble_ns.class_(
 
 CONFIG_SCHEMA = HELTEC_BALANCER_BLE_COMPONENT_SCHEMA.extend(
     {
-        cv.Optional(CONF_RETRIEVE_SETTINGS): button.BUTTON_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(HeltecButton),
-                cv.Optional(CONF_ICON, default=ICON_RETRIEVE_SETTINGS): cv.icon,
-            }
+        cv.Optional(CONF_RETRIEVE_SETTINGS): button.button_schema(
+            HeltecButton,
+            icon=ICON_RETRIEVE_SETTINGS,
         ).extend(cv.COMPONENT_SCHEMA),
-        cv.Optional(CONF_RETRIEVE_DEVICE_INFO): button.BUTTON_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(HeltecButton),
-                cv.Optional(CONF_ICON, default=ICON_RETRIEVE_DEVICE_INFO): cv.icon,
-            }
+        cv.Optional(CONF_RETRIEVE_DEVICE_INFO): button.button_schema(
+            HeltecButton,
+            icon=ICON_RETRIEVE_DEVICE_INFO,
         ).extend(cv.COMPONENT_SCHEMA),
-        cv.Optional(CONF_RETRIEVE_FACTORY_DEFAULTS): button.BUTTON_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(HeltecButton),
-                cv.Optional(CONF_ICON, default=ICON_RETRIEVE_FACTORY_DEFAULTS): cv.icon,
-            }
+        cv.Optional(CONF_RETRIEVE_FACTORY_DEFAULTS): button.button_schema(
+            HeltecButton,
+            icon=ICON_RETRIEVE_FACTORY_DEFAULTS,
         ).extend(cv.COMPONENT_SCHEMA),
     }
 )

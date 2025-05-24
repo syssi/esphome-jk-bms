@@ -1,0 +1,14 @@
+{
+    "problemMatcher": [
+        {
+            "owner": "esphome-config",
+            "severity": "warning",
+            "pattern": [
+                {
+                    "regexp": "^WARNING Using `([^`]+)` is deprecated and will be removed(.*)$",
+                    "message": 1
+                }
+            ]
+        }
+    ]
+}

@@ -2,8 +2,6 @@ import esphome.codegen as cg
 from esphome.components import number
 import esphome.config_validation as cv
 from esphome.const import (
-    CONF_ENTITY_CATEGORY,
-    CONF_ICON,
     CONF_ID,
     CONF_MAX_VALUE,
     CONF_MIN_VALUE,
@@ -36,17 +34,22 @@ NUMBERS = {
 
 JkNumber = jk_balancer_ns.class_("JkNumber", number.Number, cg.Component)
 
-JK_NUMBER_SCHEMA = number.NUMBER_SCHEMA.extend(
-    {
-        cv.GenerateID(): cv.declare_id(JkNumber),
-        cv.Optional(CONF_ICON, default=ICON_EMPTY): cv.icon,
-        cv.Optional(CONF_STEP, default=1.0): cv.float_,
-        cv.Optional(CONF_MODE, default="BOX"): cv.enum(number.NUMBER_MODES, upper=True),
-        cv.Optional(
-            CONF_ENTITY_CATEGORY, default=ENTITY_CATEGORY_CONFIG
-        ): cv.entity_category,
-    }
-).extend(cv.COMPONENT_SCHEMA)
+JK_NUMBER_SCHEMA = (
+    number.number_schema(
+        JkNumber,
+        icon=ICON_EMPTY,
+        entity_category=ENTITY_CATEGORY_CONFIG,
+    )
+    .extend(
+        {
+            cv.Optional(CONF_STEP, default=1.0): cv.float_,
+            cv.Optional(CONF_MODE, default="BOX"): cv.enum(
+                number.NUMBER_MODES, upper=True
+            ),
+        }
+    )
+    .extend(cv.COMPONENT_SCHEMA)
+)
 
 CONFIG_SCHEMA = JK_BALANCER_COMPONENT_SCHEMA.extend(
     {

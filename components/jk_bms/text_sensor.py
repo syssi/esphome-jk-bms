@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 from esphome.components import text_sensor
 import esphome.config_validation as cv
-from esphome.const import CONF_ICON, CONF_ID, CONF_PASSWORD, ICON_EMPTY, ICON_TIMELAPSE
+from esphome.const import CONF_ID, CONF_PASSWORD, ICON_EMPTY, ICON_TIMELAPSE
 
 from . import CONF_JK_BMS_ID, JK_BMS_COMPONENT_SCHEMA
 
@@ -35,55 +35,29 @@ TEXT_SENSORS = [
 
 CONFIG_SCHEMA = JK_BMS_COMPONENT_SCHEMA.extend(
     {
-        cv.Optional(CONF_OPERATION_MODE): text_sensor.TEXT_SENSOR_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
-                cv.Optional(CONF_ICON, default=ICON_OPERATION_MODE): cv.icon,
-            }
+        cv.Optional(CONF_OPERATION_MODE): text_sensor.text_sensor_schema(
+            text_sensor.TextSensor, icon=ICON_OPERATION_MODE
         ),
-        cv.Optional(CONF_ERRORS): text_sensor.TEXT_SENSOR_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
-                cv.Optional(CONF_ICON, default=ICON_ERRORS): cv.icon,
-            }
+        cv.Optional(CONF_ERRORS): text_sensor.text_sensor_schema(
+            text_sensor.TextSensor, icon=ICON_ERRORS
         ),
-        cv.Optional(CONF_BATTERY_TYPE): text_sensor.TEXT_SENSOR_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
-                cv.Optional(CONF_ICON, default=ICON_BATTERY_TYPE): cv.icon,
-            }
+        cv.Optional(CONF_BATTERY_TYPE): text_sensor.text_sensor_schema(
+            text_sensor.TextSensor, icon=ICON_BATTERY_TYPE
         ),
-        cv.Optional(CONF_PASSWORD): text_sensor.TEXT_SENSOR_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
-                cv.Optional(CONF_ICON, default=ICON_PASSWORD): cv.icon,
-            }
+        cv.Optional(CONF_PASSWORD): text_sensor.text_sensor_schema(
+            text_sensor.TextSensor, icon=ICON_PASSWORD
         ),
-        cv.Optional(CONF_DEVICE_TYPE): text_sensor.TEXT_SENSOR_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
-                cv.Optional(CONF_ICON, default=ICON_EMPTY): cv.icon,
-            }
+        cv.Optional(CONF_DEVICE_TYPE): text_sensor.text_sensor_schema(
+            text_sensor.TextSensor, icon=ICON_EMPTY
         ),
-        cv.Optional(CONF_SOFTWARE_VERSION): text_sensor.TEXT_SENSOR_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
-                cv.Optional(CONF_ICON, default=ICON_EMPTY): cv.icon,
-            }
+        cv.Optional(CONF_SOFTWARE_VERSION): text_sensor.text_sensor_schema(
+            text_sensor.TextSensor, icon=ICON_EMPTY
         ),
-        cv.Optional(CONF_MANUFACTURER): text_sensor.TEXT_SENSOR_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
-                cv.Optional(CONF_ICON, default=ICON_EMPTY): cv.icon,
-            }
+        cv.Optional(CONF_MANUFACTURER): text_sensor.text_sensor_schema(
+            text_sensor.TextSensor, icon=ICON_EMPTY
         ),
-        cv.Optional(
-            CONF_TOTAL_RUNTIME_FORMATTED
-        ): text_sensor.TEXT_SENSOR_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
-                cv.Optional(CONF_ICON, default=ICON_TIMELAPSE): cv.icon,
-            }
+        cv.Optional(CONF_TOTAL_RUNTIME_FORMATTED): text_sensor.text_sensor_schema(
+            text_sensor.TextSensor, icon=ICON_TIMELAPSE
         ),
     }
 )

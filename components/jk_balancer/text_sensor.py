@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 from esphome.components import text_sensor
 import esphome.config_validation as cv
-from esphome.const import CONF_ICON, CONF_ID
+from esphome.const import CONF_ID
 
 from . import CONF_JK_BALANCER_ID, JK_BALANCER_COMPONENT_SCHEMA
 
@@ -19,11 +19,8 @@ TEXT_SENSORS = [
 
 CONFIG_SCHEMA = JK_BALANCER_COMPONENT_SCHEMA.extend(
     {
-        cv.Optional(CONF_ERRORS): text_sensor.TEXT_SENSOR_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
-                cv.Optional(CONF_ICON, default=ICON_ERRORS): cv.icon,
-            }
+        cv.Optional(CONF_ERRORS): text_sensor.text_sensor_schema(
+            text_sensor.TextSensor, icon=ICON_ERRORS
         ),
     }
 )
