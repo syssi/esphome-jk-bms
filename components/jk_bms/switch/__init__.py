@@ -33,11 +33,9 @@ CONFIG_SCHEMA = JK_BMS_COMPONENT_SCHEMA.extend(
             JkSwitch,
             icon=ICON_DISCHARGING,
         ).extend(cv.COMPONENT_SCHEMA),
-        # cv.Optional(CONF_BALANCER): switch.SWITCH_SCHEMA.extend(
-        #     {
-        #         cv.GenerateID(): cv.declare_id(JkSwitch),
-        #         cv.Optional(CONF_ICON, default=ICON_BALANCER): cv.icon,
-        #     }
+        # cv.Optional(CONF_BALANCER): switch.switch_schema(
+        #     JkSwitch,
+        #     icon=ICON_BALANCER,
         # ).extend(cv.COMPONENT_SCHEMA),
     }
 )
