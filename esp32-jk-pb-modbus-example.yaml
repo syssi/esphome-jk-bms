@@ -68,23 +68,7 @@ wifi:
   # output_power: "8.5dB"
 
 ota:
-  - platform: esphome
-    on_begin:
-          then:
-            - logger.log: "OTA start"
-    on_progress:
-      then:
-        - logger.log:
-            format: "OTA progress %0.1f%%"
-            args: ["x"]
-    on_end:
-      then:
-        - logger.log: "OTA end"
-    on_error:
-      then:
-        - logger.log:
-            format: "OTA update error %d"
-            args: ["x"]
+  platform: esphome
 
 logger:
   # NOTE: In production this should be INFO or lower to reduce execution time and remove warnings like:
@@ -667,8 +651,6 @@ sensor:
     accuracy_decimals: 3
     filters:
       - multiply: 0.001
-
-
 
 # ----
 
