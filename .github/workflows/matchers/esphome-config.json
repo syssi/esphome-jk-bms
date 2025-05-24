@@ -2,8 +2,7 @@
     "problemMatcher": [
         {
             "owner": "esphome-config",
-            "message": "Using `$1` is deprecated and will be removed$2",
-            "severity": "error",
+            "severity": "warning",
             "pattern": [
                 {
                     "regexp": "^WARNING Using `([^`]+)` is deprecated and will be removed(.*)$",
