@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 from esphome.components import text_sensor
 import esphome.config_validation as cv
-from esphome.const import CONF_ICON, CONF_ID, ICON_TIMELAPSE
+from esphome.const import CONF_ID, ICON_TIMELAPSE
 
 from . import CONF_JK_BMS_BLE_ID, JK_BMS_BLE_COMPONENT_SCHEMA
 
@@ -24,25 +24,14 @@ TEXT_SENSORS = [
 
 CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
     {
-        cv.Optional(CONF_ERRORS): text_sensor.TEXT_SENSOR_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
-                cv.Optional(CONF_ICON, default=ICON_ERRORS): cv.icon,
-            }
+        cv.Optional(CONF_ERRORS): text_sensor.text_sensor_schema(
+            text_sensor.TextSensor, icon=ICON_ERRORS
         ),
-        cv.Optional(CONF_OPERATION_STATUS): text_sensor.TEXT_SENSOR_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
-                cv.Optional(CONF_ICON, default=ICON_OPERATION_STATUS): cv.icon,
-            }
+        cv.Optional(CONF_OPERATION_STATUS): text_sensor.text_sensor_schema(
+            text_sensor.TextSensor, icon=ICON_OPERATION_STATUS
         ),
-        cv.Optional(
-            CONF_TOTAL_RUNTIME_FORMATTED
-        ): text_sensor.TEXT_SENSOR_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
-                cv.Optional(CONF_ICON, default=ICON_TIMELAPSE): cv.icon,
-            }
+        cv.Optional(CONF_TOTAL_RUNTIME_FORMATTED): text_sensor.text_sensor_schema(
+            text_sensor.TextSensor, icon=ICON_TIMELAPSE
         ),
     }
 )
