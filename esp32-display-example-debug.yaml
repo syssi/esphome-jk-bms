@@ -1,0 +1,12 @@
+<<: !include esp32-display-example.yaml
+
+logger:
+  baud_rate: 0
+  level: DEBUG
+
+uart:
+  - id: uart_0
+    baud_rate: 2400
+    rx_pin: ${rx_pin}
+    debug:
+      direction: BOTH

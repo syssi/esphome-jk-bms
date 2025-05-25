@@ -497,7 +497,7 @@ jobs:
         run: |
           . venv/bin/activate
           esphome -s external_components_source components compile esp32-display-example.yaml
-          # esphome -s external_components_source components compile esp8266-display-example.yaml
+          # esphome -s external_components_source components compile esp8266-display-example-faker.yaml
 
       - name: Compile active balancer example configurations
         run: |

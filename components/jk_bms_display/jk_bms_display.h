@@ -99,6 +99,7 @@ class JkBmsDisplay : public uart::UARTDevice, public Component {
   void loop() override;
   void dump_config() override;
   float get_setup_priority() const override;
+  void on_jk_bms_display_data(const std::vector<uint8_t> &data);
 
  protected:
   binary_sensor::BinarySensor *system_warning_binary_sensor_;
@@ -138,7 +139,6 @@ class JkBmsDisplay : public uart::UARTDevice, public Component {
   std::vector<uint8_t> rx_buffer_;
   uint32_t last_byte_{0};
 
-  void on_jk_bms_display_data_(const std::vector<uint8_t> &data);
   void on_jk_bms_display_status_data_(const std::vector<uint8_t> &data);
   void on_jk_bms_display_raw_data_(const std::vector<uint8_t> &data);
   bool parse_jk_bms_display_byte_(uint8_t byte);
