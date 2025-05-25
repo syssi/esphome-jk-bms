@@ -59,13 +59,13 @@ bool JkBmsDisplay::parse_jk_bms_display_byte_(uint8_t byte) {
 
   std::vector<uint8_t> data(this->rx_buffer_.begin(), this->rx_buffer_.begin() + frame_len);
 
-  this->on_jk_bms_display_data_(data);
+  this->on_jk_bms_display_data(data);
 
   // return false to reset buffer
   return false;
 }
 
-void JkBmsDisplay::on_jk_bms_display_data_(const std::vector<uint8_t> &data) {
+void JkBmsDisplay::on_jk_bms_display_data(const std::vector<uint8_t> &data) {
   if (data.size() < 6) {
     ESP_LOGW(TAG, "Invalid frame size!");
     return;
