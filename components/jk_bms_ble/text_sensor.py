@@ -12,14 +12,17 @@ CODEOWNERS = ["@syssi", "@txubelaxu"]
 CONF_ERRORS = "errors"
 CONF_OPERATION_STATUS = "operation_status"
 CONF_TOTAL_RUNTIME_FORMATTED = "total_runtime_formatted"
+CONF_CHARGE_STATUS = "charge_status"
 
 ICON_ERRORS = "mdi:alert-circle-outline"
 ICON_OPERATION_STATUS = "mdi:heart-pulse"
+ICON_CHARGE_STATUS = "mdi:battery-clock"
 
 TEXT_SENSORS = [
     CONF_ERRORS,
     CONF_OPERATION_STATUS,
     CONF_TOTAL_RUNTIME_FORMATTED,
+    CONF_CHARGE_STATUS,
 ]
 
 CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
@@ -32,6 +35,9 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
         ),
         cv.Optional(CONF_TOTAL_RUNTIME_FORMATTED): text_sensor.text_sensor_schema(
             text_sensor.TextSensor, icon=ICON_TIMELAPSE
+        ),
+        cv.Optional(CONF_CHARGE_STATUS): text_sensor.text_sensor_schema(
+            text_sensor.TextSensor, icon=ICON_CHARGE_STATUS
         ),
     }
 )

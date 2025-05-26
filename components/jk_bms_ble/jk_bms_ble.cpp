@@ -621,6 +621,15 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
                          (float) ((int16_t) jk_get_16bit(224 + offset)) * 0.1f);
     this->publish_state_(this->temperatures_[2].temperature_sensor_,
                          (float) ((int16_t) jk_get_16bit(226 + offset)) * 0.1f);
+
+    // 246+32  2   0x00 0x00              Charge status time
+    this->publish_state_(this->charge_status_time_elapsed_sensor_, (float) jk_get_16bit(246 + offset));
+
+    // 248+32  1   0x00                   Charge status                                0x00: Bulk
+    //                                                                                 0x01: Absorption
+    //                                                                                 0x02: Float
+    this->publish_state_(this->charge_status_id_sensor_, (float) data[248 + offset]);
+    this->publish_state_(this->charge_status_text_sensor_, this->charge_status_id_to_string_(data[248 + offset]));
   }
 
   // 299   1   0xCD                   CRC
@@ -1597,6 +1606,19 @@ std::string JkBmsBle::error_bits_to_string_(const uint16_t mask) {
   }
 
   return errors_list;
+}
+
+std::string JkBmsBle::charge_status_id_to_string_(const uint8_t status) {
+  switch (status) {
+    case 0x00:
+      return "Bulk";
+    case 0x01:
+      return "Absorption";
+    case 0x02:
+      return "Float";
+    default:
+      return str_snprintf("Unknown (0x%02X)", 15, status);
+  }
 }
 
 }  // namespace jk_bms_ble
