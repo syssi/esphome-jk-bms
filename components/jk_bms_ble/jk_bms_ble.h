@@ -239,6 +239,12 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   void set_heating_current_sensor(sensor::Sensor *heating_current_sensor) {
     heating_current_sensor_ = heating_current_sensor;
   }
+  void set_charge_status_id_sensor(sensor::Sensor *charge_status_id_sensor) {
+    charge_status_id_sensor_ = charge_status_id_sensor;
+  }
+  void set_charge_status_time_elapsed_sensor(sensor::Sensor *charge_status_time_elapsed_sensor) {
+    charge_status_time_elapsed_sensor_ = charge_status_time_elapsed_sensor;
+  }
 
   void set_errors_text_sensor(text_sensor::TextSensor *errors_text_sensor) { errors_text_sensor_ = errors_text_sensor; }
   void set_operation_status_text_sensor(text_sensor::TextSensor *operation_status_text_sensor) {
@@ -246,6 +252,9 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   }
   void set_total_runtime_formatted_text_sensor(text_sensor::TextSensor *total_runtime_formatted_text_sensor) {
     total_runtime_formatted_text_sensor_ = total_runtime_formatted_text_sensor;
+  }
+  void set_charge_status_text_sensor(text_sensor::TextSensor *charge_status_text_sensor) {
+    charge_status_text_sensor_ = charge_status_text_sensor;
   }
 
   void set_charging_switch(switch_::Switch *charging_switch) { charging_switch_ = charging_switch; }
@@ -354,6 +363,8 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   sensor::Sensor *errors_bitmask_sensor_;
   sensor::Sensor *emergency_time_countdown_sensor_;
   sensor::Sensor *heating_current_sensor_;
+  sensor::Sensor *charge_status_id_sensor_;
+  sensor::Sensor *charge_status_time_elapsed_sensor_;
 
   switch_::Switch *charging_switch_;
   switch_::Switch *discharging_switch_;
@@ -370,6 +381,7 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   text_sensor::TextSensor *errors_text_sensor_;
   text_sensor::TextSensor *operation_status_text_sensor_;
   text_sensor::TextSensor *total_runtime_formatted_text_sensor_;
+  text_sensor::TextSensor *charge_status_text_sensor_;
 
   std::vector<uint8_t> frame_buffer_;
   bool status_notification_received_ = false;
@@ -394,6 +406,7 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   void reset_online_status_tracker_();
   void track_online_status_();
   std::string error_bits_to_string_(uint16_t bitmask);
+  std::string charge_status_id_to_string_(uint8_t status);
 
   std::string format_total_runtime_(const uint32_t value) {
     int seconds = (int) value;

@@ -486,7 +486,7 @@ jobs:
           . venv/bin/activate
           esphome -s external_components_source components -s name jk-bms-jk04 compile esp32-ble-jk04-example-faker.yaml
           esphome -s external_components_source components -s name jk-bms-jk02-24s compile esp32-ble-example-faker.yaml
-          esphome -s external_components_source components -s name jk-bms-jk02-32s compile esp32-ble-v14-example-faker.yaml
+          esphome -s external_components_source components -s name jk-bms-jk02-32s compile esp32-ble-v15-example-faker.yaml
 
       - name: Compile esp32 (modbus) example configurations
         run: |

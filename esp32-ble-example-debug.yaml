@@ -3,7 +3,7 @@
 logger:
   level: VERY_VERBOSE
   logs:
-    esp32_ble_tracker: VERY_VERBOSE
+    esp32_ble_tracker: INFO
     jk_bms_ble: VERY_VERBOSE
     scheduler: DEBUG
     component: DEBUG
