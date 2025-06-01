@@ -1,4 +1,4 @@
-<<: !include ../esp32-ble-v14-example.yaml
+<<: !include ../esp32-ble-v15-example.yaml
 
 interval:
   - interval: 60s
