@@ -21,7 +21,7 @@ static const uint8_t COMMAND_CELL_INFO = 0x96;
 static const uint8_t COMMAND_DEVICE_INFO = 0x97;
 
 static const uint16_t MIN_RESPONSE_SIZE = 300;
-static const uint16_t MAX_RESPONSE_SIZE = 320;
+static const uint16_t MAX_RESPONSE_SIZE = 384 + 16;
 
 static const uint8_t ERRORS_SIZE = 16;
 static const char *const ERRORS[ERRORS_SIZE] = {
