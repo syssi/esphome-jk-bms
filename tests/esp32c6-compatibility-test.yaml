@@ -6,28 +6,13 @@ substitutions:
 esphome:
   name: ${name}
   comment: ${device_description}
-  min_version: 2024.6.0
-  project:
-    name: "syssi.esphome-jk-bms"
-    version: 2.1.0
-  platformio_options:
-    # board_build.f_cpu: 160000000L
-    # board_build.f_flash: 80000000L
-    board_build.flash_size: 8MB
-    # build_flags: "-DBOARD_HAS_PSRAM"
-    # board_build.arduino.memory_type: qio_opi
+  min_version: 2025.6.0
 
-
-# Board is waveshare esp32-c6-devkit-n8
 esp32:
   board: esp32-c6-devkitc-1
   variant: esp32c6
   framework:
     type: esp-idf
-    version: 5.3.1
-    platform_version: 6.9.0
-    sdkconfig_options:
-      CONFIG_ESPTOOLPY_FLASHSIZE_8MB: y
 
 external_components:
   - source: ${external_components_source}
