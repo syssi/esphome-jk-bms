@@ -59,6 +59,14 @@ CONF_CELL_VOLTAGE_21 = "cell_voltage_21"
 CONF_CELL_VOLTAGE_22 = "cell_voltage_22"
 CONF_CELL_VOLTAGE_23 = "cell_voltage_23"
 CONF_CELL_VOLTAGE_24 = "cell_voltage_24"
+CONF_CELL_VOLTAGE_25 = "cell_voltage_25"
+CONF_CELL_VOLTAGE_26 = "cell_voltage_26"
+CONF_CELL_VOLTAGE_27 = "cell_voltage_27"
+CONF_CELL_VOLTAGE_28 = "cell_voltage_28"
+CONF_CELL_VOLTAGE_29 = "cell_voltage_29"
+CONF_CELL_VOLTAGE_30 = "cell_voltage_30"
+CONF_CELL_VOLTAGE_31 = "cell_voltage_31"
+CONF_CELL_VOLTAGE_32 = "cell_voltage_32"
 
 CONF_CELL_RESISTANCE_1 = "cell_resistance_1"
 CONF_CELL_RESISTANCE_2 = "cell_resistance_2"
@@ -84,6 +92,14 @@ CONF_CELL_RESISTANCE_21 = "cell_resistance_21"
 CONF_CELL_RESISTANCE_22 = "cell_resistance_22"
 CONF_CELL_RESISTANCE_23 = "cell_resistance_23"
 CONF_CELL_RESISTANCE_24 = "cell_resistance_24"
+CONF_CELL_RESISTANCE_25 = "cell_resistance_25"
+CONF_CELL_RESISTANCE_26 = "cell_resistance_26"
+CONF_CELL_RESISTANCE_27 = "cell_resistance_27"
+CONF_CELL_RESISTANCE_28 = "cell_resistance_28"
+CONF_CELL_RESISTANCE_29 = "cell_resistance_29"
+CONF_CELL_RESISTANCE_30 = "cell_resistance_30"
+CONF_CELL_RESISTANCE_31 = "cell_resistance_31"
+CONF_CELL_RESISTANCE_32 = "cell_resistance_32"
 
 CONF_TOTAL_VOLTAGE = "total_voltage"
 CONF_CHARGING_POWER = "charging_power"
@@ -148,6 +164,14 @@ CELL_VOLTAGES = [
     CONF_CELL_VOLTAGE_22,
     CONF_CELL_VOLTAGE_23,
     CONF_CELL_VOLTAGE_24,
+    CONF_CELL_VOLTAGE_25,
+    CONF_CELL_VOLTAGE_26,
+    CONF_CELL_VOLTAGE_27,
+    CONF_CELL_VOLTAGE_28,
+    CONF_CELL_VOLTAGE_29,
+    CONF_CELL_VOLTAGE_30,
+    CONF_CELL_VOLTAGE_31,
+    CONF_CELL_VOLTAGE_32,
 ]
 
 CELL_RESISTANCES = [
@@ -175,6 +199,14 @@ CELL_RESISTANCES = [
     CONF_CELL_RESISTANCE_22,
     CONF_CELL_RESISTANCE_23,
     CONF_CELL_RESISTANCE_24,
+    CONF_CELL_RESISTANCE_25,
+    CONF_CELL_RESISTANCE_26,
+    CONF_CELL_RESISTANCE_27,
+    CONF_CELL_RESISTANCE_28,
+    CONF_CELL_RESISTANCE_29,
+    CONF_CELL_RESISTANCE_30,
+    CONF_CELL_RESISTANCE_31,
+    CONF_CELL_RESISTANCE_32,
 ]
 
 TEMPERATURES = [
@@ -433,6 +465,62 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
             device_class=DEVICE_CLASS_VOLTAGE,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
+        cv.Optional(CONF_CELL_VOLTAGE_25): sensor.sensor_schema(
+            unit_of_measurement=UNIT_VOLT,
+            icon=ICON_EMPTY,
+            accuracy_decimals=3,
+            device_class=DEVICE_CLASS_VOLTAGE,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_CELL_VOLTAGE_26): sensor.sensor_schema(
+            unit_of_measurement=UNIT_VOLT,
+            icon=ICON_EMPTY,
+            accuracy_decimals=3,
+            device_class=DEVICE_CLASS_VOLTAGE,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_CELL_VOLTAGE_27): sensor.sensor_schema(
+            unit_of_measurement=UNIT_VOLT,
+            icon=ICON_EMPTY,
+            accuracy_decimals=3,
+            device_class=DEVICE_CLASS_VOLTAGE,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_CELL_VOLTAGE_28): sensor.sensor_schema(
+            unit_of_measurement=UNIT_VOLT,
+            icon=ICON_EMPTY,
+            accuracy_decimals=3,
+            device_class=DEVICE_CLASS_VOLTAGE,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_CELL_VOLTAGE_29): sensor.sensor_schema(
+            unit_of_measurement=UNIT_VOLT,
+            icon=ICON_EMPTY,
+            accuracy_decimals=3,
+            device_class=DEVICE_CLASS_VOLTAGE,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_CELL_VOLTAGE_30): sensor.sensor_schema(
+            unit_of_measurement=UNIT_VOLT,
+            icon=ICON_EMPTY,
+            accuracy_decimals=3,
+            device_class=DEVICE_CLASS_VOLTAGE,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_CELL_VOLTAGE_31): sensor.sensor_schema(
+            unit_of_measurement=UNIT_VOLT,
+            icon=ICON_EMPTY,
+            accuracy_decimals=3,
+            device_class=DEVICE_CLASS_VOLTAGE,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_CELL_VOLTAGE_32): sensor.sensor_schema(
+            unit_of_measurement=UNIT_VOLT,
+            icon=ICON_EMPTY,
+            accuracy_decimals=3,
+            device_class=DEVICE_CLASS_VOLTAGE,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
         cv.Optional(CONF_CELL_RESISTANCE_1): sensor.sensor_schema(
             unit_of_measurement=UNIT_OHM,
             icon=ICON_CELL_RESISTANCE,
@@ -595,6 +683,62 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
             state_class=STATE_CLASS_MEASUREMENT,
         ),
         cv.Optional(CONF_CELL_RESISTANCE_24): sensor.sensor_schema(
+            unit_of_measurement=UNIT_OHM,
+            icon=ICON_CELL_RESISTANCE,
+            accuracy_decimals=3,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_CELL_RESISTANCE_25): sensor.sensor_schema(
+            unit_of_measurement=UNIT_OHM,
+            icon=ICON_CELL_RESISTANCE,
+            accuracy_decimals=3,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_CELL_RESISTANCE_26): sensor.sensor_schema(
+            unit_of_measurement=UNIT_OHM,
+            icon=ICON_CELL_RESISTANCE,
+            accuracy_decimals=3,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_CELL_RESISTANCE_27): sensor.sensor_schema(
+            unit_of_measurement=UNIT_OHM,
+            icon=ICON_CELL_RESISTANCE,
+            accuracy_decimals=3,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_CELL_RESISTANCE_28): sensor.sensor_schema(
+            unit_of_measurement=UNIT_OHM,
+            icon=ICON_CELL_RESISTANCE,
+            accuracy_decimals=3,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_CELL_RESISTANCE_29): sensor.sensor_schema(
+            unit_of_measurement=UNIT_OHM,
+            icon=ICON_CELL_RESISTANCE,
+            accuracy_decimals=3,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_CELL_RESISTANCE_30): sensor.sensor_schema(
+            unit_of_measurement=UNIT_OHM,
+            icon=ICON_CELL_RESISTANCE,
+            accuracy_decimals=3,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_CELL_RESISTANCE_31): sensor.sensor_schema(
+            unit_of_measurement=UNIT_OHM,
+            icon=ICON_CELL_RESISTANCE,
+            accuracy_decimals=3,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_CELL_RESISTANCE_32): sensor.sensor_schema(
             unit_of_measurement=UNIT_OHM,
             icon=ICON_CELL_RESISTANCE,
             accuracy_decimals=3,
