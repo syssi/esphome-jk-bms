@@ -2,7 +2,7 @@
 #
 # JK-B2A25S-RP with 25 cells
 
-<<: !include ../esp32-ble-v15-example.yaml
+<<: !include esp32-ble-b2a25s-example.yaml
 
 interval:
   - interval: 30s
