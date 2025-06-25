@@ -423,7 +423,7 @@ jobs:
           . venv/bin/activate
           echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password" > secrets.yaml
           for YAML in esp*.yaml; do
-            esphome -s external_components_source components config $YAML >/dev/null
+            esphome -s external_components_source components config $YAML
           done
 
       - name: Validate YAML snippets
@@ -431,7 +431,7 @@ jobs:
           . venv/bin/activate
           echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password" > yaml-snippets/secrets.yaml
           for YAML in yaml-snippets/esp*.yaml; do
-            esphome -s external_components_source ../components config $YAML >/dev/null
+            esphome -s external_components_source ../components config $YAML
           done
 
       - name: Validate test configurations
@@ -439,7 +439,7 @@ jobs:
           . venv/bin/activate
           echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password" > tests/secrets.yaml
           for YAML in tests/esp*.yaml; do
-            esphome -s external_components_source ../components config $YAML >/dev/null
+            esphome -s external_components_source ../components config $YAML
           done
 
   esphome-compile:
