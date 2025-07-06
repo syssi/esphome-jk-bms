@@ -318,6 +318,10 @@ sensor:
       name: "${name} errors bitmask"
     emergency_time_countdown:
       name: "${name} emergency time countdown"
+    charge_status_id:
+      name: "${name} charge status id"
+    charge_status_time_elapsed:
+      name: "${name} charge status time elapsed"
 
 switch:
   - platform: jk_bms_ble
@@ -355,3 +359,5 @@ text_sensor:
       name: "${name} errors"
     total_runtime_formatted:
       name: "${name} total runtime formatted"
+    charge_status:
+      name: "${name} charge status"
