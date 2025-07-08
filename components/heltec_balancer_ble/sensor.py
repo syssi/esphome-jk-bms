@@ -17,7 +17,7 @@ from esphome.const import (
     UNIT_VOLT,
 )
 
-from . import CONF_HELTEC_BALANCER_BLE_ID, HeltecBalancerBle
+from . import CONF_HELTEC_BALANCER_BLE_ID, HELTEC_BALANCER_BLE_COMPONENT_SCHEMA
 
 CODEOWNERS = ["@syssi"]
 
@@ -173,9 +173,8 @@ SENSORS = [
 ]
 
 # pylint: disable=too-many-function-args
-CONFIG_SCHEMA = cv.Schema(
+CONFIG_SCHEMA = HELTEC_BALANCER_BLE_COMPONENT_SCHEMA.extend(
     {
-        cv.GenerateID(CONF_HELTEC_BALANCER_BLE_ID): cv.use_id(HeltecBalancerBle),
         cv.Optional(CONF_MIN_CELL_VOLTAGE): sensor.sensor_schema(
             unit_of_measurement=UNIT_VOLT,
             icon=ICON_EMPTY,
