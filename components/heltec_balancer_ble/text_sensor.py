@@ -3,7 +3,7 @@ from esphome.components import text_sensor
 import esphome.config_validation as cv
 from esphome.const import CONF_ID, ICON_TIMELAPSE
 
-from . import CONF_HELTEC_BALANCER_BLE_ID, HeltecBalancerBle
+from . import CONF_HELTEC_BALANCER_BLE_ID, HELTEC_BALANCER_BLE_COMPONENT_SCHEMA
 
 DEPENDENCIES = ["heltec_balancer_ble"]
 
@@ -26,9 +26,8 @@ TEXT_SENSORS = [
     CONF_BATTERY_TYPE,
 ]
 
-CONFIG_SCHEMA = cv.Schema(
+CONFIG_SCHEMA = HELTEC_BALANCER_BLE_COMPONENT_SCHEMA.extend(
     {
-        cv.GenerateID(CONF_HELTEC_BALANCER_BLE_ID): cv.use_id(HeltecBalancerBle),
         cv.Optional(CONF_ERRORS): text_sensor.text_sensor_schema(
             text_sensor.TextSensor, icon=ICON_ERRORS
         ),

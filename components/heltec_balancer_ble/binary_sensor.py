@@ -3,7 +3,7 @@ from esphome.components import binary_sensor
 import esphome.config_validation as cv
 from esphome.const import CONF_ID, DEVICE_CLASS_CONNECTIVITY, ENTITY_CATEGORY_DIAGNOSTIC
 
-from . import CONF_HELTEC_BALANCER_BLE_ID, HeltecBalancerBle
+from . import CONF_HELTEC_BALANCER_BLE_ID, HELTEC_BALANCER_BLE_COMPONENT_SCHEMA
 
 DEPENDENCIES = ["heltec_balancer_ble"]
 
@@ -23,9 +23,8 @@ BINARY_SENSORS = [
     CONF_ONLINE_STATUS,
 ]
 
-CONFIG_SCHEMA = cv.Schema(
+CONFIG_SCHEMA = HELTEC_BALANCER_BLE_COMPONENT_SCHEMA.extend(
     {
-        cv.GenerateID(CONF_HELTEC_BALANCER_BLE_ID): cv.use_id(HeltecBalancerBle),
         cv.Optional(CONF_BALANCING): binary_sensor.binary_sensor_schema(
             icon="mdi:battery-heart-variant"
         ),
