@@ -1,3 +1,5 @@
+# JK BMS Inverter V19. JK BMS LCD Protocol V2.0 (RS485, baud rate: 2400)
+
 <<: !include esp32-display-example-debug.yaml
 
 interval:
