@@ -639,6 +639,7 @@ void JkBms::dump_config() {  // NOLINT(google-readability-function-size,readabil
   LOG_SENSOR("", "Start Current Calibration", this->start_current_calibration_sensor_);
   LOG_TEXT_SENSOR("", "Manufacturer", this->manufacturer_text_sensor_);
   LOG_SENSOR("", "Protocol Version", this->protocol_version_sensor_);
+  LOG_SENSOR("", "Actual Battery Capacity", this->actual_battery_capacity_sensor_);
   LOG_TEXT_SENSOR("", "Total Runtime Formatted", this->total_runtime_formatted_text_sensor_);
   LOG_TEXT_SENSOR("", "Errors", this->errors_text_sensor_);
 }
