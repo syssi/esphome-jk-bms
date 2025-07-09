@@ -53,12 +53,16 @@ uint8_t crc(const uint8_t data[], const uint16_t len) {
 
 void JkBmsBle::dump_config() {  // NOLINT(google-readability-function-size,readability-function-size)
   ESP_LOGCONFIG(TAG, "JkBmsBle");
+
   LOG_BINARY_SENSOR("", "Balancing", this->balancing_binary_sensor_);
   LOG_BINARY_SENSOR("", "Precharging", this->precharging_binary_sensor_);
   LOG_BINARY_SENSOR("", "Charging", this->charging_binary_sensor_);
   LOG_BINARY_SENSOR("", "Discharging", this->discharging_binary_sensor_);
   LOG_BINARY_SENSOR("", "Heating", this->heating_binary_sensor_);
   LOG_BINARY_SENSOR("", "Online Status", this->online_status_binary_sensor_);
+  LOG_BINARY_SENSOR("", "Dry Contact 1", this->dry_contact_1_binary_sensor_);
+  LOG_BINARY_SENSOR("", "Dry Contact 2", this->dry_contact_2_binary_sensor_);
+
   LOG_SENSOR("", "Minimum Cell Voltage", this->min_cell_voltage_sensor_);
   LOG_SENSOR("", "Maximum Cell Voltage", this->max_cell_voltage_sensor_);
   LOG_SENSOR("", "Minimum Voltage Cell", this->min_voltage_cell_sensor_);
@@ -148,8 +152,16 @@ void JkBmsBle::dump_config() {  // NOLINT(google-readability-function-size,reada
   LOG_SENSOR("", "Total Charging Cycle Capacity", this->total_charging_cycle_capacity_sensor_);
   LOG_SENSOR("", "Total Runtime", this->total_runtime_sensor_);
   LOG_SENSOR("", "Heating Current", this->heating_current_sensor_);
+  LOG_SENSOR("", "Balancing Current", this->balancing_current_sensor_);
+  LOG_SENSOR("", "Errors Bitmask", this->errors_bitmask_sensor_);
+  LOG_SENSOR("", "Emergency Time Countdown", this->emergency_time_countdown_sensor_);
+  LOG_SENSOR("", "Charge Status ID", this->charge_status_id_sensor_);
+  LOG_SENSOR("", "Charge Status Time Elapsed", this->charge_status_time_elapsed_sensor_);
+
   LOG_TEXT_SENSOR("", "Operation Status", this->operation_status_text_sensor_);
   LOG_TEXT_SENSOR("", "Total Runtime Formatted", this->total_runtime_formatted_text_sensor_);
+  LOG_TEXT_SENSOR("", "Errors", this->errors_text_sensor_);
+  LOG_TEXT_SENSOR("", "Charge Status", this->charge_status_text_sensor_);
 }
 
 void JkBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if,
