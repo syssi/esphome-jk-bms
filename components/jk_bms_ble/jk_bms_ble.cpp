@@ -677,7 +677,7 @@ void JkBmsBle::decode_jk04_cell_info_(const std::vector<uint8_t> &data) {
   }
   this->last_cell_info_ = now;
 
-  ESP_LOGI(TAG, "Cell info frame (%d bytes) received", data.size());
+  ESP_LOGI(TAG, "Cell info frame (JK04, %d bytes) received", data.size());
   ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front(), 150).c_str());
   ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front() + 150, data.size() - 150).c_str());
 
@@ -1135,7 +1135,7 @@ void JkBmsBle::decode_jk04_settings_(const std::vector<uint8_t> &data) {
     return (uint32_t(jk_get_16bit(i + 2)) << 16) | (uint32_t(jk_get_16bit(i + 0)) << 0);
   };
 
-  ESP_LOGI(TAG, "Settings frame (%d bytes) received", data.size());
+  ESP_LOGI(TAG, "Settings frame (JK04, %d bytes) received", data.size());
   ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front(), 160).c_str());
   ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front() + 160, data.size() - 160).c_str());
 
