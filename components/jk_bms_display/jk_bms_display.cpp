@@ -279,6 +279,13 @@ void JkBmsDisplay::dump_config() {
   LOG_SENSOR("", "Cell Voltage 22", this->cells_[21].cell_voltage_sensor_);
   LOG_SENSOR("", "Cell Voltage 23", this->cells_[22].cell_voltage_sensor_);
   LOG_SENSOR("", "Cell Voltage 24", this->cells_[23].cell_voltage_sensor_);
+  LOG_SENSOR("", "Power", this->power_sensor_);
+  LOG_SENSOR("", "Charging Power", this->charging_power_sensor_);
+  LOG_SENSOR("", "Discharging Power", this->discharging_power_sensor_);
+  LOG_SENSOR("", "Min Cell Voltage", this->min_cell_voltage_sensor_);
+  LOG_SENSOR("", "Max Cell Voltage", this->max_cell_voltage_sensor_);
+  LOG_SENSOR("", "Min Voltage Cell", this->min_voltage_cell_sensor_);
+  LOG_SENSOR("", "Max Voltage Cell", this->max_voltage_cell_sensor_);
 
   this->check_uart_settings(2400);
 }

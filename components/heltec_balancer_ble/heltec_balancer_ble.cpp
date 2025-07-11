@@ -144,8 +144,23 @@ void HeltecBalancerBle::dump_config() {  // NOLINT(google-readability-function-s
   LOG_SENSOR("", "Temperature Sensor 1", this->temperature_sensor_1_sensor_);
   LOG_SENSOR("", "Temperature Sensor 2", this->temperature_sensor_2_sensor_);
   LOG_SENSOR("", "Total Runtime", this->total_runtime_sensor_);
+  LOG_SENSOR("", "Balancing Current", this->balancing_current_sensor_);
+  LOG_SENSOR("", "Errors Bitmask", this->errors_bitmask_sensor_);
+  LOG_SENSOR("", "Cell Detection Failed Bitmask", this->cell_detection_failed_bitmask_sensor_);
+  LOG_SENSOR("", "Cell Overvoltage Bitmask", this->cell_overvoltage_bitmask_sensor_);
+  LOG_SENSOR("", "Cell Undervoltage Bitmask", this->cell_undervoltage_bitmask_sensor_);
+  LOG_SENSOR("", "Cell Polarity Error Bitmask", this->cell_polarity_error_bitmask_sensor_);
+  LOG_SENSOR("", "Cell Excessive Line Resistance Bitmask", this->cell_excessive_line_resistance_bitmask_sensor_);
+
+  LOG_BINARY_SENSOR("", "Error System Overheating", this->error_system_overheating_binary_sensor_);
+  LOG_BINARY_SENSOR("", "Error Charging", this->error_charging_binary_sensor_);
+  LOG_BINARY_SENSOR("", "Error Discharging", this->error_discharging_binary_sensor_);
+
+  LOG_TEXT_SENSOR("", "Errors", this->errors_text_sensor_);
   LOG_TEXT_SENSOR("", "Operation Status", this->operation_status_text_sensor_);
   LOG_TEXT_SENSOR("", "Total Runtime Formatted", this->total_runtime_formatted_text_sensor_);
+  LOG_TEXT_SENSOR("", "Buzzer Mode", this->buzzer_mode_text_sensor_);
+  LOG_TEXT_SENSOR("", "Battery Type", this->battery_type_text_sensor_);
 }
 
 void HeltecBalancerBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if,
