@@ -1347,13 +1347,11 @@ sensor:
     address: 0x12A6
     register_type: holding
     value_type: U_WORD
-    register_count: 2
-    response_size: 2
     state_class: measurement
     device_class: battery
     unit_of_measurement: "%"
     accuracy_decimals: 0
-    bitmask: 0x0100
+    bitmask: 0x00FF
 
   - platform: modbus_controller
     modbus_controller_id: bms0
