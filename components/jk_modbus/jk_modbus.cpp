@@ -17,6 +17,12 @@ static const uint8_t ADDRESS_READ_ALL = 0x00;
 
 static const uint8_t FRAME_SOURCE_GPS = 0x02;
 
+void JkModbus::setup() {
+  if (this->flow_control_pin_ != nullptr) {
+    this->flow_control_pin_->setup();
+  }
+}
+
 void JkModbus::loop() {
   const uint32_t now = millis();
   if (now - this->last_jk_modbus_byte_ > this->rx_timeout_) {
@@ -114,6 +120,7 @@ bool JkModbus::parse_jk_modbus_byte_(uint8_t byte) {
 void JkModbus::dump_config() {
   ESP_LOGCONFIG(TAG, "JkModbus:");
   ESP_LOGCONFIG(TAG, "  RX timeout: %d ms", this->rx_timeout_);
+  LOG_PIN("  Flow Control Pin: ", this->flow_control_pin_);
 }
 float JkModbus::get_setup_priority() const {
   // After UART bus
@@ -146,8 +153,14 @@ void JkModbus::send(uint8_t function, uint8_t address, uint8_t value) {
   frame[20] = crc >> 8;
   frame[21] = crc >> 0;
 
+  if (this->flow_control_pin_ != nullptr)
+    this->flow_control_pin_->digital_write(true);
+
   this->write_array(frame, 22);
   this->flush();
+
+  if (this->flow_control_pin_ != nullptr)
+    this->flow_control_pin_->digital_write(false);
 }
 
 void JkModbus::authenticate_() { this->send(FUNCTION_PASSWORD, 0x00, 0x00); }
@@ -184,8 +197,14 @@ void JkModbus::read_registers() {
   frame[19] = crc >> 8;
   frame[20] = crc >> 0;
 
+  if (this->flow_control_pin_ != nullptr)
+    this->flow_control_pin_->digital_write(true);
+
   this->write_array(frame, 21);
   this->flush();
+
+  if (this->flow_control_pin_ != nullptr)
+    this->flow_control_pin_->digital_write(false);
 }
 
 }  // namespace jk_modbus

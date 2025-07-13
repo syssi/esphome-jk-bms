@@ -12,6 +12,8 @@ class JkModbus : public uart::UARTDevice, public Component {
  public:
   JkModbus() = default;
 
+  void setup() override;
+
   void loop() override;
 
   void dump_config() override;
@@ -25,7 +27,11 @@ class JkModbus : public uart::UARTDevice, public Component {
   void read_registers();
   void set_rx_timeout(uint16_t rx_timeout) { rx_timeout_ = rx_timeout; }
 
+  void set_flow_control_pin(GPIOPin *flow_control_pin) { this->flow_control_pin_ = flow_control_pin; }
+
  protected:
+  GPIOPin *flow_control_pin_{nullptr};
+
   void authenticate_();
   bool parse_jk_modbus_byte_(uint8_t byte);
 
