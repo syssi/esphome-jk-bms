@@ -38,7 +38,8 @@ bool JkBmsDisplay::parse_jk_bms_display_byte_(uint8_t byte) {
     return true;
 
   if (at == 1) {
-    if (raw[0] != SOF_BYTE1 || raw[1] != SOF_BYTE2) {
+    // Accept both A5.5A and 5A.A5 patterns
+    if (!((raw[0] == SOF_BYTE1 && raw[1] == SOF_BYTE2) || (raw[0] == SOF_BYTE2 && raw[1] == SOF_BYTE1))) {
       ESP_LOGVV(TAG, "Invalid header: 0x%02X 0x%02X", raw[0], raw[1]);
 
       // return false to reset buffer
