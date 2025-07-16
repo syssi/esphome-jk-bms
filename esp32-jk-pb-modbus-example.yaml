@@ -1667,54 +1667,39 @@ sensor:
     filters:
       - multiply: 0.1
 
-switch:
+select:
   - platform: modbus_controller
     modbus_controller_id: bms0
-    id: discharging_switch
-    name: "${name} discharging"
-    custom_command: [0x01, 0x03, 0x10, 0x74, 0x00, 0x02]
-    write_lambda: |-
-      ESP_LOGD("Custom", "Modbus Switch incoming state = %d", (int)x);
-      payload.insert(payload.end(), {0x01, 0x10, 0x10, 0x74, 0x00, 0x02, 0x04, 0x00, 0x00, 0x00, x > 0});
-      return true;
-    lambda: |-
-      if (data.size() != 4 ) {
-        ESP_LOGE("Custom", "Invalid data size %d", data.size());
-        return {};
-      }
-      return (data[3] == 1);
-
-  - platform: modbus_controller
-    modbus_controller_id: bms0
-    id: charging_switch
     name: "${name} charging"
-    custom_command: [0x01, 0x03, 0x10, 0x70, 0x00, 0x02]
-    write_lambda: |-
-      ESP_LOGD("Custom", "Modbus Switch incoming state = %d", (int)x);
-      payload.insert(payload.end(), {0x01, 0x10, 0x10, 0x70, 0x00, 0x02, 0x04, 0x00, 0x00, 0x00, x > 0});
-      return true;
-    lambda: |-
-      if (data.size() != 4 ) {
-        ESP_LOGE("Custom", "Invalid data size %d", data.size());
-        return {};
-      }
-      return (data[3] == 1);
+    icon: "mdi:battery-charging-100"
+    address: 0x1070
+    value_type: U_DWORD
+    skip_updates: 5
+    optionsmap:
+      "Off": 0
+      "On": 1
 
   - platform: modbus_controller
     modbus_controller_id: bms0
-    id: balancing_switch
+    name: "${name} discharging"
+    icon: "mdi:power-plug-battery"
+    address: 0x1074
+    value_type: U_DWORD
+    skip_updates: 5
+    optionsmap:
+      "Off": 0
+      "On": 1
+
+  - platform: modbus_controller
+    modbus_controller_id: bms0
     name: "${name} balancing"
-    custom_command: [0x01, 0x03, 0x10, 0x78, 0x00, 0x02]
-    write_lambda: |-
-      ESP_LOGD("Custom", "Modbus Switch incoming state = %d", (int32_t)x);
-      payload.insert(payload.end(), {0x01, 0x10, 0x10, 0x78, 0x00, 0x02, 0x04, 0x00, 0x00, 0x00, x > 0});
-      return true;
-    lambda: |-
-      if (data.size() != 4 ) {
-        ESP_LOGE("Custom", "Invalid data size %d", data.size());
-        return {};
-      }
-      return (data[3] == 1);
+    icon: mdi:scale-balance
+    address: 0x1078
+    value_type: U_DWORD
+    skip_updates: 5
+    optionsmap:
+      "Off": 0
+      "On": 1
 
 text_sensor:
   - platform: template
