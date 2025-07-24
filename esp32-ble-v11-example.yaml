@@ -154,6 +154,8 @@ number:
       name: "${name} power tube overtemperature protection"
     power_tube_overtemperature_protection_recovery:
       name: "${name} power tube overtemperature protection recovery"
+    discharge_precharge_time:
+      name: "${name} discharge precharge time"
 
 sensor:
   - platform: jk_bms_ble

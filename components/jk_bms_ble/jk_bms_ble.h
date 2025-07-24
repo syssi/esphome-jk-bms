@@ -144,6 +144,9 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
       number::Number *power_tube_overtemperature_protection_recovery_number) {
     power_tube_overtemperature_protection_recovery_number_ = power_tube_overtemperature_protection_recovery_number;
   }
+  void set_discharge_precharge_time_number(number::Number *discharge_precharge_time_number) {
+    discharge_precharge_time_number_ = discharge_precharge_time_number;
+  }
 
   void set_balancing_binary_sensor(binary_sensor::BinarySensor *balancing_binary_sensor) {
     balancing_binary_sensor_ = balancing_binary_sensor;
@@ -339,6 +342,7 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   number::Number *charge_undertemperature_protection_recovery_number_;
   number::Number *power_tube_overtemperature_protection_number_;
   number::Number *power_tube_overtemperature_protection_recovery_number_;
+  number::Number *discharge_precharge_time_number_;
 
   sensor::Sensor *balancing_sensor_;
   sensor::Sensor *min_cell_voltage_sensor_;

@@ -180,6 +180,7 @@ CONF_POWER_TUBE_OVERTEMPERATURE_PROTECTION = "power_tube_overtemperature_protect
 CONF_POWER_TUBE_OVERTEMPERATURE_PROTECTION_RECOVERY = (
     "power_tube_overtemperature_protection_recovery"
 )
+CONF_DISCHARGE_PRECHARGE_TIME = "discharge_precharge_time"
 
 UNIT_AMPERE_HOUR = "Ah"
 UNIT_SECONDS = "s"
@@ -288,6 +289,7 @@ NUMBERS = {
         10.0,
         4,
     ],
+    CONF_DISCHARGE_PRECHARGE_TIME: [0x00, 0x00, 0x25, 1.0, 4],
 }
 
 JkNumber = jk_bms_ble_ns.class_("JkNumber", number.Number, cg.Component)
@@ -638,6 +640,16 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
                 cv.Optional(CONF_STEP, default=0.1): cv.float_,
                 cv.Optional(
                     CONF_UNIT_OF_MEASUREMENT, default=UNIT_CELSIUS
+                ): cv.string_strict,
+            }
+        ),
+        cv.Optional(CONF_DISCHARGE_PRECHARGE_TIME): JK_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=0.0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=255.0): cv.float_,
+                cv.Optional(CONF_STEP, default=1.0): cv.float_,
+                cv.Optional(
+                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_SECONDS
                 ): cv.string_strict,
             }
         ),

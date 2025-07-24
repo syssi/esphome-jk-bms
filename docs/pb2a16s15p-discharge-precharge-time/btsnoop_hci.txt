@@ -1,0 +1,6 @@
+See https://github.com/syssi/esphome-jk-bms/issues/390#issuecomment-1902711267
+
+5 seconds ... 4 seconds ... 5 seconds
+
+aa:55:90:eb: 25: 04: 04:00:00:00: 36:d5:24:4a:68:8e:ad:95:5f:b7 # 0x04 = 4S
+aa:55:90:eb: 25: 04: 05:00:00:00: 3c:35:b5:c4:8c:dd:6c:11:32:aa # 0x05 = 5S
