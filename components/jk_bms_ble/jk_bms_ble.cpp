@@ -1083,8 +1083,11 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
     // 266   4   0x00 0x00 0x00 0x00
     // 270   4   0x00 0x00 0x00 0x00
     ESP_LOGI(TAG, "  Device address: %d", data[270]);
+
     // 274   4   0x00 0x00 0x00 0x00
     ESP_LOGI(TAG, "  Precharge time: %d s", data[274]);
+    this->publish_state_(this->discharge_precharge_time_number_, (float) data[274]);
+
     // 278   4   0x00 0x00 0x00 0x00
     // 282   2   0x00 0x00                 New controls bitmask
     // ** [JK-PB2A16S-20P v14]
