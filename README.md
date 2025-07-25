@@ -62,6 +62,8 @@ All JK-BMS models with software version `>=6.0` are using the implemented protoc
 * JK-B2A16S, hw 3.0, sw 3.3.0, using `JK04` (reported by [@magnetus26](https://github.com/syssi/esphome-jk-bms/discussions/48))
 * GW-24S4EB (NEEY/Heltec 4A Smart Active Balancer), hw HW-2.8.0, sw ZH-1.2.3 (reported by [@cristi2005](https://github.com/syssi/esphome-jk-bms/issues/109))
 * GW-24S4EB (NEEY 4A Smart Active Balancer 4th generation), hw HW-3.2.0, sw ZH-1.2.4 (reported by [@fabhund](https://github.com/syssi/esphome-jk-bms/issues/310))
+* EK-24S15EB (NEEY 15A Smart Active Balancer), (reported by [@msevestre31](https://github.com/syssi/esphome-jk-bms/issues/487))
+* EK-24S10EB (NEEY 10A Smart Active Balancer), hw HW-1.1.5, sw SW-1.1.1, (reported by [@chipsi](https://github.com/syssi/esphome-jk-bms/discussions/487#discussioncomment-9013069))
 
 ## Requirements
 
