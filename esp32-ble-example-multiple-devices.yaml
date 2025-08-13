@@ -189,12 +189,12 @@ switch:
 
   - platform: ble_client
     ble_client_id: client0
-    id: ble_client_switch0
     name: "${bms0} enable bluetooth connection"
+    id: ble_client_switch0
   - platform: ble_client
     ble_client_id: client1
-    id: ble_client_switch1
     name: "${bms1} enable bluetooth connection"
+    id: ble_client_switch1
 
 text_sensor:
   - platform: jk_bms_ble
