@@ -1300,7 +1300,7 @@ sensor:
           if (x < 0.0f && !isnan(id(total_voltage).state)) {
             return abs(x) * id(total_voltage).state;
           }
-          return 0.0;
+          return 0.0f;
 
   # 0x1298   152    INT32    4    R    BatCurrent      mA
   - platform: modbus_controller
