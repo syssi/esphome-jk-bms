@@ -1228,6 +1228,7 @@ sensor:
   # 0x1290   144   UINT32    4    R    BatVol          mV
   - platform: modbus_controller
     modbus_controller_id: bms0
+    id: total_voltage
     name: "${name} total voltage"
     address: 0x1290
     register_type: holding
@@ -1261,6 +1262,46 @@ sensor:
             : x;
       - multiply: 0.001
 
+  - platform: modbus_controller
+    modbus_controller_id: bms0
+    name: "${name} charging power"
+    address: 0x1298
+    register_type: holding
+    value_type: S_DWORD
+    register_count: 4
+    response_size: 4
+    unit_of_measurement: "W"
+    device_class: power
+    state_class: measurement
+    accuracy_decimals: 2
+    filters:
+      - multiply: 0.001
+      - lambda: |-
+          if (x > 0.0f && !isnan(id(total_voltage).state)) {
+            return x * id(total_voltage).state;
+          }
+          return 0.0f;
+
+  - platform: modbus_controller
+    modbus_controller_id: bms0
+    name: "${name} discharging power"
+    address: 0x1298
+    register_type: holding
+    value_type: S_DWORD
+    register_count: 4
+    response_size: 4
+    unit_of_measurement: "W"
+    device_class: power
+    state_class: measurement
+    accuracy_decimals: 2
+    filters:
+      - multiply: 0.001
+      - lambda: |-
+          if (x < 0.0f && !isnan(id(total_voltage).state)) {
+            return abs(x) * id(total_voltage).state;
+          }
+          return 0.0f;
+
   # 0x1298   152    INT32    4    R    BatCurrent      mA
   - platform: modbus_controller
     modbus_controller_id: bms0
@@ -1277,6 +1318,46 @@ sensor:
     accuracy_decimals: 2
     filters:
       - multiply: 0.001
+
+  - platform: modbus_controller
+    modbus_controller_id: bms0
+    name: "${name} charging current"
+    address: 0x1298
+    register_type: holding
+    value_type: S_DWORD
+    register_count: 4
+    response_size: 4
+    unit_of_measurement: "A"
+    device_class: current
+    state_class: measurement
+    accuracy_decimals: 2
+    filters:
+      - multiply: 0.001
+      - lambda: |-
+          if (x > 0.0f) {
+            return x;
+          }
+          return 0.0f;
+
+  - platform: modbus_controller
+    modbus_controller_id: bms0
+    name: "${name} discharging current"
+    address: 0x1298
+    register_type: holding
+    value_type: S_DWORD
+    register_count: 4
+    response_size: 4
+    unit_of_measurement: "A"
+    device_class: current
+    state_class: measurement
+    accuracy_decimals: 2
+    filters:
+      - multiply: 0.001
+      - lambda: |-
+          if (x < 0.0f) {
+            return abs(x);
+          }
+          return 0.0f;
 
   # 0x129C   156    INT16    2    R    TempBat 1       0.1 °C
   - platform: modbus_controller
