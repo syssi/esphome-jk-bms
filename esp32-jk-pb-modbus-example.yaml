@@ -1787,7 +1787,7 @@ text_sensor:
     modbus_controller_id: bms0
     name: "${name} password"
     register_type: holding
-    address: 0x1470 # 0x1400 base + 0x0070 offset
+    address: 0x1470  # 0x1400 base + 0x0070 offset
     register_count: 8
     response_size: 16
     raw_encode: ANSI
