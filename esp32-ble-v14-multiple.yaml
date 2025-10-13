@@ -647,6 +647,10 @@ text_sensor:
       name: "${bms0} errors"
     total_runtime_formatted:
       name: "${bms0} total runtime formatted"
+    software_version:
+      name: "${bms0} software version"
+    hardware_version:
+      name: "${bms0} hardware version"
 
   - platform: jk_bms_ble
     jk_bms_ble_id: bms1
@@ -654,3 +658,7 @@ text_sensor:
       name: "${bms1} errors"
     total_runtime_formatted:
       name: "${bms1} total runtime formatted"
+    software_version:
+      name: "${bms1} software version"
+    hardware_version:
+      name: "${bms1} hardware version"

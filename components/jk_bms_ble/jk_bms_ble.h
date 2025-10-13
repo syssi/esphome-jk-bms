@@ -259,6 +259,12 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   void set_charge_status_text_sensor(text_sensor::TextSensor *charge_status_text_sensor) {
     charge_status_text_sensor_ = charge_status_text_sensor;
   }
+  void set_software_version_text_sensor(text_sensor::TextSensor *software_version_text_sensor) {
+    software_version_text_sensor_ = software_version_text_sensor;
+  }
+  void set_hardware_version_text_sensor(text_sensor::TextSensor *hardware_version_text_sensor) {
+    hardware_version_text_sensor_ = hardware_version_text_sensor;
+  }
 
   void set_charging_switch(switch_::Switch *charging_switch) { charging_switch_ = charging_switch; }
   void set_discharging_switch(switch_::Switch *discharging_switch) { discharging_switch_ = discharging_switch; }
@@ -386,6 +392,8 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   text_sensor::TextSensor *operation_status_text_sensor_;
   text_sensor::TextSensor *total_runtime_formatted_text_sensor_;
   text_sensor::TextSensor *charge_status_text_sensor_;
+  text_sensor::TextSensor *software_version_text_sensor_;
+  text_sensor::TextSensor *hardware_version_text_sensor_;
 
   std::vector<uint8_t> frame_buffer_;
   bool status_notification_received_ = false;

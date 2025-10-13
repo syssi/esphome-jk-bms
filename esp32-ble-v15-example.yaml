@@ -363,3 +363,7 @@ text_sensor:
       name: "${name} total runtime formatted"
     charge_status:
       name: "${name} charge status"
+    software_version:
+      name: "${name} software version"
+    hardware_version:
+      name: "${name} hardware version"

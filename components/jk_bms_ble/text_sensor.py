@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 from esphome.components import text_sensor
 import esphome.config_validation as cv
-from esphome.const import CONF_ID, ICON_TIMELAPSE
+from esphome.const import CONF_ID, ICON_EMPTY, ICON_TIMELAPSE
 
 from . import CONF_JK_BMS_BLE_ID, JK_BMS_BLE_COMPONENT_SCHEMA
 
@@ -13,6 +13,8 @@ CONF_ERRORS = "errors"
 CONF_OPERATION_STATUS = "operation_status"
 CONF_TOTAL_RUNTIME_FORMATTED = "total_runtime_formatted"
 CONF_CHARGE_STATUS = "charge_status"
+CONF_SOFTWARE_VERSION = "software_version"
+CONF_HARDWARE_VERSION = "hardware_version"
 
 ICON_ERRORS = "mdi:alert-circle-outline"
 ICON_OPERATION_STATUS = "mdi:heart-pulse"
@@ -23,6 +25,8 @@ TEXT_SENSORS = [
     CONF_OPERATION_STATUS,
     CONF_TOTAL_RUNTIME_FORMATTED,
     CONF_CHARGE_STATUS,
+    CONF_SOFTWARE_VERSION,
+    CONF_HARDWARE_VERSION,
 ]
 
 CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
@@ -38,6 +42,12 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
         ),
         cv.Optional(CONF_CHARGE_STATUS): text_sensor.text_sensor_schema(
             text_sensor.TextSensor, icon=ICON_CHARGE_STATUS
+        ),
+        cv.Optional(CONF_SOFTWARE_VERSION): text_sensor.text_sensor_schema(
+            text_sensor.TextSensor, icon=ICON_EMPTY
+        ),
+        cv.Optional(CONF_HARDWARE_VERSION): text_sensor.text_sensor_schema(
+            text_sensor.TextSensor, icon=ICON_EMPTY
         ),
     }
 )

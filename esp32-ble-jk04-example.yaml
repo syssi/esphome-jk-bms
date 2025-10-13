@@ -208,3 +208,7 @@ text_sensor:
       name: "${name} operation status"
     total_runtime_formatted:
       name: "${name} total runtime formatted"
+    software_version:
+      name: "${name} software version"
+    hardware_version:
+      name: "${name} hardware version"
