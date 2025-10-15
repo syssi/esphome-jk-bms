@@ -863,6 +863,7 @@ void HeltecBalancerBle::publish_device_unavailable_() {
 
   for (auto &cell : this->cells_) {
     this->publish_state_(cell.cell_voltage_sensor_, NAN);
+    this->publish_state_(cell.cell_resistance_sensor_, NAN);
   }
 }
 
