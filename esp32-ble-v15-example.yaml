@@ -304,6 +304,8 @@ sensor:
       name: "${name} balancing"
     state_of_charge:
       name: "${name} state of charge"
+    state_of_health:
+      name: "${name} state of health"
     capacity_remaining:
       name: "${name} capacity remaining"
     total_battery_capacity_setting:

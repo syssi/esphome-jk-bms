@@ -217,6 +217,9 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   void set_state_of_charge_sensor(sensor::Sensor *state_of_charge_sensor) {
     state_of_charge_sensor_ = state_of_charge_sensor;
   }
+  void set_state_of_health_sensor(sensor::Sensor *state_of_health_sensor) {
+    state_of_health_sensor_ = state_of_health_sensor;
+  }
   void set_capacity_remaining_sensor(sensor::Sensor *capacity_remaining_sensor) {
     capacity_remaining_sensor_ = capacity_remaining_sensor;
   }
@@ -364,6 +367,7 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   sensor::Sensor *discharging_power_sensor_;
   sensor::Sensor *power_tube_temperature_sensor_;
   sensor::Sensor *state_of_charge_sensor_;
+  sensor::Sensor *state_of_health_sensor_;
   sensor::Sensor *capacity_remaining_sensor_;
   sensor::Sensor *total_battery_capacity_setting_sensor_;
   sensor::Sensor *charging_cycles_sensor_;

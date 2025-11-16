@@ -111,6 +111,7 @@ CONF_TEMPERATURE_SENSOR_4 = "temperature_sensor_4"
 CONF_TEMPERATURE_SENSOR_5 = "temperature_sensor_5"
 CONF_POWER_TUBE_TEMPERATURE = "power_tube_temperature"
 CONF_STATE_OF_CHARGE = "state_of_charge"
+CONF_STATE_OF_HEALTH = "state_of_health"
 CONF_CAPACITY_REMAINING = "capacity_remaining"
 CONF_TOTAL_BATTERY_CAPACITY_SETTING = "total_battery_capacity_setting"
 CONF_CHARGING_CYCLES = "charging_cycles"
@@ -232,6 +233,7 @@ SENSORS = [
     CONF_DISCHARGING_POWER,
     CONF_POWER_TUBE_TEMPERATURE,
     CONF_STATE_OF_CHARGE,
+    CONF_STATE_OF_HEALTH,
     CONF_CAPACITY_REMAINING,
     CONF_TOTAL_BATTERY_CAPACITY_SETTING,
     CONF_CHARGING_CYCLES,
@@ -826,6 +828,12 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
             unit_of_measurement=UNIT_PERCENT,
             accuracy_decimals=0,
             device_class=DEVICE_CLASS_BATTERY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_STATE_OF_HEALTH): sensor.sensor_schema(
+            unit_of_measurement=UNIT_PERCENT,
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
         cv.Optional(CONF_CAPACITY_REMAINING): sensor.sensor_schema(
