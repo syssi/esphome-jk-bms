@@ -146,6 +146,7 @@ void JkBmsBle::dump_config() {  // NOLINT(google-readability-function-size,reada
   LOG_SENSOR("", "Temperature Sensor 5", this->temperatures_[4].temperature_sensor_);
   LOG_SENSOR("", "Balancing", this->balancing_sensor_);
   LOG_SENSOR("", "State Of Charge", this->state_of_charge_sensor_);
+  LOG_SENSOR("", "State Of Health", this->state_of_health_sensor_);
   LOG_SENSOR("", "Capacity Remaining", this->capacity_remaining_sensor_);
   LOG_SENSOR("", "Total Battery Capacity Setting", this->total_battery_capacity_setting_sensor_);
   LOG_SENSOR("", "Charging Cycles", this->charging_cycles_sensor_);
@@ -571,7 +572,7 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->total_charging_cycle_capacity_sensor_, (float) jk_get_32bit(154 + offset) * 0.001f);
 
   // 158   1   0x64                   SOH                  1.0           %
-  ESP_LOGD(TAG, "State of health: %d %%", data[158 + offset]);
+  this->publish_state_(this->state_of_health_sensor_, (float) data[158 + offset]);
 
   // 159   1   0x00                   Precharge
   ESP_LOGD(TAG, "Precharge: %s", ONOFF(data[159 + offset]));
@@ -1566,6 +1567,7 @@ void JkBmsBle::publish_device_unavailable_() {
   this->publish_state_(power_tube_temperature_sensor_, NAN);
   this->publish_state_(balancing_sensor_, NAN);
   this->publish_state_(state_of_charge_sensor_, NAN);
+  this->publish_state_(state_of_health_sensor_, NAN);
   this->publish_state_(capacity_remaining_sensor_, NAN);
   this->publish_state_(total_battery_capacity_setting_sensor_, NAN);
   this->publish_state_(charging_cycles_sensor_, NAN);
