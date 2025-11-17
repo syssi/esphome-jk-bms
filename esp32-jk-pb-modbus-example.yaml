@@ -1662,6 +1662,21 @@ sensor:
   # 0x12DC   214   FLOAT     4    R    BatVolCorrect
   # 0x12E4   228   UINT16    2    R    BatVol          0.01V
   # 0x12E6   230   INT16     2    R    HeatCurrent     mA
+  - platform: modbus_controller
+    modbus_controller_id: bms0
+    name: "${name} heating current"
+    address: 0x12E6
+    register_type: holding
+    value_type: S_WORD
+    register_count: 2
+    response_size: 2
+    unit_of_measurement: "A"
+    device_class: current
+    state_class: measurement
+    accuracy_decimals: 3
+    filters:
+      - multiply: 0.001
+
   # 0x12F0   240   UINT32    4    R    SysRunTicks     0.1S
 
   # 0x12F8   248   INT16     2    R    TempBat 3       0.1℃
