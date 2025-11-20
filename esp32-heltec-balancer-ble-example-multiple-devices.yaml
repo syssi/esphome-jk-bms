@@ -14,6 +14,11 @@ esphome:
   project:
     name: "syssi.esphome-jk-bms"
     version: 2.2.0
+  devices:
+    - id: device0
+      name: "${balancer0}"
+    - id: device1
+      name: "${balancer1}"
 
 esp32:
   board: wemos_d1_mini32
@@ -74,347 +79,499 @@ binary_sensor:
     heltec_balancer_ble_id: balancer0
     balancing:
       name: "${balancer0} balancing"
+      device_id: device0
     online_status:
       name: "${balancer0} online status"
+      device_id: device0
 
   - platform: heltec_balancer_ble
     heltec_balancer_ble_id: balancer1
     balancing:
       name: "${balancer1} balancing"
+      device_id: device1
     online_status:
       name: "${balancer1} online status"
+      device_id: device1
 
 button:
   - platform: heltec_balancer_ble
     heltec_balancer_ble_id: balancer0
     retrieve_settings:
       name: "${balancer0} retrieve settings"
+      device_id: device0
       id: retrieve_settings_button0
     retrieve_device_info:
       name: "${balancer0} retrieve device info"
+      device_id: device0
     retrieve_factory_defaults:
       name: "${balancer0} retrieve factory defaults"
+      device_id: device0
 
   - platform: heltec_balancer_ble
     heltec_balancer_ble_id: balancer1
     retrieve_settings:
       name: "${balancer1} retrieve settings"
+      device_id: device1
       id: retrieve_settings_button1
     retrieve_device_info:
       name: "${balancer1} retrieve device info"
+      device_id: device1
     retrieve_factory_defaults:
       name: "${balancer1} retrieve factory defaults"
+      device_id: device1
 
 number:
   - platform: heltec_balancer_ble
     heltec_balancer_ble_id: balancer0
     cell_count:
       name: "${balancer0} cell count"
+      device_id: device0
     balance_trigger_voltage:
       name: "${balancer0} balance trigger voltage"
+      device_id: device0
     max_balance_current:
       name: "${balancer0} max balance current"
+      device_id: device0
     balance_sleep_voltage:
       name: "${balancer0} balance sleep voltage"
+      device_id: device0
     balance_start_voltage:
       name: "${balancer0} balance start voltage"
+      device_id: device0
     nominal_battery_capacity:
       name: "${balancer0} nominal battery capacity"
+      device_id: device0
 
   - platform: heltec_balancer_ble
     heltec_balancer_ble_id: balancer1
     cell_count:
       name: "${balancer1} cell count"
+      device_id: device1
     balance_trigger_voltage:
       name: "${balancer1} balance trigger voltage"
+      device_id: device1
     max_balance_current:
       name: "${balancer1} max balance current"
+      device_id: device1
     balance_sleep_voltage:
       name: "${balancer1} balance sleep voltage"
+      device_id: device1
     balance_start_voltage:
       name: "${balancer1} balance start voltage"
+      device_id: device1
     nominal_battery_capacity:
       name: "${balancer1} nominal battery capacity"
+      device_id: device1
 
 sensor:
   - platform: heltec_balancer_ble
     heltec_balancer_ble_id: balancer0
     min_cell_voltage:
       name: "${balancer0} min cell voltage"
+      device_id: device0
     max_cell_voltage:
       name: "${balancer0} max cell voltage"
+      device_id: device0
     min_voltage_cell:
       name: "${balancer0} min voltage cell"
+      device_id: device0
     max_voltage_cell:
       name: "${balancer0} max voltage cell"
+      device_id: device0
     delta_cell_voltage:
       name: "${balancer0} delta cell voltage"
+      device_id: device0
     average_cell_voltage:
       name: "${balancer0} average cell voltage"
+      device_id: device0
     cell_voltage_1:
       name: "${balancer0} cell voltage 1"
+      device_id: device0
     cell_voltage_2:
       name: "${balancer0} cell voltage 2"
+      device_id: device0
     cell_voltage_3:
       name: "${balancer0} cell voltage 3"
+      device_id: device0
     cell_voltage_4:
       name: "${balancer0} cell voltage 4"
+      device_id: device0
     cell_voltage_5:
       name: "${balancer0} cell voltage 5"
+      device_id: device0
     cell_voltage_6:
       name: "${balancer0} cell voltage 6"
+      device_id: device0
     cell_voltage_7:
       name: "${balancer0} cell voltage 7"
+      device_id: device0
     cell_voltage_8:
       name: "${balancer0} cell voltage 8"
+      device_id: device0
     cell_voltage_9:
       name: "${balancer0} cell voltage 9"
+      device_id: device0
     cell_voltage_10:
       name: "${balancer0} cell voltage 10"
+      device_id: device0
     cell_voltage_11:
       name: "${balancer0} cell voltage 11"
+      device_id: device0
     cell_voltage_12:
       name: "${balancer0} cell voltage 12"
+      device_id: device0
     cell_voltage_13:
       name: "${balancer0} cell voltage 13"
+      device_id: device0
     cell_voltage_14:
       name: "${balancer0} cell voltage 14"
+      device_id: device0
     cell_voltage_15:
       name: "${balancer0} cell voltage 15"
+      device_id: device0
     cell_voltage_16:
       name: "${balancer0} cell voltage 16"
+      device_id: device0
     cell_voltage_17:
       name: "${balancer0} cell voltage 17"
+      device_id: device0
     cell_voltage_18:
       name: "${balancer0} cell voltage 18"
+      device_id: device0
     cell_voltage_19:
       name: "${balancer0} cell voltage 19"
+      device_id: device0
     cell_voltage_20:
       name: "${balancer0} cell voltage 20"
+      device_id: device0
     cell_voltage_21:
       name: "${balancer0} cell voltage 21"
+      device_id: device0
     cell_voltage_22:
       name: "${balancer0} cell voltage 22"
+      device_id: device0
     cell_voltage_23:
       name: "${balancer0} cell voltage 23"
+      device_id: device0
     cell_voltage_24:
       name: "${balancer0} cell voltage 24"
+      device_id: device0
     cell_resistance_1:
       name: "${balancer0} cell resistance 1"
+      device_id: device0
     cell_resistance_2:
       name: "${balancer0} cell resistance 2"
+      device_id: device0
     cell_resistance_3:
       name: "${balancer0} cell resistance 3"
+      device_id: device0
     cell_resistance_4:
       name: "${balancer0} cell resistance 4"
+      device_id: device0
     cell_resistance_5:
       name: "${balancer0} cell resistance 5"
+      device_id: device0
     cell_resistance_6:
       name: "${balancer0} cell resistance 6"
+      device_id: device0
     cell_resistance_7:
       name: "${balancer0} cell resistance 7"
+      device_id: device0
     cell_resistance_8:
       name: "${balancer0} cell resistance 8"
+      device_id: device0
     cell_resistance_9:
       name: "${balancer0} cell resistance 9"
+      device_id: device0
     cell_resistance_10:
       name: "${balancer0} cell resistance 10"
+      device_id: device0
     cell_resistance_11:
       name: "${balancer0} cell resistance 11"
+      device_id: device0
     cell_resistance_12:
       name: "${balancer0} cell resistance 12"
+      device_id: device0
     cell_resistance_13:
       name: "${balancer0} cell resistance 13"
+      device_id: device0
     cell_resistance_14:
       name: "${balancer0} cell resistance 14"
+      device_id: device0
     cell_resistance_15:
       name: "${balancer0} cell resistance 15"
+      device_id: device0
     cell_resistance_16:
       name: "${balancer0} cell resistance 16"
+      device_id: device0
     cell_resistance_17:
       name: "${balancer0} cell resistance 17"
+      device_id: device0
     cell_resistance_18:
       name: "${balancer0} cell resistance 18"
+      device_id: device0
     cell_resistance_19:
       name: "${balancer0} cell resistance 19"
+      device_id: device0
     cell_resistance_20:
       name: "${balancer0} cell resistance 20"
+      device_id: device0
     cell_resistance_21:
       name: "${balancer0} cell resistance 21"
+      device_id: device0
     cell_resistance_22:
       name: "${balancer0} cell resistance 22"
+      device_id: device0
     cell_resistance_23:
       name: "${balancer0} cell resistance 23"
+      device_id: device0
     cell_resistance_24:
       name: "${balancer0} cell resistance 24"
+      device_id: device0
     total_voltage:
       name: "${balancer0} total voltage"
+      device_id: device0
     temperature_sensor_1:
       name: "${balancer0} temperature sensor 1"
+      device_id: device0
     temperature_sensor_2:
       name: "${balancer0} temperature sensor 2"
+      device_id: device0
     total_runtime:
       name: "${balancer0} total runtime"
+      device_id: device0
     balancing_current:
       name: "${balancer0} balancing current"
+      device_id: device0
     # Not implemented
     # errors_bitmask:
     #   name: "${balancer0} errors bitmask"
     cell_detection_failed_bitmask:
       name: "${balancer0} cell detection failed bitmask"
+      device_id: device0
     cell_overvoltage_bitmask:
       name: "${balancer0} cell overvoltage bitmask"
+      device_id: device0
     cell_undervoltage_bitmask:
       name: "${balancer0} cell undervoltage bitmask"
+      device_id: device0
     cell_polarity_error_bitmask:
       name: "${balancer0} cell polarity error bitmask"
+      device_id: device0
     cell_excessive_line_resistance_bitmask:
       name: "${balancer0} cell excessive line resistance bitmask"
+      device_id: device0
 
   - platform: heltec_balancer_ble
     heltec_balancer_ble_id: balancer1
     min_cell_voltage:
       name: "${balancer1} min cell voltage"
+      device_id: device1
     max_cell_voltage:
       name: "${balancer1} max cell voltage"
+      device_id: device1
     min_voltage_cell:
       name: "${balancer1} min voltage cell"
+      device_id: device1
     max_voltage_cell:
       name: "${balancer1} max voltage cell"
+      device_id: device1
     delta_cell_voltage:
       name: "${balancer1} delta cell voltage"
+      device_id: device1
     average_cell_voltage:
       name: "${balancer1} average cell voltage"
+      device_id: device1
     cell_voltage_1:
       name: "${balancer1} cell voltage 1"
+      device_id: device1
     cell_voltage_2:
       name: "${balancer1} cell voltage 2"
+      device_id: device1
     cell_voltage_3:
       name: "${balancer1} cell voltage 3"
+      device_id: device1
     cell_voltage_4:
       name: "${balancer1} cell voltage 4"
+      device_id: device1
     cell_voltage_5:
       name: "${balancer1} cell voltage 5"
+      device_id: device1
     cell_voltage_6:
       name: "${balancer1} cell voltage 6"
+      device_id: device1
     cell_voltage_7:
       name: "${balancer1} cell voltage 7"
+      device_id: device1
     cell_voltage_8:
       name: "${balancer1} cell voltage 8"
+      device_id: device1
     cell_voltage_9:
       name: "${balancer1} cell voltage 9"
+      device_id: device1
     cell_voltage_10:
       name: "${balancer1} cell voltage 10"
+      device_id: device1
     cell_voltage_11:
       name: "${balancer1} cell voltage 11"
+      device_id: device1
     cell_voltage_12:
       name: "${balancer1} cell voltage 12"
+      device_id: device1
     cell_voltage_13:
       name: "${balancer1} cell voltage 13"
+      device_id: device1
     cell_voltage_14:
       name: "${balancer1} cell voltage 14"
+      device_id: device1
     cell_voltage_15:
       name: "${balancer1} cell voltage 15"
+      device_id: device1
     cell_voltage_16:
       name: "${balancer1} cell voltage 16"
+      device_id: device1
     cell_voltage_17:
       name: "${balancer1} cell voltage 17"
+      device_id: device1
     cell_voltage_18:
       name: "${balancer1} cell voltage 18"
+      device_id: device1
     cell_voltage_19:
       name: "${balancer1} cell voltage 19"
+      device_id: device1
     cell_voltage_20:
       name: "${balancer1} cell voltage 20"
+      device_id: device1
     cell_voltage_21:
       name: "${balancer1} cell voltage 21"
+      device_id: device1
     cell_voltage_22:
       name: "${balancer1} cell voltage 22"
+      device_id: device1
     cell_voltage_23:
       name: "${balancer1} cell voltage 23"
+      device_id: device1
     cell_voltage_24:
       name: "${balancer1} cell voltage 24"
+      device_id: device1
     cell_resistance_1:
       name: "${balancer1} cell resistance 1"
+      device_id: device1
     cell_resistance_2:
       name: "${balancer1} cell resistance 2"
+      device_id: device1
     cell_resistance_3:
       name: "${balancer1} cell resistance 3"
+      device_id: device1
     cell_resistance_4:
       name: "${balancer1} cell resistance 4"
+      device_id: device1
     cell_resistance_5:
       name: "${balancer1} cell resistance 5"
+      device_id: device1
     cell_resistance_6:
       name: "${balancer1} cell resistance 6"
+      device_id: device1
     cell_resistance_7:
       name: "${balancer1} cell resistance 7"
+      device_id: device1
     cell_resistance_8:
       name: "${balancer1} cell resistance 8"
+      device_id: device1
     cell_resistance_9:
       name: "${balancer1} cell resistance 9"
+      device_id: device1
     cell_resistance_10:
       name: "${balancer1} cell resistance 10"
+      device_id: device1
     cell_resistance_11:
       name: "${balancer1} cell resistance 11"
+      device_id: device1
     cell_resistance_12:
       name: "${balancer1} cell resistance 12"
+      device_id: device1
     cell_resistance_13:
       name: "${balancer1} cell resistance 13"
+      device_id: device1
     cell_resistance_14:
       name: "${balancer1} cell resistance 14"
+      device_id: device1
     cell_resistance_15:
       name: "${balancer1} cell resistance 15"
+      device_id: device1
     cell_resistance_16:
       name: "${balancer1} cell resistance 16"
+      device_id: device1
     cell_resistance_17:
       name: "${balancer1} cell resistance 17"
+      device_id: device1
     cell_resistance_18:
       name: "${balancer1} cell resistance 18"
+      device_id: device1
     cell_resistance_19:
       name: "${balancer1} cell resistance 19"
+      device_id: device1
     cell_resistance_20:
       name: "${balancer1} cell resistance 20"
+      device_id: device1
     cell_resistance_21:
       name: "${balancer1} cell resistance 21"
+      device_id: device1
     cell_resistance_22:
       name: "${balancer1} cell resistance 22"
+      device_id: device1
     cell_resistance_23:
       name: "${balancer1} cell resistance 23"
+      device_id: device1
     cell_resistance_24:
       name: "${balancer1} cell resistance 24"
+      device_id: device1
     total_voltage:
       name: "${balancer1} total voltage"
+      device_id: device1
     temperature_sensor_1:
       name: "${balancer1} temperature sensor 1"
+      device_id: device1
     temperature_sensor_2:
       name: "${balancer1} temperature sensor 2"
+      device_id: device1
     total_runtime:
       name: "${balancer1} total runtime"
+      device_id: device1
     balancing_current:
       name: "${balancer1} balancing current"
+      device_id: device1
     # Not implemented
     # errors_bitmask:
     #   name: "${balancer1} errors bitmask"
     cell_detection_failed_bitmask:
       name: "${balancer1} cell detection failed bitmask"
+      device_id: device1
     cell_overvoltage_bitmask:
       name: "${balancer1} cell overvoltage bitmask"
+      device_id: device1
     cell_undervoltage_bitmask:
       name: "${balancer1} cell undervoltage bitmask"
+      device_id: device1
     cell_polarity_error_bitmask:
       name: "${balancer1} cell polarity error bitmask"
+      device_id: device1
     cell_excessive_line_resistance_bitmask:
       name: "${balancer1} cell excessive line resistance bitmask"
+      device_id: device1
 
 switch:
   - platform: heltec_balancer_ble
     heltec_balancer_ble_id: balancer0
     balancer:
       name: "${balancer0} balancer"
+      device_id: device0
 
   - platform: heltec_balancer_ble
     heltec_balancer_ble_id: balancer1
     balancer:
       name: "${balancer1} balancer"
+      device_id: device1
 
   - platform: ble_client
     ble_client_id: client0
@@ -434,12 +591,16 @@ text_sensor:
     #   name: "${balancer0} errors"
     operation_status:
       name: "${balancer0} operation status"
+      device_id: device0
     total_runtime_formatted:
       name: "${balancer0} total runtime formatted"
+      device_id: device0
     buzzer_mode:
       name: "${balancer0} buzzer mode"
+      device_id: device0
     battery_type:
       name: "${balancer0} battery type"
+      device_id: device0
 
   - platform: heltec_balancer_ble
     heltec_balancer_ble_id: balancer1
@@ -448,12 +609,16 @@ text_sensor:
     #   name: "${balancer1} errors"
     operation_status:
       name: "${balancer1} operation status"
+      device_id: device1
     total_runtime_formatted:
       name: "${balancer1} total runtime formatted"
+      device_id: device1
     buzzer_mode:
       name: "${balancer1} buzzer mode"
+      device_id: device1
     battery_type:
       name: "${balancer1} battery type"
+      device_id: device1
 
 interval:
   - interval: 30min

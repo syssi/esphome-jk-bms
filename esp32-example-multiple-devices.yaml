@@ -16,6 +16,11 @@ esphome:
   project:
     name: "syssi.esphome-jk-bms"
     version: 2.2.0
+  devices:
+    - id: device0
+      name: "${bms0}"
+    - id: device1
+      name: "${bms1}"
 
 esp32:
   board: wemos_d1_mini32
@@ -77,24 +82,32 @@ binary_sensor:
     jk_bms_id: bms0
     balancing:
       name: "${bms0} balancing"
+      device_id: device0
     charging:
       name: "${bms0} charging"
+      device_id: device0
     discharging:
       name: "${bms0} discharging"
+      device_id: device0
     online_status:
       name: "${bms0} online status"
+      device_id: device0
     # ...
 
   - platform: jk_bms
     jk_bms_id: bms1
     balancing:
       name: "${bms1} balancing"
+      device_id: device1
     charging:
       name: "${bms1} charging"
+      device_id: device1
     discharging:
       name: "${bms1} discharging"
+      device_id: device1
     online_status:
       name: "${bms1} online status"
+      device_id: device1
     # ...
 
 sensor:
@@ -102,32 +115,44 @@ sensor:
     jk_bms_id: bms0
     delta_cell_voltage:
       name: "${bms0} delta cell voltage"
+      device_id: device0
     average_cell_voltage:
       name: "${bms0} average cell voltage"
+      device_id: device0
     power_tube_temperature:
       name: "${bms0} power tube temperature"
+      device_id: device0
     total_voltage:
       name: "${bms0} total voltage"
+      device_id: device0
     current:
       name: "${bms0} current"
+      device_id: device0
     power:
       name: "${bms0} power"
+      device_id: device0
     # ...
 
   - platform: jk_bms
     jk_bms_id: bms1
     delta_cell_voltage:
       name: "${bms1} delta cell voltage"
+      device_id: device1
     average_cell_voltage:
       name: "${bms1} average cell voltage"
+      device_id: device1
     power_tube_temperature:
       name: "${bms1} power tube temperature"
+      device_id: device1
     total_voltage:
       name: "${bms1} total voltage"
+      device_id: device1
     current:
       name: "${bms1} current"
+      device_id: device1
     power:
       name: "${bms1} power"
+      device_id: device1
     # ...
 
 switch:
@@ -135,33 +160,43 @@ switch:
     jk_bms_id: bms0
     charging:
       name: "${bms0} charging"
+      device_id: device0
     discharging:
       name: "${bms0} discharging"
+      device_id: device0
 
   - platform: jk_bms
     jk_bms_id: bms1
     charging:
       name: "${bms1} charging"
+      device_id: device1
     discharging:
       name: "${bms1} discharging"
+      device_id: device1
 
 text_sensor:
   - platform: jk_bms
     jk_bms_id: bms0
     errors:
       name: "${bms0} errors"
+      device_id: device0
     operation_mode:
       name: "${bms0} operation mode"
+      device_id: device0
     total_runtime_formatted:
       name: "${bms0} total runtime formatted"
+      device_id: device0
     # ...
 
   - platform: jk_bms
     jk_bms_id: bms1
     errors:
       name: "${bms1} errors"
+      device_id: device1
     operation_mode:
       name: "${bms1} operation mode"
+      device_id: device1
     total_runtime_formatted:
       name: "${bms1} total runtime formatted"
+      device_id: device1
     # ...
