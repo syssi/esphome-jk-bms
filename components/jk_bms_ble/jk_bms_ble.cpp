@@ -192,8 +192,7 @@ void JkBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gat
     case ESP_GATTC_SEARCH_CMPL_EVT: {
       auto *chr = this->parent_->get_characteristic(JK_BMS_SERVICE_UUID, JK_BMS_CHARACTERISTIC_UUID);
       if (chr == nullptr) {
-        ESP_LOGE(TAG, "[%s] No control service found at device, not an JK BMS..?",
-                 this->parent_->address_str());
+        ESP_LOGE(TAG, "[%s] No control service found at device, not an JK BMS..?", this->parent_->address_str());
         break;
       }
 
