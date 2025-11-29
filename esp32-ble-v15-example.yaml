@@ -164,6 +164,10 @@ number:
       name: "${name} power tube overtemperature protection recovery"
     discharge_precharge_time:
       name: "${name} discharge precharge time"
+    heating_start_temperature:
+      name: "${name} heating start temperature"
+    heating_stop_temperature:
+      name: "${name} heating stop temperature"
 
 sensor:
   - platform: jk_bms_ble
