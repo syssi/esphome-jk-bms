@@ -1120,11 +1120,9 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
     this->publish_state_(this->charging_float_mode_switch_, check_bit_(data[283], 2));
 
     // 284   1   0x00                   Heating start temperature
-    ESP_LOGI(TAG, "  Heating start temperature: %f °C", (float) ((int8_t) data[284]));
     this->publish_state_(this->heating_start_temperature_number_, (float) ((int8_t) data[284]));
 
     // 285   1   0x00                   Heating stop temperature
-    ESP_LOGI(TAG, "  Heating stop temperature: %f °C", (float) ((int8_t) data[285]));
     this->publish_state_(this->heating_stop_temperature_number_, (float) ((int8_t) data[285]));
 
     // 286   1   0x00
