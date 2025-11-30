@@ -1,7 +1,14 @@
 #include "heltec_balancer_ble.h"
 #include "esphome/core/log.h"
+#include "esphome/core/version.h"
 
 #ifdef USE_ESP32
+
+#if ESPHOME_VERSION_CODE >= VERSION_CODE(2025, 12, 0)
+#define ADDR_STR(x) x
+#else
+#define ADDR_STR(x) (x).c_str()
+#endif
 
 namespace esphome {
 namespace heltec_balancer_ble {
