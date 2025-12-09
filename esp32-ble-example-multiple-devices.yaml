@@ -18,7 +18,7 @@ esphome:
   min_version: 2024.6.0
   project:
     name: "syssi.esphome-jk-bms"
-    version: 2.2.0
+    version: 2.3.0
   devices:
     - id: device0
       name: "${bms0}"
