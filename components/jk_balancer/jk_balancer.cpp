@@ -31,11 +31,11 @@ void JkBalancer::on_jk_balancer_modbus_data(const uint8_t &function, const std::
     case FUNCTION_SET_CELL_COUNT:
     case FUNCTION_SET_TRIGGER_VOLTAGE:
     case FUNCTION_SET_MAX_BALANCE_CURRENT:
-      ESP_LOGD(TAG, "Write register response received: %s ...", format_hex_pretty(data.data(), 6).c_str());
+      ESP_LOGD(TAG, "Write register response received: %s ...", format_hex_pretty(data.data(), 6).c_str());  // NOLINT
       break;
     default:
       ESP_LOGW(TAG, "Unhandled response (%zu bytes) received: %s", data.size(),
-               format_hex_pretty(&data.front(), data.size()).c_str());
+               format_hex_pretty(&data.front(), data.size()).c_str());  // NOLINT
   }
 }
 
@@ -46,7 +46,7 @@ void JkBalancer::on_status_data_(const std::vector<uint8_t> &data) {
   // };
 
   ESP_LOGI(TAG, "Status frame received");
-  ESP_LOGD(TAG, "  %s", format_hex_pretty(&data.front(), data.size()).c_str());
+  ESP_LOGD(TAG, "  %s", format_hex_pretty(&data.front(), data.size()).c_str());  // NOLINT
 
   // Status request (7 bytes)
   // -> 0x55 0xAA 0x01 0xFF 0x00 0x00 0xFF

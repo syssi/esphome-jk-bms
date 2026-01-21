@@ -14,7 +14,7 @@ void JkBalancerModbus::loop() {
   const uint32_t now = millis();
   if (now - this->last_jk_balancer_modbus_byte_ > this->rx_timeout_) {
     ESP_LOGVV(TAG, "Buffer cleared due to timeout: %s",
-              format_hex_pretty(&this->rx_buffer_.front(), this->rx_buffer_.size()).c_str());
+              format_hex_pretty(&this->rx_buffer_.front(), this->rx_buffer_.size()).c_str());  // NOLINT
     this->rx_buffer_.clear();
     this->last_jk_balancer_modbus_byte_ = now;
   }
@@ -26,7 +26,7 @@ void JkBalancerModbus::loop() {
       this->last_jk_balancer_modbus_byte_ = now;
     } else {
       ESP_LOGVV(TAG, "Buffer cleared due to reset: %s",
-                format_hex_pretty(&this->rx_buffer_.front(), this->rx_buffer_.size()).c_str());
+                format_hex_pretty(&this->rx_buffer_.front(), this->rx_buffer_.size()).c_str());  // NOLINT
       this->rx_buffer_.clear();
     }
   }

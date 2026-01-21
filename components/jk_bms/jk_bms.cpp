@@ -59,7 +59,7 @@ void JkBms::on_jk_modbus_data(const uint8_t &function, const std::vector<uint8_t
   }
 
   ESP_LOGW(TAG, "Unhandled response (%zu bytes) received: %s", data.size(),
-           format_hex_pretty(&data.front(), data.size()).c_str());
+           format_hex_pretty(&data.front(), data.size()).c_str());  // NOLINT
 }
 
 void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
