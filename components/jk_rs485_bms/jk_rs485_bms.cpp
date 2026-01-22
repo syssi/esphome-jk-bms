@@ -584,6 +584,11 @@ void JkRS485Bms::on_jk_rs485_sniffer_data(const uint8_t &origin_address, const u
         ESP_LOGD(TAG, "  %s", format_hex_pretty(&data.front(), 150).c_str());
     }
 
+    ESP_LOGI(TAG, "Online gate: cell_count_real=%f cell_count_settings=%f battery_voltage=%f soc=%f",
+             this->cell_count_real_sensor_->state,
+             this->cell_count_settings_number_->state,
+             this->battery_voltage_sensor_->state,
+             this->battery_capacity_state_of_charge_sensor_->state);
     if (this->cell_count_real_sensor_->state>0 && this->cell_count_settings_number_->state>0){
       this->reset_status_online_tracker_();
     } else {
