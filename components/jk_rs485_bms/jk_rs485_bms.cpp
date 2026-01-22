@@ -586,18 +586,18 @@ void JkRS485Bms::on_jk_rs485_sniffer_data(const uint8_t &origin_address, const u
         ESP_LOGD(TAG, "  %s", format_hex_pretty(&data.front(), 150).c_str());
     }
 
-    ESP_LOGI(TAG, "Online gate (addr 0x%02X frame 0x%02X): cell_count_real=%f cell_count_settings=%f battery_voltage=%f soc=%f flags[s=%d c=%d v=%d soc=%d]",
-             this->address_,
-             frame_type,
-             this->cell_count_real_sensor_->state,
-             this->cell_count_settings_number_->state,
-             this->battery_voltage_sensor_->state,
-             this->battery_capacity_state_of_charge_sensor_->state,
-             (int) this->settings_ok_,
-             (int) this->cellinfo_ok_,
-             (int) this->voltage_ok_,
-             (int) this->soc_ok_);
     if (frame_type == 0x02) {
+      ESP_LOGI(TAG, "Online gate (addr 0x%02X frame 0x%02X): cell_count_real=%f cell_count_settings=%f battery_voltage=%f soc=%f flags[s=%d c=%d v=%d soc=%d]",
+               this->address_,
+               frame_type,
+               this->cell_count_real_sensor_->state,
+               this->cell_count_settings_number_->state,
+               this->battery_voltage_sensor_->state,
+               this->battery_capacity_state_of_charge_sensor_->state,
+               (int) this->settings_ok_,
+               (int) this->cellinfo_ok_,
+               (int) this->voltage_ok_,
+               (int) this->soc_ok_);
       const uint32_t now = millis();
       const bool settings_fresh = (now - this->last_settings_ms_) <= ONLINE_DATA_MAX_AGE_MS;
       const bool cellinfo_fresh = (now - this->last_cellinfo_ms_) <= ONLINE_DATA_MAX_AGE_MS;
@@ -1475,6 +1475,9 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   // 299   1   0x40                   CHECKSUM
   this->settings_ok_ = true;
   this->last_settings_ms_ = millis();
+  this->cellinfo_ok_ = false;
+  this->voltage_ok_ = false;
+  this->soc_ok_ = false;
   this->trigger_bms2sniffer_event("WORKING ! #####",01);  
 }
 
@@ -1598,6 +1601,7 @@ void JkRS485Bms::track_status_online_() {
 void JkRS485Bms::reset_status_online_tracker_() {
   this->no_response_count_ = 0;
   this->offline_published_ = false;
+  ESP_LOGI(TAG, "ONLINE (addr 0x%02X)", this->address_);
   this->publish_state_(this->status_online_binary_sensor_, true);
 }
 
