@@ -219,6 +219,11 @@ void JkRS485Bms::JkRS485Bms_init(void) {
     this->uart1_protocol_number_sensor_= new sensor::Sensor();
     this->uart2_protocol_number_sensor_= new sensor::Sensor();  
 
+    // Avoid default 0 values before first valid frame
+    this->battery_voltage_sensor_->publish_state(NAN);
+    this->battery_current_sensor_->publish_state(NAN);
+    this->battery_capacity_state_of_charge_sensor_->publish_state(NAN);
+
 
     this->cell_smart_sleep_voltage_number_  = new JkRS485BmsNumber();
     this->cell_undervoltage_protection_number_ = new JkRS485BmsNumber();
@@ -587,6 +592,10 @@ void JkRS485Bms::on_jk_rs485_sniffer_data(const uint8_t &origin_address, const u
     }
 
     if (frame_type == 0x02) {
+      if (!this->settings_ok_) {
+        ESP_LOGI(TAG, "Online check skipped (addr 0x%02X): settings not ready", this->address_);
+        return;
+      }
       ESP_LOGI(TAG, "Online gate (addr 0x%02X frame 0x%02X): cell_count_real=%f cell_count_settings=%f battery_voltage=%f soc=%f flags[s=%d c=%d v=%d soc=%d]",
                this->address_,
                frame_type,
