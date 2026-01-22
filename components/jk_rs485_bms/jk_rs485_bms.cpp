@@ -550,6 +550,8 @@ void JkRS485Bms::on_jk_rs485_sniffer_data(const uint8_t &origin_address, const u
   }
 
   if (origin_address == this->address_) {
+    this->last_response_ms_ = millis();
+    this->offline_published_ = false;
 
     ESP_LOGD(TAG, "This BMS address is: %d  and address received %d ==> WORKING (frame type:%d)",
              this->address_, origin_address, frame_type);
@@ -1575,19 +1577,20 @@ void JkRS485Bms::decode_device_info_(const std::vector<uint8_t> &data) {
 }
 
 void JkRS485Bms::track_status_online_() {
-  if (this->no_response_count_ < MAX_NO_RESPONSE_COUNT) {
-    this->no_response_count_++;
-    //ESP_LOGD(TAG, "  ######################################################################################## NO RESPONSE [0x%02X] count:%02d ",this->address_,this->no_response_count_);
-  } else {  
-      if (this->no_response_count_ == MAX_NO_RESPONSE_COUNT) {
-        this->publish_device_unavailable_();
-      }
-      this->no_response_count_++;  
+  if (this->last_response_ms_ == 0) {
+    return;
+  }
+
+  const uint32_t now = millis();
+  if ((now - this->last_response_ms_) > OFFLINE_TIMEOUT_MS && !this->offline_published_) {
+    this->publish_device_unavailable_();
+    this->offline_published_ = true;
   }
 }
 
 void JkRS485Bms::reset_status_online_tracker_() {
   this->no_response_count_ = 0;
+  this->offline_published_ = false;
   this->publish_state_(this->status_online_binary_sensor_, true);
 }
 
