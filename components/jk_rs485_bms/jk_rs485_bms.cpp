@@ -584,15 +584,32 @@ void JkRS485Bms::on_jk_rs485_sniffer_data(const uint8_t &origin_address, const u
         ESP_LOGD(TAG, "  %s", format_hex_pretty(&data.front(), 150).c_str());
     }
 
-    ESP_LOGI(TAG, "Online gate: cell_count_real=%f cell_count_settings=%f battery_voltage=%f soc=%f",
+    ESP_LOGI(TAG, "Online gate (frame 0x%02X): cell_count_real=%f cell_count_settings=%f battery_voltage=%f soc=%f flags[s=%d c=%d v=%d soc=%d]",
+             frame_type,
              this->cell_count_real_sensor_->state,
              this->cell_count_settings_number_->state,
              this->battery_voltage_sensor_->state,
-             this->battery_capacity_state_of_charge_sensor_->state);
-    if (this->cell_count_real_sensor_->state>0 && this->cell_count_settings_number_->state>0){
-      this->reset_status_online_tracker_();
-    } else {
-      ESP_LOGI(TAG, "Cannot set ONLINE until arrived both 0x01 and 0x02 frame types");
+             this->battery_capacity_state_of_charge_sensor_->state,
+             (int) this->settings_ok_,
+             (int) this->cellinfo_ok_,
+             (int) this->voltage_ok_,
+             (int) this->soc_ok_);
+    if (frame_type == 0x02) {
+      const uint32_t now = millis();
+      const bool settings_fresh = (now - this->last_settings_ms_) <= ONLINE_DATA_MAX_AGE_MS;
+      const bool cellinfo_fresh = (now - this->last_cellinfo_ms_) <= ONLINE_DATA_MAX_AGE_MS;
+      if (this->settings_ok_ && this->cellinfo_ok_ && this->voltage_ok_ && this->soc_ok_ && settings_fresh &&
+          cellinfo_fresh) {
+        this->reset_status_online_tracker_();
+      } else {
+        ESP_LOGI(TAG, "Cannot set ONLINE yet (settings_ok=%d cellinfo_ok=%d voltage_ok=%d soc_ok=%d fresh_s=%d fresh_c=%d)",
+                 (int) this->settings_ok_,
+                 (int) this->cellinfo_ok_,
+                 (int) this->voltage_ok_,
+                 (int) this->soc_ok_,
+                 (int) settings_fresh,
+                 (int) cellinfo_fresh);
+      }
     }
       
   } else {
@@ -775,6 +792,7 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // 118 [144=118+26]  4   0x03 0xD0 0x00 0x00    Battery voltage       0.001        V
   float battery_voltage =  uint32_to_float(&data[118+offset]) * 0.001f; //(float) jk_get_32bit(118 + offset) * 0.001f;
   this->publish_state_(this->battery_voltage_sensor_, battery_voltage);
+  this->voltage_ok_ = !std::isnan(battery_voltage) && !std::isinf(battery_voltage);
   //ESP_LOGD(TAG, " BATTERY VOLTAGE 144: %f", battery_voltage);
 
 
@@ -929,7 +947,11 @@ void JkRS485Bms::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // ESP_LOGI(TAG, "BALANCER WORKING STATUS 140:  0x%02X", data[140 + offset]);
 
   // 141 [167=141+26]  1   0x54                   Battery capacity state of charge in   1.0           %
-  this->publish_state_(this->battery_capacity_state_of_charge_sensor_, (float) data[141 + offset]);
+  float soc = (float) data[141 + offset];
+  this->publish_state_(this->battery_capacity_state_of_charge_sensor_, soc);
+  this->soc_ok_ = !std::isnan(soc) && !std::isinf(soc) && soc >= 0.0f && soc <= 100.0f;
+  this->cellinfo_ok_ = true;
+  this->last_cellinfo_ms_ = millis();
 
   // 142 [168=142+26]  4   0x8E 0x0B 0x01 0x00    Capacity_Remain      0.001         Ah
   this->publish_state_(this->battery_capacity_remaining_sensor_, int32_to_float(&data[142+offset]) * 0.001f);
@@ -1448,6 +1470,8 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   // 294   4   0x00 0x00 0x00 0x00
   // 298   1   0x00
   // 299   1   0x40                   CHECKSUM
+  this->settings_ok_ = true;
+  this->last_settings_ms_ = millis();
   this->trigger_bms2sniffer_event("WORKING ! #####",01);  
 }
 
@@ -1607,6 +1631,13 @@ void JkRS485Bms::publish_device_unavailable_() {
     this->publish_state_(alarm_battempsensor3absent_binary_sensor_, NAN);
     this->publish_state_(alarm_battempsensor4absent_binary_sensor_, NAN);
     this->publish_state_(alarm_battempsensor5absent_binary_sensor_, NAN); 
+
+  this->settings_ok_ = false;
+  this->cellinfo_ok_ = false;
+  this->voltage_ok_ = false;
+  this->soc_ok_ = false;
+  this->last_settings_ms_ = 0;
+  this->last_cellinfo_ms_ = 0;
 
   this->publish_state_(cell_smart_sleep_voltage_number_, NAN);
   this->publish_state_(cell_undervoltage_protection_number_, NAN);

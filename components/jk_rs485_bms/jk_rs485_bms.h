@@ -703,6 +703,13 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
   Temperature temperatures_[5];
 
   uint8_t no_response_count_{0};
+  bool settings_ok_{false};
+  bool cellinfo_ok_{false};
+  bool voltage_ok_{false};
+  bool soc_ok_{false};
+  uint32_t last_settings_ms_{0};
+  uint32_t last_cellinfo_ms_{0};
+  static constexpr uint32_t ONLINE_DATA_MAX_AGE_MS = 60000;
 
   void on_status_data_(const std::vector<uint8_t> &data);
   void publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state);
