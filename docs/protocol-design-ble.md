@@ -109,34 +109,34 @@ uint8_t crc(const uint8_t data[], const uint16_t len) {
 | 4 | 1 | Record type | uin8t | - | - | Fixed value: 0x02 |
 | 5 | 1 | Frame counter | uint8 | - | - | - |
 | 6-69 | 64 | Cell voltages 1-32 | uint16 | 0.001 | V | 2 bytes per cell |
-| 54-57 | 4 | Enabled cells bitmask | Raw | - | - | 0xFF 0xFF 0xFF 0xFF = 32 cells |
-| 64-127 | 64 | Cell resistances 1-32 | uint16 | 0.001 | Ohm | 2 bytes per cell |
-| 112-113 | 2 | Power tube temperature | int16 | 0.1 | °C | - |
-| 114-117 | 4 | Wire resistance warning bitmask | Raw | - | - | 1 bit per cell/wire |
-| 118-121 | 4 | Battery voltage | uint32 | 0.001 | V | - |
-| 122-125 | 4 | Battery power | uint32 | 0.001 | W | - |
-| 126-129 | 4 | Charge current | int32 | 0.001 | A | - |
-| 130-131 | 2 | Temperature Sensor 1 | int16 | 0.1 | °C | - |
-| 132-133 | 2 | Temperature Sensor 2 | int16 | 0.1 | °C | - |
-| 134-135 | 2 | Errors bitmask | uint16 | - | - | System error flags |
-| 138-139 | 2 | Balance current | int16 | 0.001 | A | - |
-| 140 | 1 | Balancing action | Raw | - | - | 0=Off, 1=Charging, 2=Discharging |
-| 141 | 1 | State of charge | uint8 | 1 | % | - |
-| 142-145 | 4 | Remaining capacity | uint32 | 0.001 | Ah | - |
-| 146-149 | 4 | Nominal capacity | uint32 | 0.001 | Ah | - |
-| 150-153 | 4 | Cycle count | uint32 | 1 | - | - |
-| 154-157 | 4 | Total cycle capacity | uint32 | 0.001 | Ah | - |
-| 158 | 1 | State of Health (SOH) | uint8 | 1 | % | - |
-| 159 | 1 | Precharge status | Raw | - | - | 0=Off, 1=On |
-| 162-165 | 4 | Total runtime | uint32 | 1 | s | - |
-| 166 | 1 | Charging MOSFET status | Raw | - | - | 0=Off, 1=On |
-| 167 | 1 | Discharging MOSFET status | Raw | - | - | 0=Off, 1=On |
-| 168 | 1 | Precharging status | Raw | - | - | 0=Off, 1=On |
-| 222-223 | 2 | Temperature Sensor 5 | int16 | 0.1 | °C | - |
-| 224-225 | 2 | Temperature Sensor 4 | int16 | 0.1 | °C | - |
-| 226-227 | 2 | Temperature Sensor 3 | int16 | 0.1 | °C | - |
-| 186-187 | 2 | Emergency time countdown | uint16 | 1 | s | >0 = Emergency active |
-| 299 | 1 | CRC checksum | uint8 | - | - | - |
+| 70-73 | 4 | Enabled cells bitmask | Raw | - | - | 0xFF 0xFF 0xFF 0xFF = 32 cells |
+| 80-143 | 64 | Cell resistances 1-32 | uint16 | 0.001 | Ohm | 2 bytes per cell |
+| 144-145 | 2 | Power tube temperature | int16 | 0.1 | °C | - |
+| 146-149 | 4 | Wire resistance warning bitmask | Raw | - | - | 1 bit per cell/wire |
+| 150-153 | 4 | Battery voltage | uint32 | 0.001 | V | - |
+| 154-157 | 4 | Battery power | uint32 | 0.001 | W | - |
+| 158-161 | 4 | Charge current | int32 | 0.001 | A | - |
+| 162-163 | 2 | Temperature Sensor 1 | int16 | 0.1 | °C | - |
+| 164-165 | 2 | Temperature Sensor 2 | int16 | 0.1 | °C | - |
+| 166-167 | 2 | Errors bitmask | uint16 | - | - | System error flags |
+| 168-169 | 2 | Balance current | int16 | 0.001 | A | - |
+| 170 | 1 | Balancing action | Raw | - | - | 0=Off, 1=Charging, 2=Discharging |
+| 171 | 1 | State of charge | uint8 | 1 | % | - |
+| 172-175 | 4 | Remaining capacity | uint32 | 0.001 | Ah | - |
+| 176-179 | 4 | Nominal capacity | uint32 | 0.001 | Ah | - |
+| 180-183 | 4 | Cycle count | uint32 | 1 | - | - |
+| 184-187 | 4 | Total cycle capacity | uint32 | 0.001 | Ah | - |
+| 188 | 1 | State of Health (SOH) | uint8 | 1 | % | - |
+| 189 | 1 | Precharge status | Raw | - | - | 0=Off, 1=On |
+| 190-193 | 4 | Total runtime | uint32 | 1 | s | - |
+| 194 | 1 | Charging MOSFET status | Raw | - | - | 0=Off, 1=On |
+| 195 | 1 | Discharging MOSFET status | Raw | - | - | 0=Off, 1=On |
+| 196 | 1 | Precharging status | Raw | - | - | 0=Off, 1=On |
+| 197-198 | 2 | Temperature Sensor 5 | int16 | 0.1 | °C | - |
+| 199-200 | 2 | Temperature Sensor 4 | int16 | 0.1 | °C | - |
+| 201-202 | 2 | Temperature Sensor 3 | int16 | 0.1 | °C | - |
+| 203-204 | 2 | Emergency time countdown | uint16 | 1 | s | >0 = Emergency active |
+| 205 | 1 | CRC checksum | uint8 | - | - | - |
 
 ### Device Info Frame Specification (`JK02_32S`)
 
