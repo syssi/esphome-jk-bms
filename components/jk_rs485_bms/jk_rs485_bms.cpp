@@ -586,7 +586,8 @@ void JkRS485Bms::on_jk_rs485_sniffer_data(const uint8_t &origin_address, const u
         ESP_LOGD(TAG, "  %s", format_hex_pretty(&data.front(), 150).c_str());
     }
 
-    ESP_LOGI(TAG, "Online gate (frame 0x%02X): cell_count_real=%f cell_count_settings=%f battery_voltage=%f soc=%f flags[s=%d c=%d v=%d soc=%d]",
+    ESP_LOGI(TAG, "Online gate (addr 0x%02X frame 0x%02X): cell_count_real=%f cell_count_settings=%f battery_voltage=%f soc=%f flags[s=%d c=%d v=%d soc=%d]",
+             this->address_,
              frame_type,
              this->cell_count_real_sensor_->state,
              this->cell_count_settings_number_->state,
@@ -1583,6 +1584,12 @@ void JkRS485Bms::track_status_online_() {
 
   const uint32_t now = millis();
   if ((now - this->last_response_ms_) > OFFLINE_TIMEOUT_MS && !this->offline_published_) {
+    ESP_LOGI(TAG, "Offline timeout (addr 0x%02X): now=%u last=%u delta=%u limit=%u",
+             this->address_,
+             (unsigned) now,
+             (unsigned) this->last_response_ms_,
+             (unsigned) (now - this->last_response_ms_),
+             (unsigned) OFFLINE_TIMEOUT_MS);
     this->publish_device_unavailable_();
     this->offline_published_ = true;
   }
