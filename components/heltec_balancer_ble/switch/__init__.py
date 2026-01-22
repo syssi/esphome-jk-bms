@@ -27,12 +27,7 @@ HeltecSwitch = heltec_balancer_ble_ns.class_(
 
 CONFIG_SCHEMA = HELTEC_BALANCER_BLE_COMPONENT_SCHEMA.extend(
     {
-        cv.Optional(CONF_BALANCER): switch.SWITCH_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(HeltecSwitch),
-                cv.Optional(CONF_ICON, default=ICON_BALANCER): cv.icon,
-            }
-        ).extend(cv.COMPONENT_SCHEMA),
+        cv.Optional(CONF_BALANCER): switch.switch_schema(HeltecSwitch, icon=ICON_BALANCER).extend(cv.COMPONENT_SCHEMA),
     }
 )
 

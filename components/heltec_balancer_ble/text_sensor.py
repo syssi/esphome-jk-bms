@@ -29,38 +29,13 @@ TEXT_SENSORS = [
 CONFIG_SCHEMA = cv.Schema(
     {
         cv.GenerateID(CONF_HELTEC_BALANCER_BLE_ID): cv.use_id(HeltecBalancerBle),
-        cv.Optional(CONF_ERRORS): text_sensor.TEXT_SENSOR_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
-                cv.Optional(CONF_ICON, default=ICON_ERRORS): cv.icon,
-            }
-        ),
-        cv.Optional(CONF_OPERATION_STATUS): text_sensor.TEXT_SENSOR_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
-                cv.Optional(CONF_ICON, default=ICON_OPERATION_STATUS): cv.icon,
-            }
-        ),
+        cv.Optional(CONF_ERRORS): text_sensor.text_sensor_schema(icon=ICON_ERRORS),
+        cv.Optional(CONF_OPERATION_STATUS): text_sensor.text_sensor_schema(icon=ICON_OPERATION_STATUS),
         cv.Optional(
             CONF_TOTAL_RUNTIME_FORMATTED
-        ): text_sensor.TEXT_SENSOR_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
-                cv.Optional(CONF_ICON, default=ICON_TIMELAPSE): cv.icon,
-            }
-        ),
-        cv.Optional(CONF_BUZZER_MODE): text_sensor.TEXT_SENSOR_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
-                cv.Optional(CONF_ICON, default=ICON_OPERATION_STATUS): cv.icon,
-            }
-        ),
-        cv.Optional(CONF_BATTERY_TYPE): text_sensor.TEXT_SENSOR_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
-                cv.Optional(CONF_ICON, default=ICON_OPERATION_STATUS): cv.icon,
-            }
-        ),
+        ): text_sensor.text_sensor_schema(icon=ICON_TIMELAPSE),
+        cv.Optional(CONF_BUZZER_MODE): text_sensor.text_sensor_schema(icon=ICON_OPERATION_STATUS),
+        cv.Optional(CONF_BATTERY_TYPE): text_sensor.text_sensor_schema(icon=ICON_OPERATION_STATUS),
     }
 )
 

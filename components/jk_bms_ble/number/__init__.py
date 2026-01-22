@@ -170,16 +170,15 @@ NUMBERS = {
 
 JkNumber = jk_bms_ble_ns.class_("JkNumber", number.Number, cg.Component)
 
-JK_NUMBER_SCHEMA = number.NUMBER_SCHEMA.extend(
+JK_NUMBER_SCHEMA = number.number_schema(
+    JkNumber,
+    icon=ICON_EMPTY,
+    unit_of_measurement=UNIT_VOLT,
+    entity_category=ENTITY_CATEGORY_CONFIG,
+).extend(
     {
-        cv.GenerateID(): cv.declare_id(JkNumber),
-        cv.Optional(CONF_ICON, default=ICON_EMPTY): cv.icon,
         cv.Optional(CONF_STEP, default=0.01): cv.float_,
-        cv.Optional(CONF_UNIT_OF_MEASUREMENT, default=UNIT_VOLT): cv.string_strict,
         cv.Optional(CONF_MODE, default="BOX"): cv.enum(number.NUMBER_MODES, upper=True),
-        cv.Optional(
-            CONF_ENTITY_CATEGORY, default=ENTITY_CATEGORY_CONFIG
-        ): cv.entity_category,
     }
 ).extend(cv.COMPONENT_SCHEMA)
 
