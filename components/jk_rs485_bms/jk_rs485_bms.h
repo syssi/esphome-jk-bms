@@ -667,6 +667,7 @@ class JkRS485Bms : public PollingComponent, public jk_rs485_sniffer::JkRS485Snif
 
 
   void dump_config() override;
+  void setup() override;
 
   void on_jk_rs485_sniffer_data(const uint8_t &origin_address, const uint8_t &frame_type, const std::vector<uint8_t> &data,const std::string &nodes_available) override;
 

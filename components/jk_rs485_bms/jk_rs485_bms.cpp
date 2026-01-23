@@ -593,34 +593,25 @@ void JkRS485Bms::on_jk_rs485_sniffer_data(const uint8_t &origin_address, const u
 
     if (frame_type == 0x02) {
       if (!this->settings_ok_) {
-        ESP_LOGI(TAG, "Online check skipped (addr 0x%02X): settings not ready", this->address_);
+        ESP_LOGI(TAG, "===== [BMS 0x%02X] ONLINE GATE | settings=0 (waiting for 0x01) =====", this->address_);
         return;
       }
-      ESP_LOGI(TAG, "Online gate (addr 0x%02X frame 0x%02X): cell_count_real=%f cell_count_settings=%f battery_voltage=%f soc=%f flags[s=%d c=%d v=%d soc=%d]",
-               this->address_,
-               frame_type,
-               this->cell_count_real_sensor_->state,
-               this->cell_count_settings_number_->state,
-               this->battery_voltage_sensor_->state,
-               this->battery_capacity_state_of_charge_sensor_->state,
-               (int) this->settings_ok_,
-               (int) this->cellinfo_ok_,
-               (int) this->voltage_ok_,
-               (int) this->soc_ok_);
       const uint32_t now = millis();
       const bool settings_fresh = (now - this->last_settings_ms_) <= ONLINE_DATA_MAX_AGE_MS;
       const bool cellinfo_fresh = (now - this->last_cellinfo_ms_) <= ONLINE_DATA_MAX_AGE_MS;
+  ESP_LOGI(TAG, "===== [BMS 0x%02X] ONLINE GATE | settings=%d cellinfo=%d voltage=%d soc=%d fresh_s=%d fresh_c=%d =====",
+           this->address_,
+           (int) this->settings_ok_,
+           (int) this->cellinfo_ok_,
+           (int) this->voltage_ok_,
+           (int) this->soc_ok_,
+           (int) settings_fresh,
+           (int) cellinfo_fresh);
       if (this->settings_ok_ && this->cellinfo_ok_ && this->voltage_ok_ && this->soc_ok_ && settings_fresh &&
           cellinfo_fresh) {
         this->reset_status_online_tracker_();
       } else {
-        ESP_LOGI(TAG, "Cannot set ONLINE yet (settings_ok=%d cellinfo_ok=%d voltage_ok=%d soc_ok=%d fresh_s=%d fresh_c=%d)",
-                 (int) this->settings_ok_,
-                 (int) this->cellinfo_ok_,
-                 (int) this->voltage_ok_,
-                 (int) this->soc_ok_,
-                 (int) settings_fresh,
-                 (int) cellinfo_fresh);
+        ESP_LOGI(TAG, "===== [BMS 0x%02X] ONLINE GATE | NOT READY =====", this->address_);
       }
     }
       
@@ -1490,6 +1481,13 @@ void JkRS485Bms::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   this->trigger_bms2sniffer_event("WORKING ! #####",01);  
 }
 
+void JkRS485Bms::setup() {
+  // Force explicit offline state at boot until valid frames arrive.
+  this->offline_published_ = true;
+  this->publish_state_(this->status_online_binary_sensor_, false);
+  this->publish_state_(this->errors_text_sensor_, "Offline");
+}
+
 void JkRS485Bms::update() { this->track_status_online_(); }
 
 void JkRS485Bms::decode_device_info_(const std::vector<uint8_t> &data) {
@@ -1596,12 +1594,7 @@ void JkRS485Bms::track_status_online_() {
 
   const uint32_t now = millis();
   if ((now - this->last_response_ms_) > OFFLINE_TIMEOUT_MS && !this->offline_published_) {
-    ESP_LOGI(TAG, "Offline timeout (addr 0x%02X): now=%u last=%u delta=%u limit=%u",
-             this->address_,
-             (unsigned) now,
-             (unsigned) this->last_response_ms_,
-             (unsigned) (now - this->last_response_ms_),
-             (unsigned) OFFLINE_TIMEOUT_MS);
+    ESP_LOGI(TAG, "===== [BMS 0x%02X] ONLINE -> OFFLINE =====", this->address_);
     this->publish_device_unavailable_();
     this->offline_published_ = true;
   }
@@ -1610,50 +1603,55 @@ void JkRS485Bms::track_status_online_() {
 void JkRS485Bms::reset_status_online_tracker_() {
   this->no_response_count_ = 0;
   this->offline_published_ = false;
-  ESP_LOGI(TAG, "ONLINE (addr 0x%02X)", this->address_);
+  ESP_LOGI(TAG, "===== [BMS 0x%02X] OFFLINE -> ONLINE | V=%f SOC=%f cells_real=%f cells_cfg=%f =====",
+           this->address_,
+           this->battery_voltage_sensor_ ? this->battery_voltage_sensor_->state : NAN,
+           this->battery_capacity_state_of_charge_sensor_ ? this->battery_capacity_state_of_charge_sensor_->state : NAN,
+           this->cell_count_real_sensor_ ? this->cell_count_real_sensor_->state : NAN,
+           this->cell_count_settings_number_ ? this->cell_count_settings_number_->state : NAN);
   this->publish_state_(this->status_online_binary_sensor_, true);
 }
 
 void JkRS485Bms::publish_device_unavailable_() {
 
 
-    this->publish_state_(status_online_binary_sensor_, NAN);
-    this->publish_state_(status_balancing_binary_sensor_, NAN);
-    this->publish_state_(status_precharging_binary_sensor_, NAN);  
-    this->publish_state_(status_charging_binary_sensor_, NAN);
-    this->publish_state_(status_discharging_binary_sensor_, NAN);
-    this->publish_state_(status_heating_binary_sensor_, NAN);
+    this->publish_state_(status_online_binary_sensor_, false);
+    this->publish_state_(status_balancing_binary_sensor_, false);
+    this->publish_state_(status_precharging_binary_sensor_, false);  
+    this->publish_state_(status_charging_binary_sensor_, false);
+    this->publish_state_(status_discharging_binary_sensor_, false);
+    this->publish_state_(status_heating_binary_sensor_, false);
 
-    this->publish_state_(alarm_wireres_binary_sensor_, NAN);
-    this->publish_state_(alarm_mosotp_binary_sensor_, NAN);
-    this->publish_state_(alarm_cellquantity_binary_sensor_, NAN);
-    this->publish_state_(alarm_cursensorerr_binary_sensor_, NAN);
-    this->publish_state_(alarm_cellovp_binary_sensor_, NAN);
-    this->publish_state_(alarm_batovp_binary_sensor_, NAN);
-    this->publish_state_(alarm_chocp_binary_sensor_, NAN);
-    this->publish_state_(alarm_chscp_binary_sensor_, NAN);
-    this->publish_state_(alarm_chotp_binary_sensor_, NAN);
-    this->publish_state_(alarm_chutp_binary_sensor_, NAN);
-    this->publish_state_(alarm_cpuauxcommuerr_binary_sensor_, NAN);
-    this->publish_state_(alarm_celluvp_binary_sensor_, NAN);
-    this->publish_state_(alarm_batuvp_binary_sensor_, NAN);
-    this->publish_state_(alarm_dchocp_binary_sensor_, NAN);
-    this->publish_state_(alarm_dchscp_binary_sensor_, NAN);
-    this->publish_state_(alarm_dchotp_binary_sensor_, NAN);
-    this->publish_state_(alarm_chargemos_binary_sensor_, NAN);
-    this->publish_state_(alarm_dischargemos_binary_sensor_, NAN);
-    this->publish_state_(alarm_gpsdisconneted_binary_sensor_, NAN);
-    this->publish_state_(alarm_modifypwdintime_binary_sensor_, NAN);
-    this->publish_state_(alarm_dischargeonfailed_binary_sensor_, NAN);
-    this->publish_state_(alarm_batteryovertemp_binary_sensor_, NAN);
-    this->publish_state_(alarm_temperaturesensoranomaly_binary_sensor_, NAN);
-    this->publish_state_(alarm_plcmoduleanomaly_binary_sensor_, NAN);
-    this->publish_state_(alarm_mostempsensorabsent_binary_sensor_, NAN);
-    this->publish_state_(alarm_battempsensor1absent_binary_sensor_, NAN);
-    this->publish_state_(alarm_battempsensor2absent_binary_sensor_, NAN);
-    this->publish_state_(alarm_battempsensor3absent_binary_sensor_, NAN);
-    this->publish_state_(alarm_battempsensor4absent_binary_sensor_, NAN);
-    this->publish_state_(alarm_battempsensor5absent_binary_sensor_, NAN); 
+    this->publish_state_(alarm_wireres_binary_sensor_, false);
+    this->publish_state_(alarm_mosotp_binary_sensor_, false);
+    this->publish_state_(alarm_cellquantity_binary_sensor_, false);
+    this->publish_state_(alarm_cursensorerr_binary_sensor_, false);
+    this->publish_state_(alarm_cellovp_binary_sensor_, false);
+    this->publish_state_(alarm_batovp_binary_sensor_, false);
+    this->publish_state_(alarm_chocp_binary_sensor_, false);
+    this->publish_state_(alarm_chscp_binary_sensor_, false);
+    this->publish_state_(alarm_chotp_binary_sensor_, false);
+    this->publish_state_(alarm_chutp_binary_sensor_, false);
+    this->publish_state_(alarm_cpuauxcommuerr_binary_sensor_, false);
+    this->publish_state_(alarm_celluvp_binary_sensor_, false);
+    this->publish_state_(alarm_batuvp_binary_sensor_, false);
+    this->publish_state_(alarm_dchocp_binary_sensor_, false);
+    this->publish_state_(alarm_dchscp_binary_sensor_, false);
+    this->publish_state_(alarm_dchotp_binary_sensor_, false);
+    this->publish_state_(alarm_chargemos_binary_sensor_, false);
+    this->publish_state_(alarm_dischargemos_binary_sensor_, false);
+    this->publish_state_(alarm_gpsdisconneted_binary_sensor_, false);
+    this->publish_state_(alarm_modifypwdintime_binary_sensor_, false);
+    this->publish_state_(alarm_dischargeonfailed_binary_sensor_, false);
+    this->publish_state_(alarm_batteryovertemp_binary_sensor_, false);
+    this->publish_state_(alarm_temperaturesensoranomaly_binary_sensor_, false);
+    this->publish_state_(alarm_plcmoduleanomaly_binary_sensor_, false);
+    this->publish_state_(alarm_mostempsensorabsent_binary_sensor_, false);
+    this->publish_state_(alarm_battempsensor1absent_binary_sensor_, false);
+    this->publish_state_(alarm_battempsensor2absent_binary_sensor_, false);
+    this->publish_state_(alarm_battempsensor3absent_binary_sensor_, false);
+    this->publish_state_(alarm_battempsensor4absent_binary_sensor_, false);
+    this->publish_state_(alarm_battempsensor5absent_binary_sensor_, false); 
 
   this->settings_ok_ = false;
   this->cellinfo_ok_ = false;
