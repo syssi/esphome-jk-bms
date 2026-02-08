@@ -1653,6 +1653,12 @@ std::string JkBmsBle::error_bits_to_string_(const uint16_t mask) {
   return errors_list;
 }
 
+static std::string unknown_to_string(const uint8_t value) {
+  char buf[15];
+  snprintf(buf, sizeof(buf), "Unknown (0x%02X)", value);
+  return buf;
+}
+
 std::string JkBmsBle::charge_status_id_to_string_(const uint8_t status) {
   switch (status) {
     case 0x00:
@@ -1662,7 +1668,7 @@ std::string JkBmsBle::charge_status_id_to_string_(const uint8_t status) {
     case 0x02:
       return "Float";
     default:
-      return str_snprintf("Unknown (0x%02X)", 15, status);
+      return unknown_to_string(status);
   }
 }
 
