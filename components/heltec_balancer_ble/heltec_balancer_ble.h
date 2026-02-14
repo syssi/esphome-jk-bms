@@ -208,8 +208,17 @@ class HeltecBalancerBle : public esphome::ble_client::BLEClientNode, public Poll
     int days = seconds / (24 * 3600);
     seconds = seconds % (24 * 3600);
     int hours = seconds / 3600;
-    return (years ? to_string(years) + "y " : "") + (days ? to_string(days) + "d " : "") +
-           (hours ? to_string(hours) + "h" : "");
+
+    char buf[16];
+    int len = 0;
+    if (years)
+      len += snprintf(buf + len, sizeof(buf) - len, "%dy ", years);
+    if (days)
+      len += snprintf(buf + len, sizeof(buf) - len, "%dd ", days);
+    if (hours)
+      len += snprintf(buf + len, sizeof(buf) - len, "%dh", hours);
+
+    return std::string(buf, len);
   }
 
   float ieee_float_(uint32_t f) {
