@@ -1,12 +1,10 @@
 # Description:
-# This example file is based on some other good examples from this project and provides a nearly complete configuration for 
+# This example file is based on some other good examples from this project and provides a nearly complete configuration for
 # a setup of 3 JK-19 BMS systems with additional entities added to represent values for the full stack.
-# Overall state of charge, combined current and power, ... 
+# Overall state of charge, combined current and power, ...
 # It is recognizes as 4 Devices (JK-Battery and JK-BMS[0..2])
-# 
+#
 # 3 Batteries via BLE with all those entities is driving the ESP32 to it's limits. Having LAN instead of WIFI for the ESP is recommended.
-
-
 
 substitutions:
   name: olimex-esp32-poe
@@ -18,7 +16,7 @@ substitutions:
   bms1: JK-BMS1
   bms2_mac_address: A4:C1:38:02:7E:90
   bms2: JK-BMS2
-  
+
   # Please use "JK02_24S" if you own a old JK-BMS < hardware version 11.0 (hardware version >= 6.0 and < 11.0)
   # Please use "JK02_32S" if you own a new JK-BMS >= hardware version 11.0 (f.e. JK-B2A8S20P hw 11.XW, sw 11.26)
   # Please use "JK04" if you have some old JK-BMS <= hardware version 3.0 (f.e. JK-B2A16S hw 3.0, sw. 3.3.0)
@@ -42,9 +40,9 @@ esphome:
     - id: device0
       name: "${bms0}"
     - id: device1
-      name: "${bms1}"  
+      name: "${bms1}"
     - id: device2
-      name: "${bms2}"  
+      name: "${bms2}"
     - id: battery
       name: JK-Battery
 
@@ -69,12 +67,12 @@ ethernet:
     ignore_strapping_warning: true
 
 network:
-    enable_ipv6: false
-    enable_high_performance: true
+  enable_ipv6: false
+  enable_high_performance: true
 
 api:
   encryption:
-    key: <your key>
+    key: BKb06kTH1yt5KQJy6v/IEvdeNi1CG2SDdPYspQeWZeE=  # change this key using the key generator: https://esphome.io/components/api/
 
 logger:
   level: INFO
@@ -451,8 +449,6 @@ number:
       name: "${bms2} power tube overtemperature protection recovery"
       device_id: device2
 
-
-
 sensor:
 # Helper: totals:
   - platform: combination
@@ -480,9 +476,9 @@ sensor:
     lambda: |-
       if ( id(bms0_total_battery_capacity).state && id(bms1_total_battery_capacity).state && id(bms2_total_battery_capacity).state ) {
         return (
-          id(bms0_total_battery_capacity).state 
-          + id(bms1_total_battery_capacity).state 
-          + id(bms2_total_battery_capacity).state 
+          id(bms0_total_battery_capacity).state
+          + id(bms1_total_battery_capacity).state
+          + id(bms2_total_battery_capacity).state
         );
       };
       return NAN;
@@ -496,10 +492,10 @@ sensor:
     device_class: battery
     state_class: MEASUREMENT
     lambda: |-
-      if ( id(bms0_capacity_remaining).state && id(bms0_capacity_remaining).state && id(bms0_capacity_remaining).state 
+      if ( id(bms0_capacity_remaining).state && id(bms0_capacity_remaining).state && id(bms0_capacity_remaining).state
            &&  id(bms0_total_battery_capacity).state && id(bms1_total_battery_capacity).state && id(bms2_total_battery_capacity).state ) {
         return (
-          ( 
+          (
             (
               id(bms0_capacity_remaining).state
               + id(bms1_capacity_remaining).state
@@ -507,15 +503,15 @@ sensor:
             )
           / (
               id(bms0_total_battery_capacity).state
-              + id(bms1_total_battery_capacity).state 
+              + id(bms1_total_battery_capacity).state
               + id(bms2_total_battery_capacity).state
-            ) 
+            )
           )
           * 100.0
         );
       };
       return NAN;
-#    update_interval: 20s    
+#    update_interval: 20s
 
   - platform: combination
     device_id: battery
@@ -552,7 +548,6 @@ sensor:
       - source: bms0_discharging_power
       - source: bms1_discharging_power
       - source: bms2_discharging_power
-
 
 # Helper: total_daily_energy
   - platform: total_daily_energy
@@ -592,7 +587,7 @@ sensor:
     accuracy_decimals: 3
     filters:
       # Multiplication factor from W to kW is 0.001
-      - multiply: 0.001     
+      - multiply: 0.001
 
   - platform: combination
     device_id: battery
