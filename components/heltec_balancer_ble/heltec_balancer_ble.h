@@ -7,6 +7,7 @@
 #include "esphome/components/binary_sensor/binary_sensor.h"
 #include "esphome/components/number/number.h"
 #include "esphome/components/sensor/sensor.h"
+#include "esphome/components/select/select.h"
 #include "esphome/components/switch/switch.h"
 #include "esphome/components/text_sensor/text_sensor.h"
 
@@ -133,6 +134,8 @@ class HeltecBalancerBle : public esphome::ble_client::BLEClientNode, public Poll
     battery_type_text_sensor_ = battery_type_text_sensor;
   }
 
+  void set_buzzer_mode_select(select::Select *buzzer_mode_select) { buzzer_mode_select_ = buzzer_mode_select; }
+  void set_battery_type_select(select::Select *battery_type_select) { battery_type_select_ = battery_type_select; }
   void set_balancer_switch(switch_::Switch *balancer_switch) { balancer_switch_ = balancer_switch; }
   void assemble(const uint8_t *data, uint16_t length);
   bool send_command(uint8_t function, uint8_t command, uint8_t register_address = 0x00, uint32_t value = 0x00000000);
@@ -175,6 +178,8 @@ class HeltecBalancerBle : public esphome::ble_client::BLEClientNode, public Poll
   sensor::Sensor *cell_polarity_error_bitmask_sensor_;
   sensor::Sensor *cell_excessive_line_resistance_bitmask_sensor_;
 
+  select::Select *buzzer_mode_select_;
+  select::Select *battery_type_select_;
   switch_::Switch *balancer_switch_;
 
   text_sensor::TextSensor *errors_text_sensor_;
@@ -197,6 +202,7 @@ class HeltecBalancerBle : public esphome::ble_client::BLEClientNode, public Poll
   void decode_factory_defaults_(const std::vector<uint8_t> &data);
   void publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state);
   void publish_state_(number::Number *number, float value);
+  void publish_state_(select::Select *select, const std::string &state);
   void publish_state_(sensor::Sensor *sensor, float value);
   void publish_state_(switch_::Switch *obj, const bool &state);
   void publish_state_(text_sensor::TextSensor *text_sensor, const std::string &state);
