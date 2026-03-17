@@ -92,6 +92,8 @@ number:
       name: "${name} balance sleep voltage"
     balance_start_voltage:
       name: "${name} balance start voltage"
+    balance_stop_diff_voltage:
+      name: "${name} balance stop diff voltage"
     nominal_battery_capacity:
       name: "${name} nominal battery capacity"
 

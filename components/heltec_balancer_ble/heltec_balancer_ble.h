@@ -40,6 +40,9 @@ class HeltecBalancerBle : public esphome::ble_client::BLEClientNode, public Poll
   void set_balance_start_voltage_number(number::Number *balance_start_voltage_number) {
     balance_start_voltage_number_ = balance_start_voltage_number;
   }
+  void set_balance_stop_diff_voltage_number(number::Number *balance_stop_diff_voltage_number) {
+    balance_stop_diff_voltage_number_ = balance_stop_diff_voltage_number;
+  }
   void set_nominal_battery_capacity_number(number::Number *nominal_battery_capacity_number) {
     nominal_battery_capacity_number_ = nominal_battery_capacity_number;
   }
@@ -151,6 +154,7 @@ class HeltecBalancerBle : public esphome::ble_client::BLEClientNode, public Poll
   number::Number *max_balance_current_number_;
   number::Number *balance_sleep_voltage_number_;
   number::Number *balance_start_voltage_number_;
+  number::Number *balance_stop_diff_voltage_number_;
   number::Number *nominal_battery_capacity_number_;
 
   sensor::Sensor *min_cell_voltage_sensor_;
