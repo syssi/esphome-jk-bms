@@ -12,7 +12,7 @@ static const uint8_t COMMAND_WRITE_REGISTER = 0x05;
 void HeltecSelect::dump_config() { LOG_SELECT("", "HeltecBalancerBle Select", this); }
 
 void HeltecSelect::control(const std::string &value) {
-  auto options = this->traits.get_options();
+  const auto &options = this->traits.get_options();
   auto it = std::find(options.begin(), options.end(), value);
   if (it == options.end()) {
     ESP_LOGW(TAG, "Unknown option: %s", value.c_str());
