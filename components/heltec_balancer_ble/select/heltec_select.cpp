@@ -13,7 +13,7 @@ void HeltecSelect::dump_config() { LOG_SELECT("", "HeltecBalancerBle Select", th
 
 void HeltecSelect::control(const std::string &value) {
   const auto &options = this->traits.get_options();
-  auto it = std::find(options.begin(), options.end(), value);
+  const auto *it = std::find(options.begin(), options.end(), value);
   if (it == options.end()) {
     ESP_LOGW(TAG, "Unknown option: %s", value.c_str());
     return;
