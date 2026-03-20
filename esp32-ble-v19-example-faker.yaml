@@ -1,0 +1,24 @@
+<<: !include esp32-ble-v19-example-debug.yaml
+
+interval:
+  - interval: 30s
+    then:
+      - lambda: |-
+          const uint8_t device_info_frame[300] = {
+// @FIXME
+          };
+          id(bms0).assemble(device_info_frame, sizeof(device_info_frame));
+      - delay: 6s
+
+      - lambda: |-
+          const uint8_t settings_frame[300] = {
+// @FIXME
+          };
+          id(bms0).assemble(settings_frame, sizeof(settings_frame));
+      - delay: 6s
+
+      - lambda: |-
+          const uint8_t cell_info_frame[300] = {
+// @FIXME
+          };
+          id(bms0).assemble(cell_info_frame, sizeof(cell_info_frame));
