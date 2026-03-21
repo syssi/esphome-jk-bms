@@ -153,6 +153,7 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   void set_heating_stop_temperature_number(number::Number *heating_stop_temperature_number) {
     heating_stop_temperature_number_ = heating_stop_temperature_number;
   }
+  void set_re_bulk_soc_number(number::Number *re_bulk_soc_number) { re_bulk_soc_number_ = re_bulk_soc_number; }
 
   void set_balancing_binary_sensor(binary_sensor::BinarySensor *balancing_binary_sensor) {
     balancing_binary_sensor_ = balancing_binary_sensor;
@@ -360,6 +361,7 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   number::Number *discharge_precharge_time_number_;
   number::Number *heating_start_temperature_number_;
   number::Number *heating_stop_temperature_number_;
+  number::Number *re_bulk_soc_number_;
 
   sensor::Sensor *balancing_sensor_;
   sensor::Sensor *min_cell_voltage_sensor_;

@@ -1487,7 +1487,9 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
   // 275  0x00
   // 276  0x00
   // 277  0x00
-  // 278  0x00
+  // 278  0x00  Re-Bulk SOC  %
+  ESP_LOGI(TAG, "  Re-Bulk SOC: %d %%", data[278]);
+  this->publish_state_(this->re_bulk_soc_number_, (float) data[278]);
   // 279  0x00
   // 280  0x00
   // 281  0x00
