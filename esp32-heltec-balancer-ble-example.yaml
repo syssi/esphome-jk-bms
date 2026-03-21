@@ -232,6 +232,14 @@ sensor:
     cell_excessive_line_resistance_bitmask:
       name: "${name} cell excessive line resistance bitmask"
 
+select:
+  - platform: heltec_balancer_ble
+    heltec_balancer_ble_id: balancer0
+    buzzer_mode:
+      name: "${name} buzzer mode"
+    battery_type:
+      name: "${name} battery type"
+
 switch:
   - platform: heltec_balancer_ble
     heltec_balancer_ble_id: balancer0

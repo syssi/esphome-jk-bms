@@ -588,16 +588,18 @@ void HeltecBalancerBle::decode_settings_(const std::vector<uint8_t> &data) {
 
   // 22    1   0x01                   Buzzer mode (0x01: Off, 0x02: Beep once, 0x03: Beep regular)
   uint8_t raw_buzzer_mode = data[22];
-  if (raw_buzzer_mode < BUZZER_MODES_SIZE) {
+  if (raw_buzzer_mode > 0 && raw_buzzer_mode < BUZZER_MODES_SIZE) {
     this->publish_state_(this->buzzer_mode_text_sensor_, BUZZER_MODES[raw_buzzer_mode]);
+    this->publish_state_(this->buzzer_mode_select_, BUZZER_MODES[raw_buzzer_mode]);
   } else {
     this->publish_state_(this->buzzer_mode_text_sensor_, "Unknown");
   }
 
   // 23    1   0x02                   Battery type (0x01: NCM, 0x02: LFP, 0x03: LTO, 0x04: PbAc)
   uint8_t raw_battery_type = data[23];
-  if (raw_battery_type < BATTERY_TYPES_SIZE) {
+  if (raw_battery_type > 0 && raw_battery_type < BATTERY_TYPES_SIZE) {
     this->publish_state_(this->battery_type_text_sensor_, BATTERY_TYPES[raw_battery_type]);
+    this->publish_state_(this->battery_type_select_, BATTERY_TYPES[raw_battery_type]);
   } else {
     this->publish_state_(this->battery_type_text_sensor_, "Unknown");
   }
@@ -900,6 +902,13 @@ void HeltecBalancerBle::publish_state_(sensor::Sensor *sensor, float value) {
     return;
 
   sensor->publish_state(value);
+}
+
+void HeltecBalancerBle::publish_state_(select::Select *select, const std::string &state) {
+  if (select == nullptr)
+    return;
+
+  select->publish_state(state);
 }
 
 void HeltecBalancerBle::publish_state_(switch_::Switch *obj, const bool &state) {

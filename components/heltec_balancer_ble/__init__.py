@@ -5,7 +5,15 @@ from esphome.const import CONF_ID, CONF_THROTTLE
 
 CODEOWNERS = ["@syssi"]
 
-AUTO_LOAD = ["binary_sensor", "button", "number", "sensor", "switch", "text_sensor"]
+AUTO_LOAD = [
+    "binary_sensor",
+    "button",
+    "number",
+    "select",
+    "sensor",
+    "switch",
+    "text_sensor",
+]
 MULTI_CONF = True
 
 CONF_HELTEC_BALANCER_BLE_ID = "heltec_balancer_ble_id"
