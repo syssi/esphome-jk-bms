@@ -1138,8 +1138,16 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
     // 287   1   0x00
     ESP_LOGI(TAG, "  Data field enable control 0: %d", data[287]);
     // 288   2   0x00 0x00
-    // 290   4   0x00 0x00 0x00 0x00
-    // 294   4   0x00 0x00 0x00 0x00
+    // 290   4   0x00 0x00 0x00 0x00    Discharge UTP
+    ESP_LOGV(TAG, "  Discharge UTP: %f °C", (float) ((int32_t) jk_get_32bit(290)) * 0.1f);
+    this->publish_state_(this->discharge_undertemperature_protection_number_,
+                         (float) ((int32_t) jk_get_32bit(290)) * 0.1f);
+
+    // 294   4   0x00 0x00 0x00 0x00    Discharge UTP Recovery
+    ESP_LOGV(TAG, "  Discharge UTP recovery: %f °C", (float) ((int32_t) jk_get_32bit(294)) * 0.1f);
+    this->publish_state_(this->discharge_undertemperature_protection_recovery_number_,
+                         (float) ((int32_t) jk_get_32bit(294)) * 0.1f);
+
     // 298   1   0x00
     // 299   1   0x40                   CRC
   }
