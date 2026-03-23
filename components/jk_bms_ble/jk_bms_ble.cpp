@@ -1,6 +1,7 @@
 #include "jk_bms_ble.h"
 #include "esphome/core/log.h"
 #include "esphome/core/version.h"
+#include <cinttypes>
 
 #if ESPHOME_VERSION_CODE >= VERSION_CODE(2025, 12, 0)
 #define ADDR_STR(x) x
@@ -30,24 +31,37 @@ static const uint8_t COMMAND_DEVICE_INFO = 0x97;
 static const uint16_t MIN_RESPONSE_SIZE = 300;
 static const uint16_t MAX_RESPONSE_SIZE = 384 + 16;
 
-static const uint8_t ERRORS_SIZE = 16;
+static const uint8_t ERRORS_SIZE = 29;
 static const char *const ERRORS[ERRORS_SIZE] = {
-    "Charge Overtemperature",               // 0000 0000 0000 0001
-    "Charge Undertemperature",              // 0000 0000 0000 0010
-    "Coprocessor communication error",      // 0000 0000 0000 0100
-    "Cell Undervoltage",                    // 0000 0000 0000 1000
-    "Battery pack undervoltage",            // 0000 0000 0001 0000
-    "Discharge overcurrent",                // 0000 0000 0010 0000
-    "Discharge short circuit",              // 0000 0000 0100 0000
-    "Discharge overtemperature",            // 0000 0000 1000 0000
-    "Wire resistance",                      // 0000 0001 0000 0000
-    "Mosfet overtemperature",               // 0000 0010 0000 0000
-    "Cell count is not equal to settings",  // 0000 0100 0000 0000
-    "Current sensor anomaly",               // 0000 1000 0000 0000
-    "Cell Overvoltage",                     // 0001 0000 0000 0000
-    "Battery pack overvoltage",             // 0010 0000 0000 0000
-    "Charge overcurrent protection",        // 0100 0000 0000 0000
-    "Charge short circuit",                 // 1000 0000 0000 0000
+    "Wire resistance",                      // bit 0
+    "Mosfet overtemperature",               // bit 1
+    "Cell count is not equal to settings",  // bit 2
+    "Current sensor anomaly",               // bit 3
+    "Cell Overvoltage",                     // bit 4
+    "Battery pack overvoltage",             // bit 5
+    "Charge overcurrent protection",        // bit 6
+    "Charge short circuit",                 // bit 7
+    "Charge Overtemperature",               // bit 8
+    "Charge Undertemperature",              // bit 9
+    "Coprocessor communication error",      // bit 10
+    "Cell Undervoltage",                    // bit 11
+    "Battery pack undervoltage",            // bit 12
+    "Discharge overcurrent",                // bit 13
+    "Discharge short circuit",              // bit 14
+    "Discharge overtemperature",            // bit 15
+    "Charging MOS not normal",              // bit 16
+    "Discharging MOS not normal",           // bit 17
+    "GPS disconnected",                     // bit 18
+    "Modify password in time",              // bit 19
+    "Discharge On failed",                  // bit 20
+    "Battery overtemperature",              // bit 21
+    "Temperature sensor anomaly",           // bit 22
+    "PCL module anomaly",                   // bit 23
+    "SCP release failed",                   // bit 24
+    "Discharge OCP II",                     // bit 25
+    "Discharge OCP III",                    // bit 26
+    "Discharge undertemperature alarm",     // bit 27
+    "GPS remote lock",                      // bit 28
 };
 
 uint8_t crc(const uint8_t data[], const uint16_t len) {
@@ -161,7 +175,6 @@ void JkBmsBle::dump_config() {  // NOLINT(google-readability-function-size,reada
   LOG_SENSOR("", "Total Runtime", this->total_runtime_sensor_);
   LOG_SENSOR("", "Heating Current", this->heating_current_sensor_);
   LOG_SENSOR("", "Balancing Current", this->balancing_current_sensor_);
-  LOG_SENSOR("", "Errors Bitmask", this->errors_bitmask_sensor_);
   LOG_SENSOR("", "Emergency Time Countdown", this->emergency_time_countdown_sensor_);
   LOG_SENSOR("", "Charge Status ID", this->charge_status_id_sensor_);
   LOG_SENSOR("", "Charge Status Time Elapsed", this->charge_status_time_elapsed_sensor_);
@@ -169,6 +182,7 @@ void JkBmsBle::dump_config() {  // NOLINT(google-readability-function-size,reada
   LOG_TEXT_SENSOR("", "Operation Status", this->operation_status_text_sensor_);
   LOG_TEXT_SENSOR("", "Total Runtime Formatted", this->total_runtime_formatted_text_sensor_);
   LOG_TEXT_SENSOR("", "Errors", this->errors_text_sensor_);
+  LOG_TEXT_SENSOR("", "Errors Bitmask Hex", this->errors_bitmask_hex_text_sensor_);
   LOG_TEXT_SENSOR("", "Charge Status", this->charge_status_text_sensor_);
 }
 
@@ -518,38 +532,17 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
 
   // 134   2   0xD2 0x00              MOS Temperature       0.1          °C
   if (frame_version == FRAME_VERSION_JK02_32S) {
-    uint16_t raw_errors_bitmask = (uint16_t(data[134 + offset]) << 8) | (uint16_t(data[134 + 1 + offset]) << 0);
-    this->publish_state_(this->errors_bitmask_sensor_, (float) raw_errors_bitmask);
+    uint32_t raw_errors_bitmask = jk_get_32bit(134 + offset);
+    this->publish_state_(this->errors_bitmask_hex_text_sensor_, this->to_hex_string_(raw_errors_bitmask));
     this->publish_state_(this->errors_text_sensor_, this->error_bits_to_string_(raw_errors_bitmask));
   } else {
     this->publish_state_(this->power_tube_temperature_sensor_, (float) ((int16_t) jk_get_16bit(134 + offset)) * 0.1f);
   }
 
-  // 136   2   0x00 0x00              System alarms
-  //           0x00 0x01                Charge overtemperature               0000 0000 0000 0001
-  //           0x00 0x02                Charge undertemperature              0000 0000 0000 0010
-  //           0x00 0x04                Coprocessor communication error      0000 0000 0000 0100
-  //           0x00 0x08                Cell undervoltage                    0000 0000 0000 1000
-  //           0x00 0x10                Battery pack undervoltage            0000 0000 0001 0000
-  //           0x00 0x20                Discharge overcurrent                0000 0000 0010 0000
-  //           0x00 0x40                Discharge short circuit              0000 0000 0100 0000
-  //           0x00 0x80                Discharge overtemperature            0000 0000 1000 0000
-  //           0x01 0x00                Wire resistance                      0000 0001 0000 0000
-  //           0x02 0x00                Mosfet overtemperature               0000 0010 0000 0000
-  //           0x04 0x00                Cell count is not equal to settings  0000 0100 0000 0000
-  //           0x08 0x00                Current sensor anomaly               0000 1000 0000 0000
-  //           0x10 0x00                Cell Overvoltage                     0001 0000 0000 0000
-  //           0x20 0x00                Battery pack overvoltage             0010 0000 0000 0000
-  //           0x40 0x00                Charge overcurrent protection        0100 0000 0000 0000
-  //           0x80 0x00                Charge short circuit                 1000 0000 0000 0000
-  //
-  //           0x14 0x00                Cell Over Voltage +                  0001 0100 0000 0000
-  //                                    Cell count is not equal to settings
-  //           0x04 0x08                Cell Undervoltage +                  0000 0100 0000 1000
-  //                                    Cell count is not equal to settings
+  // 136   2                          System alarms (JK02_24S only, 16-bit little-endian)
   if (frame_version != FRAME_VERSION_JK02_32S) {
-    uint16_t raw_errors_bitmask = (uint16_t(data[136 + offset]) << 8) | (uint16_t(data[136 + 1 + offset]) << 0);
-    this->publish_state_(this->errors_bitmask_sensor_, (float) raw_errors_bitmask);
+    uint32_t raw_errors_bitmask = jk_get_16bit(136 + offset);
+    this->publish_state_(this->errors_bitmask_hex_text_sensor_, this->to_hex_string_(raw_errors_bitmask));
     this->publish_state_(this->errors_text_sensor_, this->error_bits_to_string_(raw_errors_bitmask));
   }
 
@@ -1600,7 +1593,6 @@ void JkBmsBle::publish_device_unavailable_() {
   this->publish_state_(total_charging_cycle_capacity_sensor_, NAN);
   this->publish_state_(total_runtime_sensor_, NAN);
   this->publish_state_(balancing_current_sensor_, NAN);
-  this->publish_state_(errors_bitmask_sensor_, NAN);
   this->publish_state_(heating_current_sensor_, NAN);
 
   for (auto &cell : this->cells_) {
@@ -1647,7 +1639,13 @@ void JkBmsBle::publish_state_(text_sensor::TextSensor *text_sensor, const std::s
   text_sensor->publish_state(state);
 }
 
-std::string JkBmsBle::error_bits_to_string_(const uint16_t mask) {
+std::string JkBmsBle::to_hex_string_(const uint32_t mask) {
+  char buf[11];
+  snprintf(buf, sizeof(buf), "0x%08" PRIX32, mask);
+  return std::string(buf);
+}
+
+std::string JkBmsBle::error_bits_to_string_(const uint32_t mask) {
   bool first = true;
   std::string errors_list = "";
 

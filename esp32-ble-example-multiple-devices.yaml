@@ -243,6 +243,9 @@ text_sensor:
     errors:
       name: "${bms0} errors"
       device_id: device0
+    errors_bitmask_hex:
+      name: "${bms0} errors bitmask hex"
+      device_id: device0
     total_runtime_formatted:
       name: "${bms0} total runtime formatted"
       device_id: device0
@@ -257,6 +260,9 @@ text_sensor:
     jk_bms_ble_id: bms1
     errors:
       name: "${bms1} errors"
+      device_id: device1
+    errors_bitmask_hex:
+      name: "${bms1} errors bitmask hex"
       device_id: device1
     total_runtime_formatted:
       name: "${bms1} total runtime formatted"
