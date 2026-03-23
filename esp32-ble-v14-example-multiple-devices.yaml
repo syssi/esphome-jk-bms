@@ -239,6 +239,12 @@ number:
     charge_undertemperature_protection_recovery:
       name: "${bms0} charge undertemperature protection recovery"
       device_id: device0
+    discharge_undertemperature_protection:
+      name: "${bms0} discharge undertemperature protection"
+      device_id: device0
+    discharge_undertemperature_protection_recovery:
+      name: "${bms0} discharge undertemperature protection recovery"
+      device_id: device0
     power_tube_overtemperature_protection:
       name: "${bms0} power tube overtemperature protection"
       device_id: device0
@@ -347,6 +353,12 @@ number:
       device_id: device1
     charge_undertemperature_protection_recovery:
       name: "${bms1} charge undertemperature protection recovery"
+      device_id: device1
+    discharge_undertemperature_protection:
+      name: "${bms1} discharge undertemperature protection"
+      device_id: device1
+    discharge_undertemperature_protection_recovery:
+      name: "${bms1} discharge undertemperature protection recovery"
       device_id: device1
     power_tube_overtemperature_protection:
       name: "${bms1} power tube overtemperature protection"

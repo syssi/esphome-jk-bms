@@ -150,6 +150,10 @@ number:
       name: "${name} charge undertemperature protection"
     charge_undertemperature_protection_recovery:
       name: "${name} charge undertemperature protection recovery"
+    discharge_undertemperature_protection:
+      name: "${name} discharge undertemperature protection"
+    discharge_undertemperature_protection_recovery:
+      name: "${name} discharge undertemperature protection recovery"
     power_tube_overtemperature_protection:
       name: "${name} power tube overtemperature protection"
     power_tube_overtemperature_protection_recovery:

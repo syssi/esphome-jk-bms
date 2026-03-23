@@ -271,6 +271,10 @@ Dry contact bitmask notes for byte 281 (JK02_32S only):
 |              285 |      1 | Heating stop temperature | int8 | 1 | °C | - |
 |              286 |      1 | Smart sleep | uint8 | - | h | - |
 |              287 |      1 | Data field enable control 0 | uint8 | - | - | - |
+|          288-295 |      8 | (Unknown) | - | - | - | - |
+|              296 |      1 | Discharge UTP | int8 | 1 | °C | Write register 0x3A |
+|              297 |      1 | Discharge UTP recovery | int8 | 1 | °C | Write register 0x3B |
+|              298 |      1 | (Unknown) | - | - | - | - |
 |              299 |      1 | CRC checksum | uint8 | - | - | - |
 
 Bitmask notes for bytes 282-283:

@@ -137,6 +137,13 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
       number::Number *charge_undertemperature_protection_recovery_number) {
     charge_undertemperature_protection_recovery_number_ = charge_undertemperature_protection_recovery_number;
   }
+  void set_discharge_undertemperature_protection_number(number::Number *discharge_undertemperature_protection_number) {
+    discharge_undertemperature_protection_number_ = discharge_undertemperature_protection_number;
+  }
+  void set_discharge_undertemperature_protection_recovery_number(
+      number::Number *discharge_undertemperature_protection_recovery_number) {
+    discharge_undertemperature_protection_recovery_number_ = discharge_undertemperature_protection_recovery_number;
+  }
   void set_power_tube_overtemperature_protection_number(number::Number *power_tube_overtemperature_protection_number) {
     power_tube_overtemperature_protection_number_ = power_tube_overtemperature_protection_number;
   }
@@ -356,6 +363,8 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   number::Number *discharge_overtemperature_protection_recovery_number_;
   number::Number *charge_undertemperature_protection_number_;
   number::Number *charge_undertemperature_protection_recovery_number_;
+  number::Number *discharge_undertemperature_protection_number_;
+  number::Number *discharge_undertemperature_protection_recovery_number_;
   number::Number *power_tube_overtemperature_protection_number_;
   number::Number *power_tube_overtemperature_protection_recovery_number_;
   number::Number *discharge_precharge_time_number_;

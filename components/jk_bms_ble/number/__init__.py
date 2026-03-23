@@ -179,6 +179,10 @@ CONF_CHARGE_UNDERTEMPERATURE_PROTECTION = "charge_undertemperature_protection"
 CONF_CHARGE_UNDERTMPERATURE_PROTECTION_RECOVERY = (
     "charge_undertemperature_protection_recovery"
 )
+CONF_DISCHARGE_UNDERTEMPERATURE_PROTECTION = "discharge_undertemperature_protection"
+CONF_DISCHARGE_UNDERTEMPERATURE_PROTECTION_RECOVERY = (
+    "discharge_undertemperature_protection_recovery"
+)
 CONF_POWER_TUBE_OVERTEMPERATURE_PROTECTION = "power_tube_overtemperature_protection"
 CONF_POWER_TUBE_OVERTEMPERATURE_PROTECTION_RECOVERY = (
     "power_tube_overtemperature_protection_recovery"
@@ -280,6 +284,20 @@ NUMBERS = {
         0x19,
         10.0,
         4,
+    ],
+    CONF_DISCHARGE_UNDERTEMPERATURE_PROTECTION: [
+        0x00,
+        0x00,
+        0x3A,
+        1.0,
+        1,
+    ],
+    CONF_DISCHARGE_UNDERTEMPERATURE_PROTECTION_RECOVERY: [
+        0x00,
+        0x00,
+        0x3B,
+        1.0,
+        1,
     ],
     CONF_POWER_TUBE_OVERTEMPERATURE_PROTECTION: [
         0x00,
@@ -632,6 +650,30 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
                 cv.Optional(CONF_MIN_VALUE, default=-30): cv.float_,
                 cv.Optional(CONF_MAX_VALUE, default=20): cv.float_,
                 cv.Optional(CONF_STEP, default=0.1): cv.float_,
+                cv.Optional(
+                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_CELSIUS
+                ): cv.string_strict,
+            }
+        ),
+        cv.Optional(
+            CONF_DISCHARGE_UNDERTEMPERATURE_PROTECTION
+        ): JK_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=-40): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=100): cv.float_,
+                cv.Optional(CONF_STEP, default=1.0): cv.float_,
+                cv.Optional(
+                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_CELSIUS
+                ): cv.string_strict,
+            }
+        ),
+        cv.Optional(
+            CONF_DISCHARGE_UNDERTEMPERATURE_PROTECTION_RECOVERY
+        ): JK_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=-40): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=100): cv.float_,
+                cv.Optional(CONF_STEP, default=1.0): cv.float_,
                 cv.Optional(
                     CONF_UNIT_OF_MEASUREMENT, default=UNIT_CELSIUS
                 ): cv.string_strict,
