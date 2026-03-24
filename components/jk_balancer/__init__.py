@@ -35,7 +35,7 @@ CONFIG_SCHEMA = cv.All(
         }
     )
     .extend(cv.polling_component_schema("5s"))
-    .extend(jk_balancer_modbus.jk_balancer_modbus_device_schema(0x01))
+    .extend(jk_balancer_modbus.jk_balancer_modbus_device_schema(0x01)),
 )
 
 
