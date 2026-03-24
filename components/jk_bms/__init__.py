@@ -18,14 +18,15 @@ JK_BMS_COMPONENT_SCHEMA = cv.Schema(
     }
 )
 
-CONFIG_SCHEMA = (
+CONFIG_SCHEMA = cv.All(
+    cv.require_esphome_version(2025, 7, 0),
     cv.Schema(
         {
             cv.GenerateID(): cv.declare_id(JkBms),
         }
     )
     .extend(cv.polling_component_schema("5s"))
-    .extend(jk_modbus.jk_modbus_device_schema(0x4E))
+    .extend(jk_modbus.jk_modbus_device_schema(0x4E)),
 )
 
 

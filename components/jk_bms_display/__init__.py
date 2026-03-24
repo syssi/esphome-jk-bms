@@ -20,11 +20,14 @@ CONF_JK_BMS_DISPLAY_COMPONENT_SCHEMA = cv.Schema(
     }
 )
 
-CONFIG_SCHEMA = cv.Schema(
-    {
-        cv.GenerateID(): cv.declare_id(JkBmsDisplay),
-    }
-).extend(uart.UART_DEVICE_SCHEMA)
+CONFIG_SCHEMA = cv.All(
+    cv.require_esphome_version(2024, 12, 0),
+    cv.Schema(
+        {
+            cv.GenerateID(): cv.declare_id(JkBmsDisplay),
+        }
+    ).extend(uart.UART_DEVICE_SCHEMA),
+)
 
 JK_BMS_DISPLAY_COMPONENT_SCHEMA = cv.Schema(
     {

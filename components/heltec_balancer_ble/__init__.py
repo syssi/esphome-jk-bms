@@ -29,7 +29,8 @@ HELTEC_BALANCER_BLE_COMPONENT_SCHEMA = cv.Schema(
     }
 )
 
-CONFIG_SCHEMA = (
+CONFIG_SCHEMA = cv.All(
+    cv.require_esphome_version(2025, 11, 0),
     cv.Schema(
         {
             cv.GenerateID(): cv.declare_id(HeltecBalancerBle),
@@ -39,7 +40,7 @@ CONFIG_SCHEMA = (
         }
     )
     .extend(ble_client.BLE_CLIENT_SCHEMA)
-    .extend(cv.polling_component_schema("5s"))
+    .extend(cv.polling_component_schema("5s")),
 )
 
 

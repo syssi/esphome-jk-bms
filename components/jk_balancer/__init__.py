@@ -27,14 +27,15 @@ JK_BALANCER_COMPONENT_SCHEMA = cv.Schema(
     }
 )
 
-CONFIG_SCHEMA = (
+CONFIG_SCHEMA = cv.All(
+    cv.require_esphome_version(2024, 12, 0),
     cv.Schema(
         {
             cv.GenerateID(): cv.declare_id(JkBalancer),
         }
     )
     .extend(cv.polling_component_schema("5s"))
-    .extend(jk_balancer_modbus.jk_balancer_modbus_device_schema(0x01))
+    .extend(jk_balancer_modbus.jk_balancer_modbus_device_schema(0x01)),
 )
 
 

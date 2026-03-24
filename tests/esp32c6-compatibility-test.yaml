@@ -6,7 +6,6 @@ substitutions:
 esphome:
   name: ${name}
   comment: ${device_description}
-  min_version: 2025.6.0
 
 esp32:
   board: esp32-c6-devkitc-1
