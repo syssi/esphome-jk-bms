@@ -5,7 +5,6 @@ substitutions:
 esphome:
   name: ${name}
   comment: ${device_description}
-  min_version: 2026.1.0
   project:
     name: "syssi.esphome-jk-bms"
     version: 2.4.0
