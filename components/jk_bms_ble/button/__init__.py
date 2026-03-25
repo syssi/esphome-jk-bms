@@ -28,11 +28,11 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
         cv.Optional(CONF_RETRIEVE_SETTINGS): button.button_schema(
             JkButton,
             icon=ICON_RETRIEVE_SETTINGS,
-        ).extend(cv.COMPONENT_SCHEMA),
+        ),
         cv.Optional(CONF_RETRIEVE_DEVICE_INFO): button.button_schema(
             JkButton,
             icon=ICON_RETRIEVE_DEVICE_INFO,
-        ).extend(cv.COMPONENT_SCHEMA),
+        ),
     }
 )
 
