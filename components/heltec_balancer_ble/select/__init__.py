@@ -1,7 +1,6 @@
 import esphome.codegen as cg
 from esphome.components import select
 import esphome.config_validation as cv
-from esphome.const import CONF_ID
 
 from .. import (
     CONF_HELTEC_BALANCER_BLE_ID,
@@ -45,9 +44,8 @@ async def to_code(config):
     for key, (address, options) in SELECTS.items():
         if key in config:
             conf = config[key]
-            var = cg.new_Pvariable(conf[CONF_ID])
+            var = await select.new_select(conf, options=options)
             await cg.register_component(var, conf)
-            await select.register_select(var, conf, options=options)
             cg.add(getattr(hub, f"set_{key}_select")(var))
             cg.add(var.set_parent(hub))
             cg.add(var.set_holding_register(address))
