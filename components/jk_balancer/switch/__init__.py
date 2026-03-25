@@ -24,7 +24,7 @@ CONFIG_SCHEMA = JK_BALANCER_COMPONENT_SCHEMA.extend(
         cv.Optional(CONF_BALANCER): switch.switch_schema(
             JkSwitch,
             icon=ICON_BALANCER,
-        ).extend(cv.COMPONENT_SCHEMA),
+        ),
     }
 )
 

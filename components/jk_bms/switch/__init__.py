@@ -28,15 +28,15 @@ CONFIG_SCHEMA = JK_BMS_COMPONENT_SCHEMA.extend(
         cv.Optional(CONF_CHARGING): switch.switch_schema(
             JkSwitch,
             icon=ICON_CHARGING,
-        ).extend(cv.COMPONENT_SCHEMA),
+        ),
         cv.Optional(CONF_DISCHARGING): switch.switch_schema(
             JkSwitch,
             icon=ICON_DISCHARGING,
-        ).extend(cv.COMPONENT_SCHEMA),
+        ),
         # cv.Optional(CONF_BALANCER): switch.switch_schema(
         #     JkSwitch,
         #     icon=ICON_BALANCER,
-        # ).extend(cv.COMPONENT_SCHEMA),
+        # ),
     }
 )
 

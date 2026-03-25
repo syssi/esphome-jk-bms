@@ -36,15 +36,15 @@ CONFIG_SCHEMA = HELTEC_BALANCER_BLE_COMPONENT_SCHEMA.extend(
         cv.Optional(CONF_RETRIEVE_SETTINGS): button.button_schema(
             HeltecButton,
             icon=ICON_RETRIEVE_SETTINGS,
-        ).extend(cv.COMPONENT_SCHEMA),
+        ),
         cv.Optional(CONF_RETRIEVE_DEVICE_INFO): button.button_schema(
             HeltecButton,
             icon=ICON_RETRIEVE_DEVICE_INFO,
-        ).extend(cv.COMPONENT_SCHEMA),
+        ),
         cv.Optional(CONF_RETRIEVE_FACTORY_DEFAULTS): button.button_schema(
             HeltecButton,
             icon=ICON_RETRIEVE_FACTORY_DEFAULTS,
-        ).extend(cv.COMPONENT_SCHEMA),
+        ),
     }
 )
 
