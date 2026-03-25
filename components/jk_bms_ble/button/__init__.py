@@ -1,7 +1,6 @@
 import esphome.codegen as cg
 from esphome.components import button
 import esphome.config_validation as cv
-from esphome.const import CONF_ID
 
 from .. import CONF_JK_BMS_BLE_ID, JK_BMS_BLE_COMPONENT_SCHEMA, jk_bms_ble_ns
 
@@ -42,8 +41,7 @@ async def to_code(config):
     for key, address in BUTTONS.items():
         if key in config:
             conf = config[key]
-            var = cg.new_Pvariable(conf[CONF_ID])
+            var = await button.new_button(conf)
             await cg.register_component(var, conf)
-            await button.register_button(var, conf)
             cg.add(var.set_parent(hub))
             cg.add(var.set_holding_register(address))

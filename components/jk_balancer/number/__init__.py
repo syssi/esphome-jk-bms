@@ -89,15 +89,13 @@ async def to_code(config):
     for key, address in NUMBERS.items():
         if key in config:
             conf = config[key]
-            var = cg.new_Pvariable(conf[CONF_ID])
-            await cg.register_component(var, conf)
-            await number.register_number(
-                var,
+            var = await number.new_number(
                 conf,
                 min_value=conf[CONF_MIN_VALUE],
                 max_value=conf[CONF_MAX_VALUE],
                 step=conf[CONF_STEP],
             )
+            await cg.register_component(var, conf)
             cg.add(getattr(hub, f"set_{key}_number")(var))
             cg.add(var.set_parent(hub))
             cg.add(var.set_holding_register(address))
