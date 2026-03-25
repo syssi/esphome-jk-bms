@@ -102,35 +102,35 @@ class JkBmsDisplay : public uart::UARTDevice, public Component {
   void on_jk_bms_display_data(const std::vector<uint8_t> &data);
 
  protected:
-  binary_sensor::BinarySensor *system_warning_binary_sensor_;
-  binary_sensor::BinarySensor *balancing_switch_binary_sensor_;
-  binary_sensor::BinarySensor *charging_binary_sensor_;
-  binary_sensor::BinarySensor *discharging_binary_sensor_;
-  binary_sensor::BinarySensor *cell_voltage_undervoltage_protection_binary_sensor_;
-  binary_sensor::BinarySensor *cell_voltage_overvoltage_protection_binary_sensor_;
-  binary_sensor::BinarySensor *overcurrent_protection_binary_sensor_;
-  binary_sensor::BinarySensor *mosfet_overtemperature_protection_binary_sensor_;
-  binary_sensor::BinarySensor *battery_temperature_protection_binary_sensor_;
-  binary_sensor::BinarySensor *short_circuit_protection_binary_sensor_;
-  binary_sensor::BinarySensor *coprocessor_communication_error_binary_sensor_;
-  binary_sensor::BinarySensor *balancer_wire_resistance_too_high_binary_sensor_;
-  binary_sensor::BinarySensor *cell_count_mismatch_binary_sensor_;
+  binary_sensor::BinarySensor *system_warning_binary_sensor_{nullptr};
+  binary_sensor::BinarySensor *balancing_switch_binary_sensor_{nullptr};
+  binary_sensor::BinarySensor *charging_binary_sensor_{nullptr};
+  binary_sensor::BinarySensor *discharging_binary_sensor_{nullptr};
+  binary_sensor::BinarySensor *cell_voltage_undervoltage_protection_binary_sensor_{nullptr};
+  binary_sensor::BinarySensor *cell_voltage_overvoltage_protection_binary_sensor_{nullptr};
+  binary_sensor::BinarySensor *overcurrent_protection_binary_sensor_{nullptr};
+  binary_sensor::BinarySensor *mosfet_overtemperature_protection_binary_sensor_{nullptr};
+  binary_sensor::BinarySensor *battery_temperature_protection_binary_sensor_{nullptr};
+  binary_sensor::BinarySensor *short_circuit_protection_binary_sensor_{nullptr};
+  binary_sensor::BinarySensor *coprocessor_communication_error_binary_sensor_{nullptr};
+  binary_sensor::BinarySensor *balancer_wire_resistance_too_high_binary_sensor_{nullptr};
+  binary_sensor::BinarySensor *cell_count_mismatch_binary_sensor_{nullptr};
 
-  sensor::Sensor *error_bitmask_sensor_;
-  sensor::Sensor *total_voltage_sensor_;
-  sensor::Sensor *current_sensor_;
-  sensor::Sensor *power_sensor_;
-  sensor::Sensor *charging_power_sensor_;
-  sensor::Sensor *discharging_power_sensor_;
-  sensor::Sensor *min_cell_voltage_sensor_;
-  sensor::Sensor *max_cell_voltage_sensor_;
-  sensor::Sensor *min_voltage_cell_sensor_;
-  sensor::Sensor *max_voltage_cell_sensor_;
-  sensor::Sensor *state_of_charge_sensor_;
-  sensor::Sensor *delta_cell_voltage_sensor_;
-  sensor::Sensor *mosfet_temperature_sensor_;
-  sensor::Sensor *battery_temperature_sensor_;
-  sensor::Sensor *average_cell_voltage_sensor_;
+  sensor::Sensor *error_bitmask_sensor_{nullptr};
+  sensor::Sensor *total_voltage_sensor_{nullptr};
+  sensor::Sensor *current_sensor_{nullptr};
+  sensor::Sensor *power_sensor_{nullptr};
+  sensor::Sensor *charging_power_sensor_{nullptr};
+  sensor::Sensor *discharging_power_sensor_{nullptr};
+  sensor::Sensor *min_cell_voltage_sensor_{nullptr};
+  sensor::Sensor *max_cell_voltage_sensor_{nullptr};
+  sensor::Sensor *min_voltage_cell_sensor_{nullptr};
+  sensor::Sensor *max_voltage_cell_sensor_{nullptr};
+  sensor::Sensor *state_of_charge_sensor_{nullptr};
+  sensor::Sensor *delta_cell_voltage_sensor_{nullptr};
+  sensor::Sensor *mosfet_temperature_sensor_{nullptr};
+  sensor::Sensor *battery_temperature_sensor_{nullptr};
+  sensor::Sensor *average_cell_voltage_sensor_{nullptr};
 
   struct Cell {
     sensor::Sensor *cell_voltage_sensor_{nullptr};

@@ -77,29 +77,29 @@ class JkBalancer : public PollingComponent, public jk_balancer_modbus::JkBalance
   void update() override;
 
  protected:
-  binary_sensor::BinarySensor *balancing_binary_sensor_;
-  binary_sensor::BinarySensor *online_status_binary_sensor_;
+  binary_sensor::BinarySensor *balancing_binary_sensor_{nullptr};
+  binary_sensor::BinarySensor *online_status_binary_sensor_{nullptr};
 
-  number::Number *cell_count_number_;
-  number::Number *balance_trigger_voltage_number_;
-  number::Number *max_balance_current_number_;
+  number::Number *cell_count_number_{nullptr};
+  number::Number *balance_trigger_voltage_number_{nullptr};
+  number::Number *max_balance_current_number_{nullptr};
 
-  sensor::Sensor *min_cell_voltage_sensor_;
-  sensor::Sensor *max_cell_voltage_sensor_;
-  sensor::Sensor *min_voltage_cell_sensor_;
-  sensor::Sensor *max_voltage_cell_sensor_;
-  sensor::Sensor *delta_cell_voltage_sensor_;
-  sensor::Sensor *average_cell_voltage_sensor_;
-  sensor::Sensor *battery_temperature_sensor_;
-  sensor::Sensor *total_voltage_sensor_;
-  sensor::Sensor *cell_count_detected_sensor_;
-  sensor::Sensor *errors_bitmask_sensor_;
-  sensor::Sensor *balancer_status_sensor_;
-  sensor::Sensor *balancing_current_sensor_;
+  sensor::Sensor *min_cell_voltage_sensor_{nullptr};
+  sensor::Sensor *max_cell_voltage_sensor_{nullptr};
+  sensor::Sensor *min_voltage_cell_sensor_{nullptr};
+  sensor::Sensor *max_voltage_cell_sensor_{nullptr};
+  sensor::Sensor *delta_cell_voltage_sensor_{nullptr};
+  sensor::Sensor *average_cell_voltage_sensor_{nullptr};
+  sensor::Sensor *battery_temperature_sensor_{nullptr};
+  sensor::Sensor *total_voltage_sensor_{nullptr};
+  sensor::Sensor *cell_count_detected_sensor_{nullptr};
+  sensor::Sensor *errors_bitmask_sensor_{nullptr};
+  sensor::Sensor *balancer_status_sensor_{nullptr};
+  sensor::Sensor *balancing_current_sensor_{nullptr};
 
-  switch_::Switch *balancer_switch_;
+  switch_::Switch *balancer_switch_{nullptr};
 
-  text_sensor::TextSensor *errors_text_sensor_;
+  text_sensor::TextSensor *errors_text_sensor_{nullptr};
 
   struct Cell {
     sensor::Sensor *cell_voltage_sensor_{nullptr};
