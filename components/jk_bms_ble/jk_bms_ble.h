@@ -345,8 +345,8 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   number::Number *cell_voltage_undervoltage_protection_number_{nullptr};
   number::Number *cell_voltage_undervoltage_recovery_number_{nullptr};
   number::Number *balance_starting_voltage_number_{nullptr};
-  number::Number *voltage_calibration_number_;  // @FIXME: Identify value at the settings frame
-  number::Number *current_calibration_number_;  // @FIXME: Identify value at the settings frame
+  number::Number *voltage_calibration_number_{nullptr};  // @FIXME: Identify value at the settings frame
+  number::Number *current_calibration_number_{nullptr};  // @FIXME: Identify value at the settings frame
   number::Number *power_off_voltage_number_{nullptr};
   number::Number *max_balance_current_number_{nullptr};
   number::Number *max_charge_current_number_{nullptr};
