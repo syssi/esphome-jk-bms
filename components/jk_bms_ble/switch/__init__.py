@@ -1,7 +1,6 @@
 import esphome.codegen as cg
 from esphome.components import switch
 import esphome.config_validation as cv
-
 from esphome.const import ENTITY_CATEGORY_CONFIG
 
 from .. import CONF_JK_BMS_BLE_ID, JK_BMS_BLE_COMPONENT_SCHEMA, jk_bms_ble_ns

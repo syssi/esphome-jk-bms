@@ -67,9 +67,7 @@ CONFIG_SCHEMA = JK_BMS_DISPLAY_COMPONENT_SCHEMA.extend(
         ): binary_sensor.binary_sensor_schema(
             entity_category=ENTITY_CATEGORY_DIAGNOSTIC
         ),
-        cv.Optional(
-            CONF_OVERCURRENT_PROTECTION
-        ): binary_sensor.binary_sensor_schema(
+        cv.Optional(CONF_OVERCURRENT_PROTECTION): binary_sensor.binary_sensor_schema(
             entity_category=ENTITY_CATEGORY_DIAGNOSTIC
         ),
         cv.Optional(
@@ -82,9 +80,7 @@ CONFIG_SCHEMA = JK_BMS_DISPLAY_COMPONENT_SCHEMA.extend(
         ): binary_sensor.binary_sensor_schema(
             entity_category=ENTITY_CATEGORY_DIAGNOSTIC
         ),
-        cv.Optional(
-            CONF_SHORT_CIRCUIT_PROTECTION
-        ): binary_sensor.binary_sensor_schema(
+        cv.Optional(CONF_SHORT_CIRCUIT_PROTECTION): binary_sensor.binary_sensor_schema(
             entity_category=ENTITY_CATEGORY_DIAGNOSTIC
         ),
         cv.Optional(
@@ -97,9 +93,7 @@ CONFIG_SCHEMA = JK_BMS_DISPLAY_COMPONENT_SCHEMA.extend(
         ): binary_sensor.binary_sensor_schema(
             entity_category=ENTITY_CATEGORY_DIAGNOSTIC
         ),
-        cv.Optional(
-            CONF_CELL_COUNT_MISMATCH
-        ): binary_sensor.binary_sensor_schema(
+        cv.Optional(CONF_CELL_COUNT_MISMATCH): binary_sensor.binary_sensor_schema(
             entity_category=ENTITY_CATEGORY_DIAGNOSTIC
         ),
     }
