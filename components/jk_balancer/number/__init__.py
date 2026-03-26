@@ -8,7 +8,6 @@ from esphome.const import (
     CONF_STEP,
     CONF_UNIT_OF_MEASUREMENT,
     ENTITY_CATEGORY_CONFIG,
-    ICON_EMPTY,
     UNIT_EMPTY,
     UNIT_MILLIAMP,
 )
@@ -36,7 +35,7 @@ JkNumber = jk_balancer_ns.class_("JkNumber", number.Number, cg.Component)
 JK_NUMBER_SCHEMA = (
     number.number_schema(
         JkNumber,
-        icon=ICON_EMPTY,
+        icon=None,
         entity_category=ENTITY_CATEGORY_CONFIG,
     )
     .extend(

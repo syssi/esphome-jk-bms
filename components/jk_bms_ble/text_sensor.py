@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 from esphome.components import text_sensor
 import esphome.config_validation as cv
-from esphome.const import ICON_EMPTY, ICON_TIMELAPSE
+from esphome.const import ICON_TIMELAPSE
 
 from . import CONF_JK_BMS_BLE_ID, JK_BMS_BLE_COMPONENT_SCHEMA
 
@@ -44,10 +44,10 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
             text_sensor.TextSensor, icon=ICON_CHARGE_STATUS
         ),
         cv.Optional(CONF_SOFTWARE_VERSION): text_sensor.text_sensor_schema(
-            text_sensor.TextSensor, icon=ICON_EMPTY
+            text_sensor.TextSensor, icon=None
         ),
         cv.Optional(CONF_HARDWARE_VERSION): text_sensor.text_sensor_schema(
-            text_sensor.TextSensor, icon=ICON_EMPTY
+            text_sensor.TextSensor, icon=None
         ),
     }
 )

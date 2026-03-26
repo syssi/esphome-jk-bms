@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 from esphome.components import text_sensor
 import esphome.config_validation as cv
-from esphome.const import CONF_PASSWORD, ICON_EMPTY, ICON_TIMELAPSE
+from esphome.const import CONF_PASSWORD, ICON_TIMELAPSE
 
 from . import CONF_JK_BMS_ID, JK_BMS_COMPONENT_SCHEMA
 
@@ -48,13 +48,13 @@ CONFIG_SCHEMA = JK_BMS_COMPONENT_SCHEMA.extend(
             text_sensor.TextSensor, icon=ICON_PASSWORD
         ),
         cv.Optional(CONF_DEVICE_TYPE): text_sensor.text_sensor_schema(
-            text_sensor.TextSensor, icon=ICON_EMPTY
+            text_sensor.TextSensor, icon=None
         ),
         cv.Optional(CONF_SOFTWARE_VERSION): text_sensor.text_sensor_schema(
-            text_sensor.TextSensor, icon=ICON_EMPTY
+            text_sensor.TextSensor, icon=None
         ),
         cv.Optional(CONF_MANUFACTURER): text_sensor.text_sensor_schema(
-            text_sensor.TextSensor, icon=ICON_EMPTY
+            text_sensor.TextSensor, icon=None
         ),
         cv.Optional(CONF_TOTAL_RUNTIME_FORMATTED): text_sensor.text_sensor_schema(
             text_sensor.TextSensor, icon=ICON_TIMELAPSE

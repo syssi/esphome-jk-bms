@@ -8,7 +8,6 @@ from esphome.const import (
     CONF_STEP,
     CONF_UNIT_OF_MEASUREMENT,
     ENTITY_CATEGORY_CONFIG,
-    ICON_EMPTY,
     UNIT_AMPERE,
     UNIT_CELSIUS,
     UNIT_EMPTY,
@@ -322,7 +321,7 @@ JkNumber = jk_bms_ble_ns.class_("JkNumber", number.Number, cg.Component)
 JK_NUMBER_SCHEMA = (
     number.number_schema(
         JkNumber,
-        icon=ICON_EMPTY,
+        icon=None,
         entity_category=ENTITY_CATEGORY_CONFIG,
         unit_of_measurement=UNIT_VOLT,
     )
