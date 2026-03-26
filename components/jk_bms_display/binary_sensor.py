@@ -1,6 +1,7 @@
 import esphome.codegen as cg
 from esphome.components import binary_sensor
 import esphome.config_validation as cv
+from esphome.const import ENTITY_CATEGORY_DIAGNOSTIC
 
 from . import CONF_JK_BMS_DISPLAY_ID, JK_BMS_DISPLAY_COMPONENT_SCHEMA
 
@@ -44,7 +45,9 @@ BINARY_SENSORS = [
 
 CONFIG_SCHEMA = JK_BMS_DISPLAY_COMPONENT_SCHEMA.extend(
     {
-        cv.Optional(CONF_SYSTEM_WARNING): binary_sensor.binary_sensor_schema(),
+        cv.Optional(CONF_SYSTEM_WARNING): binary_sensor.binary_sensor_schema(
+            entity_category=ENTITY_CATEGORY_DIAGNOSTIC
+        ),
         cv.Optional(CONF_BALANCING_SWITCH): binary_sensor.binary_sensor_schema(
             icon=ICON_BALANCING
         ),
@@ -56,27 +59,43 @@ CONFIG_SCHEMA = JK_BMS_DISPLAY_COMPONENT_SCHEMA.extend(
         ),
         cv.Optional(
             CONF_CELL_VOLTAGE_UNDERVOLTAGE_PROTECTION
-        ): binary_sensor.binary_sensor_schema(),
+        ): binary_sensor.binary_sensor_schema(
+            entity_category=ENTITY_CATEGORY_DIAGNOSTIC
+        ),
         cv.Optional(
             CONF_CELL_VOLTAGE_OVERVOLTAGE_PROTECTION
-        ): binary_sensor.binary_sensor_schema(),
-        cv.Optional(CONF_OVERCURRENT_PROTECTION): binary_sensor.binary_sensor_schema(),
+        ): binary_sensor.binary_sensor_schema(
+            entity_category=ENTITY_CATEGORY_DIAGNOSTIC
+        ),
+        cv.Optional(CONF_OVERCURRENT_PROTECTION): binary_sensor.binary_sensor_schema(
+            entity_category=ENTITY_CATEGORY_DIAGNOSTIC
+        ),
         cv.Optional(
             CONF_MOSFET_OVERTEMPERATURE_PROTECTION
-        ): binary_sensor.binary_sensor_schema(),
+        ): binary_sensor.binary_sensor_schema(
+            entity_category=ENTITY_CATEGORY_DIAGNOSTIC
+        ),
         cv.Optional(
             CONF_BATTERY_TEMPERATURE_PROTECTION
-        ): binary_sensor.binary_sensor_schema(),
-        cv.Optional(
-            CONF_SHORT_CIRCUIT_PROTECTION
-        ): binary_sensor.binary_sensor_schema(),
+        ): binary_sensor.binary_sensor_schema(
+            entity_category=ENTITY_CATEGORY_DIAGNOSTIC
+        ),
+        cv.Optional(CONF_SHORT_CIRCUIT_PROTECTION): binary_sensor.binary_sensor_schema(
+            entity_category=ENTITY_CATEGORY_DIAGNOSTIC
+        ),
         cv.Optional(
             CONF_COPROCESSOR_COMMUNICATION_ERROR
-        ): binary_sensor.binary_sensor_schema(),
+        ): binary_sensor.binary_sensor_schema(
+            entity_category=ENTITY_CATEGORY_DIAGNOSTIC
+        ),
         cv.Optional(
             CONF_BALANCER_WIRE_RESISTANCE_TOO_HIGH
-        ): binary_sensor.binary_sensor_schema(),
-        cv.Optional(CONF_CELL_COUNT_MISMATCH): binary_sensor.binary_sensor_schema(),
+        ): binary_sensor.binary_sensor_schema(
+            entity_category=ENTITY_CATEGORY_DIAGNOSTIC
+        ),
+        cv.Optional(CONF_CELL_COUNT_MISMATCH): binary_sensor.binary_sensor_schema(
+            entity_category=ENTITY_CATEGORY_DIAGNOSTIC
+        ),
     }
 )
 

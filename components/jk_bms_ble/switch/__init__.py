@@ -1,6 +1,7 @@
 import esphome.codegen as cg
 from esphome.components import switch
 import esphome.config_validation as cv
+from esphome.const import ENTITY_CATEGORY_CONFIG
 
 from .. import CONF_JK_BMS_BLE_ID, JK_BMS_BLE_COMPONENT_SCHEMA, jk_bms_ble_ns
 from ..const import (
@@ -67,34 +68,42 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
         cv.Optional(CONF_EMERGENCY): switch.switch_schema(
             JkSwitch,
             icon=ICON_EMERGENCY,
+            entity_category=ENTITY_CATEGORY_CONFIG,
         ),
         cv.Optional(CONF_HEATING): switch.switch_schema(
             JkSwitch,
             icon=ICON_HEATING,
+            entity_category=ENTITY_CATEGORY_CONFIG,
         ),
         cv.Optional(CONF_DISABLE_TEMPERATURE_SENSORS): switch.switch_schema(
             JkSwitch,
             icon=ICON_DISABLE_TEMPERATURE_SENSORS,
+            entity_category=ENTITY_CATEGORY_CONFIG,
         ),
         cv.Optional(CONF_DISPLAY_ALWAYS_ON): switch.switch_schema(
             JkSwitch,
             icon=ICON_DISPLAY_ALWAYS_ON,
+            entity_category=ENTITY_CATEGORY_CONFIG,
         ),
         cv.Optional(CONF_SMART_SLEEP): switch.switch_schema(
             JkSwitch,
             icon=ICON_SMART_SLEEP,
+            entity_category=ENTITY_CATEGORY_CONFIG,
         ),
         cv.Optional(CONF_DISABLE_PCL_MODULE): switch.switch_schema(
             JkSwitch,
             icon=ICON_DISABLE_PCL_MODULE,
+            entity_category=ENTITY_CATEGORY_CONFIG,
         ),
         cv.Optional(CONF_TIMED_STORED_DATA): switch.switch_schema(
             JkSwitch,
             icon=ICON_TIMED_STORED_DATA,
+            entity_category=ENTITY_CATEGORY_CONFIG,
         ),
         cv.Optional(CONF_CHARGING_FLOAT_MODE): switch.switch_schema(
             JkSwitch,
             icon=ICON_CHARGING_FLOAT_MODE,
+            entity_category=ENTITY_CATEGORY_CONFIG,
         ),
     }
 )
