@@ -9,6 +9,7 @@ from esphome.const import (
     DEVICE_CLASS_POWER,
     DEVICE_CLASS_TEMPERATURE,
     DEVICE_CLASS_VOLTAGE,
+    ENTITY_CATEGORY_DIAGNOSTIC,
     ICON_EMPTY,
     STATE_CLASS_MEASUREMENT,
     UNIT_AMPERE,
@@ -372,8 +373,8 @@ CONFIG_SCHEMA = JK_BALANCER_COMPONENT_SCHEMA.extend(
             unit_of_measurement=UNIT_EMPTY,
             icon=ICON_ERRORS_BITMASK,
             accuracy_decimals=0,
-            device_class=DEVICE_CLASS_EMPTY,
-            state_class=STATE_CLASS_MEASUREMENT,
+            device_class=None,
+            entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
         ),
         cv.Optional(CONF_BALANCER_STATUS): sensor.sensor_schema(
             unit_of_measurement=UNIT_EMPTY,
