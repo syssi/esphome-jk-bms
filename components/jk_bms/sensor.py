@@ -553,14 +553,14 @@ CONFIG_SCHEMA = JK_BMS_COMPONENT_SCHEMA.extend(
             unit_of_measurement=UNIT_EMPTY,
             icon=ICON_ERRORS_BITMASK,
             accuracy_decimals=0,
-            device_class=None,
+            device_class=DEVICE_CLASS_EMPTY,
             entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
         ),
         cv.Optional(CONF_OPERATION_MODE_BITMASK): sensor.sensor_schema(
             unit_of_measurement=UNIT_EMPTY,
             icon=ICON_OPERATION_MODE_BITMASK,
             accuracy_decimals=0,
-            device_class=None,
+            device_class=DEVICE_CLASS_EMPTY,
             entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
         ),
         cv.Optional(CONF_TOTAL_VOLTAGE_OVERVOLTAGE_PROTECTION): sensor.sensor_schema(
