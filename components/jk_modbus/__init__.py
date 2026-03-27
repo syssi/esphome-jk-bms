@@ -6,6 +6,7 @@ from esphome.const import CONF_ADDRESS, CONF_FLOW_CONTROL_PIN, CONF_ID
 from esphome.cpp_helpers import gpio_pin_expression
 
 DEPENDENCIES = ["uart"]
+CODEOWNERS = ["@syssi"]
 MULTI_CONF = True
 
 jk_modbus_ns = cg.esphome_ns.namespace("jk_modbus")
