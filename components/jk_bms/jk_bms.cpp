@@ -345,18 +345,16 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
 
   // 0xB2 0x31 0x32 0x33 0x34 0x35 0x36 0x00 0x00 0x00 0x00: Modify parameter password
   auto password_begin = data.begin() + offset + 25 + 3 * 38;
-  this->publish_state_(
-      this->password_text_sensor_,
-      std::string(password_begin, std::find(password_begin, data.begin() + offset + 35 + 3 * 38, '\0')));
+  this->publish_state_(this->password_text_sensor_,
+                       std::string(password_begin, std::find(password_begin, password_begin + 10, '\0')));
 
   // 0xB3 0x00: Dedicated charger switch                                     1 (on)         Bool       0 (off), 1 (on)
   this->publish_state_(this->dedicated_charger_switch_binary_sensor_, (bool) data[offset + 36 + 3 * 38]);
 
   // 0xB4 0x49 0x6E 0x70 0x75 0x74 0x20 0x55 0x73: Device ID code
   auto device_type_begin = data.begin() + offset + 38 + 3 * 38;
-  this->publish_state_(
-      this->device_type_text_sensor_,
-      std::string(device_type_begin, std::find(device_type_begin, data.begin() + offset + 46 + 3 * 38, '\0')));
+  this->publish_state_(this->device_type_text_sensor_,
+                       std::string(device_type_begin, std::find(device_type_begin, device_type_begin + 8, '\0')));
 
   // 0xB5 0x32 0x31 0x30 0x31: Date of manufacture
   // 0xB6 0x00 0x00 0xE2 0x00: System working hours
@@ -367,9 +365,9 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
   // 0xB7 0x48 0x36 0x2E 0x58 0x5F 0x5F 0x53
   //      0x36 0x2E 0x31 0x2E 0x33 0x53 0x5F 0x5F: Software version number
   auto software_version_begin = data.begin() + offset + 51 + 3 * 40;
-  this->publish_state_(this->software_version_text_sensor_,
-                       std::string(software_version_begin,
-                                   std::find(software_version_begin, data.begin() + offset + 51 + 3 * 45, '\0')));
+  this->publish_state_(
+      this->software_version_text_sensor_,
+      std::string(software_version_begin, std::find(software_version_begin, software_version_begin + 15, '\0')));
 
   // 0xB8 0x00: Whether to start current calibration
   // 0xB9 0x00 0x00 0x00 0x00: Actual battery capacity
@@ -380,9 +378,8 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
   // 0xBA 0x42 0x54 0x33 0x30 0x37 0x32 0x30 0x32 0x30 0x31 0x32 0x30
   //      0x30 0x30 0x30 0x32 0x30 0x30 0x35 0x32 0x31 0x30 0x30 0x31: Manufacturer ID naming
   auto manufacturer_begin = data.begin() + offset + 59 + 3 * 45;
-  this->publish_state_(
-      this->manufacturer_text_sensor_,
-      std::string(manufacturer_begin, std::find(manufacturer_begin, data.begin() + offset + 83 + 3 * 45, '\0')));
+  this->publish_state_(this->manufacturer_text_sensor_,
+                       std::string(manufacturer_begin, std::find(manufacturer_begin, manufacturer_begin + 24, '\0')));
 
   // 0xC0 0x01: Protocol version number
   this->publish_state_(this->protocol_version_sensor_, (float) data[offset + 84 + 3 * 45]);

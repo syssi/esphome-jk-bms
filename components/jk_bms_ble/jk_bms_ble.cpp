@@ -1336,13 +1336,13 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
   auto hardware_version_begin = data.begin() + 22;
   this->publish_state_(
       this->hardware_version_text_sensor_,
-      std::string(hardware_version_begin, std::find(hardware_version_begin, data.begin() + 22 + 8, '\0')));
+      std::string(hardware_version_begin, std::find(hardware_version_begin, hardware_version_begin + 8, '\0')));
 
   // 30    8   0x31 0x34 0x2E 0x32 0x30 0x00 0x00 0x00    Software version
   auto software_version_begin = data.begin() + 30;
   this->publish_state_(
       this->software_version_text_sensor_,
-      std::string(software_version_begin, std::find(software_version_begin, data.begin() + 30 + 8, '\0')));
+      std::string(software_version_begin, std::find(software_version_begin, software_version_begin + 8, '\0')));
 
   // 38    4   0x54 0xE6 0x01 0x00
   ESP_LOGI(TAG, "  Uptime: %lu s", (unsigned long) jk_get_32bit(38));
