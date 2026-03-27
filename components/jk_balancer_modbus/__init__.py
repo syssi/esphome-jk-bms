@@ -4,6 +4,7 @@ import esphome.config_validation as cv
 from esphome.const import CONF_ADDRESS, CONF_ID
 
 DEPENDENCIES = ["uart"]
+CODEOWNERS = ["@syssi"]
 MULTI_CONF = True
 
 jk_balancer_modbus_ns = cg.esphome_ns.namespace("jk_balancer_modbus")
