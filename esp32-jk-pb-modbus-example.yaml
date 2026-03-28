@@ -49,6 +49,7 @@ substitutions:
 
 esphome:
   name: ${name}
+  friendly_name: ${name}
   comment: ${device_description}
   project:
     name: "syssi.esphome-jk-bms"
@@ -117,25 +118,25 @@ modbus_controller:
 binary_sensor:
   - platform: template
     id: charging
-    name: "${name} charging"
+    name: "charging"
     lambda: |-
       return id(charging_raw).state == 1;
 
   - platform: template
     id: discharging
-    name: "${name} discharging"
+    name: "discharging"
     lambda: |-
       return id(discharging_raw).state == 1;
 
   - platform: template
     id: balancing
-    name: "${name} balancing"
+    name: "balancing"
     lambda: |-
       return id(balancing_raw).state == 1;
 
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} charging float mode"
+    name: "charging float mode"
     address: 0x1114
     register_type: holding
     bitmask: 0x0200
@@ -144,7 +145,7 @@ sensor:
   # 0x1000 0 UINT32 4 RW    VolSmartSleep    mV
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} smart sleep"
+    name: "smart sleep"
     address: 0x1000
     register_type: holding
     value_type: U_DWORD
@@ -161,7 +162,7 @@ sensor:
   # 0x1004 4 UINT32 4 RW    VolCellUV       mV
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} cell UVP"
+    name: "cell UVP"
     address: 0x1004
     register_type: holding
     value_type: U_DWORD
@@ -178,7 +179,7 @@ sensor:
   # 0x1008 8 UINT32 4 RW    VolCellUVPR     mV
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} cell UVPR"
+    name: "cell UVPR"
     address: 0x1008
     register_type: holding
     value_type: U_DWORD
@@ -195,7 +196,7 @@ sensor:
   # 0x100C 12  UINT32 4 RW    VolCellOV        mV
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} cell OVP"
+    name: "cell OVP"
     address: 0x100C
     register_type: holding
     value_type: U_DWORD
@@ -212,7 +213,7 @@ sensor:
   # 0x1010 16  UINT32 4 RW    VolCellOVPR      mV
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} cell OVPR"
+    name: "cell OVPR"
     address: 0x1010
     register_type: holding
     value_type: U_DWORD
@@ -229,7 +230,7 @@ sensor:
   # 0x1014 20  UINT32 4 RW    VolBalanTrig     mV
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} start balance trigger"
+    name: "start balance trigger"
     address: 0x1014
     register_type: holding
     value_type: U_DWORD
@@ -246,7 +247,7 @@ sensor:
   # 0x1018 24  UINT32 4 RW    VolSOC100%       mV
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} sOC-100%"
+    name: "sOC-100%"
     address: 0x1018
     register_type: holding
     value_type: U_DWORD
@@ -263,7 +264,7 @@ sensor:
   # 0x101C 28  UINT32 4 RW    VolSOC0%         mV
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} sOC-0%"
+    name: "sOC-0%"
     address: 0x101C
     register_type: holding
     value_type: U_DWORD
@@ -280,7 +281,7 @@ sensor:
   # 0x1020 32  UINT32 4 RW    VolCellRCV       mV
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} cell RCV"
+    name: "cell RCV"
     address: 0x1020
     register_type: holding
     value_type: U_DWORD
@@ -297,7 +298,7 @@ sensor:
   # 0x1024 36  UINT32 4 RW    VolCellRFV       mV
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} cell RFV"
+    name: "cell RFV"
     address: 0x1024
     register_type: holding
     value_type: U_DWORD
@@ -314,7 +315,7 @@ sensor:
   # 0x1028 40  UINT32 4 RW    VolSysPwrOff     mV
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} system power off"
+    name: "system power off"
     address: 0x1028
     register_type: holding
     value_type: U_DWORD
@@ -331,7 +332,7 @@ sensor:
   # 0x102C 44  UINT32 4 RW    CurBatCOC        mA
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} continued charge current"
+    name: "continued charge current"
     address: 0x102C
     register_type: holding
     value_type: U_DWORD
@@ -348,7 +349,7 @@ sensor:
   # 0x1030 48  UINT32 4 RW    TIMBatCOCPDly    S
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} charge OCP delay"
+    name: "charge OCP delay"
     address: 0x1030
     register_type: holding
     value_type: U_DWORD
@@ -363,7 +364,7 @@ sensor:
   # 0x1034 52  UINT32 4 RW    TIMBatCOCPRDly   S
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} charge OCPR time"
+    name: "charge OCPR time"
     address: 0x1034
     register_type: holding
     value_type: U_DWORD
@@ -378,7 +379,7 @@ sensor:
   # 0x1038 56  UINT32 4 RW    CurBatDcOC       mA
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} continued discharge current"
+    name: "continued discharge current"
     address: 0x1038
     register_type: holding
     value_type: U_DWORD
@@ -395,7 +396,7 @@ sensor:
   # 0x103C 60  UINT32 4 RW    TIMBatDcOCPDly   S
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} discharge OCP delay"
+    name: "discharge OCP delay"
     address: 0x103C
     register_type: holding
     value_type: U_DWORD
@@ -410,7 +411,7 @@ sensor:
   # 0x1040 64  UINT32 4 RW    TIMBatDcOCPRDly  S
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} discharge OCPR time"
+    name: "discharge OCPR time"
     address: 0x1040
     register_type: holding
     value_type: U_DWORD
@@ -425,7 +426,7 @@ sensor:
   # 0x1044 68  UINT32 4 RW    TIMBatSCPRDly    S
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} sCPR time"
+    name: "sCPR time"
     address: 0x1044
     register_type: holding
     value_type: U_DWORD
@@ -440,7 +441,7 @@ sensor:
   # 0x1048 72  UINT32 4 RW    CurBalanMax      mA
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} max balance current"
+    name: "max balance current"
     address: 0x1048
     register_type: holding
     value_type: U_DWORD
@@ -457,7 +458,7 @@ sensor:
   # 0x104C 76  INT32  4 RW    TMPBatCOT        0.1℃
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} charge OTP"
+    name: "charge OTP"
     address: 0x104C
     register_type: holding
     value_type: S_DWORD
@@ -474,7 +475,7 @@ sensor:
   # 0x1050 80  INT32  4 RW    TMPBatCOTPR      0.1℃
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} charge OTPR"
+    name: "charge OTPR"
     address: 0x1050
     register_type: holding
     value_type: S_DWORD
@@ -491,7 +492,7 @@ sensor:
   # 0x1054 84  INT32  4 RW    TMPBatDcOT       0.1℃
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} discharge OTP"
+    name: "discharge OTP"
     address: 0x1054
     register_type: holding
     value_type: S_DWORD
@@ -508,7 +509,7 @@ sensor:
   # 0x1058 88  INT32  4 RW    TMPBatDcOTPR     0.1℃
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} discharge OTPR"
+    name: "discharge OTPR"
     address: 0x1058
     register_type: holding
     value_type: S_DWORD
@@ -525,7 +526,7 @@ sensor:
   # 0x105C 92  INT32  4 RW    TMPBatCUT        0.1℃
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} charge UTP"
+    name: "charge UTP"
     address: 0x105C
     register_type: holding
     value_type: S_DWORD
@@ -542,7 +543,7 @@ sensor:
   # 0x1060 96  INT32  4 RW    TMPBatCUTPR      0.1℃
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} charge UTPR"
+    name: "charge UTPR"
     address: 0x1060
     register_type: holding
     value_type: S_DWORD
@@ -559,7 +560,7 @@ sensor:
   # 0x1064 100 INT32  4 RW    TMPMosOT         0.1℃
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} mOS OTP"
+    name: "mOS OTP"
     address: 0x1064
     register_type: holding
     value_type: S_DWORD
@@ -576,7 +577,7 @@ sensor:
   # 0x1068 104 INT32  4 RW    TMPMosOTPR       0.1℃
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} mOS OTPR"
+    name: "mOS OTPR"
     address: 0x1068
     register_type: holding
     value_type: S_DWORD
@@ -593,7 +594,7 @@ sensor:
   # 0x106C 108 UINT32 4 RW    CellCount
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} cell count"
+    name: "cell count"
     address: 0x106C
     register_type: holding
     value_type: U_DWORD
@@ -605,7 +606,7 @@ sensor:
   # 0x107C 124 UINT32 4 RW    CapBatCell       mAH
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} battery capacity"
+    name: "battery capacity"
     address: 0x107C
     register_type: holding
     value_type: U_DWORD
@@ -622,7 +623,7 @@ sensor:
   # 0x1080 128 UINT32 4 RW    SCPDelay         us
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} sCP delay"
+    name: "sCP delay"
     address: 0x1080
     register_type: holding
     value_type: U_DWORD
@@ -637,7 +638,7 @@ sensor:
   # 0x1084 132 UINT32 4 RW    VolStartBalan    mV
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} start balance"
+    name: "start balance"
     address: 0x1084
     register_type: holding
     value_type: U_DWORD
@@ -656,7 +657,7 @@ sensor:
   # 0x1200    0    UINT16    2    R    CellVol0    mV
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} cell voltage 1"
+    name: "cell voltage 1"
     address: 0x1200
     register_type: holding
     value_type: U_WORD
@@ -672,7 +673,7 @@ sensor:
   # 0x1202    2    UINT16    2    R    CellVol1    mV
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} cell voltage 2"
+    name: "cell voltage 2"
     address: 0x1202
     register_type: holding
     value_type: U_WORD
@@ -688,7 +689,7 @@ sensor:
   # 0x1204    4    UINT16    2    R    CellVol2    mV
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} cell voltage 3"
+    name: "cell voltage 3"
     address: 0x1204
     register_type: holding
     value_type: U_WORD
@@ -704,7 +705,7 @@ sensor:
   # 0x1206    6    UINT16    2    R    CellVol3    mV
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} cell voltage 4"
+    name: "cell voltage 4"
     address: 0x1206
     register_type: holding
     value_type: U_WORD
@@ -720,7 +721,7 @@ sensor:
   # 0x1208    8    UINT16    2    R    CellVol4    mV
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} cell voltage 5"
+    name: "cell voltage 5"
     address: 0x1208
     register_type: holding
     value_type: U_WORD
@@ -736,7 +737,7 @@ sensor:
   # 0x120A   10    UINT16    2    R    CellVol5    mV
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} cell voltage 6"
+    name: "cell voltage 6"
     address: 0x120A
     register_type: holding
     value_type: U_WORD
@@ -752,7 +753,7 @@ sensor:
   # 0x120C   12    UINT16    2    R    CellVol6    mV
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} cell voltage 7"
+    name: "cell voltage 7"
     address: 0x120C
     register_type: holding
     value_type: U_WORD
@@ -768,7 +769,7 @@ sensor:
   # 0x120E   14    UINT16    2    R    CellVol7    mV
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} cell voltage 8"
+    name: "cell voltage 8"
     address: 0x120E
     register_type: holding
     value_type: U_WORD
@@ -787,7 +788,7 @@ sensor:
   # 0x1210   16    UINT16    2    R    CellVol8    mV
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} cell voltage 9"
+    name: "cell voltage 9"
     address: 0x1210
     register_type: holding
     value_type: U_WORD
@@ -803,7 +804,7 @@ sensor:
   # 0x1212   18    UINT16    2    R    CellVol9    mV
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} cell voltage 10"
+    name: "cell voltage 10"
     address: 0x1212
     register_type: holding
     value_type: U_WORD
@@ -819,7 +820,7 @@ sensor:
   # 0x1214   20    UINT16    2    R    CellVol10    mV
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} cell voltage 11"
+    name: "cell voltage 11"
     address: 0x1214
     register_type: holding
     value_type: U_WORD
@@ -835,7 +836,7 @@ sensor:
   # 0x1216   22    UINT16    2    R    CellVol11    mV
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} cell voltage 12"
+    name: "cell voltage 12"
     address: 0x1216
     register_type: holding
     value_type: U_WORD
@@ -851,7 +852,7 @@ sensor:
   # 0x1218   24    UINT16    2    R    CellVol12    mV
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} cell voltage 13"
+    name: "cell voltage 13"
     address: 0x1218
     register_type: holding
     value_type: U_WORD
@@ -867,7 +868,7 @@ sensor:
   # 0x121A   26    UINT16    2    R    CellVol13    mV
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} cell voltage 14"
+    name: "cell voltage 14"
     address: 0x121A
     register_type: holding
     value_type: U_WORD
@@ -883,7 +884,7 @@ sensor:
   # 0x121C   28    UINT16    2    R    CellVol14    mV
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} cell voltage 15"
+    name: "cell voltage 15"
     address: 0x121C
     register_type: holding
     value_type: U_WORD
@@ -899,7 +900,7 @@ sensor:
   # 0x121E   30    UINT16    2    R    CellVol15    mV
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} cell voltage 16"
+    name: "cell voltage 16"
     address: 0x121E
     register_type: holding
     value_type: U_WORD
@@ -917,7 +918,7 @@ sensor:
   # 0x1246   70    UINT16    2    R    CellVoltageDifferenceMax    mV
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} delta cell voltage"
+    name: "delta cell voltage"
     address: 0x1246
     register_type: holding
     value_type: U_WORD
@@ -933,7 +934,7 @@ sensor:
   # 0x1248   72    UINT8/UINT8 2  R    MaxVolCellNbr / MinVolCellNbr
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} max voltage cell number"
+    name: "max voltage cell number"
     address: 0x1248
     register_type: holding
     value_type: U_WORD
@@ -948,7 +949,7 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} min voltage cell number"
+    name: "min voltage cell number"
     address: 0x1248
     register_type: holding
     value_type: U_WORD
@@ -969,7 +970,7 @@ sensor:
   # 0x124A   74    UINT16    2    R    CellWireRes0    mΩ
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} cell 1 wire resistance"
+    name: "cell 1 wire resistance"
     address: 0x124A
     register_type: holding
     value_type: U_WORD
@@ -984,7 +985,7 @@ sensor:
   # 0x124C   76    UINT16    2    R    CellWireRes1    mΩ
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} cell 2 wire resistance"
+    name: "cell 2 wire resistance"
     address: 0x124C
     register_type: holding
     value_type: U_WORD
@@ -999,7 +1000,7 @@ sensor:
   # 0x124E   78    UINT16    2    R    CellWireRes2    mΩ
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} cell 3 wire resistance"
+    name: "cell 3 wire resistance"
     address: 0x124E
     register_type: holding
     value_type: U_WORD
@@ -1014,7 +1015,7 @@ sensor:
   # 0x1250   80    UINT16    2    R    CellWireRes3    mΩ
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} cell 4 wire resistance"
+    name: "cell 4 wire resistance"
     address: 0x1250
     register_type: holding
     value_type: U_WORD
@@ -1029,7 +1030,7 @@ sensor:
   # 0x1252   82    UINT16    2    R    CellWireRes4    mΩ
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} cell 5 wire resistance"
+    name: "cell 5 wire resistance"
     address: 0x1252
     register_type: holding
     value_type: U_WORD
@@ -1044,7 +1045,7 @@ sensor:
   # 0x1254   84    UINT16    2    R    CellWireRes5    mΩ
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} cell 6 wire resistance"
+    name: "cell 6 wire resistance"
     address: 0x1254
     register_type: holding
     value_type: U_WORD
@@ -1059,7 +1060,7 @@ sensor:
   # 0x1256   86    UINT16    2    R    CellWireRes6    mΩ
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} cell 7 wire resistance"
+    name: "cell 7 wire resistance"
     address: 0x1256
     register_type: holding
     value_type: U_WORD
@@ -1074,7 +1075,7 @@ sensor:
   # 0x1258   88    UINT16    2    R    CellWireRes7    mΩ
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} cell 8 wire resistance"
+    name: "cell 8 wire resistance"
     address: 0x1258
     register_type: holding
     value_type: U_WORD
@@ -1089,7 +1090,7 @@ sensor:
   # 0x125A   90    UINT16    2    R    CellWireRes8    mΩ
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} cell 9 wire resistance"
+    name: "cell 9 wire resistance"
     address: 0x125A
     register_type: holding
     value_type: U_WORD
@@ -1104,7 +1105,7 @@ sensor:
   # 0x125C   92    UINT16    2    R    CellWireRes9    mΩ
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} cell 10 wire resistance"
+    name: "cell 10 wire resistance"
     address: 0x125C
     register_type: holding
     value_type: U_WORD
@@ -1119,7 +1120,7 @@ sensor:
   # 0x125E   94    UINT16    2    R    CellWireRes10   mΩ
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} cell 11 wire resistance"
+    name: "cell 11 wire resistance"
     address: 0x125E
     register_type: holding
     value_type: U_WORD
@@ -1134,7 +1135,7 @@ sensor:
   # 0x1260   96    UINT16    2    R    CellWireRes11   mΩ
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} cell 12 wire resistance"
+    name: "cell 12 wire resistance"
     address: 0x1260
     register_type: holding
     value_type: U_WORD
@@ -1149,7 +1150,7 @@ sensor:
   # 0x1262   98    UINT16    2    R    CellWireRes12   mΩ
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} cell 13 wire resistance"
+    name: "cell 13 wire resistance"
     address: 0x1262
     register_type: holding
     value_type: U_WORD
@@ -1164,7 +1165,7 @@ sensor:
   # 0x1264   100   UINT16    2    R    CellWireRes13   mΩ
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} cell 14 wire resistance"
+    name: "cell 14 wire resistance"
     address: 0x1264
     register_type: holding
     value_type: U_WORD
@@ -1179,7 +1180,7 @@ sensor:
   # 0x1266   102   UINT16    2    R    CellWireRes14   mΩ
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} cell 15 wire resistance"
+    name: "cell 15 wire resistance"
     address: 0x1266
     register_type: holding
     value_type: U_WORD
@@ -1194,7 +1195,7 @@ sensor:
   # 0x1268   104   UINT16    2    R    CellWireRes15   mΩ
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} cell 16 wire resistance"
+    name: "cell 16 wire resistance"
     address: 0x1268
     register_type: holding
     value_type: U_WORD
@@ -1210,7 +1211,7 @@ sensor:
   # 0x128A   138    INT16    2    R    TempMos         0.1 °C
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} mosfet temperature"
+    name: "mosfet temperature"
     address: 0x128A
     register_type: holding
     value_type: S_WORD
@@ -1228,7 +1229,7 @@ sensor:
   - platform: modbus_controller
     modbus_controller_id: bms0
     id: total_voltage
-    name: "${name} total voltage"
+    name: "total voltage"
     address: 0x1290
     register_type: holding
     value_type: U_DWORD
@@ -1244,7 +1245,7 @@ sensor:
   # 0x1294   148   UINT32    4    R    BatWatt         mW
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} power"
+    name: "power"
     address: 0x1294
     register_type: holding
     value_type: S_DWORD
@@ -1263,7 +1264,7 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} charging power"
+    name: "charging power"
     address: 0x1298
     register_type: holding
     value_type: S_DWORD
@@ -1283,7 +1284,7 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} discharging power"
+    name: "discharging power"
     address: 0x1298
     register_type: holding
     value_type: S_DWORD
@@ -1305,7 +1306,7 @@ sensor:
   - platform: modbus_controller
     modbus_controller_id: bms0
     id: current
-    name: "${name} current"
+    name: "current"
     address: 0x1298
     register_type: holding
     value_type: S_DWORD
@@ -1320,7 +1321,7 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} charging current"
+    name: "charging current"
     address: 0x1298
     register_type: holding
     value_type: S_DWORD
@@ -1340,7 +1341,7 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} discharging current"
+    name: "discharging current"
     address: 0x1298
     register_type: holding
     value_type: S_DWORD
@@ -1361,7 +1362,7 @@ sensor:
   # 0x129C   156    INT16    2    R    TempBat 1       0.1 °C
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} temperature sensor 1"
+    name: "temperature sensor 1"
     address: 0x129C
     register_type: holding
     value_type: S_WORD
@@ -1377,7 +1378,7 @@ sensor:
   # 0x129E   158    INT16    2    R    TempBat 2       0.1 °C
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} temperature sensor 2"
+    name: "temperature sensor 2"
     address: 0x129E
     register_type: holding
     value_type: S_WORD
@@ -1394,7 +1395,7 @@ sensor:
   - platform: modbus_controller
     modbus_controller_id: bms0
     id: alarms_bitmask
-    name: "${name} alarms bitmask"
+    name: "alarms bitmask"
     address: 0x12A0
     register_type: holding
     value_type: U_DWORD
@@ -1407,7 +1408,7 @@ sensor:
   # 0x12A4   164    INT16    2    R    BalanCurrent    mA
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} balance current"
+    name: "balance current"
     address: 0x12A4
     register_type: holding
     value_type: S_WORD
@@ -1423,7 +1424,7 @@ sensor:
   # 0x12A6   166 UINT8+UINT8 2    R    BalanStatatus (2:放电; 1:充电 ; 0:关闭) / SOCStateOfcharge %
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} state of charge"
+    name: "state of charge"
     address: 0x12A6
     register_type: holding
     value_type: U_WORD
@@ -1447,7 +1448,7 @@ sensor:
   # 0x12A8   168    INT32    2    R    SOCCapRemain    mAH
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} capacity remaining derived"
+    name: "capacity remaining derived"
     address: 0x12A8
     register_type: holding
     value_type: U_DWORD
@@ -1463,7 +1464,7 @@ sensor:
   # 0x12AC   172   UINT32    4    R    SOCFullChargeCap    mAH
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} actual battery capacity"
+    name: "actual battery capacity"
     address: 0x12AC
     register_type: holding
     value_type: U_DWORD
@@ -1479,7 +1480,7 @@ sensor:
   # 0x12B0   176   UINT32    4    R    SOCCycleCount   次
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} charging cycles"
+    name: "charging cycles"
     address: 0x12B0
     register_type: holding
     value_type: U_DWORD
@@ -1491,7 +1492,7 @@ sensor:
   # 0x12B4   180   UINT32    4    R    SOCCycleCap     mAH
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} total charging cycle capacity"
+    name: "total charging cycle capacity"
     address: 0x12B4
     register_type: holding
     value_type: U_DWORD
@@ -1506,7 +1507,7 @@ sensor:
   # 0x12B8   184 UINT8+UINT8 2    R    StateOfHealth % / Precharge stats (1:打开 ; 0:关闭)
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} state of health"
+    name: "state of health"
     address: 0x12B8
     register_type: holding
     value_type: U_WORD
@@ -1523,7 +1524,7 @@ sensor:
   # 0x12BC   188   UINT32    4    R    RunTime         S
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} total runtime in seconds"
+    name: "total runtime in seconds"
     address: 0x12BC
     register_type: holding
     value_type: U_DWORD
@@ -1571,7 +1572,7 @@ sensor:
   # 0x12C4   196   UINT16    2    R    TimeDcOCPR      S
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} disacharge OCPR left"
+    name: "disacharge OCPR left"
     address: 0x12C4
     register_type: holding
     value_type: U_WORD
@@ -1585,7 +1586,7 @@ sensor:
   # 0x12C6   198   UINT16    2    R    TimeDcSCPR      S
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} disacharge SCPR left"
+    name: "disacharge SCPR left"
     address: 0x12C6
     register_type: holding
     value_type: U_WORD
@@ -1597,7 +1598,7 @@ sensor:
   # 0x12C8   200   UINT16    2    R    TimeCOCPR       S
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} charge OCPR left"
+    name: "charge OCPR left"
     address: 0x12C8
     register_type: holding
     value_type: U_WORD
@@ -1611,7 +1612,7 @@ sensor:
   # 0x12CA   202   UINT16    2    R    TimeCSCPR       S
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} charge SCPR left"
+    name: "charge SCPR left"
     address: 0x12CA
     register_type: holding
     value_type: U_WORD
@@ -1625,7 +1626,7 @@ sensor:
   # 0x12CC   204   UINT16    2    R    TimeUVPR        S
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} uVPR left"
+    name: "uVPR left"
     address: 0x12CC
     register_type: holding
     value_type: U_WORD
@@ -1639,7 +1640,7 @@ sensor:
   # 0x12CE   206   UINT16    2    R    TimeOVPR        S
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} oVPR left"
+    name: "oVPR left"
     address: 0x12CE
     register_type: holding
     value_type: U_WORD
@@ -1661,7 +1662,7 @@ sensor:
   # 0x12E6   230   INT16     2    R    HeatCurrent     mA
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} heating current"
+    name: "heating current"
     address: 0x12E6
     register_type: holding
     value_type: S_WORD
@@ -1679,7 +1680,7 @@ sensor:
   # 0x12F8   248   INT16     2    R    TempBat 3       0.1℃
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} temperature sensor 3"
+    name: "temperature sensor 3"
     address: 0x12F8
     register_type: holding
     value_type: S_WORD
@@ -1695,7 +1696,7 @@ sensor:
   # 0x12FA   248   INT16     2    R    TempBat 4       0.1℃
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} temperature sensor 4"
+    name: "temperature sensor 4"
     address: 0x12FA
     register_type: holding
     value_type: S_WORD
@@ -1712,7 +1713,7 @@ sensor:
   - platform: modbus_controller
     modbus_controller_id: bms0
     id: jkbms_bat_temp4
-    name: "${name} temperature sensor 5"
+    name: "temperature sensor 5"
     address: 0x12FC
     register_type: holding
     value_type: S_WORD
@@ -1730,7 +1731,7 @@ sensor:
   # 0x1504   260 UINT8+UINT8 2    RW    RCV Time / RFV Time 0.1 H
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} rCV Time"
+    name: "rCV Time"
     address: 0x1504
     register_type: holding
     value_type: U_WORD
@@ -1746,7 +1747,7 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} rFV Time"
+    name: "rFV Time"
     address: 0x1504
     register_type: holding
     value_type: U_WORD
@@ -1763,7 +1764,7 @@ sensor:
 select:
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} charging"
+    name: "charging"
     icon: "mdi:battery-charging-100"
     address: 0x1070
     value_type: U_DWORD
@@ -1774,7 +1775,7 @@ select:
 
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} discharging"
+    name: "discharging"
     icon: "mdi:power-plug-battery"
     address: 0x1074
     value_type: U_DWORD
@@ -1785,7 +1786,7 @@ select:
 
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} balancing"
+    name: "balancing"
     icon: mdi:scale-balance
     address: 0x1078
     value_type: U_DWORD
@@ -1797,7 +1798,7 @@ select:
 text_sensor:
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "${name} setup passcode"
+    name: "setup passcode"
     register_type: holding
     address: 0x1470  # 0x1400 base + 0x0070 offset
     register_count: 8
@@ -1805,7 +1806,7 @@ text_sensor:
     raw_encode: ANSI
 
   - platform: template
-    name: "${name} total runtime formatted"
+    name: "total runtime formatted"
     update_interval: 60s
     lambda: |-
       std::string value = "Unknown";
@@ -1823,7 +1824,7 @@ text_sensor:
 
   - platform: template
     id: alarms
-    name: "${name} alarms"
+    name: "alarms"
     update_interval: never
     lambda: |-
       static const uint8_t alarms_size = 22;

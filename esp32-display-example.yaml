@@ -22,6 +22,7 @@ substitutions:
 
 esphome:
   name: ${name}
+  friendly_name: ${name}
   comment: ${device_description}
   project:
     name: "syssi.esphome-jk-bms"
@@ -68,107 +69,107 @@ jk_bms_display:
 binary_sensor:
   - platform: jk_bms_display
     system_warning:
-      name: "${name} system warning"
+      name: "system warning"
     balancing_switch:
-      name: "${name} balancing switch"
+      name: "balancing switch"
     charging:
-      name: "${name} charging"
+      name: "charging"
     discharging:
-      name: "${name} discharging"
+      name: "discharging"
     cell_voltage_undervoltage_protection:
-      name: "${name} cell voltage undervoltage protection"
+      name: "cell voltage undervoltage protection"
     cell_voltage_overvoltage_protection:
-      name: "${name} cell voltage overvoltage protection"
+      name: "cell voltage overvoltage protection"
     overcurrent_protection:
-      name: "${name} overcurrent protection"
+      name: "overcurrent protection"
     mosfet_overtemperature_protection:
-      name: "${name} mosfet overtemperature protection"
+      name: "mosfet overtemperature protection"
     battery_temperature_protection:
-      name: "${name} battery temperature protection"
+      name: "battery temperature protection"
     short_circuit_protection:
-      name: "${name} short circuit protection"
+      name: "short circuit protection"
     coprocessor_communication_error:
-      name: "${name} coprocessor communication error"
+      name: "coprocessor communication error"
     balancer_wire_resistance_too_high:
-      name: "${name} balancer wire resistance too high"
+      name: "balancer wire resistance too high"
     cell_count_mismatch:
-      name: "${name} cell count mismatch"
+      name: "cell count mismatch"
 
 sensor:
   - platform: jk_bms_display
     total_voltage:
-      name: "${name} total voltage"
+      name: "total voltage"
     current:
-      name: "${name} current"
+      name: "current"
     power:
-      name: "${name} power"
+      name: "power"
     charging_power:
-      name: "${name} charging power"
+      name: "charging power"
     discharging_power:
-      name: "${name} discharging power"
+      name: "discharging power"
     min_cell_voltage:
-      name: "${name} min cell voltage"
+      name: "min cell voltage"
     max_cell_voltage:
-      name: "${name} max cell voltage"
+      name: "max cell voltage"
     min_voltage_cell:
-      name: "${name} min voltage cell"
+      name: "min voltage cell"
     max_voltage_cell:
-      name: "${name} max voltage cell"
+      name: "max voltage cell"
     state_of_charge:
-      name: "${name} state of charge"
+      name: "state of charge"
     delta_cell_voltage:
-      name: "${name} delta cell voltage"
+      name: "delta cell voltage"
     mosfet_temperature:
-      name: "${name} mosfet temperature"
+      name: "mosfet temperature"
     battery_temperature:
-      name: "${name} battery temperature"
+      name: "battery temperature"
     average_cell_voltage:
-      name: "${name} average cell voltage"
+      name: "average cell voltage"
     cell_voltage_1:
-      name: "${name} cell voltage 1"
+      name: "cell voltage 1"
     cell_voltage_2:
-      name: "${name} cell voltage 2"
+      name: "cell voltage 2"
     cell_voltage_3:
-      name: "${name} cell voltage 3"
+      name: "cell voltage 3"
     cell_voltage_4:
-      name: "${name} cell voltage 4"
+      name: "cell voltage 4"
     cell_voltage_5:
-      name: "${name} cell voltage 5"
+      name: "cell voltage 5"
     cell_voltage_6:
-      name: "${name} cell voltage 6"
+      name: "cell voltage 6"
     cell_voltage_7:
-      name: "${name} cell voltage 7"
+      name: "cell voltage 7"
     cell_voltage_8:
-      name: "${name} cell voltage 8"
+      name: "cell voltage 8"
     cell_voltage_9:
-      name: "${name} cell voltage 9"
+      name: "cell voltage 9"
     cell_voltage_10:
-      name: "${name} cell voltage 10"
+      name: "cell voltage 10"
     cell_voltage_11:
-      name: "${name} cell voltage 11"
+      name: "cell voltage 11"
     cell_voltage_12:
-      name: "${name} cell voltage 12"
+      name: "cell voltage 12"
     cell_voltage_13:
-      name: "${name} cell voltage 13"
+      name: "cell voltage 13"
     cell_voltage_14:
-      name: "${name} cell voltage 14"
+      name: "cell voltage 14"
     cell_voltage_15:
-      name: "${name} cell voltage 15"
+      name: "cell voltage 15"
     cell_voltage_16:
-      name: "${name} cell voltage 16"
+      name: "cell voltage 16"
     cell_voltage_17:
-      name: "${name} cell voltage 17"
+      name: "cell voltage 17"
     cell_voltage_18:
-      name: "${name} cell voltage 18"
+      name: "cell voltage 18"
     cell_voltage_19:
-      name: "${name} cell voltage 19"
+      name: "cell voltage 19"
     cell_voltage_20:
-      name: "${name} cell voltage 20"
+      name: "cell voltage 20"
     cell_voltage_21:
-      name: "${name} cell voltage 21"
+      name: "cell voltage 21"
     cell_voltage_22:
-      name: "${name} cell voltage 22"
+      name: "cell voltage 22"
     cell_voltage_23:
-      name: "${name} cell voltage 23"
+      name: "cell voltage 23"
     cell_voltage_24:
-      name: "${name} cell voltage 24"
+      name: "cell voltage 24"
