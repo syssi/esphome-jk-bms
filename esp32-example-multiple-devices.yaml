@@ -81,32 +81,32 @@ binary_sensor:
   - platform: jk_bms
     jk_bms_id: bms0
     balancing:
-      name: "${bms0} balancing"
+      name: "balancing"
       device_id: device0
     charging:
-      name: "${bms0} charging"
+      name: "charging"
       device_id: device0
     discharging:
-      name: "${bms0} discharging"
+      name: "discharging"
       device_id: device0
     online_status:
-      name: "${bms0} online status"
+      name: "online status"
       device_id: device0
     # ...
 
   - platform: jk_bms
     jk_bms_id: bms1
     balancing:
-      name: "${bms1} balancing"
+      name: "balancing"
       device_id: device1
     charging:
-      name: "${bms1} charging"
+      name: "charging"
       device_id: device1
     discharging:
-      name: "${bms1} discharging"
+      name: "discharging"
       device_id: device1
     online_status:
-      name: "${bms1} online status"
+      name: "online status"
       device_id: device1
     # ...
 
@@ -114,44 +114,44 @@ sensor:
   - platform: jk_bms
     jk_bms_id: bms0
     delta_cell_voltage:
-      name: "${bms0} delta cell voltage"
+      name: "delta cell voltage"
       device_id: device0
     average_cell_voltage:
-      name: "${bms0} average cell voltage"
+      name: "average cell voltage"
       device_id: device0
     power_tube_temperature:
-      name: "${bms0} power tube temperature"
+      name: "power tube temperature"
       device_id: device0
     total_voltage:
-      name: "${bms0} total voltage"
+      name: "total voltage"
       device_id: device0
     current:
-      name: "${bms0} current"
+      name: "current"
       device_id: device0
     power:
-      name: "${bms0} power"
+      name: "power"
       device_id: device0
     # ...
 
   - platform: jk_bms
     jk_bms_id: bms1
     delta_cell_voltage:
-      name: "${bms1} delta cell voltage"
+      name: "delta cell voltage"
       device_id: device1
     average_cell_voltage:
-      name: "${bms1} average cell voltage"
+      name: "average cell voltage"
       device_id: device1
     power_tube_temperature:
-      name: "${bms1} power tube temperature"
+      name: "power tube temperature"
       device_id: device1
     total_voltage:
-      name: "${bms1} total voltage"
+      name: "total voltage"
       device_id: device1
     current:
-      name: "${bms1} current"
+      name: "current"
       device_id: device1
     power:
-      name: "${bms1} power"
+      name: "power"
       device_id: device1
     # ...
 
@@ -159,44 +159,44 @@ switch:
   - platform: jk_bms
     jk_bms_id: bms0
     charging:
-      name: "${bms0} charging"
+      name: "charging"
       device_id: device0
     discharging:
-      name: "${bms0} discharging"
+      name: "discharging"
       device_id: device0
 
   - platform: jk_bms
     jk_bms_id: bms1
     charging:
-      name: "${bms1} charging"
+      name: "charging"
       device_id: device1
     discharging:
-      name: "${bms1} discharging"
+      name: "discharging"
       device_id: device1
 
 text_sensor:
   - platform: jk_bms
     jk_bms_id: bms0
     errors:
-      name: "${bms0} errors"
+      name: "errors"
       device_id: device0
     operation_mode:
-      name: "${bms0} operation mode"
+      name: "operation mode"
       device_id: device0
     total_runtime_formatted:
-      name: "${bms0} total runtime formatted"
+      name: "total runtime formatted"
       device_id: device0
     # ...
 
   - platform: jk_bms
     jk_bms_id: bms1
     errors:
-      name: "${bms1} errors"
+      name: "errors"
       device_id: device1
     operation_mode:
-      name: "${bms1} operation mode"
+      name: "operation mode"
       device_id: device1
     total_runtime_formatted:
-      name: "${bms1} total runtime formatted"
+      name: "total runtime formatted"
       device_id: device1
     # ...
