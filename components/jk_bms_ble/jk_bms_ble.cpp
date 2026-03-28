@@ -307,7 +307,7 @@ void JkBmsBle::assemble(const uint8_t *data, uint16_t length) {
   }
 
   // Flush buffer on every preamble
-  if (data[0] == 0x55 && data[1] == 0xAA && data[2] == 0xEB && data[3] == 0x90) {
+  if (length >= 4 && data[0] == 0x55 && data[1] == 0xAA && data[2] == 0xEB && data[3] == 0x90) {
     this->frame_buffer_.clear();
   }
 
