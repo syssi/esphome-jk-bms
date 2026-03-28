@@ -63,191 +63,191 @@ binary_sensor:
   - platform: heltec_balancer_ble
     heltec_balancer_ble_id: balancer0
     balancing:
-      name: "${name} balancing"
+      name: "balancing"
     online_status:
-      name: "${name} online status"
+      name: "online status"
 
 button:
   - platform: heltec_balancer_ble
     heltec_balancer_ble_id: balancer0
     retrieve_settings:
-      name: "${name} retrieve settings"
+      name: "retrieve settings"
       id: retrieve_settings_button0
     retrieve_device_info:
-      name: "${name} retrieve device info"
+      name: "retrieve device info"
     retrieve_factory_defaults:
-      name: "${name} retrieve factory defaults"
+      name: "retrieve factory defaults"
 
 number:
   - platform: heltec_balancer_ble
     heltec_balancer_ble_id: balancer0
     cell_count:
-      name: "${name} cell count"
+      name: "cell count"
     balance_trigger_voltage:
-      name: "${name} balance trigger voltage"
+      name: "balance trigger voltage"
     max_balance_current:
-      name: "${name} max balance current"
+      name: "max balance current"
     balance_sleep_voltage:
-      name: "${name} balance sleep voltage"
+      name: "balance sleep voltage"
     balance_start_voltage:
-      name: "${name} balance start voltage"
+      name: "balance start voltage"
     balance_stop_diff_voltage:
-      name: "${name} balance stop diff voltage"
+      name: "balance stop diff voltage"
     nominal_battery_capacity:
-      name: "${name} nominal battery capacity"
+      name: "nominal battery capacity"
 
 sensor:
   - platform: heltec_balancer_ble
     heltec_balancer_ble_id: balancer0
     min_cell_voltage:
-      name: "${name} min cell voltage"
+      name: "min cell voltage"
     max_cell_voltage:
-      name: "${name} max cell voltage"
+      name: "max cell voltage"
     min_voltage_cell:
-      name: "${name} min voltage cell"
+      name: "min voltage cell"
     max_voltage_cell:
-      name: "${name} max voltage cell"
+      name: "max voltage cell"
     delta_cell_voltage:
-      name: "${name} delta cell voltage"
+      name: "delta cell voltage"
     average_cell_voltage:
-      name: "${name} average cell voltage"
+      name: "average cell voltage"
     cell_voltage_1:
-      name: "${name} cell voltage 1"
+      name: "cell voltage 1"
     cell_voltage_2:
-      name: "${name} cell voltage 2"
+      name: "cell voltage 2"
     cell_voltage_3:
-      name: "${name} cell voltage 3"
+      name: "cell voltage 3"
     cell_voltage_4:
-      name: "${name} cell voltage 4"
+      name: "cell voltage 4"
     cell_voltage_5:
-      name: "${name} cell voltage 5"
+      name: "cell voltage 5"
     cell_voltage_6:
-      name: "${name} cell voltage 6"
+      name: "cell voltage 6"
     cell_voltage_7:
-      name: "${name} cell voltage 7"
+      name: "cell voltage 7"
     cell_voltage_8:
-      name: "${name} cell voltage 8"
+      name: "cell voltage 8"
     cell_voltage_9:
-      name: "${name} cell voltage 9"
+      name: "cell voltage 9"
     cell_voltage_10:
-      name: "${name} cell voltage 10"
+      name: "cell voltage 10"
     cell_voltage_11:
-      name: "${name} cell voltage 11"
+      name: "cell voltage 11"
     cell_voltage_12:
-      name: "${name} cell voltage 12"
+      name: "cell voltage 12"
     cell_voltage_13:
-      name: "${name} cell voltage 13"
+      name: "cell voltage 13"
     cell_voltage_14:
-      name: "${name} cell voltage 14"
+      name: "cell voltage 14"
     cell_voltage_15:
-      name: "${name} cell voltage 15"
+      name: "cell voltage 15"
     cell_voltage_16:
-      name: "${name} cell voltage 16"
+      name: "cell voltage 16"
     cell_voltage_17:
-      name: "${name} cell voltage 17"
+      name: "cell voltage 17"
     cell_voltage_18:
-      name: "${name} cell voltage 18"
+      name: "cell voltage 18"
     cell_voltage_19:
-      name: "${name} cell voltage 19"
+      name: "cell voltage 19"
     cell_voltage_20:
-      name: "${name} cell voltage 20"
+      name: "cell voltage 20"
     cell_voltage_21:
-      name: "${name} cell voltage 21"
+      name: "cell voltage 21"
     cell_voltage_22:
-      name: "${name} cell voltage 22"
+      name: "cell voltage 22"
     cell_voltage_23:
-      name: "${name} cell voltage 23"
+      name: "cell voltage 23"
     cell_voltage_24:
-      name: "${name} cell voltage 24"
+      name: "cell voltage 24"
     cell_resistance_1:
-      name: "${name} cell resistance 1"
+      name: "cell resistance 1"
     cell_resistance_2:
-      name: "${name} cell resistance 2"
+      name: "cell resistance 2"
     cell_resistance_3:
-      name: "${name} cell resistance 3"
+      name: "cell resistance 3"
     cell_resistance_4:
-      name: "${name} cell resistance 4"
+      name: "cell resistance 4"
     cell_resistance_5:
-      name: "${name} cell resistance 5"
+      name: "cell resistance 5"
     cell_resistance_6:
-      name: "${name} cell resistance 6"
+      name: "cell resistance 6"
     cell_resistance_7:
-      name: "${name} cell resistance 7"
+      name: "cell resistance 7"
     cell_resistance_8:
-      name: "${name} cell resistance 8"
+      name: "cell resistance 8"
     cell_resistance_9:
-      name: "${name} cell resistance 9"
+      name: "cell resistance 9"
     cell_resistance_10:
-      name: "${name} cell resistance 10"
+      name: "cell resistance 10"
     cell_resistance_11:
-      name: "${name} cell resistance 11"
+      name: "cell resistance 11"
     cell_resistance_12:
-      name: "${name} cell resistance 12"
+      name: "cell resistance 12"
     cell_resistance_13:
-      name: "${name} cell resistance 13"
+      name: "cell resistance 13"
     cell_resistance_14:
-      name: "${name} cell resistance 14"
+      name: "cell resistance 14"
     cell_resistance_15:
-      name: "${name} cell resistance 15"
+      name: "cell resistance 15"
     cell_resistance_16:
-      name: "${name} cell resistance 16"
+      name: "cell resistance 16"
     cell_resistance_17:
-      name: "${name} cell resistance 17"
+      name: "cell resistance 17"
     cell_resistance_18:
-      name: "${name} cell resistance 18"
+      name: "cell resistance 18"
     cell_resistance_19:
-      name: "${name} cell resistance 19"
+      name: "cell resistance 19"
     cell_resistance_20:
-      name: "${name} cell resistance 20"
+      name: "cell resistance 20"
     cell_resistance_21:
-      name: "${name} cell resistance 21"
+      name: "cell resistance 21"
     cell_resistance_22:
-      name: "${name} cell resistance 22"
+      name: "cell resistance 22"
     cell_resistance_23:
-      name: "${name} cell resistance 23"
+      name: "cell resistance 23"
     cell_resistance_24:
-      name: "${name} cell resistance 24"
+      name: "cell resistance 24"
     total_voltage:
-      name: "${name} total voltage"
+      name: "total voltage"
     temperature_sensor_1:
-      name: "${name} temperature sensor 1"
+      name: "temperature sensor 1"
     temperature_sensor_2:
-      name: "${name} temperature sensor 2"
+      name: "temperature sensor 2"
     total_runtime:
-      name: "${name} total runtime"
+      name: "total runtime"
     balancing_current:
-      name: "${name} balancing current"
+      name: "balancing current"
     # Not implemented
     # errors_bitmask:
-    #   name: "${name} errors bitmask"
+    #   name: "errors bitmask"
     cell_detection_failed_bitmask:
-      name: "${name} cell detection failed bitmask"
+      name: "cell detection failed bitmask"
     cell_overvoltage_bitmask:
-      name: "${name} cell overvoltage bitmask"
+      name: "cell overvoltage bitmask"
     cell_undervoltage_bitmask:
-      name: "${name} cell undervoltage bitmask"
+      name: "cell undervoltage bitmask"
     cell_polarity_error_bitmask:
-      name: "${name} cell polarity error bitmask"
+      name: "cell polarity error bitmask"
     cell_excessive_line_resistance_bitmask:
-      name: "${name} cell excessive line resistance bitmask"
+      name: "cell excessive line resistance bitmask"
 
 select:
   - platform: heltec_balancer_ble
     heltec_balancer_ble_id: balancer0
     buzzer_mode:
-      name: "${name} buzzer mode"
+      name: "buzzer mode"
     battery_type:
-      name: "${name} battery type"
+      name: "battery type"
 
 switch:
   - platform: heltec_balancer_ble
     heltec_balancer_ble_id: balancer0
     balancer:
-      name: "${name} balancer"
+      name: "balancer"
 
   - platform: ble_client
     ble_client_id: client0
-    name: "${name} enable bluetooth connection"
+    name: "enable bluetooth connection"
     id: ble_client_switch0
 
 text_sensor:
@@ -255,15 +255,15 @@ text_sensor:
     heltec_balancer_ble_id: balancer0
     # Not implemented
     # errors:
-    #   name: "${name} errors"
+    #   name: "errors"
     operation_status:
-      name: "${name} operation status"
+      name: "operation status"
     total_runtime_formatted:
-      name: "${name} total runtime formatted"
+      name: "total runtime formatted"
     buzzer_mode:
-      name: "${name} buzzer mode"
+      name: "buzzer mode"
     battery_type:
-      name: "${name} battery type"
+      name: "battery type"
 
 interval:
   - interval: 30min
