@@ -49,10 +49,8 @@ def append_values(
 
 
 def values_to_vertical_string(data):
-    hex_values = []
     output_string = ""
-    for value in data:
-        hex_values.append(value.split(":"))
+    hex_values = [value.split(":") for value in data]
     if hex_values == []:
         return ""
     matrix = [
@@ -76,8 +74,7 @@ def values_to_vertical_string(data):
 
 def load_json_from_file(file_path):
     with open(file_path) as file:
-        data = json.load(file)
-    return data
+        return json.load(file)
 
 
 def save_to_file(file_name, data):
