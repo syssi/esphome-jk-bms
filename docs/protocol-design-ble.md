@@ -79,7 +79,7 @@ XX              # Counter (sequence)
 ### Response Frame Types
 Response type is identified by byte[4]:
 - `0x01`: Settings frame
-- `0x02`: Cell info frame  
+- `0x02`: Cell info frame
 - `0x03`: Device info frame
 
 ## CRC Calculation

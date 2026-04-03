@@ -198,4 +198,3 @@ Example value: BT3072020120000200521001 -> BT 3 072 020 12 0000 20 05 21 001
 | 05    | Production month  | 1-12                                                      |
 | 21    | Production day    | 1-31                                                      |
 | 0001  | Production serial number | According to the Nth group of the model produced on the day of the manufacturer’s production date, The number is N (for example: the first group of a certain model, then 001) |
-

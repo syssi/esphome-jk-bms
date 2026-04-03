@@ -26,7 +26,7 @@ def append_values(
 
     start_value = "55:aa:eb:90"
     start_value_with_frame_type = start_value
-    if not frame_type == 0:
+    if frame_type != 0:
         start_value_with_frame_type += ":" + str(frame_type).zfill(2)
 
     for index_of_value, value in enumerate(values):
