@@ -32,6 +32,7 @@ disable = [
   "stop-iteration-return",
   "import-outside-toplevel",
   # Broken
+  "no-name-in-module",
   "unsupported-membership-test",
   "unsubscriptable-object",
 ]
