@@ -42,8 +42,7 @@ def append_values(
                     ) or value_to_append.startswith("aa:55"):
                         list_of_frame_values.append("".join(current_packet))
                         break
-                    else:
-                        current_packet += ":" + value_to_append
+                    current_packet += ":" + value_to_append
 
     return list_of_frame_values
 
