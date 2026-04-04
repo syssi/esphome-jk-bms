@@ -15,39 +15,28 @@ CONF_ERROR_DISCHARGING = "error_discharging"
 CONF_ERROR_SYSTEM_OVERHEATING = "error_system_overheating"
 CONF_ONLINE_STATUS = "online_status"
 
-BINARY_SENSORS = [
-    CONF_BALANCING,
-    CONF_ERROR_CHARGING,
-    CONF_ERROR_DISCHARGING,
-    CONF_ERROR_SYSTEM_OVERHEATING,
-    CONF_ONLINE_STATUS,
-]
+BINARY_SENSOR_DEFS = {
+    CONF_BALANCING: {"icon": "mdi:battery-heart-variant"},
+    CONF_ERROR_CHARGING: {"icon": "mdi:alert-circle-outline"},
+    CONF_ERROR_DISCHARGING: {"icon": "mdi:alert-circle-outline"},
+    CONF_ERROR_SYSTEM_OVERHEATING: {"icon": "mdi:alert-circle-outline"},
+    CONF_ONLINE_STATUS: {
+        "device_class": DEVICE_CLASS_CONNECTIVITY,
+        "entity_category": ENTITY_CATEGORY_DIAGNOSTIC,
+    },
+}
 
 CONFIG_SCHEMA = HELTEC_BALANCER_BLE_COMPONENT_SCHEMA.extend(
     {
-        cv.Optional(CONF_BALANCING): binary_sensor.binary_sensor_schema(
-            icon="mdi:battery-heart-variant"
-        ),
-        cv.Optional(CONF_ERROR_CHARGING): binary_sensor.binary_sensor_schema(
-            icon="mdi:alert-circle-outline"
-        ),
-        cv.Optional(CONF_ERROR_DISCHARGING): binary_sensor.binary_sensor_schema(
-            icon="mdi:alert-circle-outline"
-        ),
-        cv.Optional(CONF_ERROR_SYSTEM_OVERHEATING): binary_sensor.binary_sensor_schema(
-            icon="mdi:alert-circle-outline"
-        ),
-        cv.Optional(CONF_ONLINE_STATUS): binary_sensor.binary_sensor_schema(
-            device_class=DEVICE_CLASS_CONNECTIVITY,
-            entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
-        ),
+        cv.Optional(key): binary_sensor.binary_sensor_schema(**kwargs)
+        for key, kwargs in BINARY_SENSOR_DEFS.items()
     }
 )
 
 
 async def to_code(config):
     hub = await cg.get_variable(config[CONF_HELTEC_BALANCER_BLE_ID])
-    for key in BINARY_SENSORS:
+    for key in BINARY_SENSOR_DEFS:
         if key in config:
             conf = config[key]
             sens = await binary_sensor.new_binary_sensor(conf)
