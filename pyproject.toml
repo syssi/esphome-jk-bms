@@ -41,7 +41,7 @@ disable = [
 expected-line-ending-format = "LF"
 
 [tool.ruff]
-required-version = ">=0.5.0"
+required-version = ">=0.5.5"
 target-version = "py311"
 
 [tool.ruff.lint]
