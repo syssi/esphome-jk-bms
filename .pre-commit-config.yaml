@@ -2,10 +2,13 @@
 # See https://pre-commit.com/hooks.html for more hooks
 # See https://github.com/rytilahti/python-miio/blob/master/.pre-commit-config.yaml
 repos:
-  - repo: https://github.com/pre-commit/mirrors-isort
-    rev: v5.10.1
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
     hooks:
-      - id: isort
+      - id: no-commit-to-branch
+        args: [--branch=main]
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
   - repo: https://github.com/astral-sh/ruff-pre-commit
     # Ruff version.
     rev: v0.5.5
@@ -15,13 +18,6 @@ repos:
         args: [--fix]
       # Run the formatter.
       - id: ruff-format
-  - repo: https://github.com/psf/black-pre-commit-mirror
-    rev: 24.4.2
-    hooks:
-      - id: black
-        args:
-          - --safe
-          - --quiet
   - repo: https://github.com/PyCQA/flake8
     rev: 7.1.0
     hooks:
@@ -38,6 +34,13 @@ repos:
     rev: v1.35.1
     hooks:
       - id: yamllint
+  - repo: https://github.com/PyCQA/pylint
+    rev: v3.3.4
+    hooks:
+      - id: pylint
+        args: [--persistent=n, components]
+        pass_filenames: false
+        additional_dependencies: [esphome]
   - repo: https://github.com/pre-commit/mirrors-clang-format
     rev: v13.0.1
     hooks:

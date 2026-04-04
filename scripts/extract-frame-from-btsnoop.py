@@ -26,7 +26,7 @@ def append_values(
 
     start_value = "55:aa:eb:90"
     start_value_with_frame_type = start_value
-    if not frame_type == 0:
+    if frame_type != 0:
         start_value_with_frame_type += ":" + str(frame_type).zfill(2)
 
     for index_of_value, value in enumerate(values):
@@ -42,17 +42,14 @@ def append_values(
                     ) or value_to_append.startswith("aa:55"):
                         list_of_frame_values.append("".join(current_packet))
                         break
-                    else:
-                        current_packet += ":" + value_to_append
+                    current_packet += ":" + value_to_append
 
     return list_of_frame_values
 
 
 def values_to_vertical_string(data):
-    hex_values = []
     output_string = ""
-    for value in data:
-        hex_values.append(value.split(":"))
+    hex_values = [value.split(":") for value in data]
     if hex_values == []:
         return ""
     matrix = [
@@ -76,8 +73,7 @@ def values_to_vertical_string(data):
 
 def load_json_from_file(file_path):
     with open(file_path) as file:
-        data = json.load(file)
-    return data
+        return json.load(file)
 
 
 def save_to_file(file_name, data):
