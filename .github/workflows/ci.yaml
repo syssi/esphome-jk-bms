@@ -396,6 +396,30 @@ jobs:
         # yamllint disable-line rule:line-length
         if: always()
 
+  pytest:
+    name: Run pytest
+    runs-on: ubuntu-24.04
+    needs:
+      - bundle
+      - common
+    steps:
+      - name: Download prepared repository
+        uses: pyTooling/download-artifact@v4
+        with:
+          name: bundle
+          path: .
+
+      - name: Restore Python
+        uses: ./.github/actions/restore-python
+        with:
+          python-version: ${{ env.DEFAULT_PYTHON }}
+          cache-key: ${{ needs.common.outputs.cache-key }}
+
+      - name: Run pytest
+        run: |
+          . venv/bin/activate
+          pytest tests/ -v
+
   esphome-config:
     name: Validate example configurations
     runs-on: ubuntu-24.04
