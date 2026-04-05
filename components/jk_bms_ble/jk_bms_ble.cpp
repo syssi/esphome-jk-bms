@@ -31,7 +31,7 @@ static const uint16_t MIN_RESPONSE_SIZE = 300;
 static const uint16_t MAX_RESPONSE_SIZE = 384 + 16;
 
 static const uint8_t ERRORS_SIZE = 16;
-static const char *const ERRORS[ERRORS_SIZE] = {
+static constexpr const char *const ERRORS[ERRORS_SIZE] = {
     "Charge Overtemperature",               // 0000 0000 0000 0001
     "Charge Undertemperature",              // 0000 0000 0000 0010
     "Coprocessor communication error",      // 0000 0000 0000 0100

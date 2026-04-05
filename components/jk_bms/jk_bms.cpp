@@ -13,7 +13,7 @@ static const uint8_t FUNCTION_READ_ALL = 0x06;
 static const uint8_t FUNCTION_WRITE_REGISTER = 0x02;
 
 static const uint8_t ERRORS_SIZE = 14;
-static const char *const ERRORS[ERRORS_SIZE] = {
+static constexpr const char *const ERRORS[ERRORS_SIZE] = {
     "Low capacity",                              // Byte 0.0, warning
     "Power tube overtemperature",                // Byte 0.1, alarm
     "Charging overvoltage",                      // Byte 0.2, alarm
@@ -31,7 +31,7 @@ static const char *const ERRORS[ERRORS_SIZE] = {
 };
 
 static const uint8_t OPERATION_MODES_SIZE = 4;
-static const char *const OPERATION_MODES[OPERATION_MODES_SIZE] = {
+static constexpr const char *const OPERATION_MODES[OPERATION_MODES_SIZE] = {
     "Charging enabled",     // 0x00
     "Discharging enabled",  // 0x01
     "Balancer enabled",     // 0x02
@@ -39,7 +39,7 @@ static const char *const OPERATION_MODES[OPERATION_MODES_SIZE] = {
 };
 
 static const uint8_t BATTERY_TYPES_SIZE = 3;
-static const char *const BATTERY_TYPES[BATTERY_TYPES_SIZE] = {
+static constexpr const char *const BATTERY_TYPES[BATTERY_TYPES_SIZE] = {
     "Lithium Iron Phosphate",  // 0x00
     "Ternary Lithium",         // 0x01
     "Lithium Titanate",        // 0x02
