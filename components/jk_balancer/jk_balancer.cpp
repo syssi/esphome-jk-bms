@@ -15,7 +15,7 @@ static const uint8_t FUNCTION_SET_TRIGGER_VOLTAGE = 0xF2;
 static const uint8_t FUNCTION_SET_MAX_BALANCE_CURRENT = 0xF4;
 
 static const uint8_t ERRORS_SIZE = 3;
-static const char *const ERRORS[ERRORS_SIZE] = {
+static constexpr const char *const ERRORS[ERRORS_SIZE] = {
     "Wrong cell count",
     "Resistance too high",
     "Overvoltage",

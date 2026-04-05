@@ -42,7 +42,7 @@ static const uint16_t MIN_RESPONSE_SIZE = 20;   // Write acknowledge frame
 static const uint16_t MAX_RESPONSE_SIZE = 300;  // Cell info frame
 
 static const uint8_t OPERATION_STATUS_SIZE = 13;
-static const char *const OPERATION_STATUS[OPERATION_STATUS_SIZE] = {
+static constexpr const char *const OPERATION_STATUS[OPERATION_STATUS_SIZE] = {
     "Unknown",                                   // 0x00
     "Wrong cell count",                          // 0x01
     "AcqLine Res test",                          // 0x02
@@ -59,7 +59,7 @@ static const char *const OPERATION_STATUS[OPERATION_STATUS_SIZE] = {
 };
 
 static const uint8_t BUZZER_MODES_SIZE = 4;
-static const char *const BUZZER_MODES[BUZZER_MODES_SIZE] = {
+static constexpr const char *const BUZZER_MODES[BUZZER_MODES_SIZE] = {
     "Unknown",       // 0x00
     "Off",           // 0x01
     "Beep once",     // 0x02
@@ -67,7 +67,7 @@ static const char *const BUZZER_MODES[BUZZER_MODES_SIZE] = {
 };
 
 static const uint8_t BATTERY_TYPES_SIZE = 5;
-static const char *const BATTERY_TYPES[BATTERY_TYPES_SIZE] = {
+static constexpr const char *const BATTERY_TYPES[BATTERY_TYPES_SIZE] = {
     "Unknown",  // 0x00
     "NCM",      // 0x01
     "LFP",      // 0x02
@@ -76,7 +76,7 @@ static const char *const BATTERY_TYPES[BATTERY_TYPES_SIZE] = {
 };
 
 static const uint8_t CELL_ERRORS_SIZE = 8;
-static const char *const CELL_ERRORS[CELL_ERRORS_SIZE] = {
+static constexpr const char *const CELL_ERRORS[CELL_ERRORS_SIZE] = {
     "Battery detection failed",  "Overvoltage",        "Undervoltage",   "Polarity error",
     "Excessive line resistance", "System overheating", "Charging fault", "Discharge fault",
 };
