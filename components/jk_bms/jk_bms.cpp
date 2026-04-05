@@ -106,7 +106,7 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
   // 0x0E 0x0E 0xF2: Cell 14        3826 * 0.001 = 3.826V                        0.001 V
   uint8_t cells = data[1] / 3;
 
-  if (data.size() < (size_t)(data[1] + 223)) {
+  if (data.size() < (size_t) (data[1] + 223)) {
     ESP_LOGW(TAG, "Status frame too short (%zu bytes) for %d cells", data.size(), cells);
     return;
   }
