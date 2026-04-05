@@ -54,6 +54,10 @@ void JkBms::on_jk_modbus_data(const uint8_t &function, const std::vector<uint8_t
   }
 
   if (function == FUNCTION_WRITE_REGISTER) {
+    if (data.empty()) {
+      ESP_LOGW(TAG, "Write register response is empty");
+      return;
+    }
     ESP_LOGI(TAG, "Register 0x%02X updated", data[0]);
     return;
   }
@@ -68,7 +72,12 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
     return (uint32_t(jk_get_16bit(i + 0)) << 16) | (uint32_t(jk_get_16bit(i + 2)) << 0);
   };
 
-  ESP_LOGI(TAG, "Status frame received");
+  ESP_LOGI(TAG, "Status frame (%zu bytes) received", data.size());
+
+  if (data.size() < 2) {
+    ESP_LOGW(TAG, "Status frame too short (%zu bytes)", data.size());
+    return;
+  }
 
   // Status request
   // -> 0x4E 0x57 0x00 0x13 0x00 0x00 0x00 0x00 0x06 0x03 0x00 0x00 0x00 0x00 0x00 0x00 0x68 0x00 0x00 0x01 0x29
@@ -97,6 +106,11 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
   // 0x0E 0x0E 0xF2: Cell 14        3826 * 0.001 = 3.826V                        0.001 V
   uint8_t cells = data[1] / 3;
 
+  if (data.size() < (size_t) (data[1] + 223)) {
+    ESP_LOGW(TAG, "Status frame too short (%zu bytes) for %d cells", data.size(), cells);
+    return;
+  }
+
   float min_cell_voltage = 100.0f;
   float max_cell_voltage = -100.0f;
   float average_cell_voltage = 0.0f;
@@ -115,7 +129,8 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
     }
     this->publish_state_(this->cells_[i].cell_voltage_sensor_, cell_voltage);
   }
-  average_cell_voltage = average_cell_voltage / cells;
+  if (cells > 0)
+    average_cell_voltage = average_cell_voltage / cells;
 
   this->publish_state_(this->min_cell_voltage_sensor_, min_cell_voltage);
   this->publish_state_(this->max_cell_voltage_sensor_, max_cell_voltage);

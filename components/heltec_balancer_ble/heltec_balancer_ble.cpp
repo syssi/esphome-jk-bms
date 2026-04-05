@@ -279,7 +279,7 @@ void HeltecBalancerBle::assemble(const uint8_t *data, uint16_t length) {
   }
 
   // Flush buffer on every preamble
-  if (data[0] == SOF_RESPONSE_BYTE1 && data[1] == SOF_RESPONSE_BYTE2) {
+  if (length >= 2 && data[0] == SOF_RESPONSE_BYTE1 && data[1] == SOF_RESPONSE_BYTE2) {
     this->frame_buffer_.clear();
   }
 
