@@ -412,7 +412,7 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
         cv.Optional(CONF_CELL_REQUEST_CHARGE_VOLTAGE_TIME): JK_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=0): cv.float_,
-                cv.Optional(CONF_MAX_VALUE, default=25.5): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=18.2): cv.float_,
                 cv.Optional(CONF_STEP, default=0.1): cv.float_,
                 cv.Optional(
                     CONF_UNIT_OF_MEASUREMENT, default=UNIT_HOUR
@@ -422,7 +422,7 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
         cv.Optional(CONF_CELL_REQUEST_FLOAT_VOLTAGE_TIME): JK_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=0): cv.float_,
-                cv.Optional(CONF_MAX_VALUE, default=25.5): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=18.2): cv.float_,
                 cv.Optional(CONF_STEP, default=0.1): cv.float_,
                 cv.Optional(
                     CONF_UNIT_OF_MEASUREMENT, default=UNIT_HOUR
@@ -442,7 +442,7 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
         cv.Optional(CONF_CELL_COUNT): JK_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=2): cv.float_,
-                cv.Optional(CONF_MAX_VALUE, default=24): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=32): cv.float_,
                 cv.Optional(CONF_STEP, default=1.0): cv.float_,
                 cv.Optional(
                     CONF_UNIT_OF_MEASUREMENT, default=UNIT_EMPTY
@@ -451,8 +451,8 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
         ),
         cv.Optional(CONF_TOTAL_BATTERY_CAPACITY): JK_NUMBER_SCHEMA.extend(
             {
-                cv.Optional(CONF_MIN_VALUE, default=5): cv.float_,
-                cv.Optional(CONF_MAX_VALUE, default=2000): cv.float_,
+                cv.Optional(CONF_MIN_VALUE, default=2): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=20000): cv.float_,
                 cv.Optional(CONF_STEP, default=1.0): cv.float_,
                 cv.Optional(
                     CONF_UNIT_OF_MEASUREMENT, default=UNIT_AMPERE_HOUR
@@ -493,7 +493,7 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
         cv.Optional(CONF_MAX_BALANCE_CURRENT): JK_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=0.3): cv.float_,
-                cv.Optional(CONF_MAX_VALUE, default=10.0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=15.0): cv.float_,
                 cv.Optional(CONF_STEP, default=0.1): cv.float_,
                 cv.Optional(
                     CONF_UNIT_OF_MEASUREMENT, default=UNIT_AMPERE
@@ -503,7 +503,7 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
         cv.Optional(CONF_MAX_CHARGE_CURRENT): JK_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=1.0): cv.float_,
-                cv.Optional(CONF_MAX_VALUE, default=600.1): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=600.0): cv.float_,
                 cv.Optional(CONF_STEP, default=0.1): cv.float_,
                 cv.Optional(
                     CONF_UNIT_OF_MEASUREMENT, default=UNIT_AMPERE
@@ -513,7 +513,7 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
         cv.Optional(CONF_MAX_DISCHARGE_CURRENT): JK_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=1.0): cv.float_,
-                cv.Optional(CONF_MAX_VALUE, default=600.1): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=1200.0): cv.float_,
                 cv.Optional(CONF_STEP, default=0.1): cv.float_,
                 cv.Optional(
                     CONF_UNIT_OF_MEASUREMENT, default=UNIT_AMPERE
@@ -569,7 +569,7 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
         cv.Optional(CONF_SHORT_CIRCUIT_PROTECTION_DELAY): JK_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=0): cv.float_,
-                cv.Optional(CONF_MAX_VALUE, default=10000000): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=1000000): cv.float_,
                 cv.Optional(CONF_STEP, default=1.0): cv.float_,
                 cv.Optional(
                     CONF_UNIT_OF_MEASUREMENT, default=UNIT_MICROSECONDS
@@ -634,7 +634,7 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
         ),
         cv.Optional(CONF_CHARGE_UNDERTEMPERATURE_PROTECTION): JK_NUMBER_SCHEMA.extend(
             {
-                cv.Optional(CONF_MIN_VALUE, default=-30): cv.float_,
+                cv.Optional(CONF_MIN_VALUE, default=-45): cv.float_,
                 cv.Optional(CONF_MAX_VALUE, default=20): cv.float_,
                 cv.Optional(CONF_STEP, default=0.1): cv.float_,
                 cv.Optional(
@@ -646,7 +646,7 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
             CONF_CHARGE_UNDERTMPERATURE_PROTECTION_RECOVERY
         ): JK_NUMBER_SCHEMA.extend(
             {
-                cv.Optional(CONF_MIN_VALUE, default=-30): cv.float_,
+                cv.Optional(CONF_MIN_VALUE, default=-45): cv.float_,
                 cv.Optional(CONF_MAX_VALUE, default=20): cv.float_,
                 cv.Optional(CONF_STEP, default=0.1): cv.float_,
                 cv.Optional(
@@ -682,8 +682,8 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
             CONF_POWER_TUBE_OVERTEMPERATURE_PROTECTION
         ): JK_NUMBER_SCHEMA.extend(
             {
-                cv.Optional(CONF_MIN_VALUE, default=30): cv.float_,
-                cv.Optional(CONF_MAX_VALUE, default=100): cv.float_,
+                cv.Optional(CONF_MIN_VALUE, default=50): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=110): cv.float_,
                 cv.Optional(CONF_STEP, default=0.1): cv.float_,
                 cv.Optional(
                     CONF_UNIT_OF_MEASUREMENT, default=UNIT_CELSIUS
@@ -694,8 +694,8 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
             CONF_POWER_TUBE_OVERTEMPERATURE_PROTECTION_RECOVERY
         ): JK_NUMBER_SCHEMA.extend(
             {
-                cv.Optional(CONF_MIN_VALUE, default=30): cv.float_,
-                cv.Optional(CONF_MAX_VALUE, default=100): cv.float_,
+                cv.Optional(CONF_MIN_VALUE, default=50): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=110): cv.float_,
                 cv.Optional(CONF_STEP, default=0.1): cv.float_,
                 cv.Optional(
                     CONF_UNIT_OF_MEASUREMENT, default=UNIT_CELSIUS
