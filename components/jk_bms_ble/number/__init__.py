@@ -503,7 +503,7 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
         cv.Optional(CONF_MAX_CHARGE_CURRENT): JK_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=1.0): cv.float_,
-                cv.Optional(CONF_MAX_VALUE, default=600.0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=600.1): cv.float_,
                 cv.Optional(CONF_STEP, default=0.1): cv.float_,
                 cv.Optional(
                     CONF_UNIT_OF_MEASUREMENT, default=UNIT_AMPERE
