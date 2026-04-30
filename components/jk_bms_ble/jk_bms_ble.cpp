@@ -8,8 +8,6 @@
 #define ADDR_STR(x) (x).c_str()
 #endif
 
-#ifdef USE_ESP32
-
 namespace esphome {
 namespace jk_bms_ble {
 
@@ -21,11 +19,13 @@ static const uint8_t FRAME_VERSION_JK04 = 0x01;
 static const uint8_t FRAME_VERSION_JK02_24S = 0x02;
 static const uint8_t FRAME_VERSION_JK02_32S = 0x03;
 
+#ifdef USE_ESP32
 static const uint16_t JK_BMS_SERVICE_UUID = 0xFFE0;
 static const uint16_t JK_BMS_CHARACTERISTIC_UUID = 0xFFE1;
 
 static const uint8_t COMMAND_CELL_INFO = 0x96;
 static const uint8_t COMMAND_DEVICE_INFO = 0x97;
+#endif
 
 static const uint16_t MIN_RESPONSE_SIZE = 300;
 static const uint16_t MAX_RESPONSE_SIZE = 384 + 16;
@@ -174,6 +174,7 @@ void JkBmsBle::dump_config() {  // NOLINT(google-readability-function-size,reada
   LOG_TEXT_SENSOR("", "Hardware Version", this->hardware_version_text_sensor_);
 }
 
+#ifdef USE_ESP32
 void JkBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if,
                                    esp_ble_gattc_cb_param_t *param) {
   switch (event) {
@@ -298,6 +299,12 @@ void JkBmsBle::update() {
     this->write_register(COMMAND_CELL_INFO, 0x00000000, 0x00);
   }
 }
+
+#else
+
+void JkBmsBle::update() {}
+
+#endif  // USE_ESP32
 
 // TODO: There is no need to assemble frames if the MTU can be increased to > 320 bytes
 void JkBmsBle::assemble(const uint8_t *data, uint16_t length) {
@@ -1533,6 +1540,7 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
   // 299  0x1B  CRC
 }
 
+#ifdef USE_ESP32
 bool JkBmsBle::write_register(uint8_t address, uint32_t value, uint8_t length) {
   uint8_t frame[20];
   frame[0] = 0xAA;     // start sequence
@@ -1567,6 +1575,7 @@ bool JkBmsBle::write_register(uint8_t address, uint32_t value, uint8_t length) {
 
   return (status == 0);
 }
+#endif  // USE_ESP32
 
 void JkBmsBle::track_online_status_() {
   if (this->no_response_count_ < MAX_NO_RESPONSE_COUNT) {
@@ -1696,5 +1705,3 @@ std::string JkBmsBle::charge_status_id_to_string_(const uint8_t status) {
 
 }  // namespace jk_bms_ble
 }  // namespace esphome
-
-#endif

@@ -1,0 +1,3 @@
+heltec_balancer_ble:
+  id: test_balancer
+  update_interval: 20s

@@ -12,18 +12,26 @@
 #include "esphome/components/text_sensor/text_sensor.h"
 
 #ifdef USE_ESP32
-
 #include <esp_gattc_api.h>
+#endif
 
 namespace esphome {
 namespace heltec_balancer_ble {
 
+#ifdef USE_ESP32
 namespace espbt = esphome::esp32_ble_tracker;
+#endif
 
-class HeltecBalancerBle : public esphome::ble_client::BLEClientNode, public PollingComponent {
+class HeltecBalancerBle :
+#ifdef USE_ESP32
+    public esphome::ble_client::BLEClientNode,
+#endif
+    public PollingComponent {
  public:
+#ifdef USE_ESP32
   void gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if,
                            esp_ble_gattc_cb_param_t *param) override;
+#endif
   void dump_config() override;
   void update() override;
   float get_setup_priority() const override { return setup_priority::DATA; }
@@ -138,7 +146,9 @@ class HeltecBalancerBle : public esphome::ble_client::BLEClientNode, public Poll
   void set_battery_type_select(select::Select *battery_type_select) { battery_type_select_ = battery_type_select; }
   void set_balancer_switch(switch_::Switch *balancer_switch) { balancer_switch_ = balancer_switch; }
   void assemble(const uint8_t *data, uint16_t length);
+#ifdef USE_ESP32
   bool send_command(uint8_t function, uint8_t command, uint8_t register_address = 0x00, uint32_t value = 0x00000000);
+#endif
 
   struct Cell {
     sensor::Sensor *cell_voltage_sensor_{nullptr};
@@ -241,5 +251,3 @@ class HeltecBalancerBle : public esphome::ble_client::BLEClientNode, public Poll
 
 }  // namespace heltec_balancer_ble
 }  // namespace esphome
-
-#endif

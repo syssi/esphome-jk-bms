@@ -48,10 +48,12 @@ jobs:
           ref: dev
           path: esphome
 
-      - name: Copy external component into the esphome project
+      - name: Copy external component and tests into the esphome project
         run: |
           cd esphome
           cp -r ../components/* esphome/components/
+          mkdir -p tests/components
+          cp -r ../tests/components/* tests/components/
           git config user.name "ci"
           git config user.email "ci@github.com"
           git add .
@@ -414,6 +416,55 @@ jobs:
         run: |
           . venv/bin/activate
           pytest tests/ -v
+
+  cpp-unit-tests:
+    name: Run C++ unit tests
+    runs-on: ubuntu-24.04
+    needs:
+      - bundle
+      - common
+    defaults:
+      run:
+        working-directory: esphome
+    steps:
+      - name: Download prepared repository
+        uses: pyTooling/download-artifact@dc575e4e9df4b6e3580712285f1c90f579bb8712  # v8
+        with:
+          name: bundle
+          path: .
+
+      - name: Update index to make "git diff-index" happy
+        run: git update-index -q --really-refresh
+
+      - name: Restore Python
+        uses: ./.github/actions/restore-python
+        with:
+          python-version: ${{ env.DEFAULT_PYTHON }}
+          cache-key: ${{ needs.common.outputs.cache-key }}
+
+      - name: Cache platformio
+        if: github.ref == 'refs/heads/main'
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7  # v5.0.4
+        with:
+          path: ~/.platformio
+          key: platformio-host-${{ hashFiles('esphome/platformio.ini') }}
+          restore-keys: platformio-host-
+
+      - name: Cache platformio
+        if: github.ref != 'refs/heads/main'
+        uses: actions/cache/restore@668228422ae6a00e4ad889ee87cd7109ec5666a7  # v5.0.4
+        with:
+          path: ~/.platformio
+          key: platformio-host-${{ hashFiles('esphome/platformio.ini') }}
+          restore-keys: platformio-host-
+
+      - name: Run C++ unit tests
+        run: |
+          . venv/bin/activate
+          script/cpp_unit_test.py jk_bms jk_bms_ble jk_bms_display jk_balancer heltec_balancer_ble jk_balancer_modbus jk_modbus
+        env:
+          PLATFORMIO_LIBDEPS_DIR: ~/.platformio/libdeps
+          ASAN_OPTIONS: detect_leaks=0
 
   esphome-config:
     name: Validate example configurations
