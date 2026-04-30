@@ -373,6 +373,11 @@ jobs:
           mkdir -p .temp
           pio run --list-targets -e esp32-idf-tidy
 
+      - name: Install clang-tidy
+        run: |
+          . venv/bin/activate
+          pip install clang-tidy -c requirements_dev.txt
+
       - name: Run clang-tidy
         run: |
           . venv/bin/activate
