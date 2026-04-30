@@ -7,6 +7,7 @@ yaml-files:
 
 ignore: |
   .clang-format
+  .clang-tidy
   .esphome/
   tests/.esphome/
 
