@@ -15,12 +15,14 @@ TEST(JkBalancerModbusParseTest, ValidFrameDispatchesToDevice) {
   for (uint8_t b : frame)
     bus.parse_byte(b);
 
-  ASSERT_TRUE(dev.captured.has_value());
-  const auto &c = dev.captured.value();
-  EXPECT_EQ(c.function, 0xFF);
-  EXPECT_EQ(c.data.size(), 74u);  // full frame dispatched
-  EXPECT_EQ(c.data[0], 0xEB);
-  EXPECT_EQ(c.data[4], 0xAA);  // payload byte 0
+  if (!dev.captured.has_value()) {
+    ADD_FAILURE() << "no frame captured";
+    return;
+  }
+  EXPECT_EQ(dev.captured->function, 0xFF);
+  EXPECT_EQ(dev.captured->data.size(), 74u);  // full frame dispatched
+  EXPECT_EQ(dev.captured->data[0], 0xEB);
+  EXPECT_EQ(dev.captured->data[4], 0xAA);  // payload byte 0
 }
 
 // ── Header validation ─────────────────────────────────────────────────────────
