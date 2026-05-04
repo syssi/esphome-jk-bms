@@ -19,13 +19,11 @@ static const uint8_t FRAME_VERSION_JK04 = 0x01;
 static const uint8_t FRAME_VERSION_JK02_24S = 0x02;
 static const uint8_t FRAME_VERSION_JK02_32S = 0x03;
 
-#ifdef USE_ESP32
 static const uint16_t JK_BMS_SERVICE_UUID = 0xFFE0;
 static const uint16_t JK_BMS_CHARACTERISTIC_UUID = 0xFFE1;
 
 static const uint8_t COMMAND_CELL_INFO = 0x96;
 static const uint8_t COMMAND_DEVICE_INFO = 0x97;
-#endif
 
 static const uint16_t MIN_RESPONSE_SIZE = 300;
 static const uint16_t MAX_RESPONSE_SIZE = 384 + 16;
@@ -298,6 +296,41 @@ void JkBmsBle::update() {
     ESP_LOGI(TAG, "Request status notification");
     this->write_register(COMMAND_CELL_INFO, 0x00000000, 0x00);
   }
+}
+
+bool JkBmsBle::write_register(uint8_t address, uint32_t value, uint8_t length) {
+  uint8_t frame[20];
+  frame[0] = 0xAA;     // start sequence
+  frame[1] = 0x55;     // start sequence
+  frame[2] = 0x90;     // start sequence
+  frame[3] = 0xEB;     // start sequence
+  frame[4] = address;  // holding register
+  frame[5] = length;   // size of the value in byte
+  frame[6] = value >> 0;
+  frame[7] = value >> 8;
+  frame[8] = value >> 16;
+  frame[9] = value >> 24;
+  frame[10] = 0x00;
+  frame[11] = 0x00;
+  frame[12] = 0x00;
+  frame[13] = 0x00;
+  frame[14] = 0x00;
+  frame[15] = 0x00;
+  frame[16] = 0x00;
+  frame[17] = 0x00;
+  frame[18] = 0x00;
+  frame[19] = crc(frame, sizeof(frame) - 1);
+
+  ESP_LOGD(TAG, "Write register: %s", format_hex_pretty(frame, sizeof(frame)).c_str());  // NOLINT
+  auto status =
+      esp_ble_gattc_write_char(this->parent_->get_gattc_if(), this->parent_->get_conn_id(), this->char_handle_,
+                               sizeof(frame), frame, ESP_GATT_WRITE_TYPE_NO_RSP, ESP_GATT_AUTH_REQ_NONE);
+
+  if (status) {
+    ESP_LOGW(TAG, "[%s] esp_ble_gattc_write_char failed, status=%d", ADDR_STR(this->parent_->address_str()), status);
+  }
+
+  return (status == 0);
 }
 
 #else
@@ -1539,43 +1572,6 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
   // 298  0x00
   // 299  0x1B  CRC
 }
-
-#ifdef USE_ESP32
-bool JkBmsBle::write_register(uint8_t address, uint32_t value, uint8_t length) {
-  uint8_t frame[20];
-  frame[0] = 0xAA;     // start sequence
-  frame[1] = 0x55;     // start sequence
-  frame[2] = 0x90;     // start sequence
-  frame[3] = 0xEB;     // start sequence
-  frame[4] = address;  // holding register
-  frame[5] = length;   // size of the value in byte
-  frame[6] = value >> 0;
-  frame[7] = value >> 8;
-  frame[8] = value >> 16;
-  frame[9] = value >> 24;
-  frame[10] = 0x00;
-  frame[11] = 0x00;
-  frame[12] = 0x00;
-  frame[13] = 0x00;
-  frame[14] = 0x00;
-  frame[15] = 0x00;
-  frame[16] = 0x00;
-  frame[17] = 0x00;
-  frame[18] = 0x00;
-  frame[19] = crc(frame, sizeof(frame) - 1);
-
-  ESP_LOGD(TAG, "Write register: %s", format_hex_pretty(frame, sizeof(frame)).c_str());  // NOLINT
-  auto status =
-      esp_ble_gattc_write_char(this->parent_->get_gattc_if(), this->parent_->get_conn_id(), this->char_handle_,
-                               sizeof(frame), frame, ESP_GATT_WRITE_TYPE_NO_RSP, ESP_GATT_AUTH_REQ_NONE);
-
-  if (status) {
-    ESP_LOGW(TAG, "[%s] esp_ble_gattc_write_char failed, status=%d", ADDR_STR(this->parent_->address_str()), status);
-  }
-
-  return (status == 0);
-}
-#endif  // USE_ESP32
 
 void JkBmsBle::track_online_status_() {
   if (this->no_response_count_ < MAX_NO_RESPONSE_COUNT) {

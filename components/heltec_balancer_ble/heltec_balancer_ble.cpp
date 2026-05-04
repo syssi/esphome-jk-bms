@@ -2,6 +2,12 @@
 #include "esphome/core/log.h"
 #include "esphome/core/version.h"
 
+#if ESPHOME_VERSION_CODE >= VERSION_CODE(2025, 12, 0)
+#define ADDR_STR(x) x
+#else
+#define ADDR_STR(x) (x).c_str()
+#endif
+
 namespace esphome {
 namespace heltec_balancer_ble {
 
@@ -9,6 +15,11 @@ static const char *const TAG = "heltec_balancer_ble";
 
 static const uint8_t MAX_NO_RESPONSE_COUNT = 10;
 
+static const uint16_t HELTEC_BALANCER_SERVICE_UUID = 0xFFE0;
+static const uint16_t HELTEC_BALANCER_CHARACTERISTIC_UUID = 0xFFE1;
+
+static const uint8_t SOF_REQUEST_BYTE1 = 0xAA;
+static const uint8_t SOF_REQUEST_BYTE2 = 0x55;
 static const uint8_t SOF_RESPONSE_BYTE1 = 0x55;
 static const uint8_t SOF_RESPONSE_BYTE2 = 0xAA;
 static const uint8_t DEVICE_ADDRESS = 0x11;
@@ -158,18 +169,6 @@ void HeltecBalancerBle::dump_config() {  // NOLINT(google-readability-function-s
 }
 
 #ifdef USE_ESP32
-
-#if ESPHOME_VERSION_CODE >= VERSION_CODE(2025, 12, 0)
-#define ADDR_STR(x) x
-#else
-#define ADDR_STR(x) (x).c_str()
-#endif
-
-static const uint16_t HELTEC_BALANCER_SERVICE_UUID = 0xFFE0;
-static const uint16_t HELTEC_BALANCER_CHARACTERISTIC_UUID = 0xFFE1;
-
-static const uint8_t SOF_REQUEST_BYTE1 = 0xAA;
-static const uint8_t SOF_REQUEST_BYTE2 = 0x55;
 
 void HeltecBalancerBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if,
                                             esp_ble_gattc_cb_param_t *param) {
