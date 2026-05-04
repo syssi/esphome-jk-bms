@@ -2,8 +2,6 @@
 #include "esphome/core/log.h"
 #include "esphome/core/version.h"
 
-#ifdef USE_ESP32
-
 #if ESPHOME_VERSION_CODE >= VERSION_CODE(2025, 12, 0)
 #define ADDR_STR(x) x
 #else
@@ -170,6 +168,8 @@ void HeltecBalancerBle::dump_config() {  // NOLINT(google-readability-function-s
   LOG_TEXT_SENSOR("", "Battery Type", this->battery_type_text_sensor_);
 }
 
+#ifdef USE_ESP32
+
 void HeltecBalancerBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if,
                                             esp_ble_gattc_cb_param_t *param) {
   switch (event) {
@@ -270,6 +270,84 @@ void HeltecBalancerBle::update() {
     this->send_command(FUNCTION_READ, COMMAND_CELL_INFO);
   }
 }
+
+bool HeltecBalancerBle::send_command(uint8_t function, uint8_t command, uint8_t register_address, uint32_t value) {
+  // Request device info:
+  //
+  // (GW-24S4EB, checksum_xor)
+  // 0xAA 0x55 0x11 0x01 0x01 0x00 0x14 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0xFA 0xFF
+  // 0xAA 0x55 0x11 0x01 0x01 0x00 0x14 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x26 0xFF
+  // (EK-24S4EB, crc)
+  //
+  // Request cell info:
+  //
+  // (GW-24S4EB, checksum_xor, wrong data_len position)
+  // 0xAA 0x55 0x11 0x01 0x02 0x00 0x00 0x14 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0xF9 0xFF
+  // 0xAA 0x55 0x11 0x01 0x02 0x00 0x14 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x27 0xFF
+  // (EK-24S4EB, crc)
+  //
+  // Request factory settings:
+  //
+  // (GW-24S4EB, checksum_xor)
+  // 0xAA 0x55 0x11 0x01 0x03 0x00 0x14 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0xF8 0xFF
+  //
+  // Request settings:
+  //
+  // (GW-24S4EB, checksum_xor)
+  // 0xAA 0x55 0x11 0x01 0x04 0x00 0x14 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0xFF 0xFF
+  // 0xAA 0x55 0x11 0x01 0x04 0x00 0x14 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x29 0xFF
+  // (EK-24S4EB, crc)
+  //
+  // Enable balancer:
+  //
+  // (GW-24S4EB, checksum_xor)
+  // 0xAA 0x55 0x11 0x00 0x05 0x0D 0x14 0x00 0x01 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0xF3 0xFF
+  //
+  // Disable balancer:
+  //
+  // (GW-24S4EB, checksum_xor)
+  // 0xAA 0x55 0x11 0x00 0x05 0x0D 0x14 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0xF2 0xFF
+  uint16_t length = 0x0014;
+
+  uint8_t frame[20];
+  frame[0] = SOF_REQUEST_BYTE1;  // Start sequence
+  frame[1] = SOF_REQUEST_BYTE2;  // Start sequence
+  frame[2] = DEVICE_ADDRESS;     // Device address
+  frame[3] = function;           // Function (read or write)
+  frame[4] = command >> 0;       // Command
+  frame[5] = register_address;   // Register address
+  frame[6] = length >> 0;        // Data length
+  frame[7] = length >> 8;        // Data length
+  frame[8] = value >> 0;         // Data Byte 1
+  frame[9] = value >> 8;         // Data Byte 2
+  frame[10] = value >> 16;       // Data Byte 3
+  frame[11] = value >> 24;       // Data Byte 4
+  frame[12] = 0x00;              // Data Byte 5
+  frame[13] = 0x00;              // Data Byte 6
+  frame[14] = 0x00;              // Data Byte 7
+  frame[15] = 0x00;              // Data Byte 8
+  frame[16] = 0x00;              // Data Byte 9
+  frame[17] = 0x00;              // Data Byte 10
+  frame[18] = crc(frame, sizeof(frame) - 2);
+  frame[19] = END_OF_FRAME;  // End sequence
+
+  ESP_LOGD(TAG, "Write register: %s", format_hex_pretty(frame, sizeof(frame)).c_str());  // NOLINT
+  auto status =
+      esp_ble_gattc_write_char(this->parent_->get_gattc_if(), this->parent_->get_conn_id(), this->char_handle_,
+                               sizeof(frame), frame, ESP_GATT_WRITE_TYPE_NO_RSP, ESP_GATT_AUTH_REQ_NONE);
+
+  if (status) {
+    ESP_LOGW(TAG, "[%s] esp_ble_gattc_write_char failed, status=%d", ADDR_STR(this->parent_->address_str()), status);
+  }
+
+  return (status == 0);
+}
+
+#else
+
+void HeltecBalancerBle::update() {}
+
+#endif  // USE_ESP32
 
 // TODO: There is no need to assemble frames if the MTU can be increased to > MAX_RESPONSE_SIZE
 void HeltecBalancerBle::assemble(const uint8_t *data, uint16_t length) {
@@ -768,78 +846,6 @@ void HeltecBalancerBle::decode_device_info_(const std::vector<uint8_t> &data) {
   // 99    1   0xFF                    EOF
 }
 
-bool HeltecBalancerBle::send_command(uint8_t function, uint8_t command, uint8_t register_address, uint32_t value) {
-  // Request device info:
-  //
-  // (GW-24S4EB, checksum_xor)
-  // 0xAA 0x55 0x11 0x01 0x01 0x00 0x14 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0xFA 0xFF
-  // 0xAA 0x55 0x11 0x01 0x01 0x00 0x14 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x26 0xFF
-  // (EK-24S4EB, crc)
-  //
-  // Request cell info:
-  //
-  // (GW-24S4EB, checksum_xor, wrong data_len position)
-  // 0xAA 0x55 0x11 0x01 0x02 0x00 0x00 0x14 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0xF9 0xFF
-  // 0xAA 0x55 0x11 0x01 0x02 0x00 0x14 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x27 0xFF
-  // (EK-24S4EB, crc)
-  //
-  // Request factory settings:
-  //
-  // (GW-24S4EB, checksum_xor)
-  // 0xAA 0x55 0x11 0x01 0x03 0x00 0x14 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0xF8 0xFF
-  //
-  // Request settings:
-  //
-  // (GW-24S4EB, checksum_xor)
-  // 0xAA 0x55 0x11 0x01 0x04 0x00 0x14 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0xFF 0xFF
-  // 0xAA 0x55 0x11 0x01 0x04 0x00 0x14 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x29 0xFF
-  // (EK-24S4EB, crc)
-  //
-  // Enable balancer:
-  //
-  // (GW-24S4EB, checksum_xor)
-  // 0xAA 0x55 0x11 0x00 0x05 0x0D 0x14 0x00 0x01 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0xF3 0xFF
-  //
-  // Disable balancer:
-  //
-  // (GW-24S4EB, checksum_xor)
-  // 0xAA 0x55 0x11 0x00 0x05 0x0D 0x14 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0xF2 0xFF
-  uint16_t length = 0x0014;
-
-  uint8_t frame[20];
-  frame[0] = SOF_REQUEST_BYTE1;  // Start sequence
-  frame[1] = SOF_REQUEST_BYTE2;  // Start sequence
-  frame[2] = DEVICE_ADDRESS;     // Device address
-  frame[3] = function;           // Function (read or write)
-  frame[4] = command >> 0;       // Command
-  frame[5] = register_address;   // Register address
-  frame[6] = length >> 0;        // Data length
-  frame[7] = length >> 8;        // Data length
-  frame[8] = value >> 0;         // Data Byte 1
-  frame[9] = value >> 8;         // Data Byte 2
-  frame[10] = value >> 16;       // Data Byte 3
-  frame[11] = value >> 24;       // Data Byte 4
-  frame[12] = 0x00;              // Data Byte 5
-  frame[13] = 0x00;              // Data Byte 6
-  frame[14] = 0x00;              // Data Byte 7
-  frame[15] = 0x00;              // Data Byte 8
-  frame[16] = 0x00;              // Data Byte 9
-  frame[17] = 0x00;              // Data Byte 10
-  frame[18] = crc(frame, sizeof(frame) - 2);
-  frame[19] = END_OF_FRAME;  // End sequence
-
-  ESP_LOGD(TAG, "Write register: %s", format_hex_pretty(frame, sizeof(frame)).c_str());  // NOLINT
-  auto status =
-      esp_ble_gattc_write_char(this->parent_->get_gattc_if(), this->parent_->get_conn_id(), this->char_handle_,
-                               sizeof(frame), frame, ESP_GATT_WRITE_TYPE_NO_RSP, ESP_GATT_AUTH_REQ_NONE);
-
-  if (status) {
-    ESP_LOGW(TAG, "[%s] esp_ble_gattc_write_char failed, status=%d", ADDR_STR(this->parent_->address_str()), status);
-  }
-
-  return (status == 0);
-}
-
 void HeltecBalancerBle::track_online_status_() {
   if (this->no_response_count_ < MAX_NO_RESPONSE_COUNT) {
     this->no_response_count_++;
@@ -927,5 +933,3 @@ void HeltecBalancerBle::publish_state_(text_sensor::TextSensor *text_sensor, con
 
 }  // namespace heltec_balancer_ble
 }  // namespace esphome
-
-#endif

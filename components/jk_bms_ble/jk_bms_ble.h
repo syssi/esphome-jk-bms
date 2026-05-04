@@ -2,8 +2,6 @@
 
 #include "esphome/core/component.h"
 #include "esphome/core/hal.h"
-#include "esphome/components/ble_client/ble_client.h"
-#include "esphome/components/esp32_ble_tracker/esp32_ble_tracker.h"
 #include "esphome/components/binary_sensor/binary_sensor.h"
 #include "esphome/components/number/number.h"
 #include "esphome/components/sensor/sensor.h"
@@ -11,13 +9,14 @@
 #include "esphome/components/text_sensor/text_sensor.h"
 
 #ifdef USE_ESP32
-
+#include "esphome/components/ble_client/ble_client.h"
+#include "esphome/components/esp32_ble_tracker/esp32_ble_tracker.h"
 #include <esp_gattc_api.h>
+namespace espbt = esphome::esp32_ble_tracker;
+#endif
 
 namespace esphome {
 namespace jk_bms_ble {
-
-namespace espbt = esphome::esp32_ble_tracker;
 
 enum ProtocolVersion {
   PROTOCOL_VERSION_JK04,
@@ -25,10 +24,16 @@ enum ProtocolVersion {
   PROTOCOL_VERSION_JK02_32S,
 };
 
-class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingComponent {
+class JkBmsBle :
+#ifdef USE_ESP32
+    public esphome::ble_client::BLEClientNode,
+#endif
+    public PollingComponent {
  public:
+#ifdef USE_ESP32
   void gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if,
                            esp_ble_gattc_cb_param_t *param) override;
+#endif
   void dump_config() override;
   void update() override;
   float get_setup_priority() const override { return setup_priority::DATA; }
@@ -308,7 +313,9 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   void assemble(const uint8_t *data, uint16_t length);
   void set_protocol_version(ProtocolVersion protocol_version) { protocol_version_ = protocol_version; }
   ProtocolVersion get_protocol_version() { return protocol_version_; }
+#ifdef USE_ESP32
   bool write_register(uint8_t address, uint32_t value, uint8_t length);
+#endif
 
   struct Cell {
     sensor::Sensor *cell_voltage_sensor_{nullptr};
@@ -421,10 +428,12 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
   std::vector<uint8_t> frame_buffer_;
   bool status_notification_received_ = false;
   uint8_t no_response_count_{0};
+#ifdef USE_ESP32
   uint16_t char_handle_{0};
   uint16_t notify_handle_{0};
+#endif
   uint32_t last_cell_info_{0};
-  uint32_t throttle_;
+  uint32_t throttle_{0};
 
   void decode_(const std::vector<uint8_t> &data);
   void decode_device_info_(const std::vector<uint8_t> &data);
@@ -475,5 +484,3 @@ class JkBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompon
 
 }  // namespace jk_bms_ble
 }  // namespace esphome
-
-#endif

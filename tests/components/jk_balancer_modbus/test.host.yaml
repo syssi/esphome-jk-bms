@@ -1,0 +1,7 @@
+uart:
+  - id: uart_bus
+    baud_rate: 9600
+
+jk_balancer_modbus:
+  id: test_bus
+  uart_id: uart_bus
