@@ -16,7 +16,7 @@ TEST(JkModbusParseTest, ValidFrameDispatchesToDevice) {
     bus.parse_byte(b);
 
   ASSERT_TRUE(dev.captured.has_value());
-  const auto &c = *dev.captured;
+  const auto &c = dev.captured.value();
   EXPECT_EQ(c.function, 0x06);
   EXPECT_EQ(c.data[0], 0xAA);
   EXPECT_EQ(c.data[1], 0xBB);

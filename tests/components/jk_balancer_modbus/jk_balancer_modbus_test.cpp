@@ -16,7 +16,7 @@ TEST(JkBalancerModbusParseTest, ValidFrameDispatchesToDevice) {
     bus.parse_byte(b);
 
   ASSERT_TRUE(dev.captured.has_value());
-  const auto &c = *dev.captured;
+  const auto &c = dev.captured.value();
   EXPECT_EQ(c.function, 0xFF);
   EXPECT_EQ(c.data.size(), 74u);  // full frame dispatched
   EXPECT_EQ(c.data[0], 0xEB);
