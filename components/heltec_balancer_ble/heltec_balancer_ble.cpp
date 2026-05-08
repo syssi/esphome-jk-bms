@@ -8,8 +8,7 @@
 #define ADDR_STR(x) (x).c_str()
 #endif
 
-namespace esphome {
-namespace heltec_balancer_ble {
+namespace esphome::heltec_balancer_ble {
 
 static const char *const TAG = "heltec_balancer_ble";
 
@@ -931,5 +930,4 @@ void HeltecBalancerBle::publish_state_(text_sensor::TextSensor *text_sensor, con
   text_sensor->publish_state(state);
 }
 
-}  // namespace heltec_balancer_ble
-}  // namespace esphome
+}  // namespace esphome::heltec_balancer_ble

@@ -2,8 +2,7 @@
 #include "esphome/core/log.h"
 #include "esphome/core/helpers.h"
 
-namespace esphome {
-namespace jk_bms_display {
+namespace esphome::jk_bms_display {
 
 static const char *const TAG = "jk_bms_display";
 
@@ -310,5 +309,4 @@ void JkBmsDisplay::publish_state_(sensor::Sensor *sensor, float value) {
   sensor->publish_state(value);
 }
 
-}  // namespace jk_bms_display
-}  // namespace esphome
+}  // namespace esphome::jk_bms_display

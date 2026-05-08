@@ -3,8 +3,7 @@
 #include "esphome/core/component.h"
 #include "esphome/components/uart/uart.h"
 
-namespace esphome {
-namespace jk_balancer_modbus {
+namespace esphome::jk_balancer_modbus {
 
 class JkBalancerModbusDevice;
 
@@ -47,5 +46,4 @@ class JkBalancerModbusDevice {
   uint8_t address_;
 };
 
-}  // namespace jk_balancer_modbus
-}  // namespace esphome
+}  // namespace esphome::jk_balancer_modbus

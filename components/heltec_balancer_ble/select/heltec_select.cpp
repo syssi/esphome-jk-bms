@@ -1,8 +1,7 @@
 #include "heltec_select.h"
 #include "esphome/core/log.h"
 
-namespace esphome {
-namespace heltec_balancer_ble {
+namespace esphome::heltec_balancer_ble {
 
 static const char *const TAG = "heltec_balancer_ble.select";
 
@@ -25,5 +24,4 @@ void HeltecSelect::control(const std::string &value) {
   }
 }
 
-}  // namespace heltec_balancer_ble
-}  // namespace esphome
+}  // namespace esphome::heltec_balancer_ble

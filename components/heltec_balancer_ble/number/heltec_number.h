@@ -4,8 +4,7 @@
 #include "esphome/core/component.h"
 #include "esphome/components/number/number.h"
 
-namespace esphome {
-namespace heltec_balancer_ble {
+namespace esphome::heltec_balancer_ble {
 
 class HeltecBalancerBle;
 
@@ -29,5 +28,4 @@ class HeltecNumber : public number::Number, public Component {
   }
 };
 
-}  // namespace heltec_balancer_ble
-}  // namespace esphome
+}  // namespace esphome::heltec_balancer_ble

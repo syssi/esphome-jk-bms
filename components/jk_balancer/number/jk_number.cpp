@@ -1,8 +1,7 @@
 #include "jk_number.h"
 #include "esphome/core/log.h"
 
-namespace esphome {
-namespace jk_balancer {
+namespace esphome::jk_balancer {
 
 static const char *const TAG = "jk_balancer.number";
 
@@ -12,5 +11,4 @@ void JkNumber::control(float value) {
   this->publish_state(value);
 }
 
-}  // namespace jk_balancer
-}  // namespace esphome
+}  // namespace esphome::jk_balancer

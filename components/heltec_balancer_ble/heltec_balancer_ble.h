@@ -15,8 +15,7 @@
 #include <esp_gattc_api.h>
 #endif
 
-namespace esphome {
-namespace heltec_balancer_ble {
+namespace esphome::heltec_balancer_ble {
 
 #ifdef USE_ESP32
 namespace espbt = esphome::esp32_ble_tracker;
@@ -249,5 +248,4 @@ class HeltecBalancerBle :
   }
 };
 
-}  // namespace heltec_balancer_ble
-}  // namespace esphome
+}  // namespace esphome::heltec_balancer_ble

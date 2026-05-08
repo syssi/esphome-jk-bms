@@ -7,8 +7,7 @@
 #include "esphome/components/switch/switch.h"
 #include "esphome/components/jk_modbus/jk_modbus.h"
 
-namespace esphome {
-namespace jk_bms {
+namespace esphome::jk_bms {
 
 class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
  public:
@@ -392,5 +391,4 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
   bool check_bit_(uint16_t mask, uint16_t flag) { return (mask & flag) == flag; }
 };
 
-}  // namespace jk_bms
-}  // namespace esphome
+}  // namespace esphome::jk_bms

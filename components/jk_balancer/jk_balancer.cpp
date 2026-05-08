@@ -2,8 +2,7 @@
 #include "esphome/core/log.h"
 #include "esphome/core/helpers.h"
 
-namespace esphome {
-namespace jk_balancer {
+namespace esphome::jk_balancer {
 
 static const char *const TAG = "jk_balancer";
 
@@ -300,5 +299,4 @@ void JkBalancer::dump_config() {  // NOLINT(google-readability-function-size,rea
   LOG_TEXT_SENSOR("", "Errors", this->errors_text_sensor_);
 }
 
-}  // namespace jk_balancer
-}  // namespace esphome
+}  // namespace esphome::jk_balancer

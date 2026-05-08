@@ -4,8 +4,7 @@
 #include "esphome/core/component.h"
 #include "esphome/components/switch/switch.h"
 
-namespace esphome {
-namespace jk_balancer {
+namespace esphome::jk_balancer {
 
 class JkBalancer;
 class JkSwitch : public switch_::Switch, public Component {
@@ -22,5 +21,4 @@ class JkSwitch : public switch_::Switch, public Component {
   uint8_t holding_register_;
 };
 
-}  // namespace jk_balancer
-}  // namespace esphome
+}  // namespace esphome::jk_balancer

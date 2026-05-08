@@ -3,8 +3,7 @@
 #include "esphome/core/hal.h"
 #include "esphome/core/helpers.h"
 
-namespace esphome {
-namespace jk_balancer_modbus {
+namespace esphome::jk_balancer_modbus {
 
 static const char *const TAG = "jk_balancer_modbus";
 
@@ -127,5 +126,4 @@ void JkBalancerModbus::send(uint8_t address, uint8_t function, uint16_t value) {
   this->flush();
 }
 
-}  // namespace jk_balancer_modbus
-}  // namespace esphome
+}  // namespace esphome::jk_balancer_modbus

@@ -2,8 +2,7 @@
 #include "esphome/core/log.h"
 #include "esphome/core/application.h"
 
-namespace esphome {
-namespace jk_bms_ble {
+namespace esphome::jk_bms_ble {
 
 static const char *const TAG = "jk_bms_ble.switch";
 
@@ -33,5 +32,4 @@ void JkSwitch::write_state(bool state) {
   ESP_LOGE(TAG, "This switch isn't supported by the selected protocol version");
 }
 
-}  // namespace jk_bms_ble
-}  // namespace esphome
+}  // namespace esphome::jk_bms_ble

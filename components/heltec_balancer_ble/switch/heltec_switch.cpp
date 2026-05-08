@@ -2,8 +2,7 @@
 #include "esphome/core/log.h"
 #include "esphome/core/application.h"
 
-namespace esphome {
-namespace heltec_balancer_ble {
+namespace esphome::heltec_balancer_ble {
 
 static const char *const TAG = "heltec_balancer_ble.switch";
 
@@ -17,5 +16,4 @@ void HeltecSwitch::write_state(bool state) {
   }
 }
 
-}  // namespace heltec_balancer_ble
-}  // namespace esphome
+}  // namespace esphome::heltec_balancer_ble

@@ -5,8 +5,7 @@
 #include "esphome/components/sensor/sensor.h"
 #include "esphome/components/uart/uart.h"
 
-namespace esphome {
-namespace jk_bms_display {
+namespace esphome::jk_bms_display {
 
 class JkBmsDisplay : public uart::UARTDevice, public Component {
  public:
@@ -149,5 +148,4 @@ class JkBmsDisplay : public uart::UARTDevice, public Component {
   std::string error_bits_to_string_(const uint8_t &mask);
 };
 
-}  // namespace jk_bms_display
-}  // namespace esphome
+}  // namespace esphome::jk_bms_display

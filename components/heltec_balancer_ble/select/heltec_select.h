@@ -4,8 +4,7 @@
 #include "esphome/core/component.h"
 #include "esphome/components/select/select.h"
 
-namespace esphome {
-namespace heltec_balancer_ble {
+namespace esphome::heltec_balancer_ble {
 
 class HeltecBalancerBle;
 
@@ -22,5 +21,4 @@ class HeltecSelect : public select::Select, public Component {
   uint8_t holding_register_;
 };
 
-}  // namespace heltec_balancer_ble
-}  // namespace esphome
+}  // namespace esphome::heltec_balancer_ble

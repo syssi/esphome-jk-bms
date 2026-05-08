@@ -8,8 +8,7 @@
 #include "esphome/components/switch/switch.h"
 #include "esphome/components/jk_balancer_modbus/jk_balancer_modbus.h"
 
-namespace esphome {
-namespace jk_balancer {
+namespace esphome::jk_balancer {
 
 class JkBalancer : public PollingComponent, public jk_balancer_modbus::JkBalancerModbusDevice {
  public:
@@ -122,5 +121,4 @@ class JkBalancer : public PollingComponent, public jk_balancer_modbus::JkBalance
   bool check_bit_(uint16_t mask, uint16_t flag) { return (mask & flag) == flag; }
 };
 
-}  // namespace jk_balancer
-}  // namespace esphome
+}  // namespace esphome::jk_balancer
