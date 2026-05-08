@@ -2,8 +2,7 @@
 #include "esphome/core/log.h"
 #include "esphome/core/helpers.h"
 
-namespace esphome {
-namespace jk_bms {
+namespace esphome::jk_bms {
 
 static const char *const TAG = "jk_bms";
 
@@ -664,5 +663,4 @@ void JkBms::dump_config() {  // NOLINT(google-readability-function-size,readabil
   LOG_TEXT_SENSOR("", "Errors", this->errors_text_sensor_);
 }
 
-}  // namespace jk_bms
-}  // namespace esphome
+}  // namespace esphome::jk_bms

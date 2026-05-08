@@ -4,8 +4,7 @@
 #include "esphome/core/component.h"
 #include "esphome/components/switch/switch.h"
 
-namespace esphome {
-namespace heltec_balancer_ble {
+namespace esphome::heltec_balancer_ble {
 
 class HeltecBalancerBle;
 class HeltecSwitch : public switch_::Switch, public Component {
@@ -22,5 +21,4 @@ class HeltecSwitch : public switch_::Switch, public Component {
   uint8_t holding_register_;
 };
 
-}  // namespace heltec_balancer_ble
-}  // namespace esphome
+}  // namespace esphome::heltec_balancer_ble

@@ -3,8 +3,7 @@
 #include "esphome/core/hal.h"
 #include "esphome/core/helpers.h"
 
-namespace esphome {
-namespace jk_modbus {
+namespace esphome::jk_modbus {
 
 static const char *const TAG = "jk_modbus";
 
@@ -207,5 +206,4 @@ void JkModbus::read_registers() {
     this->flow_control_pin_->digital_write(false);
 }
 
-}  // namespace jk_modbus
-}  // namespace esphome
+}  // namespace esphome::jk_modbus

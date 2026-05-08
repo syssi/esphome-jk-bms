@@ -1,8 +1,7 @@
 #include "heltec_number.h"
 #include "esphome/core/log.h"
 
-namespace esphome {
-namespace heltec_balancer_ble {
+namespace esphome::heltec_balancer_ble {
 
 static const char *const TAG = "heltec_balancer_ble.number";
 
@@ -18,5 +17,4 @@ void HeltecNumber::control(float value) {
   }
 }
 
-}  // namespace heltec_balancer_ble
-}  // namespace esphome
+}  // namespace esphome::heltec_balancer_ble

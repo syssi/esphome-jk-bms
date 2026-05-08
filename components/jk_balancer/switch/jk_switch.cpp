@@ -2,8 +2,7 @@
 #include "esphome/core/log.h"
 #include "esphome/core/application.h"
 
-namespace esphome {
-namespace jk_balancer {
+namespace esphome::jk_balancer {
 
 static const char *const TAG = "jk_balancer.switch";
 
@@ -13,5 +12,4 @@ void JkSwitch::write_state(bool state) {
   this->publish_state(state);
 }
 
-}  // namespace jk_balancer
-}  // namespace esphome
+}  // namespace esphome::jk_balancer

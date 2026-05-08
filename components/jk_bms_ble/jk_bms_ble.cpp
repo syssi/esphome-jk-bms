@@ -8,8 +8,7 @@
 #define ADDR_STR(x) (x).c_str()
 #endif
 
-namespace esphome {
-namespace jk_bms_ble {
+namespace esphome::jk_bms_ble {
 
 static const char *const TAG = "jk_bms_ble";
 
@@ -1699,5 +1698,4 @@ std::string JkBmsBle::charge_status_id_to_string_(const uint8_t status) {
   }
 }
 
-}  // namespace jk_bms_ble
-}  // namespace esphome
+}  // namespace esphome::jk_bms_ble

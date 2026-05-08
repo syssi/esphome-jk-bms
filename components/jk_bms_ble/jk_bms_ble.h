@@ -15,8 +15,7 @@
 namespace espbt = esphome::esp32_ble_tracker;
 #endif
 
-namespace esphome {
-namespace jk_bms_ble {
+namespace esphome::jk_bms_ble {
 
 enum ProtocolVersion {
   PROTOCOL_VERSION_JK04,
@@ -482,5 +481,4 @@ class JkBmsBle :
   bool check_bit_(uint8_t mask, uint8_t flag) { return (mask & flag) == flag; }
 };
 
-}  // namespace jk_bms_ble
-}  // namespace esphome
+}  // namespace esphome::jk_bms_ble

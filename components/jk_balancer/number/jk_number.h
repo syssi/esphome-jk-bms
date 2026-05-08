@@ -4,8 +4,7 @@
 #include "esphome/core/component.h"
 #include "esphome/components/number/number.h"
 
-namespace esphome {
-namespace jk_balancer {
+namespace esphome::jk_balancer {
 
 class JkBalancer;
 
@@ -22,5 +21,4 @@ class JkNumber : public number::Number, public Component {
   uint8_t holding_register_;
 };
 
-}  // namespace jk_balancer
-}  // namespace esphome
+}  // namespace esphome::jk_balancer

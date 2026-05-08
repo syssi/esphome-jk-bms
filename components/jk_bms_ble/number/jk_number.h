@@ -4,8 +4,7 @@
 #include "esphome/core/component.h"
 #include "esphome/components/number/number.h"
 
-namespace esphome {
-namespace jk_bms_ble {
+namespace esphome::jk_bms_ble {
 
 class JkBmsBle;
 
@@ -36,5 +35,4 @@ class JkNumber : public number::Number, public Component {
   float factor_{1000.0f};
 };
 
-}  // namespace jk_bms_ble
-}  // namespace esphome
+}  // namespace esphome::jk_bms_ble

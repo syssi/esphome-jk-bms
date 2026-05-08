@@ -1,8 +1,7 @@
 #include "jk_number.h"
 #include "esphome/core/log.h"
 
-namespace esphome {
-namespace jk_bms_ble {
+namespace esphome::jk_bms_ble {
 
 static const char *const TAG = "jk_bms_ble.number";
 
@@ -35,5 +34,4 @@ void JkNumber::control(float value) {
   ESP_LOGE(TAG, "This number entity isn't supported by the selected protocol version");
 }
 
-}  // namespace jk_bms_ble
-}  // namespace esphome
+}  // namespace esphome::jk_bms_ble

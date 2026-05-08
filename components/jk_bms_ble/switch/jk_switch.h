@@ -4,8 +4,7 @@
 #include "esphome/core/component.h"
 #include "esphome/components/switch/switch.h"
 
-namespace esphome {
-namespace jk_bms_ble {
+namespace esphome::jk_bms_ble {
 
 class JkBmsBle;
 class JkSwitch : public switch_::Switch, public Component {
@@ -32,5 +31,4 @@ class JkSwitch : public switch_::Switch, public Component {
   uint8_t jk02_32s_holding_register_;
 };
 
-}  // namespace jk_bms_ble
-}  // namespace esphome
+}  // namespace esphome::jk_bms_ble
