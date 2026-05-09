@@ -522,7 +522,7 @@ void JkBms::publish_state_(text_sensor::TextSensor *text_sensor, const std::stri
 
 std::string JkBms::error_bits_to_string_(const uint16_t mask) {
   bool first = true;
-  std::string errors_list = "";
+  std::string errors_list;
 
   if (mask) {
     for (int i = 0; i < ERRORS_SIZE; i++) {
@@ -542,7 +542,7 @@ std::string JkBms::error_bits_to_string_(const uint16_t mask) {
 
 std::string JkBms::mode_bits_to_string_(const uint16_t mask) {
   bool first = true;
-  std::string modes_list = "";
+  std::string modes_list;
 
   if (mask) {
     for (int i = 0; i < OPERATION_MODES_SIZE; i++) {
