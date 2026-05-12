@@ -557,6 +557,7 @@ jobs:
         run: |
           . venv/bin/activate
           esphome -s external_components_source components compile esp32-heltec-balancer-ble-example-faker.yaml
+          esphome -s external_components_source components compile esp32-heltec-balancer-ble-ek-b24s8e200a-example-faker.yaml
           # esphome -s external_components_source components compile esp32-heltec-balancer-ble-example-multiple-devices.yaml
         env:
           PLATFORMIO_LIBDEPS_DIR: ~/.platformio/libdeps
