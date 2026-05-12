@@ -1,11 +1,13 @@
 #include <gtest/gtest.h>
 #include "common.h"
+#include "frames_gw-24s4eb.h"
 
 namespace esphome::heltec_balancer_ble::testing {
+using namespace gw;
 
 // ── Cell voltages ─────────────────────────────────────────────────────────────
 
-TEST(HeltecCellInfoTest, CellVoltages) {
+TEST(GwCellInfoTest, CellVoltages) {
   TestableHeltecBalancerBle bms;
   sensor::Sensor cells[4];
   for (int i = 0; i < 4; i++)
@@ -13,16 +15,16 @@ TEST(HeltecCellInfoTest, CellVoltages) {
 
   bms.decode_cell_info_(CELL_INFO_FRAME);
 
-  EXPECT_NEAR(cells[0].state, 3.266f, 0.001f);
-  EXPECT_NEAR(cells[1].state, 3.266f, 0.001f);
-  EXPECT_NEAR(cells[2].state, 3.267f, 0.001f);
-  EXPECT_NEAR(cells[3].state, 3.266f, 0.001f);
+  EXPECT_NEAR(cells[0].state, 3.322f, 0.001f);
+  EXPECT_NEAR(cells[1].state, 3.322f, 0.001f);
+  EXPECT_NEAR(cells[2].state, 3.323f, 0.001f);
+  EXPECT_NEAR(cells[3].state, 3.322f, 0.001f);
 }
 
-TEST(HeltecCellInfoTest, InactiveCellsPublishZero) {
+TEST(GwCellInfoTest, InactiveCellsPublishZero) {
   TestableHeltecBalancerBle bms;
   sensor::Sensor cell17;
-  bms.set_cell_voltage_sensor(16, &cell17);  // cell 17 (index 16) — beyond active 16
+  bms.set_cell_voltage_sensor(16, &cell17);  // index 16 — beyond active 16
 
   bms.decode_cell_info_(CELL_INFO_FRAME);
 
@@ -31,7 +33,7 @@ TEST(HeltecCellInfoTest, InactiveCellsPublishZero) {
 
 // ── Cell voltage statistics ───────────────────────────────────────────────────
 
-TEST(HeltecCellInfoTest, CellVoltageStats) {
+TEST(GwCellInfoTest, CellVoltageStats) {
   TestableHeltecBalancerBle bms;
   sensor::Sensor min_v, max_v, min_cell, max_cell, delta, avg;
   bms.set_min_cell_voltage_sensor(&min_v);
@@ -43,29 +45,29 @@ TEST(HeltecCellInfoTest, CellVoltageStats) {
 
   bms.decode_cell_info_(CELL_INFO_FRAME);
 
-  EXPECT_NEAR(min_v.state, 3.266f, 0.001f);
-  EXPECT_NEAR(max_v.state, 3.274f, 0.001f);
-  EXPECT_FLOAT_EQ(min_cell.state, 1.0f);   // cell 1 (1-indexed)
-  EXPECT_FLOAT_EQ(max_cell.state, 11.0f);  // cell 11 (1-indexed)
-  EXPECT_NEAR(delta.state, 0.008f, 0.001f);
-  EXPECT_NEAR(avg.state, 3.270f, 0.001f);
+  EXPECT_NEAR(min_v.state, 3.322f, 0.001f);
+  EXPECT_NEAR(max_v.state, 3.323f, 0.001f);
+  EXPECT_FLOAT_EQ(min_cell.state, 1.0f);  // cell 1 (1-indexed)
+  EXPECT_FLOAT_EQ(max_cell.state, 9.0f);  // cell 9 (1-indexed)
+  EXPECT_NEAR(delta.state, 0.001f, 0.001f);
+  EXPECT_NEAR(avg.state, 3.322f, 0.001f);
 }
 
 // ── Total voltage ─────────────────────────────────────────────────────────────
 
-TEST(HeltecCellInfoTest, TotalVoltage) {
+TEST(GwCellInfoTest, TotalVoltage) {
   TestableHeltecBalancerBle bms;
   sensor::Sensor total;
   bms.set_total_voltage_sensor(&total);
 
   bms.decode_cell_info_(CELL_INFO_FRAME);
 
-  EXPECT_NEAR(total.state, 52.31f, 0.01f);
+  EXPECT_NEAR(total.state, 53.16f, 0.01f);
 }
 
 // ── Operation status and balancing ───────────────────────────────────────────
 
-TEST(HeltecCellInfoTest, OperationStatus) {
+TEST(GwCellInfoTest, OperationStatus) {
   TestableHeltecBalancerBle bms;
   binary_sensor::BinarySensor balancing;
   text_sensor::TextSensor op_status;
@@ -80,19 +82,19 @@ TEST(HeltecCellInfoTest, OperationStatus) {
 
 // ── Balancing current ─────────────────────────────────────────────────────────
 
-TEST(HeltecCellInfoTest, BalancingCurrent) {
+TEST(GwCellInfoTest, BalancingCurrent) {
   TestableHeltecBalancerBle bms;
   sensor::Sensor current;
   bms.set_balancing_current_sensor(&current);
 
   bms.decode_cell_info_(CELL_INFO_FRAME);
 
-  EXPECT_NEAR(current.state, -4.082f, 0.001f);
+  EXPECT_NEAR(current.state, 2.056f, 0.001f);
 }
 
 // ── Temperatures ──────────────────────────────────────────────────────────────
 
-TEST(HeltecCellInfoTest, Temperatures) {
+TEST(GwCellInfoTest, Temperatures) {
   TestableHeltecBalancerBle bms;
   sensor::Sensor temp1, temp2;
   bms.set_temperature_sensor_1_sensor(&temp1);
@@ -100,13 +102,13 @@ TEST(HeltecCellInfoTest, Temperatures) {
 
   bms.decode_cell_info_(CELL_INFO_FRAME);
 
-  EXPECT_NEAR(temp1.state, 50.24f, 0.01f);
-  EXPECT_NEAR(temp2.state, 50.24f, 0.01f);
+  EXPECT_NEAR(temp1.state, 26.48f, 0.01f);
+  EXPECT_NEAR(temp2.state, 26.48f, 0.01f);
 }
 
 // ── Bitmask sensors ───────────────────────────────────────────────────────────
 
-TEST(HeltecCellInfoTest, BitmaskSensors) {
+TEST(GwCellInfoTest, BitmaskSensors) {
   TestableHeltecBalancerBle bms;
   sensor::Sensor det_fail, overvolt, undervolt, polarity, line_res;
   bms.set_cell_detection_failed_bitmask_sensor(&det_fail);
@@ -126,7 +128,7 @@ TEST(HeltecCellInfoTest, BitmaskSensors) {
 
 // ── Error binary sensors ──────────────────────────────────────────────────────
 
-TEST(HeltecCellInfoTest, ErrorBinarySensors) {
+TEST(GwCellInfoTest, ErrorBinarySensors) {
   TestableHeltecBalancerBle bms;
   binary_sensor::BinarySensor sys_overheat, charging_err, discharging_err;
   bms.set_error_system_overheating_binary_sensor(&sys_overheat);
@@ -142,63 +144,63 @@ TEST(HeltecCellInfoTest, ErrorBinarySensors) {
 
 // ── Online status (via decode_ dispatch) ─────────────────────────────────────
 
-TEST(HeltecCellInfoTest, OnlineStatusSetViaDispatch) {
+TEST(GwCellInfoTest, OnlineStatusSetViaDispatch) {
   TestableHeltecBalancerBle bms;
   binary_sensor::BinarySensor online;
   bms.set_online_status_binary_sensor(&online);
 
-  bms.decode_(CELL_INFO_FRAME);  // decode_ calls reset_online_status_tracker_
+  bms.decode_(CELL_INFO_FRAME);
 
   EXPECT_TRUE(online.state);
 }
 
 // ── Null sensors do not crash ─────────────────────────────────────────────────
 
-TEST(HeltecCellInfoTest, NullSensorsDoNotCrash) {
+TEST(GwCellInfoTest, NullSensorsDoNotCrash) {
   TestableHeltecBalancerBle bms;
   bms.decode_cell_info_(CELL_INFO_FRAME);
 }
 
-// ── Device info frame (frame type 0x01) ──────────────────────────────────────
+// ── Device info frame ─────────────────────────────────────────────────────────
 
-TEST(HeltecDeviceInfoTest, TotalRuntime) {
+TEST(GwDeviceInfoTest, TotalRuntime) {
   TestableHeltecBalancerBle bms;
   sensor::Sensor runtime;
   bms.set_total_runtime_sensor(&runtime);
 
   bms.decode_device_info_(DEVICE_INFO_FRAME);
 
-  EXPECT_FLOAT_EQ(runtime.state, 692481.0f);
+  EXPECT_FLOAT_EQ(runtime.state, 4064370.0f);
 }
 
-TEST(HeltecDeviceInfoTest, TotalRuntimeFormatted) {
+TEST(GwDeviceInfoTest, TotalRuntimeFormatted) {
   TestableHeltecBalancerBle bms;
   text_sensor::TextSensor formatted;
   bms.set_total_runtime_formatted_text_sensor(&formatted);
 
   bms.decode_device_info_(DEVICE_INFO_FRAME);
 
-  EXPECT_EQ(formatted.state, "8d ");
+  EXPECT_EQ(formatted.state, "47d ");
 }
 
-TEST(HeltecDeviceInfoTest, DispatchedViaFrameType) {
+TEST(GwDeviceInfoTest, DispatchedViaFrameType) {
   TestableHeltecBalancerBle bms;
   sensor::Sensor runtime;
   bms.set_total_runtime_sensor(&runtime);
 
   bms.decode_(DEVICE_INFO_FRAME);
 
-  EXPECT_FLOAT_EQ(runtime.state, 692481.0f);
+  EXPECT_FLOAT_EQ(runtime.state, 4064370.0f);
 }
 
-TEST(HeltecDeviceInfoTest, NullSensorsDoNotCrash) {
+TEST(GwDeviceInfoTest, NullSensorsDoNotCrash) {
   TestableHeltecBalancerBle bms;
   bms.decode_device_info_(DEVICE_INFO_FRAME);
 }
 
-// ── Settings frame (frame type 0x04) ─────────────────────────────────────────
+// ── Settings frame ────────────────────────────────────────────────────────────
 
-TEST(HeltecSettingsTest, CellCount) {
+TEST(GwSettingsTest, CellCount) {
   TestableHeltecBalancerBle bms;
   TestNumber cell_count;
   bms.set_cell_count_number(&cell_count);
@@ -208,7 +210,7 @@ TEST(HeltecSettingsTest, CellCount) {
   EXPECT_FLOAT_EQ(cell_count.state, 16.0f);
 }
 
-TEST(HeltecSettingsTest, BalancerSwitch) {
+TEST(GwSettingsTest, BalancerSwitch) {
   TestableHeltecBalancerBle bms;
   TestSwitch balancer;
   bms.set_balancer_switch(&balancer);
@@ -218,7 +220,7 @@ TEST(HeltecSettingsTest, BalancerSwitch) {
   EXPECT_TRUE(balancer.state);
 }
 
-TEST(HeltecSettingsTest, BuzzerModeText) {
+TEST(GwSettingsTest, BuzzerModeText) {
   TestableHeltecBalancerBle bms;
   text_sensor::TextSensor buzzer;
   bms.set_buzzer_mode_text_sensor(&buzzer);
@@ -228,7 +230,7 @@ TEST(HeltecSettingsTest, BuzzerModeText) {
   EXPECT_EQ(buzzer.state, "Off");
 }
 
-TEST(HeltecSettingsTest, BatteryTypeText) {
+TEST(GwSettingsTest, BatteryTypeText) {
   TestableHeltecBalancerBle bms;
   text_sensor::TextSensor btype;
   bms.set_battery_type_text_sensor(&btype);
@@ -238,7 +240,7 @@ TEST(HeltecSettingsTest, BatteryTypeText) {
   EXPECT_EQ(btype.state, "LFP");
 }
 
-TEST(HeltecSettingsTest, VoltageNumbers) {
+TEST(GwSettingsTest, VoltageNumbers) {
   TestableHeltecBalancerBle bms;
   TestNumber trig, max_cur, sleep, start, stop_diff, cap;
   bms.set_balance_trigger_voltage_number(&trig);
@@ -250,15 +252,15 @@ TEST(HeltecSettingsTest, VoltageNumbers) {
 
   bms.decode_settings_(SETTINGS_FRAME);
 
-  EXPECT_NEAR(trig.state, 0.005f, 0.001f);
-  EXPECT_NEAR(max_cur.state, 4.0f, 0.001f);
-  EXPECT_NEAR(sleep.state, 2.5f, 0.001f);
-  EXPECT_NEAR(start.state, 2.6f, 0.001f);
+  EXPECT_NEAR(trig.state, 0.004f, 0.001f);
+  EXPECT_NEAR(max_cur.state, 2.0f, 0.001f);
+  EXPECT_NEAR(sleep.state, 3.0f, 0.001f);
+  EXPECT_NEAR(start.state, 0.0f, 0.001f);
   EXPECT_NEAR(stop_diff.state, 0.0f, 0.001f);
   EXPECT_FLOAT_EQ(cap.state, 280.0f);
 }
 
-TEST(HeltecSettingsTest, DispatchedViaFrameType) {
+TEST(GwSettingsTest, DispatchedViaFrameType) {
   TestableHeltecBalancerBle bms;
   TestNumber cell_count;
   bms.set_cell_count_number(&cell_count);
@@ -268,22 +270,21 @@ TEST(HeltecSettingsTest, DispatchedViaFrameType) {
   EXPECT_FLOAT_EQ(cell_count.state, 16.0f);
 }
 
-TEST(HeltecSettingsTest, NullSensorsDoNotCrash) {
+TEST(GwSettingsTest, NullSensorsDoNotCrash) {
   TestableHeltecBalancerBle bms;
   bms.decode_settings_(SETTINGS_FRAME);
 }
 
 // ── Dispatch: write register response ignored ─────────────────────────────────
 
-TEST(HeltecDispatchTest, WriteRegisterResponseIgnored) {
+TEST(GwDispatchTest, WriteRegisterResponseIgnored) {
   TestableHeltecBalancerBle bms;
-  // frame type 0x05 = write register — should not crash
   std::vector<uint8_t> wr = {0x55, 0xAA, 0x11, 0x01, 0x05, 0x00, 0x14, 0x00};
   wr.resize(20, 0x00);
   bms.decode_(wr);
 }
 
-TEST(HeltecDispatchTest, UnknownFrameTypeIgnored) {
+TEST(GwDispatchTest, UnknownFrameTypeIgnored) {
   TestableHeltecBalancerBle bms;
   std::vector<uint8_t> unknown = {0x55, 0xAA, 0x11, 0x01, 0xAB, 0x00, 0x14, 0x00};
   unknown.resize(20, 0x00);
