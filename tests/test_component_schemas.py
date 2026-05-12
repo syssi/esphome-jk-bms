@@ -194,7 +194,7 @@ class TestJkBalancerSensorLists:
 
 class TestHeltecBalancerBleSensorLists:
     def test_sensor_defs_completeness(self):
-        assert len(heltec_sensor.SENSOR_DEFS) == 18
+        assert len(heltec_sensor.SENSOR_DEFS) == 23
 
     def test_binary_sensor_defs_dict(self):
         assert (

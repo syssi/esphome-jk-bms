@@ -147,6 +147,11 @@ void HeltecBalancerBle::dump_config() {  // NOLINT(google-readability-function-s
   LOG_SENSOR("", "Total Voltage", this->total_voltage_sensor_);
   LOG_SENSOR("", "Temperature Sensor 1", this->temperature_sensor_1_sensor_);
   LOG_SENSOR("", "Temperature Sensor 2", this->temperature_sensor_2_sensor_);
+  LOG_SENSOR("", "MOSFET Temperature", this->mosfet_temperature_sensor_);
+  LOG_SENSOR("", "Balancer Temperature", this->balancer_temperature_sensor_);
+  LOG_SENSOR("", "Nominal Capacity", this->nominal_capacity_sensor_);
+  LOG_SENSOR("", "Capacity Remaining", this->capacity_remaining_sensor_);
+  LOG_SENSOR("", "State of Charge", this->state_of_charge_sensor_);
   LOG_SENSOR("", "Total Runtime", this->total_runtime_sensor_);
   LOG_SENSOR("", "Balancing Current", this->balancing_current_sensor_);
   LOG_SENSOR("", "Errors Bitmask", this->errors_bitmask_sensor_);
@@ -177,7 +182,8 @@ void HeltecBalancerBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt
     }
     case ESP_GATTC_DISCONNECT_EVT: {
       this->node_state = espbt::ClientState::IDLE;
-      this->status_notification_received_ = false;
+      this->init_state_ = InitState::NEED_DEVICE_INFO;
+      this->connection_time_ = 0;
 
       if (this->char_handle_ != 0) {
         auto status = esp_ble_gattc_unregister_for_notify(this->parent()->get_gattc_if(),
@@ -234,11 +240,8 @@ void HeltecBalancerBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt
     }
     case ESP_GATTC_REG_FOR_NOTIFY_EVT: {
       this->node_state = espbt::ClientState::ESTABLISHED;
-      this->status_notification_received_ = false;
-
-      ESP_LOGI(TAG, "Request device info");
-      this->send_command(FUNCTION_READ, COMMAND_DEVICE_INFO);
-
+      this->init_state_ = InitState::NEED_DEVICE_INFO;
+      this->connection_time_ = millis();
       break;
     }
     case ESP_GATTC_NOTIFY_EVT: {
@@ -264,9 +267,24 @@ void HeltecBalancerBle::update() {
     return;
   }
 
-  if (!this->status_notification_received_) {
-    ESP_LOGI(TAG, "Request status notification");
-    this->send_command(FUNCTION_READ, COMMAND_CELL_INFO);
+  if (millis() - this->connection_time_ < 1000)
+    return;
+
+  switch (this->init_state_) {
+    case InitState::NEED_DEVICE_INFO:
+      ESP_LOGI(TAG, "Request device info");
+      this->send_command(FUNCTION_READ, COMMAND_DEVICE_INFO);
+      break;
+    case InitState::NEED_SETTINGS:
+      ESP_LOGI(TAG, "Request settings");
+      this->send_command(FUNCTION_READ, COMMAND_SETTINGS);
+      break;
+    case InitState::NEED_CELL_INFO:
+      ESP_LOGI(TAG, "Request cell info");
+      this->send_command(FUNCTION_READ, COMMAND_CELL_INFO);
+      break;
+    default:
+      break;
   }
 }
 
@@ -388,15 +406,33 @@ void HeltecBalancerBle::decode_(const std::vector<uint8_t> &data) {
   switch (frame_type) {
     case COMMAND_DEVICE_INFO:
       this->decode_device_info_(data);
+      this->init_state_ = InitState::NEED_SETTINGS;
+#ifdef USE_ESP32
+      this->send_command(FUNCTION_READ, COMMAND_SETTINGS);
+#endif
       break;
     case COMMAND_CELL_INFO:
-      this->decode_cell_info_(data);
+      if (this->protocol_version_ == PROTOCOL_VERSION_V2) {
+        this->decode_cell_info_v2_(data);
+      } else {
+        this->decode_cell_info_(data);
+      }
+      this->init_state_ = InitState::READY;
       break;
     case COMMAND_FACTORY_DEFAULTS:
       this->decode_factory_defaults_(data);
       break;
     case COMMAND_SETTINGS:
-      this->decode_settings_(data);
+      this->protocol_version_ = (data.size() == 150) ? PROTOCOL_VERSION_V2 : PROTOCOL_VERSION_V1;
+      if (this->protocol_version_ == PROTOCOL_VERSION_V2) {
+        this->decode_settings_v2_(data);
+      } else {
+        this->decode_settings_(data);
+      }
+      this->init_state_ = InitState::NEED_CELL_INFO;
+#ifdef USE_ESP32
+      this->send_command(FUNCTION_READ, COMMAND_CELL_INFO);
+#endif
       break;
     case COMMAND_WRITE_REGISTER:
       ESP_LOGD(TAG, "Write register response received: %s",
@@ -419,12 +455,11 @@ void HeltecBalancerBle::decode_cell_info_(const std::vector<uint8_t> &data) {
   };
 
   const uint32_t now = millis();
-  if (now - this->last_cell_info_ < this->throttle_) {
+  if (now - this->last_cell_info_ < this->throttle_)
     return;
-  }
   this->last_cell_info_ = now;
 
-  ESP_LOGI(TAG, "Cell info frame (%d bytes):", data.size());
+  ESP_LOGI(TAG, "Cell info frame (%zu bytes):", data.size());
   ESP_LOGD(TAG, "  %s", format_hex_pretty(&data.front(), 150).c_str());                      // NOLINT
   ESP_LOGD(TAG, "  %s", format_hex_pretty(&data.front() + 150, data.size() - 150).c_str());  // NOLINT
 
@@ -517,39 +552,7 @@ void HeltecBalancerBle::decode_cell_info_(const std::vector<uint8_t> &data) {
   // 214   1   0x00                             Min voltage cell
   // this->publish_state_(this->min_voltage_cell_sensor_, (float) data[214] + 1);
 
-  uint8_t cells = 24;
-  uint8_t cells_enabled = 0;
-  float min_cell_voltage = 100.0f;
-  float max_cell_voltage = -100.0f;
-  float average_cell_voltage = 0.0f;
-  uint8_t min_voltage_cell = 0;
-  uint8_t max_voltage_cell = 0;
-  for (uint8_t i = 0; i < cells; i++) {
-    float cell_voltage = ieee_float_(heltec_get_32bit(i * 4 + 9));
-    float cell_resistance = ieee_float_(heltec_get_32bit(i * 4 + 105));
-    if (cell_voltage > 0) {
-      average_cell_voltage = average_cell_voltage + cell_voltage;
-      cells_enabled++;
-    }
-    if (cell_voltage > 0 && cell_voltage < min_cell_voltage) {
-      min_cell_voltage = cell_voltage;
-      min_voltage_cell = i + 1;
-    }
-    if (cell_voltage > max_cell_voltage) {
-      max_cell_voltage = cell_voltage;
-      max_voltage_cell = i + 1;
-    }
-    this->publish_state_(this->cells_[i].cell_voltage_sensor_, cell_voltage);
-    this->publish_state_(this->cells_[i].cell_resistance_sensor_, cell_resistance);
-  }
-  average_cell_voltage = average_cell_voltage / cells_enabled;
-
-  this->publish_state_(this->min_cell_voltage_sensor_, min_cell_voltage);
-  this->publish_state_(this->max_cell_voltage_sensor_, max_cell_voltage);
-  this->publish_state_(this->min_voltage_cell_sensor_, (float) min_voltage_cell);
-  this->publish_state_(this->max_voltage_cell_sensor_, (float) max_voltage_cell);
-  this->publish_state_(this->delta_cell_voltage_sensor_, max_cell_voltage - min_cell_voltage);
-  this->publish_state_(this->average_cell_voltage_sensor_, average_cell_voltage);
+  this->decode_cell_arrays_(data);
 
   // 215   1   0x0F                             Single number (not exposed at the android app)
   // ESP_LOGI(TAG, "  Cell count?: %d", data[215] + 1);
@@ -618,8 +621,206 @@ void HeltecBalancerBle::decode_cell_info_(const std::vector<uint8_t> &data) {
   //           0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
   // 298   1   0xB6
   // 299   1   0xFF
+}
 
-  this->status_notification_received_ = true;
+void HeltecBalancerBle::decode_cell_arrays_(const std::vector<uint8_t> &data) {
+  auto heltec_get_16bit = [&](size_t i) -> uint16_t {
+    return (uint16_t(data[i + 1]) << 8) | (uint16_t(data[i + 0]) << 0);
+  };
+  auto heltec_get_32bit = [&](size_t i) -> uint32_t {
+    return (uint32_t(heltec_get_16bit(i + 2)) << 16) | (uint32_t(heltec_get_16bit(i + 0)) << 0);
+  };
+
+  uint8_t cells_enabled = 0;
+  float min_cell_voltage = 100.0f;
+  float max_cell_voltage = -100.0f;
+  float average_cell_voltage = 0.0f;
+  uint8_t min_voltage_cell = 0;
+  uint8_t max_voltage_cell = 0;
+  for (uint8_t i = 0; i < 24; i++) {
+    float cell_voltage = ieee_float_(heltec_get_32bit(i * 4 + 9));
+    float cell_resistance = ieee_float_(heltec_get_32bit(i * 4 + 105));
+    if (cell_voltage > 0) {
+      average_cell_voltage = average_cell_voltage + cell_voltage;
+      cells_enabled++;
+    }
+    if (cell_voltage > 0 && cell_voltage < min_cell_voltage) {
+      min_cell_voltage = cell_voltage;
+      min_voltage_cell = i + 1;
+    }
+    if (cell_voltage > max_cell_voltage) {
+      max_cell_voltage = cell_voltage;
+      max_voltage_cell = i + 1;
+    }
+    this->publish_state_(this->cells_[i].cell_voltage_sensor_, cell_voltage);
+    this->publish_state_(this->cells_[i].cell_resistance_sensor_, cell_resistance);
+  }
+  average_cell_voltage = average_cell_voltage / cells_enabled;
+
+  this->publish_state_(this->min_cell_voltage_sensor_, min_cell_voltage);
+  this->publish_state_(this->max_cell_voltage_sensor_, max_cell_voltage);
+  this->publish_state_(this->min_voltage_cell_sensor_, (float) min_voltage_cell);
+  this->publish_state_(this->max_voltage_cell_sensor_, (float) max_voltage_cell);
+  this->publish_state_(this->delta_cell_voltage_sensor_, max_cell_voltage - min_cell_voltage);
+  this->publish_state_(this->average_cell_voltage_sensor_, average_cell_voltage);
+}
+
+void HeltecBalancerBle::decode_cell_info_v2_(const std::vector<uint8_t> &data) {
+  auto heltec_get_16bit = [&](size_t i) -> uint16_t {
+    return (uint16_t(data[i + 1]) << 8) | (uint16_t(data[i + 0]) << 0);
+  };
+  auto heltec_get_24bit = [&](size_t i) -> uint32_t {
+    return (uint32_t(data[i + 2]) << 16) | (uint32_t(data[i + 1]) << 8) | (uint32_t(data[i + 0]) << 0);
+  };
+  auto heltec_get_32bit = [&](size_t i) -> uint32_t {
+    return (uint32_t(heltec_get_16bit(i + 2)) << 16) | (uint32_t(heltec_get_16bit(i + 0)) << 0);
+  };
+
+  const uint32_t now = millis();
+  if (now - this->last_cell_info_ < this->throttle_)
+    return;
+  this->last_cell_info_ = now;
+
+  ESP_LOGI(TAG, "Cell info frame v2 (%zu bytes):", data.size());
+  ESP_LOGD(TAG, "  %s", format_hex_pretty(&data.front(), 150).c_str());                      // NOLINT
+  ESP_LOGD(TAG, "  %s", format_hex_pretty(&data.front() + 150, data.size() - 150).c_str());  // NOLINT
+
+  ESP_LOGD(TAG, "  Frame counter: %d", data[8]);
+
+  this->publish_state_(this->total_voltage_sensor_, ieee_float_(heltec_get_32bit(201)));
+
+  this->decode_cell_arrays_(data);
+
+  // 216   1   Op status (same as v1)
+  uint8_t raw_operation_status = data[216];
+  this->publish_state_(this->balancing_binary_sensor_, (raw_operation_status == 0x05));
+  if (raw_operation_status < OPERATION_STATUS_SIZE) {
+    this->publish_state_(this->operation_status_text_sensor_, OPERATION_STATUS[raw_operation_status]);
+  } else {
+    this->publish_state_(this->operation_status_text_sensor_, "Unknown");
+  }
+
+  // 217   1   Extra byte (always 0x02 in SW-2.0.0)
+  // 218   4   Balance current
+  this->publish_state_(this->balancing_current_sensor_, ieee_float_(heltec_get_32bit(218)));
+
+  // 222   4   Unknown field (skip)
+  // 226   4   Temperature 1 (NTC1 & NTC2)
+  this->publish_state_(this->temperature_sensor_1_sensor_, ieee_float_(heltec_get_32bit(226)));
+
+  // 230   4   Temperature 2 (NTC3 & NTC4)
+  this->publish_state_(this->temperature_sensor_2_sensor_, ieee_float_(heltec_get_32bit(230)));
+
+  // 234   4   Temperature 3 (MOS)
+  this->publish_state_(this->mosfet_temperature_sensor_, ieee_float_(heltec_get_32bit(234)));
+
+  // 238   4   Temperature 4 (Balancer)
+  this->publish_state_(this->balancer_temperature_sensor_, ieee_float_(heltec_get_32bit(238)));
+
+  // 242   4   Total capacity (Ah)
+  this->publish_state_(this->nominal_capacity_sensor_, ieee_float_(heltec_get_32bit(242)));
+
+  // 246   4   Remaining capacity (Ah)
+  this->publish_state_(this->capacity_remaining_sensor_, ieee_float_(heltec_get_32bit(246)));
+
+  // 250   4   State of charge (%)
+  this->publish_state_(this->state_of_charge_sensor_, ieee_float_(heltec_get_32bit(250)));
+
+  // 254   4   Unknown float (same value as nominal capacity in captures)
+  ESP_LOGV(TAG, "  Unknown254: %.3f", ieee_float_(heltec_get_32bit(254)));
+  // 258   4   Unknown float (0.0 in captures)
+  ESP_LOGV(TAG, "  Unknown258: %.3f", ieee_float_(heltec_get_32bit(258)));
+  // 262   4   Unknown float (~5.36 in captures)
+  ESP_LOGV(TAG, "  Unknown262: %.3f", ieee_float_(heltec_get_32bit(262)));
+
+  // 266   3   Cell detection failed bitmask (24 cells, +37 from v1 offset 229)
+  this->publish_state_(this->cell_detection_failed_bitmask_sensor_, heltec_get_24bit(266));
+  // 269   3   Cell overvoltage bitmask (24 cells, +37 from v1 offset 232)
+  this->publish_state_(this->cell_overvoltage_bitmask_sensor_, heltec_get_24bit(269));
+  // 272   3   Cell undervoltage bitmask (24 cells, +37 from v1 offset 235)
+  this->publish_state_(this->cell_undervoltage_bitmask_sensor_, heltec_get_24bit(272));
+  // 275   3   Cell polarity error bitmask (24 cells, +37 from v1 offset 238)
+  this->publish_state_(this->cell_polarity_error_bitmask_sensor_, heltec_get_24bit(275));
+  // 278   3   Cell excessive line resistance bitmask (24 cells, +37 from v1 offset 241)
+  this->publish_state_(this->cell_excessive_line_resistance_bitmask_sensor_, heltec_get_24bit(278));
+  // 281   1   Temperature sensor warning byte (+37 from v1 offset 244)
+  //                                              Bit0: Temperature sensor 1 warning
+  //                                              Bit1: Temperature sensor 2 warning
+  this->publish_state_(this->error_system_overheating_binary_sensor_, data[281] != 0x00);
+  // 282   1   Charging fault (+37 from v1 offset 245)
+  this->publish_state_(this->error_charging_binary_sensor_, (bool) data[282]);
+  // 283   1   Discharge fault (+37 from v1 offset 246)
+  this->publish_state_(this->error_discharging_binary_sensor_, (bool) data[283]);
+  // 284   1   Unknown
+  // 285   6   Reserved
+  // 291   4   Uptime (+37 from v1 offset 254)
+  ESP_LOGI(TAG, "  Uptime: %s (%lus)", format_total_runtime_(heltec_get_32bit(291)).c_str(),
+           (unsigned long) heltec_get_32bit(291));
+  // 295   3   Reserved
+  // 298   1   CRC
+  // 299   1   EOF
+}
+
+void HeltecBalancerBle::decode_settings_v2_(const std::vector<uint8_t> &data) {
+  auto heltec_get_16bit = [&](size_t i) -> uint16_t {
+    return (uint16_t(data[i + 1]) << 8) | (uint16_t(data[i + 0]) << 0);
+  };
+  auto heltec_get_32bit = [&](size_t i) -> uint32_t {
+    return (uint32_t(heltec_get_16bit(i + 2)) << 16) | (uint32_t(heltec_get_16bit(i + 0)) << 0);
+  };
+
+  ESP_LOGI(TAG, "Settings frame SW-2.0.0 (%zu bytes):", data.size());
+  ESP_LOGD(TAG, "  %s", format_hex_pretty(data.data(), data.size()).c_str());  // NOLINT
+
+  // Settings frame SW-2.0.0 (150 bytes)
+  // 0x55 0xAA 0x11 0x01 0x04 0x00 0x96 0x00 ...
+  //
+  // Byte Len  Payload                Content              Coeff.      Unit        Example value
+  // 0     2   0x55 0xAA              Header
+  // 2     1   0x11                   Device address
+  // 3     1   0x01                   Function (read)
+  // 4     2   0x04 0x00              Command (settings)
+  // 6     2   0x96 0x00              Length (150 bytes)
+  // 8     1   0x02                   Unknown (constant)
+  // 9     1   Cell count
+  this->publish_state_(this->cell_count_number_, (float) data[9]);
+
+  // 10    4   Nominal battery capacity (float, Ah)
+  this->publish_state_(this->nominal_battery_capacity_number_, ieee_float_(heltec_get_32bit(10)));
+
+  // 14    4   Balance trigger voltage (float, V)
+  this->publish_state_(this->balance_trigger_voltage_number_, ieee_float_(heltec_get_32bit(14)));
+
+  // 18    4   Unknown (float ~0.001)
+  // 22    4   Balance stop voltage per cell (float, V)
+  this->publish_state_(this->balance_sleep_voltage_number_, ieee_float_(heltec_get_32bit(22)));
+
+  // 26    4   Balance start voltage per cell (float, V)
+  this->publish_state_(this->balance_start_voltage_number_, ieee_float_(heltec_get_32bit(26)));
+
+  // 30    4   Max balance current (float, A)
+  this->publish_state_(this->max_balance_current_number_, ieee_float_(heltec_get_32bit(30)));
+
+  // 126   1   Balancing enabled
+  this->publish_state_(this->balancer_switch_, (bool) data[126]);
+
+  // 127   1   Buzzer mode
+  uint8_t raw_buzzer_mode = data[127];
+  if (raw_buzzer_mode > 0 && raw_buzzer_mode < BUZZER_MODES_SIZE) {
+    this->publish_state_(this->buzzer_mode_text_sensor_, BUZZER_MODES[raw_buzzer_mode]);
+    this->publish_state_(this->buzzer_mode_select_, BUZZER_MODES[raw_buzzer_mode]);
+  } else {
+    this->publish_state_(this->buzzer_mode_text_sensor_, "Unknown");
+  }
+
+  // 128   1   Battery type (0x01: LFP in SW-2.0.0; encoding may differ from legacy)
+  uint8_t raw_battery_type = data[128];
+  if (raw_battery_type > 0 && raw_battery_type < BATTERY_TYPES_SIZE) {
+    this->publish_state_(this->battery_type_text_sensor_, BATTERY_TYPES[raw_battery_type]);
+    this->publish_state_(this->battery_type_select_, BATTERY_TYPES[raw_battery_type]);
+  } else {
+    this->publish_state_(this->battery_type_text_sensor_, "Unknown");
+  }
 }
 
 void HeltecBalancerBle::decode_settings_(const std::vector<uint8_t> &data) {
@@ -630,10 +831,10 @@ void HeltecBalancerBle::decode_settings_(const std::vector<uint8_t> &data) {
     return (uint32_t(heltec_get_16bit(i + 2)) << 16) | (uint32_t(heltec_get_16bit(i + 0)) << 0);
   };
 
-  ESP_LOGI(TAG, "Settings frame (%d bytes):", data.size());
+  ESP_LOGI(TAG, "Settings frame legacy (%zu bytes):", data.size());
   ESP_LOGD(TAG, "  %s", format_hex_pretty(data.data(), data.size()).c_str());  // NOLINT
 
-  // Settings frame (100 bytes)
+  // Settings frame legacy (100 bytes)
   // 0x55 0xAA 0x11 0x01 0x04 0x00 0x64 0x00 0x10 0x0A 0xD7 0xA3 0x3B 0x00 0x00 0x80 0x40 0x00 0x00 0x20
   // 0x40 0x01 0x01 0x02 0x18 0x01 0x00 0x00 0x66 0x66 0x26 0x40 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
   // 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
@@ -709,7 +910,7 @@ void HeltecBalancerBle::decode_factory_defaults_(const std::vector<uint8_t> &dat
     return (uint32_t(heltec_get_16bit(i + 2)) << 16) | (uint32_t(heltec_get_16bit(i + 0)) << 0);
   };
 
-  ESP_LOGI(TAG, "Factory defaults frame (%d bytes):", data.size());
+  ESP_LOGI(TAG, "Factory defaults frame (%zu bytes):", data.size());
   ESP_LOGD(TAG, "  %s", format_hex_pretty(data.data(), data.size()).c_str());  // NOLINT
 
   // Skip the ackowledge frame
@@ -803,7 +1004,7 @@ void HeltecBalancerBle::decode_device_info_(const std::vector<uint8_t> &data) {
     return (uint32_t(heltec_get_16bit(i + 2)) << 16) | (uint32_t(heltec_get_16bit(i + 0)) << 0);
   };
 
-  ESP_LOGI(TAG, "Device info frame (%d bytes):", data.size());
+  ESP_LOGI(TAG, "Device info frame (%zu bytes):", data.size());
   ESP_LOGD(TAG, "  %s", format_hex_pretty(data.data(), data.size()).c_str());  // NOLINT
 
   // Device info frame (100 bytes)
@@ -873,6 +1074,11 @@ void HeltecBalancerBle::publish_device_unavailable_() {
   this->publish_state_(total_voltage_sensor_, NAN);
   this->publish_state_(temperature_sensor_1_sensor_, NAN);
   this->publish_state_(temperature_sensor_2_sensor_, NAN);
+  this->publish_state_(mosfet_temperature_sensor_, NAN);
+  this->publish_state_(balancer_temperature_sensor_, NAN);
+  this->publish_state_(nominal_capacity_sensor_, NAN);
+  this->publish_state_(capacity_remaining_sensor_, NAN);
+  this->publish_state_(state_of_charge_sensor_, NAN);
   this->publish_state_(total_runtime_sensor_, NAN);
   this->publish_state_(balancing_current_sensor_, NAN);
   this->publish_state_(errors_bitmask_sensor_, NAN);

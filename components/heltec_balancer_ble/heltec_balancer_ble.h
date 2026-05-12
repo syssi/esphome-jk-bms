@@ -21,6 +21,13 @@ namespace esphome::heltec_balancer_ble {
 namespace espbt = esphome::esp32_ble_tracker;
 #endif
 
+enum ProtocolVersion {
+  PROTOCOL_VERSION_V1,
+  PROTOCOL_VERSION_V2,
+};
+
+enum class InitState { NEED_DEVICE_INFO, NEED_SETTINGS, NEED_CELL_INFO, READY };
+
 class HeltecBalancerBle :
 #ifdef USE_ESP32
     public esphome::ble_client::BLEClientNode,
@@ -71,6 +78,8 @@ class HeltecBalancerBle :
     online_status_binary_sensor_ = online_status_binary_sensor;
   }
 
+  void set_protocol_version(ProtocolVersion protocol_version) { protocol_version_ = protocol_version; }
+  ProtocolVersion get_protocol_version() { return protocol_version_; }
   void set_throttle(uint32_t throttle) { this->throttle_ = throttle; }
   void set_min_cell_voltage_sensor(sensor::Sensor *min_cell_voltage_sensor) {
     min_cell_voltage_sensor_ = min_cell_voltage_sensor;
@@ -102,6 +111,21 @@ class HeltecBalancerBle :
   }
   void set_temperature_sensor_2_sensor(sensor::Sensor *temperature_sensor_2_sensor) {
     temperature_sensor_2_sensor_ = temperature_sensor_2_sensor;
+  }
+  void set_mosfet_temperature_sensor(sensor::Sensor *mosfet_temperature_sensor) {
+    mosfet_temperature_sensor_ = mosfet_temperature_sensor;
+  }
+  void set_balancer_temperature_sensor(sensor::Sensor *balancer_temperature_sensor) {
+    balancer_temperature_sensor_ = balancer_temperature_sensor;
+  }
+  void set_nominal_capacity_sensor(sensor::Sensor *nominal_capacity_sensor) {
+    nominal_capacity_sensor_ = nominal_capacity_sensor;
+  }
+  void set_capacity_remaining_sensor(sensor::Sensor *capacity_remaining_sensor) {
+    capacity_remaining_sensor_ = capacity_remaining_sensor;
+  }
+  void set_state_of_charge_sensor(sensor::Sensor *state_of_charge_sensor) {
+    state_of_charge_sensor_ = state_of_charge_sensor;
   }
   void set_total_runtime_sensor(sensor::Sensor *total_runtime_sensor) { total_runtime_sensor_ = total_runtime_sensor; }
   void set_balancing_current_sensor(sensor::Sensor *balancing_current_sensor) {
@@ -178,6 +202,11 @@ class HeltecBalancerBle :
   sensor::Sensor *total_voltage_sensor_{nullptr};
   sensor::Sensor *temperature_sensor_1_sensor_{nullptr};
   sensor::Sensor *temperature_sensor_2_sensor_{nullptr};
+  sensor::Sensor *mosfet_temperature_sensor_{nullptr};
+  sensor::Sensor *balancer_temperature_sensor_{nullptr};
+  sensor::Sensor *nominal_capacity_sensor_{nullptr};
+  sensor::Sensor *capacity_remaining_sensor_{nullptr};
+  sensor::Sensor *state_of_charge_sensor_{nullptr};
   sensor::Sensor *total_runtime_sensor_{nullptr};
   sensor::Sensor *balancing_current_sensor_{nullptr};
   sensor::Sensor *errors_bitmask_sensor_{nullptr};
@@ -198,16 +227,21 @@ class HeltecBalancerBle :
   text_sensor::TextSensor *battery_type_text_sensor_{nullptr};
 
   std::vector<uint8_t> frame_buffer_;
-  bool status_notification_received_ = false;
+  InitState init_state_{InitState::NEED_DEVICE_INFO};
+  ProtocolVersion protocol_version_{PROTOCOL_VERSION_V1};
   uint8_t no_response_count_{0};
   uint16_t char_handle_{0};
+  uint32_t connection_time_{0};
   uint32_t last_cell_info_{0};
   uint32_t throttle_;
 
   void decode_(const std::vector<uint8_t> &data);
   void decode_device_info_(const std::vector<uint8_t> &data);
+  void decode_cell_arrays_(const std::vector<uint8_t> &data);
   void decode_cell_info_(const std::vector<uint8_t> &data);
+  void decode_cell_info_v2_(const std::vector<uint8_t> &data);
   void decode_settings_(const std::vector<uint8_t> &data);
+  void decode_settings_v2_(const std::vector<uint8_t> &data);
   void decode_factory_defaults_(const std::vector<uint8_t> &data);
   void publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state);
   void publish_state_(number::Number *number, float value);

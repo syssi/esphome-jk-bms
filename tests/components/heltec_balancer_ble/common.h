@@ -19,8 +19,10 @@ class TestableHeltecBalancerBle : public HeltecBalancerBle {
   void update() override {}
   using HeltecBalancerBle::decode_;
   using HeltecBalancerBle::decode_cell_info_;
+  using HeltecBalancerBle::decode_cell_info_v2_;
   using HeltecBalancerBle::decode_device_info_;
   using HeltecBalancerBle::decode_settings_;
+  using HeltecBalancerBle::decode_settings_v2_;
 };
 
 }  // namespace esphome::heltec_balancer_ble::testing

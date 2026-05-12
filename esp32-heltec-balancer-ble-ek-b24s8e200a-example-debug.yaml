@@ -1,0 +1,17 @@
+<<: !include esp32-heltec-balancer-ble-ek-b24s8e200a-example.yaml
+
+logger:
+  level: VERY_VERBOSE
+  logs:
+    esp32_ble_tracker: INFO
+    heltec_balancer_ble: VERY_VERBOSE
+    scheduler: DEBUG
+    component: DEBUG
+    sensor: DEBUG
+    mqtt: INFO
+    mqtt.idf: INFO
+    mqtt.component: INFO
+    mqtt.sensor: INFO
+    mqtt.switch: INFO
+    api.service: INFO
+    api: INFO

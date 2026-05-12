@@ -3,6 +3,7 @@ from esphome.components import sensor
 import esphome.config_validation as cv
 from esphome.const import (
     CONF_CURRENT,
+    DEVICE_CLASS_BATTERY,
     DEVICE_CLASS_CURRENT,
     DEVICE_CLASS_EMPTY,
     DEVICE_CLASS_TEMPERATURE,
@@ -15,6 +16,7 @@ from esphome.const import (
     UNIT_AMPERE,
     UNIT_CELSIUS,
     UNIT_EMPTY,
+    UNIT_PERCENT,
     UNIT_VOLT,
 )
 
@@ -32,6 +34,11 @@ CONF_AVERAGE_CELL_VOLTAGE = "average_cell_voltage"
 CONF_TOTAL_VOLTAGE = "total_voltage"
 CONF_TEMPERATURE_SENSOR_1 = "temperature_sensor_1"
 CONF_TEMPERATURE_SENSOR_2 = "temperature_sensor_2"
+CONF_MOSFET_TEMPERATURE = "mosfet_temperature"
+CONF_BALANCER_TEMPERATURE = "balancer_temperature"
+CONF_NOMINAL_CAPACITY = "nominal_capacity"
+CONF_CAPACITY_REMAINING = "capacity_remaining"
+CONF_STATE_OF_CHARGE = "state_of_charge"
 CONF_TOTAL_RUNTIME = "total_runtime"
 CONF_BALANCING_CURRENT = "balancing_current"
 CONF_ERRORS_BITMASK = "errors_bitmask"
@@ -136,6 +143,41 @@ SENSOR_DEFS = {
         "icon": ICON_EMPTY,
         "accuracy_decimals": 2,
         "device_class": DEVICE_CLASS_TEMPERATURE,
+        "state_class": STATE_CLASS_MEASUREMENT,
+    },
+    CONF_MOSFET_TEMPERATURE: {
+        "unit_of_measurement": UNIT_CELSIUS,
+        "icon": ICON_EMPTY,
+        "accuracy_decimals": 2,
+        "device_class": DEVICE_CLASS_TEMPERATURE,
+        "state_class": STATE_CLASS_MEASUREMENT,
+    },
+    CONF_BALANCER_TEMPERATURE: {
+        "unit_of_measurement": UNIT_CELSIUS,
+        "icon": ICON_EMPTY,
+        "accuracy_decimals": 2,
+        "device_class": DEVICE_CLASS_TEMPERATURE,
+        "state_class": STATE_CLASS_MEASUREMENT,
+    },
+    CONF_NOMINAL_CAPACITY: {
+        "unit_of_measurement": UNIT_AMPERE_HOURS,
+        "icon": "mdi:battery",
+        "accuracy_decimals": 1,
+        "device_class": DEVICE_CLASS_EMPTY,
+        "state_class": STATE_CLASS_MEASUREMENT,
+    },
+    CONF_CAPACITY_REMAINING: {
+        "unit_of_measurement": UNIT_AMPERE_HOURS,
+        "icon": "mdi:battery",
+        "accuracy_decimals": 1,
+        "device_class": DEVICE_CLASS_EMPTY,
+        "state_class": STATE_CLASS_MEASUREMENT,
+    },
+    CONF_STATE_OF_CHARGE: {
+        "unit_of_measurement": UNIT_PERCENT,
+        "icon": ICON_EMPTY,
+        "accuracy_decimals": 1,
+        "device_class": DEVICE_CLASS_BATTERY,
         "state_class": STATE_CLASS_MEASUREMENT,
     },
     CONF_TOTAL_RUNTIME: {
