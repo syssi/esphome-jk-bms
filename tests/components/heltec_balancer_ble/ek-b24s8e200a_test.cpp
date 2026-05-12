@@ -287,6 +287,64 @@ TEST(EkB24S8E200ASettingsTest, NullSensorsDoNotCrash) {
   bms.decode_settings_v2_(SETTINGS_FRAME);
 }
 
+TEST(EkB24S8E200ASettingsTest, BmsProtectionVoltages) {
+  TestableHeltecBalancerBle bms;
+  TestNumber ovp, ocv, uvp, uvr, dpp, dpr, shutdown;
+  bms.set_cell_overvoltage_protection_number(&ovp);
+  bms.set_cell_overvoltage_recovery_number(&ocv);
+  bms.set_cell_undervoltage_protection_number(&uvp);
+  bms.set_cell_undervoltage_recovery_number(&uvr);
+  bms.set_cell_voltage_difference_protection_number(&dpp);
+  bms.set_cell_voltage_difference_recovery_number(&dpr);
+  bms.set_cell_shutdown_voltage_number(&shutdown);
+
+  bms.decode_settings_v2_(SETTINGS_FRAME);
+
+  EXPECT_NEAR(ovp.state, 3.65f, 0.001f);
+  EXPECT_NEAR(ocv.state, 3.55f, 0.001f);
+  EXPECT_NEAR(uvp.state, 2.60f, 0.001f);
+  EXPECT_NEAR(uvr.state, 2.90f, 0.001f);
+  EXPECT_NEAR(dpp.state, 1.0f, 0.001f);
+  EXPECT_NEAR(dpr.state, 0.7f, 0.001f);
+  EXPECT_NEAR(shutdown.state, 2.0f, 0.001f);
+}
+
+TEST(EkB24S8E200ASettingsTest, BmsProtectionCurrentAndTime) {
+  TestableHeltecBalancerBle bms;
+  TestNumber chg_ocp, chg_delay, chg_recovery, dsg_ocp, short_ocp, short_delay;
+  bms.set_charging_overcurrent_protection_number(&chg_ocp);
+  bms.set_charging_overcurrent_delay_number(&chg_delay);
+  bms.set_charging_overcurrent_recovery_number(&chg_recovery);
+  bms.set_discharging_overcurrent_protection_number(&dsg_ocp);
+  bms.set_short_circuit_protection_number(&short_ocp);
+  bms.set_short_circuit_detection_delay_number(&short_delay);
+
+  bms.decode_settings_v2_(SETTINGS_FRAME);
+
+  EXPECT_NEAR(chg_ocp.state, 170.0f, 0.1f);
+  EXPECT_FLOAT_EQ(chg_delay.state, 5.0f);
+  EXPECT_FLOAT_EQ(chg_recovery.state, 300.0f);
+  EXPECT_NEAR(dsg_ocp.state, 200.0f, 0.1f);
+  EXPECT_NEAR(short_ocp.state, 800.0f, 0.1f);
+  EXPECT_FLOAT_EQ(short_delay.state, 500.0f);
+}
+
+TEST(EkB24S8E200ASettingsTest, BmsProtectionTemperatures) {
+  TestableHeltecBalancerBle bms;
+  TestNumber chg_otp, chg_ltp, dsg_otp, dsg_ltp;
+  bms.set_charging_overtemperature_protection_number(&chg_otp);
+  bms.set_charging_undertemperature_protection_number(&chg_ltp);
+  bms.set_discharging_overtemperature_protection_number(&dsg_otp);
+  bms.set_discharging_undertemperature_protection_number(&dsg_ltp);
+
+  bms.decode_settings_v2_(SETTINGS_FRAME);
+
+  EXPECT_NEAR(chg_otp.state, 60.0f, 0.1f);
+  EXPECT_NEAR(chg_ltp.state, -2.0f, 0.1f);
+  EXPECT_NEAR(dsg_otp.state, 60.0f, 0.1f);
+  EXPECT_NEAR(dsg_ltp.state, -10.0f, 0.1f);
+}
+
 // ── dispatch: decode_settings_ auto-detects V2 from 150-byte frame ───────────
 
 TEST(EkB24S8E200ASettingsTest, DecodesV2Settings) {

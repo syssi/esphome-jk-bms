@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include "esphome/core/component.h"
 #include "esphome/core/hal.h"
 #include "esphome/components/ble_client/ble_client.h"
@@ -60,6 +61,89 @@ class HeltecBalancerBle :
   }
   void set_nominal_battery_capacity_number(number::Number *nominal_battery_capacity_number) {
     nominal_battery_capacity_number_ = nominal_battery_capacity_number;
+  }
+  void set_cell_overvoltage_protection_number(number::Number *cell_overvoltage_protection_number) {
+    cell_overvoltage_protection_number_ = cell_overvoltage_protection_number;
+  }
+  void set_cell_overvoltage_recovery_number(number::Number *cell_overvoltage_recovery_number) {
+    cell_overvoltage_recovery_number_ = cell_overvoltage_recovery_number;
+  }
+  void set_cell_undervoltage_protection_number(number::Number *cell_undervoltage_protection_number) {
+    cell_undervoltage_protection_number_ = cell_undervoltage_protection_number;
+  }
+  void set_cell_undervoltage_recovery_number(number::Number *cell_undervoltage_recovery_number) {
+    cell_undervoltage_recovery_number_ = cell_undervoltage_recovery_number;
+  }
+  void set_cell_voltage_difference_protection_number(number::Number *cell_voltage_difference_protection_number) {
+    cell_voltage_difference_protection_number_ = cell_voltage_difference_protection_number;
+  }
+  void set_cell_voltage_difference_recovery_number(number::Number *cell_voltage_difference_recovery_number) {
+    cell_voltage_difference_recovery_number_ = cell_voltage_difference_recovery_number;
+  }
+  void set_cell_shutdown_voltage_number(number::Number *cell_shutdown_voltage_number) {
+    cell_shutdown_voltage_number_ = cell_shutdown_voltage_number;
+  }
+  void set_charging_overcurrent_protection_number(number::Number *charging_overcurrent_protection_number) {
+    charging_overcurrent_protection_number_ = charging_overcurrent_protection_number;
+  }
+  void set_charging_overcurrent_delay_number(number::Number *charging_overcurrent_delay_number) {
+    charging_overcurrent_delay_number_ = charging_overcurrent_delay_number;
+  }
+  void set_charging_overcurrent_recovery_number(number::Number *charging_overcurrent_recovery_number) {
+    charging_overcurrent_recovery_number_ = charging_overcurrent_recovery_number;
+  }
+  void set_discharging_overcurrent_protection_number(number::Number *discharging_overcurrent_protection_number) {
+    discharging_overcurrent_protection_number_ = discharging_overcurrent_protection_number;
+  }
+  void set_discharging_overcurrent_delay_number(number::Number *discharging_overcurrent_delay_number) {
+    discharging_overcurrent_delay_number_ = discharging_overcurrent_delay_number;
+  }
+  void set_discharging_overcurrent_recovery_number(number::Number *discharging_overcurrent_recovery_number) {
+    discharging_overcurrent_recovery_number_ = discharging_overcurrent_recovery_number;
+  }
+  void set_discharging_overcurrent_2_protection_number(number::Number *discharging_overcurrent_2_protection_number) {
+    discharging_overcurrent_2_protection_number_ = discharging_overcurrent_2_protection_number;
+  }
+  void set_discharging_overcurrent_2_delay_number(number::Number *discharging_overcurrent_2_delay_number) {
+    discharging_overcurrent_2_delay_number_ = discharging_overcurrent_2_delay_number;
+  }
+  void set_discharging_overcurrent_2_recovery_number(number::Number *discharging_overcurrent_2_recovery_number) {
+    discharging_overcurrent_2_recovery_number_ = discharging_overcurrent_2_recovery_number;
+  }
+  void set_short_circuit_protection_number(number::Number *short_circuit_protection_number) {
+    short_circuit_protection_number_ = short_circuit_protection_number;
+  }
+  void set_short_circuit_detection_delay_number(number::Number *short_circuit_detection_delay_number) {
+    short_circuit_detection_delay_number_ = short_circuit_detection_delay_number;
+  }
+  void set_short_circuit_recovery_number(number::Number *short_circuit_recovery_number) {
+    short_circuit_recovery_number_ = short_circuit_recovery_number;
+  }
+  void set_charging_overtemperature_protection_number(number::Number *charging_overtemperature_protection_number) {
+    charging_overtemperature_protection_number_ = charging_overtemperature_protection_number;
+  }
+  void set_charging_overtemperature_recovery_number(number::Number *charging_overtemperature_recovery_number) {
+    charging_overtemperature_recovery_number_ = charging_overtemperature_recovery_number;
+  }
+  void set_charging_undertemperature_protection_number(number::Number *charging_undertemperature_protection_number) {
+    charging_undertemperature_protection_number_ = charging_undertemperature_protection_number;
+  }
+  void set_charging_undertemperature_recovery_number(number::Number *charging_undertemperature_recovery_number) {
+    charging_undertemperature_recovery_number_ = charging_undertemperature_recovery_number;
+  }
+  void set_discharging_overtemperature_protection_number(
+      number::Number *discharging_overtemperature_protection_number) {
+    discharging_overtemperature_protection_number_ = discharging_overtemperature_protection_number;
+  }
+  void set_discharging_overtemperature_recovery_number(number::Number *discharging_overtemperature_recovery_number) {
+    discharging_overtemperature_recovery_number_ = discharging_overtemperature_recovery_number;
+  }
+  void set_discharging_undertemperature_protection_number(
+      number::Number *discharging_undertemperature_protection_number) {
+    discharging_undertemperature_protection_number_ = discharging_undertemperature_protection_number;
+  }
+  void set_discharging_undertemperature_recovery_number(number::Number *discharging_undertemperature_recovery_number) {
+    discharging_undertemperature_recovery_number_ = discharging_undertemperature_recovery_number;
   }
 
   void set_balancing_binary_sensor(binary_sensor::BinarySensor *balancing_binary_sensor) {
@@ -192,6 +276,33 @@ class HeltecBalancerBle :
   number::Number *balance_start_voltage_number_{nullptr};
   number::Number *balance_stop_diff_voltage_number_{nullptr};
   number::Number *nominal_battery_capacity_number_{nullptr};
+  number::Number *cell_overvoltage_protection_number_{nullptr};
+  number::Number *cell_overvoltage_recovery_number_{nullptr};
+  number::Number *cell_undervoltage_protection_number_{nullptr};
+  number::Number *cell_undervoltage_recovery_number_{nullptr};
+  number::Number *cell_voltage_difference_protection_number_{nullptr};
+  number::Number *cell_voltage_difference_recovery_number_{nullptr};
+  number::Number *cell_shutdown_voltage_number_{nullptr};
+  number::Number *charging_overcurrent_protection_number_{nullptr};
+  number::Number *charging_overcurrent_delay_number_{nullptr};
+  number::Number *charging_overcurrent_recovery_number_{nullptr};
+  number::Number *discharging_overcurrent_protection_number_{nullptr};
+  number::Number *discharging_overcurrent_delay_number_{nullptr};
+  number::Number *discharging_overcurrent_recovery_number_{nullptr};
+  number::Number *discharging_overcurrent_2_protection_number_{nullptr};
+  number::Number *discharging_overcurrent_2_delay_number_{nullptr};
+  number::Number *discharging_overcurrent_2_recovery_number_{nullptr};
+  number::Number *short_circuit_protection_number_{nullptr};
+  number::Number *short_circuit_detection_delay_number_{nullptr};
+  number::Number *short_circuit_recovery_number_{nullptr};
+  number::Number *charging_overtemperature_protection_number_{nullptr};
+  number::Number *charging_overtemperature_recovery_number_{nullptr};
+  number::Number *charging_undertemperature_protection_number_{nullptr};
+  number::Number *charging_undertemperature_recovery_number_{nullptr};
+  number::Number *discharging_overtemperature_protection_number_{nullptr};
+  number::Number *discharging_overtemperature_recovery_number_{nullptr};
+  number::Number *discharging_undertemperature_protection_number_{nullptr};
+  number::Number *discharging_undertemperature_recovery_number_{nullptr};
 
   sensor::Sensor *min_cell_voltage_sensor_{nullptr};
   sensor::Sensor *max_cell_voltage_sensor_{nullptr};
@@ -235,6 +346,8 @@ class HeltecBalancerBle :
   uint32_t last_cell_info_{0};
   uint32_t throttle_;
 
+  std::array<uint8_t, 20> build_command_frame_(uint8_t function, uint8_t command, uint8_t register_address,
+                                               uint32_t value);
   void decode_(const std::vector<uint8_t> &data);
   void decode_device_info_(const std::vector<uint8_t> &data);
   void decode_cell_arrays_(const std::vector<uint8_t> &data);

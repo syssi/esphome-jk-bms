@@ -172,6 +172,70 @@ void HeltecBalancerBle::dump_config() {  // NOLINT(google-readability-function-s
   LOG_TEXT_SENSOR("", "Battery Type", this->battery_type_text_sensor_);
 }
 
+std::array<uint8_t, 20> HeltecBalancerBle::build_command_frame_(uint8_t function, uint8_t command,
+                                                                uint8_t register_address, uint32_t value) {
+  // Request device info:
+  //
+  // (GW-24S4EB, checksum_xor)
+  // 0xAA 0x55 0x11 0x01 0x01 0x00 0x14 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0xFA 0xFF
+  // 0xAA 0x55 0x11 0x01 0x01 0x00 0x14 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x26 0xFF
+  // (EK-24S4EB, crc)
+  //
+  // Request cell info:
+  //
+  // (GW-24S4EB, checksum_xor, wrong data_len position)
+  // 0xAA 0x55 0x11 0x01 0x02 0x00 0x00 0x14 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0xF9 0xFF
+  // 0xAA 0x55 0x11 0x01 0x02 0x00 0x14 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x27 0xFF
+  // (EK-24S4EB, crc)
+  //
+  // Request factory settings:
+  //
+  // (GW-24S4EB, checksum_xor)
+  // 0xAA 0x55 0x11 0x01 0x03 0x00 0x14 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0xF8 0xFF
+  //
+  // Request settings:
+  //
+  // (GW-24S4EB, checksum_xor)
+  // 0xAA 0x55 0x11 0x01 0x04 0x00 0x14 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0xFF 0xFF
+  // 0xAA 0x55 0x11 0x01 0x04 0x00 0x14 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x29 0xFF
+  // (EK-24S4EB, crc)
+  //
+  // Enable balancer:
+  //
+  // (GW-24S4EB, checksum_xor)
+  // 0xAA 0x55 0x11 0x00 0x05 0x0D 0x14 0x00 0x01 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0xF3 0xFF
+  //
+  // Disable balancer:
+  //
+  // (GW-24S4EB, checksum_xor)
+  // 0xAA 0x55 0x11 0x00 0x05 0x0D 0x14 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0xF2 0xFF
+  uint16_t length = 0x0014;
+
+  std::array<uint8_t, 20> frame{};
+  frame[0] = SOF_REQUEST_BYTE1;  // Start sequence
+  frame[1] = SOF_REQUEST_BYTE2;  // Start sequence
+  frame[2] = DEVICE_ADDRESS;     // Device address
+  frame[3] = function;           // Function (read or write)
+  frame[4] = command >> 0;       // Command
+  frame[5] = register_address;   // Register address
+  frame[6] = length >> 0;        // Data length
+  frame[7] = length >> 8;        // Data length
+  frame[8] = value >> 0;         // Data Byte 1
+  frame[9] = value >> 8;         // Data Byte 2
+  frame[10] = value >> 16;       // Data Byte 3
+  frame[11] = value >> 24;       // Data Byte 4
+  frame[12] = 0x00;              // Data Byte 5
+  frame[13] = 0x00;              // Data Byte 6
+  frame[14] = 0x00;              // Data Byte 7
+  frame[15] = 0x00;              // Data Byte 8
+  frame[16] = 0x00;              // Data Byte 9
+  frame[17] = 0x00;              // Data Byte 10
+  frame[18] = crc(frame.data(), 18);
+  frame[19] = END_OF_FRAME;  // End sequence
+
+  return frame;
+}
+
 #ifdef USE_ESP32
 
 void HeltecBalancerBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if,
@@ -289,69 +353,11 @@ void HeltecBalancerBle::update() {
 }
 
 bool HeltecBalancerBle::send_command(uint8_t function, uint8_t command, uint8_t register_address, uint32_t value) {
-  // Request device info:
-  //
-  // (GW-24S4EB, checksum_xor)
-  // 0xAA 0x55 0x11 0x01 0x01 0x00 0x14 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0xFA 0xFF
-  // 0xAA 0x55 0x11 0x01 0x01 0x00 0x14 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x26 0xFF
-  // (EK-24S4EB, crc)
-  //
-  // Request cell info:
-  //
-  // (GW-24S4EB, checksum_xor, wrong data_len position)
-  // 0xAA 0x55 0x11 0x01 0x02 0x00 0x00 0x14 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0xF9 0xFF
-  // 0xAA 0x55 0x11 0x01 0x02 0x00 0x14 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x27 0xFF
-  // (EK-24S4EB, crc)
-  //
-  // Request factory settings:
-  //
-  // (GW-24S4EB, checksum_xor)
-  // 0xAA 0x55 0x11 0x01 0x03 0x00 0x14 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0xF8 0xFF
-  //
-  // Request settings:
-  //
-  // (GW-24S4EB, checksum_xor)
-  // 0xAA 0x55 0x11 0x01 0x04 0x00 0x14 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0xFF 0xFF
-  // 0xAA 0x55 0x11 0x01 0x04 0x00 0x14 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x29 0xFF
-  // (EK-24S4EB, crc)
-  //
-  // Enable balancer:
-  //
-  // (GW-24S4EB, checksum_xor)
-  // 0xAA 0x55 0x11 0x00 0x05 0x0D 0x14 0x00 0x01 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0xF3 0xFF
-  //
-  // Disable balancer:
-  //
-  // (GW-24S4EB, checksum_xor)
-  // 0xAA 0x55 0x11 0x00 0x05 0x0D 0x14 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0xF2 0xFF
-  uint16_t length = 0x0014;
-
-  uint8_t frame[20];
-  frame[0] = SOF_REQUEST_BYTE1;  // Start sequence
-  frame[1] = SOF_REQUEST_BYTE2;  // Start sequence
-  frame[2] = DEVICE_ADDRESS;     // Device address
-  frame[3] = function;           // Function (read or write)
-  frame[4] = command >> 0;       // Command
-  frame[5] = register_address;   // Register address
-  frame[6] = length >> 0;        // Data length
-  frame[7] = length >> 8;        // Data length
-  frame[8] = value >> 0;         // Data Byte 1
-  frame[9] = value >> 8;         // Data Byte 2
-  frame[10] = value >> 16;       // Data Byte 3
-  frame[11] = value >> 24;       // Data Byte 4
-  frame[12] = 0x00;              // Data Byte 5
-  frame[13] = 0x00;              // Data Byte 6
-  frame[14] = 0x00;              // Data Byte 7
-  frame[15] = 0x00;              // Data Byte 8
-  frame[16] = 0x00;              // Data Byte 9
-  frame[17] = 0x00;              // Data Byte 10
-  frame[18] = crc(frame, sizeof(frame) - 2);
-  frame[19] = END_OF_FRAME;  // End sequence
-
-  ESP_LOGD(TAG, "Write register: %s", format_hex_pretty(frame, sizeof(frame)).c_str());  // NOLINT
+  auto frame = build_command_frame_(function, command, register_address, value);
+  ESP_LOGD(TAG, "Write register: %s", format_hex_pretty(frame.data(), frame.size()).c_str());  // NOLINT
   auto status =
       esp_ble_gattc_write_char(this->parent_->get_gattc_if(), this->parent_->get_conn_id(), this->char_handle_,
-                               sizeof(frame), frame, ESP_GATT_WRITE_TYPE_NO_RSP, ESP_GATT_AUTH_REQ_NONE);
+                               frame.size(), frame.data(), ESP_GATT_WRITE_TYPE_NO_RSP, ESP_GATT_AUTH_REQ_NONE);
 
   if (status) {
     ESP_LOGW(TAG, "[%s] esp_ble_gattc_write_char failed, status=%d", ADDR_STR(this->parent_->address_str()), status);
@@ -802,6 +808,61 @@ void HeltecBalancerBle::decode_settings_v2_(const std::vector<uint8_t> &data) {
 
   // 30    4   Max balance current (float, A)
   this->publish_state_(this->max_balance_current_number_, ieee_float_(heltec_get_32bit(30)));
+
+  // 34    4   Cell overvoltage protection (float, V)
+  this->publish_state_(this->cell_overvoltage_protection_number_, ieee_float_(heltec_get_32bit(34)));
+  // 38    4   Cell overvoltage recovery (float, V)
+  this->publish_state_(this->cell_overvoltage_recovery_number_, ieee_float_(heltec_get_32bit(38)));
+  // 42    4   Cell undervoltage protection (float, V)
+  this->publish_state_(this->cell_undervoltage_protection_number_, ieee_float_(heltec_get_32bit(42)));
+  // 46    4   Cell undervoltage recovery (float, V)
+  this->publish_state_(this->cell_undervoltage_recovery_number_, ieee_float_(heltec_get_32bit(46)));
+  // 50    4   Cell voltage difference protection (float, V)
+  this->publish_state_(this->cell_voltage_difference_protection_number_, ieee_float_(heltec_get_32bit(50)));
+  // 54    4   Cell voltage difference recovery (float, V)
+  this->publish_state_(this->cell_voltage_difference_recovery_number_, ieee_float_(heltec_get_32bit(54)));
+  // 58    4   Cell shutdown voltage (float, V)
+  this->publish_state_(this->cell_shutdown_voltage_number_, ieee_float_(heltec_get_32bit(58)));
+  // 62    4   Charging overcurrent protection (float, A)
+  this->publish_state_(this->charging_overcurrent_protection_number_, ieee_float_(heltec_get_32bit(62)));
+  // 66    2   Charging overcurrent delay (uint16, s)
+  this->publish_state_(this->charging_overcurrent_delay_number_, (float) heltec_get_16bit(66));
+  // 68    2   Charging overcurrent recovery (uint16, s)
+  this->publish_state_(this->charging_overcurrent_recovery_number_, (float) heltec_get_16bit(68));
+  // 70    4   Discharging overcurrent protection (float, A)
+  this->publish_state_(this->discharging_overcurrent_protection_number_, ieee_float_(heltec_get_32bit(70)));
+  // 74    2   Discharging overcurrent delay (uint16, s)
+  this->publish_state_(this->discharging_overcurrent_delay_number_, (float) heltec_get_16bit(74));
+  // 76    2   Discharging overcurrent recovery (uint16, s)
+  this->publish_state_(this->discharging_overcurrent_recovery_number_, (float) heltec_get_16bit(76));
+  // 78    4   Discharging overcurrent 2 protection (float, A)
+  this->publish_state_(this->discharging_overcurrent_2_protection_number_, ieee_float_(heltec_get_32bit(78)));
+  // 82    2   Discharging overcurrent 2 delay (uint16, ms)
+  this->publish_state_(this->discharging_overcurrent_2_delay_number_, (float) heltec_get_16bit(82));
+  // 84    2   Discharging overcurrent 2 recovery (uint16, s)
+  this->publish_state_(this->discharging_overcurrent_2_recovery_number_, (float) heltec_get_16bit(84));
+  // 86    4   Short circuit protection (float, A)
+  this->publish_state_(this->short_circuit_protection_number_, ieee_float_(heltec_get_32bit(86)));
+  // 90    2   Short circuit detection delay (uint16, µs)
+  this->publish_state_(this->short_circuit_detection_delay_number_, (float) heltec_get_16bit(90));
+  // 92    2   Short circuit recovery (uint16, s)
+  this->publish_state_(this->short_circuit_recovery_number_, (float) heltec_get_16bit(92));
+  // 94    4   Charging overtemperature protection (float, °C)
+  this->publish_state_(this->charging_overtemperature_protection_number_, ieee_float_(heltec_get_32bit(94)));
+  // 98    4   Charging overtemperature recovery (float, °C)
+  this->publish_state_(this->charging_overtemperature_recovery_number_, ieee_float_(heltec_get_32bit(98)));
+  // 102   4   Charging undertemperature protection (float, °C)
+  this->publish_state_(this->charging_undertemperature_protection_number_, ieee_float_(heltec_get_32bit(102)));
+  // 106   4   Charging undertemperature recovery (float, °C)
+  this->publish_state_(this->charging_undertemperature_recovery_number_, ieee_float_(heltec_get_32bit(106)));
+  // 110   4   Discharging overtemperature protection (float, °C)
+  this->publish_state_(this->discharging_overtemperature_protection_number_, ieee_float_(heltec_get_32bit(110)));
+  // 114   4   Discharging overtemperature recovery (float, °C)
+  this->publish_state_(this->discharging_overtemperature_recovery_number_, ieee_float_(heltec_get_32bit(114)));
+  // 118   4   Discharging undertemperature protection (float, °C)
+  this->publish_state_(this->discharging_undertemperature_protection_number_, ieee_float_(heltec_get_32bit(118)));
+  // 122   4   Discharging undertemperature recovery (float, °C)
+  this->publish_state_(this->discharging_undertemperature_recovery_number_, ieee_float_(heltec_get_32bit(122)));
 
   // 126   1   Balancing enabled
   this->publish_state_(this->balancer_switch_, (bool) data[126]);
