@@ -443,6 +443,48 @@ void HeltecBalancerBle::decode_(const std::vector<uint8_t> &data) {
   }
 }
 
+void HeltecBalancerBle::decode_cell_arrays_(const std::vector<uint8_t> &data) {
+  auto heltec_get_16bit = [&](size_t i) -> uint16_t {
+    return (uint16_t(data[i + 1]) << 8) | (uint16_t(data[i + 0]) << 0);
+  };
+  auto heltec_get_32bit = [&](size_t i) -> uint32_t {
+    return (uint32_t(heltec_get_16bit(i + 2)) << 16) | (uint32_t(heltec_get_16bit(i + 0)) << 0);
+  };
+
+  uint8_t cells_enabled = 0;
+  float min_cell_voltage = 100.0f;
+  float max_cell_voltage = -100.0f;
+  float average_cell_voltage = 0.0f;
+  uint8_t min_voltage_cell = 0;
+  uint8_t max_voltage_cell = 0;
+  for (uint8_t i = 0; i < 24; i++) {
+    float cell_voltage = ieee_float_(heltec_get_32bit(i * 4 + 9));
+    float cell_resistance = ieee_float_(heltec_get_32bit(i * 4 + 105));
+    if (cell_voltage > 0) {
+      average_cell_voltage = average_cell_voltage + cell_voltage;
+      cells_enabled++;
+    }
+    if (cell_voltage > 0 && cell_voltage < min_cell_voltage) {
+      min_cell_voltage = cell_voltage;
+      min_voltage_cell = i + 1;
+    }
+    if (cell_voltage > max_cell_voltage) {
+      max_cell_voltage = cell_voltage;
+      max_voltage_cell = i + 1;
+    }
+    this->publish_state_(this->cells_[i].cell_voltage_sensor_, cell_voltage);
+    this->publish_state_(this->cells_[i].cell_resistance_sensor_, cell_resistance);
+  }
+  average_cell_voltage = average_cell_voltage / cells_enabled;
+
+  this->publish_state_(this->min_cell_voltage_sensor_, min_cell_voltage);
+  this->publish_state_(this->max_cell_voltage_sensor_, max_cell_voltage);
+  this->publish_state_(this->min_voltage_cell_sensor_, (float) min_voltage_cell);
+  this->publish_state_(this->max_voltage_cell_sensor_, (float) max_voltage_cell);
+  this->publish_state_(this->delta_cell_voltage_sensor_, max_cell_voltage - min_cell_voltage);
+  this->publish_state_(this->average_cell_voltage_sensor_, average_cell_voltage);
+}
+
 void HeltecBalancerBle::decode_cell_info_(const std::vector<uint8_t> &data) {
   auto heltec_get_16bit = [&](size_t i) -> uint16_t {
     return (uint16_t(data[i + 1]) << 8) | (uint16_t(data[i + 0]) << 0);
@@ -455,8 +497,9 @@ void HeltecBalancerBle::decode_cell_info_(const std::vector<uint8_t> &data) {
   };
 
   const uint32_t now = millis();
-  if (now - this->last_cell_info_ < this->throttle_)
+  if (now - this->last_cell_info_ < this->throttle_) {
     return;
+  }
   this->last_cell_info_ = now;
 
   ESP_LOGI(TAG, "Cell info frame (%zu bytes):", data.size());
@@ -623,48 +666,6 @@ void HeltecBalancerBle::decode_cell_info_(const std::vector<uint8_t> &data) {
   // 299   1   0xFF
 }
 
-void HeltecBalancerBle::decode_cell_arrays_(const std::vector<uint8_t> &data) {
-  auto heltec_get_16bit = [&](size_t i) -> uint16_t {
-    return (uint16_t(data[i + 1]) << 8) | (uint16_t(data[i + 0]) << 0);
-  };
-  auto heltec_get_32bit = [&](size_t i) -> uint32_t {
-    return (uint32_t(heltec_get_16bit(i + 2)) << 16) | (uint32_t(heltec_get_16bit(i + 0)) << 0);
-  };
-
-  uint8_t cells_enabled = 0;
-  float min_cell_voltage = 100.0f;
-  float max_cell_voltage = -100.0f;
-  float average_cell_voltage = 0.0f;
-  uint8_t min_voltage_cell = 0;
-  uint8_t max_voltage_cell = 0;
-  for (uint8_t i = 0; i < 24; i++) {
-    float cell_voltage = ieee_float_(heltec_get_32bit(i * 4 + 9));
-    float cell_resistance = ieee_float_(heltec_get_32bit(i * 4 + 105));
-    if (cell_voltage > 0) {
-      average_cell_voltage = average_cell_voltage + cell_voltage;
-      cells_enabled++;
-    }
-    if (cell_voltage > 0 && cell_voltage < min_cell_voltage) {
-      min_cell_voltage = cell_voltage;
-      min_voltage_cell = i + 1;
-    }
-    if (cell_voltage > max_cell_voltage) {
-      max_cell_voltage = cell_voltage;
-      max_voltage_cell = i + 1;
-    }
-    this->publish_state_(this->cells_[i].cell_voltage_sensor_, cell_voltage);
-    this->publish_state_(this->cells_[i].cell_resistance_sensor_, cell_resistance);
-  }
-  average_cell_voltage = average_cell_voltage / cells_enabled;
-
-  this->publish_state_(this->min_cell_voltage_sensor_, min_cell_voltage);
-  this->publish_state_(this->max_cell_voltage_sensor_, max_cell_voltage);
-  this->publish_state_(this->min_voltage_cell_sensor_, (float) min_voltage_cell);
-  this->publish_state_(this->max_voltage_cell_sensor_, (float) max_voltage_cell);
-  this->publish_state_(this->delta_cell_voltage_sensor_, max_cell_voltage - min_cell_voltage);
-  this->publish_state_(this->average_cell_voltage_sensor_, average_cell_voltage);
-}
-
 void HeltecBalancerBle::decode_cell_info_v2_(const std::vector<uint8_t> &data) {
   auto heltec_get_16bit = [&](size_t i) -> uint16_t {
     return (uint16_t(data[i + 1]) << 8) | (uint16_t(data[i + 0]) << 0);
@@ -677,8 +678,9 @@ void HeltecBalancerBle::decode_cell_info_v2_(const std::vector<uint8_t> &data) {
   };
 
   const uint32_t now = millis();
-  if (now - this->last_cell_info_ < this->throttle_)
+  if (now - this->last_cell_info_ < this->throttle_) {
     return;
+  }
   this->last_cell_info_ = now;
 
   ESP_LOGI(TAG, "Cell info frame v2 (%zu bytes):", data.size());
