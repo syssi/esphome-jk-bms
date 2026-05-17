@@ -1,7 +1,11 @@
 import esphome.codegen as cg
 from esphome.components import binary_sensor
 import esphome.config_validation as cv
-from esphome.const import DEVICE_CLASS_CONNECTIVITY, DEVICE_CLASS_PROBLEM, ENTITY_CATEGORY_DIAGNOSTIC
+from esphome.const import (
+    DEVICE_CLASS_CONNECTIVITY,
+    DEVICE_CLASS_PROBLEM,
+    ENTITY_CATEGORY_DIAGNOSTIC,
+)
 
 from . import CONF_HELTEC_BALANCER_BLE_ID, HELTEC_BALANCER_BLE_COMPONENT_SCHEMA
 
