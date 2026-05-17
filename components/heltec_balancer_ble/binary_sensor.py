@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 from esphome.components import binary_sensor
 import esphome.config_validation as cv
-from esphome.const import DEVICE_CLASS_CONNECTIVITY, ENTITY_CATEGORY_DIAGNOSTIC
+from esphome.const import DEVICE_CLASS_CONNECTIVITY, DEVICE_CLASS_PROBLEM, ENTITY_CATEGORY_DIAGNOSTIC
 
 from . import CONF_HELTEC_BALANCER_BLE_ID, HELTEC_BALANCER_BLE_COMPONENT_SCHEMA
 
@@ -17,9 +17,21 @@ CONF_ONLINE_STATUS = "online_status"
 
 BINARY_SENSOR_DEFS = {
     CONF_BALANCING: {"icon": "mdi:battery-heart-variant"},
-    CONF_ERROR_CHARGING: {"icon": "mdi:alert-circle-outline"},
-    CONF_ERROR_DISCHARGING: {"icon": "mdi:alert-circle-outline"},
-    CONF_ERROR_SYSTEM_OVERHEATING: {"icon": "mdi:alert-circle-outline"},
+    CONF_ERROR_CHARGING: {
+        "icon": "mdi:alert-circle-outline",
+        "device_class": DEVICE_CLASS_PROBLEM,
+        "entity_category": ENTITY_CATEGORY_DIAGNOSTIC,
+    },
+    CONF_ERROR_DISCHARGING: {
+        "icon": "mdi:alert-circle-outline",
+        "device_class": DEVICE_CLASS_PROBLEM,
+        "entity_category": ENTITY_CATEGORY_DIAGNOSTIC,
+    },
+    CONF_ERROR_SYSTEM_OVERHEATING: {
+        "icon": "mdi:alert-circle-outline",
+        "device_class": DEVICE_CLASS_PROBLEM,
+        "entity_category": ENTITY_CATEGORY_DIAGNOSTIC,
+    },
     CONF_ONLINE_STATUS: {
         "device_class": DEVICE_CLASS_CONNECTIVITY,
         "entity_category": ENTITY_CATEGORY_DIAGNOSTIC,
