@@ -17,6 +17,7 @@ class TestableHeltecBalancerBle : public HeltecBalancerBle {
  public:
   TestableHeltecBalancerBle() { set_throttle(0); }
   void update() override {}
+  using HeltecBalancerBle::build_command_frame_;
   using HeltecBalancerBle::decode_;
   using HeltecBalancerBle::decode_cell_info_;
   using HeltecBalancerBle::decode_cell_info_v2_;

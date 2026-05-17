@@ -94,6 +94,60 @@ number:
       name: "balance start voltage"
     nominal_battery_capacity:
       name: "nominal battery capacity"
+    cell_overvoltage_protection:
+      name: "cell overvoltage protection"
+    cell_overvoltage_recovery:
+      name: "cell overvoltage recovery"
+    cell_undervoltage_protection:
+      name: "cell undervoltage protection"
+    cell_undervoltage_recovery:
+      name: "cell undervoltage recovery"
+    cell_voltage_difference_protection:
+      name: "cell voltage difference protection"
+    cell_voltage_difference_recovery:
+      name: "cell voltage difference recovery"
+    cell_shutdown_voltage:
+      name: "cell shutdown voltage"
+    charging_overcurrent_protection:
+      name: "charging overcurrent protection"
+    charging_overcurrent_delay:
+      name: "charging overcurrent delay"
+    charging_overcurrent_recovery:
+      name: "charging overcurrent recovery"
+    discharging_overcurrent_protection:
+      name: "discharging overcurrent protection"
+    discharging_overcurrent_delay:
+      name: "discharging overcurrent delay"
+    discharging_overcurrent_recovery:
+      name: "discharging overcurrent recovery"
+    discharging_overcurrent_2_protection:
+      name: "discharging overcurrent 2 protection"
+    discharging_overcurrent_2_delay:
+      name: "discharging overcurrent 2 delay"
+    discharging_overcurrent_2_recovery:
+      name: "discharging overcurrent 2 recovery"
+    short_circuit_protection:
+      name: "short circuit protection"
+    short_circuit_detection_delay:
+      name: "short circuit detection delay"
+    short_circuit_recovery:
+      name: "short circuit recovery"
+    charging_overtemperature_protection:
+      name: "charging overtemperature protection"
+    charging_overtemperature_recovery:
+      name: "charging overtemperature recovery"
+    charging_undertemperature_protection:
+      name: "charging undertemperature protection"
+    charging_undertemperature_recovery:
+      name: "charging undertemperature recovery"
+    discharging_overtemperature_protection:
+      name: "discharging overtemperature protection"
+    discharging_overtemperature_recovery:
+      name: "discharging overtemperature recovery"
+    discharging_undertemperature_protection:
+      name: "discharging undertemperature protection"
+    discharging_undertemperature_recovery:
+      name: "discharging undertemperature recovery"
 
 sensor:
   - platform: heltec_balancer_ble

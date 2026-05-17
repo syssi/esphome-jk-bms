@@ -226,6 +226,16 @@ class TestHeltecBalancerBleSensorLists:
         assert heltec_number.CONF_BALANCE_TRIGGER_VOLTAGE in heltec_number.NUMBERS
         assert len(heltec_number.NUMBERS) == 7
 
+    def test_v2_numbers_dict(self):
+        assert (
+            heltec_number.CONF_CELL_OVERVOLTAGE_PROTECTION in heltec_number.V2_NUMBERS
+        )
+        assert (
+            heltec_number.CONF_DISCHARGING_UNDERTEMPERATURE_RECOVERY
+            in heltec_number.V2_NUMBERS
+        )
+        assert len(heltec_number.V2_NUMBERS) == 27
+
     def test_number_addresses_are_unique(self):
         addresses = list(heltec_number.NUMBERS.values())
         assert len(addresses) == len(set(addresses))

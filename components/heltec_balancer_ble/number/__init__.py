@@ -10,7 +10,9 @@ from esphome.const import (
     ENTITY_CATEGORY_CONFIG,
     ICON_EMPTY,
     UNIT_AMPERE,
+    UNIT_CELSIUS,
     UNIT_EMPTY,
+    UNIT_SECOND,
     UNIT_VOLT,
 )
 
@@ -19,6 +21,9 @@ from .. import (
     HELTEC_BALANCER_BLE_COMPONENT_SCHEMA,
     heltec_balancer_ble_ns,
 )
+
+UNIT_MICROSECOND = "µs"
+UNIT_MILLISECOND = "ms"
 
 DEPENDENCIES = ["heltec_balancer_ble"]
 
@@ -36,7 +41,227 @@ CONF_NOMINAL_BATTERY_CAPACITY = "nominal_battery_capacity"
 # CONF_BUZZER_MODE = "buzzer_mode"
 # CONF_BATTERY_TYPE = "battery_type"
 
+CONF_CELL_OVERVOLTAGE_PROTECTION = "cell_overvoltage_protection"
+CONF_CELL_OVERVOLTAGE_RECOVERY = "cell_overvoltage_recovery"
+CONF_CELL_UNDERVOLTAGE_PROTECTION = "cell_undervoltage_protection"
+CONF_CELL_UNDERVOLTAGE_RECOVERY = "cell_undervoltage_recovery"
+CONF_CELL_VOLTAGE_DIFFERENCE_PROTECTION = "cell_voltage_difference_protection"
+CONF_CELL_VOLTAGE_DIFFERENCE_RECOVERY = "cell_voltage_difference_recovery"
+CONF_CELL_SHUTDOWN_VOLTAGE = "cell_shutdown_voltage"
+CONF_CHARGING_OVERCURRENT_PROTECTION = "charging_overcurrent_protection"
+CONF_CHARGING_OVERCURRENT_DELAY = "charging_overcurrent_delay"
+CONF_CHARGING_OVERCURRENT_RECOVERY = "charging_overcurrent_recovery"
+CONF_DISCHARGING_OVERCURRENT_PROTECTION = "discharging_overcurrent_protection"
+CONF_DISCHARGING_OVERCURRENT_DELAY = "discharging_overcurrent_delay"
+CONF_DISCHARGING_OVERCURRENT_RECOVERY = "discharging_overcurrent_recovery"
+CONF_DISCHARGING_OVERCURRENT_2_PROTECTION = "discharging_overcurrent_2_protection"
+CONF_DISCHARGING_OVERCURRENT_2_DELAY = "discharging_overcurrent_2_delay"
+CONF_DISCHARGING_OVERCURRENT_2_RECOVERY = "discharging_overcurrent_2_recovery"
+CONF_SHORT_CIRCUIT_PROTECTION = "short_circuit_protection"
+CONF_SHORT_CIRCUIT_DETECTION_DELAY = "short_circuit_detection_delay"
+CONF_SHORT_CIRCUIT_RECOVERY = "short_circuit_recovery"
+CONF_CHARGING_OVERTEMPERATURE_PROTECTION = "charging_overtemperature_protection"
+CONF_CHARGING_OVERTEMPERATURE_RECOVERY = "charging_overtemperature_recovery"
+CONF_CHARGING_UNDERTEMPERATURE_PROTECTION = "charging_undertemperature_protection"
+CONF_CHARGING_UNDERTEMPERATURE_RECOVERY = "charging_undertemperature_recovery"
+CONF_DISCHARGING_OVERTEMPERATURE_PROTECTION = "discharging_overtemperature_protection"
+CONF_DISCHARGING_OVERTEMPERATURE_RECOVERY = "discharging_overtemperature_recovery"
+CONF_DISCHARGING_UNDERTEMPERATURE_PROTECTION = "discharging_undertemperature_protection"
+CONF_DISCHARGING_UNDERTEMPERATURE_RECOVERY = "discharging_undertemperature_recovery"
+
 UNIT_AMPERE_HOUR = "Ah"
+
+# V2_NUMBERS: key -> (reg, cmd, type, unit, min, max, step)
+# type: "float" or "int"
+V2_NUMBERS = {
+    CONF_CELL_OVERVOLTAGE_PROTECTION: (
+        0x01,
+        0x06,
+        "float",
+        UNIT_VOLT,
+        0.001,
+        5.0,
+        0.001,
+    ),
+    CONF_CELL_OVERVOLTAGE_RECOVERY: (0x02, 0x06, "float", UNIT_VOLT, 0.001, 5.0, 0.001),
+    CONF_CELL_UNDERVOLTAGE_PROTECTION: (
+        0x04,
+        0x06,
+        "float",
+        UNIT_VOLT,
+        0.001,
+        5.0,
+        0.001,
+    ),
+    CONF_CELL_UNDERVOLTAGE_RECOVERY: (
+        0x03,
+        0x06,
+        "float",
+        UNIT_VOLT,
+        0.001,
+        5.0,
+        0.001,
+    ),
+    CONF_CELL_VOLTAGE_DIFFERENCE_PROTECTION: (
+        0x1B,
+        0x06,
+        "float",
+        UNIT_VOLT,
+        0.001,
+        5.0,
+        0.001,
+    ),
+    CONF_CELL_VOLTAGE_DIFFERENCE_RECOVERY: (
+        0x1C,
+        0x06,
+        "float",
+        UNIT_VOLT,
+        0.001,
+        5.0,
+        0.001,
+    ),
+    CONF_CELL_SHUTDOWN_VOLTAGE: (0x1D, 0x06, "float", UNIT_VOLT, 0.001, 5.0, 0.001),
+    CONF_CHARGING_OVERCURRENT_PROTECTION: (
+        0x07,
+        0x06,
+        "float",
+        UNIT_AMPERE,
+        1.0,
+        1000.0,
+        0.1,
+    ),
+    CONF_CHARGING_OVERCURRENT_DELAY: (0x08, 0x06, "int", UNIT_SECOND, 0, 65535, 1),
+    CONF_CHARGING_OVERCURRENT_RECOVERY: (0x09, 0x06, "int", UNIT_SECOND, 0, 65535, 1),
+    CONF_DISCHARGING_OVERCURRENT_PROTECTION: (
+        0x0A,
+        0x06,
+        "float",
+        UNIT_AMPERE,
+        1.0,
+        1000.0,
+        0.1,
+    ),
+    CONF_DISCHARGING_OVERCURRENT_DELAY: (0x0B, 0x06, "int", UNIT_SECOND, 0, 65535, 1),
+    CONF_DISCHARGING_OVERCURRENT_RECOVERY: (
+        0x0C,
+        0x06,
+        "int",
+        UNIT_SECOND,
+        0,
+        65535,
+        1,
+    ),
+    CONF_DISCHARGING_OVERCURRENT_2_PROTECTION: (
+        0x1E,
+        0x06,
+        "float",
+        UNIT_AMPERE,
+        1.0,
+        1000.0,
+        0.1,
+    ),
+    CONF_DISCHARGING_OVERCURRENT_2_DELAY: (
+        0x1F,
+        0x06,
+        "int",
+        UNIT_MILLISECOND,
+        0,
+        65535,
+        1,
+    ),
+    CONF_DISCHARGING_OVERCURRENT_2_RECOVERY: (
+        0x20,
+        0x06,
+        "int",
+        UNIT_SECOND,
+        0,
+        65535,
+        1,
+    ),
+    CONF_SHORT_CIRCUIT_PROTECTION: (0x21, 0x06, "float", UNIT_AMPERE, 1.0, 1000.0, 0.1),
+    CONF_SHORT_CIRCUIT_DETECTION_DELAY: (
+        0x0D,
+        0x06,
+        "int",
+        UNIT_MICROSECOND,
+        0,
+        65535,
+        1,
+    ),
+    CONF_SHORT_CIRCUIT_RECOVERY: (0x0E, 0x06, "int", UNIT_SECOND, 0, 65535, 1),
+    CONF_CHARGING_OVERTEMPERATURE_PROTECTION: (
+        0x0F,
+        0x06,
+        "float",
+        UNIT_CELSIUS,
+        -40.0,
+        120.0,
+        0.1,
+    ),
+    CONF_CHARGING_OVERTEMPERATURE_RECOVERY: (
+        0x10,
+        0x06,
+        "float",
+        UNIT_CELSIUS,
+        -40.0,
+        120.0,
+        0.1,
+    ),
+    CONF_CHARGING_UNDERTEMPERATURE_PROTECTION: (
+        0x13,
+        0x06,
+        "float",
+        UNIT_CELSIUS,
+        -40.0,
+        120.0,
+        0.1,
+    ),
+    CONF_CHARGING_UNDERTEMPERATURE_RECOVERY: (
+        0x14,
+        0x06,
+        "float",
+        UNIT_CELSIUS,
+        -40.0,
+        120.0,
+        0.1,
+    ),
+    CONF_DISCHARGING_OVERTEMPERATURE_PROTECTION: (
+        0x11,
+        0x06,
+        "float",
+        UNIT_CELSIUS,
+        -40.0,
+        120.0,
+        0.1,
+    ),
+    CONF_DISCHARGING_OVERTEMPERATURE_RECOVERY: (
+        0x12,
+        0x06,
+        "float",
+        UNIT_CELSIUS,
+        -40.0,
+        120.0,
+        0.1,
+    ),
+    CONF_DISCHARGING_UNDERTEMPERATURE_PROTECTION: (
+        0x22,
+        0x06,
+        "float",
+        UNIT_CELSIUS,
+        -40.0,
+        120.0,
+        0.1,
+    ),
+    CONF_DISCHARGING_UNDERTEMPERATURE_RECOVERY: (
+        0x23,
+        0x06,
+        "float",
+        UNIT_CELSIUS,
+        -40.0,
+        120.0,
+        0.1,
+    ),
+}
 
 # Config settings
 #
@@ -160,6 +385,279 @@ CONFIG_SCHEMA = HELTEC_BALANCER_BLE_COMPONENT_SCHEMA.extend(
                 ): cv.string_strict,
             }
         ),
+        cv.Optional(CONF_CELL_OVERVOLTAGE_PROTECTION): HELTEC_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=0.001): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=5.0): cv.float_,
+                cv.Optional(CONF_STEP, default=0.001): cv.float_,
+            }
+        ),
+        cv.Optional(CONF_CELL_OVERVOLTAGE_RECOVERY): HELTEC_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=0.001): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=5.0): cv.float_,
+                cv.Optional(CONF_STEP, default=0.001): cv.float_,
+            }
+        ),
+        cv.Optional(CONF_CELL_UNDERVOLTAGE_PROTECTION): HELTEC_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=0.001): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=5.0): cv.float_,
+                cv.Optional(CONF_STEP, default=0.001): cv.float_,
+            }
+        ),
+        cv.Optional(CONF_CELL_UNDERVOLTAGE_RECOVERY): HELTEC_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=0.001): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=5.0): cv.float_,
+                cv.Optional(CONF_STEP, default=0.001): cv.float_,
+            }
+        ),
+        cv.Optional(
+            CONF_CELL_VOLTAGE_DIFFERENCE_PROTECTION
+        ): HELTEC_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=0.001): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=5.0): cv.float_,
+                cv.Optional(CONF_STEP, default=0.001): cv.float_,
+            }
+        ),
+        cv.Optional(CONF_CELL_VOLTAGE_DIFFERENCE_RECOVERY): HELTEC_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=0.001): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=5.0): cv.float_,
+                cv.Optional(CONF_STEP, default=0.001): cv.float_,
+            }
+        ),
+        cv.Optional(CONF_CELL_SHUTDOWN_VOLTAGE): HELTEC_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=0.001): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=5.0): cv.float_,
+                cv.Optional(CONF_STEP, default=0.001): cv.float_,
+            }
+        ),
+        cv.Optional(CONF_CHARGING_OVERCURRENT_PROTECTION): HELTEC_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=1.0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=1000.0): cv.float_,
+                cv.Optional(CONF_STEP, default=0.1): cv.float_,
+                cv.Optional(
+                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_AMPERE
+                ): cv.string_strict,
+            }
+        ),
+        cv.Optional(CONF_CHARGING_OVERCURRENT_DELAY): HELTEC_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=65535): cv.float_,
+                cv.Optional(CONF_STEP, default=1): cv.float_,
+                cv.Optional(
+                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_SECOND
+                ): cv.string_strict,
+            }
+        ),
+        cv.Optional(CONF_CHARGING_OVERCURRENT_RECOVERY): HELTEC_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=65535): cv.float_,
+                cv.Optional(CONF_STEP, default=1): cv.float_,
+                cv.Optional(
+                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_SECOND
+                ): cv.string_strict,
+            }
+        ),
+        cv.Optional(
+            CONF_DISCHARGING_OVERCURRENT_PROTECTION
+        ): HELTEC_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=1.0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=1000.0): cv.float_,
+                cv.Optional(CONF_STEP, default=0.1): cv.float_,
+                cv.Optional(
+                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_AMPERE
+                ): cv.string_strict,
+            }
+        ),
+        cv.Optional(CONF_DISCHARGING_OVERCURRENT_DELAY): HELTEC_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=65535): cv.float_,
+                cv.Optional(CONF_STEP, default=1): cv.float_,
+                cv.Optional(
+                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_SECOND
+                ): cv.string_strict,
+            }
+        ),
+        cv.Optional(CONF_DISCHARGING_OVERCURRENT_RECOVERY): HELTEC_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=65535): cv.float_,
+                cv.Optional(CONF_STEP, default=1): cv.float_,
+                cv.Optional(
+                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_SECOND
+                ): cv.string_strict,
+            }
+        ),
+        cv.Optional(
+            CONF_DISCHARGING_OVERCURRENT_2_PROTECTION
+        ): HELTEC_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=1.0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=1000.0): cv.float_,
+                cv.Optional(CONF_STEP, default=0.1): cv.float_,
+                cv.Optional(
+                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_AMPERE
+                ): cv.string_strict,
+            }
+        ),
+        cv.Optional(CONF_DISCHARGING_OVERCURRENT_2_DELAY): HELTEC_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=65535): cv.float_,
+                cv.Optional(CONF_STEP, default=1): cv.float_,
+                cv.Optional(
+                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_MILLISECOND
+                ): cv.string_strict,
+            }
+        ),
+        cv.Optional(
+            CONF_DISCHARGING_OVERCURRENT_2_RECOVERY
+        ): HELTEC_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=65535): cv.float_,
+                cv.Optional(CONF_STEP, default=1): cv.float_,
+                cv.Optional(
+                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_SECOND
+                ): cv.string_strict,
+            }
+        ),
+        cv.Optional(CONF_SHORT_CIRCUIT_PROTECTION): HELTEC_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=1.0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=1000.0): cv.float_,
+                cv.Optional(CONF_STEP, default=0.1): cv.float_,
+                cv.Optional(
+                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_AMPERE
+                ): cv.string_strict,
+            }
+        ),
+        cv.Optional(CONF_SHORT_CIRCUIT_DETECTION_DELAY): HELTEC_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=65535): cv.float_,
+                cv.Optional(CONF_STEP, default=1): cv.float_,
+                cv.Optional(
+                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_MICROSECOND
+                ): cv.string_strict,
+            }
+        ),
+        cv.Optional(CONF_SHORT_CIRCUIT_RECOVERY): HELTEC_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=65535): cv.float_,
+                cv.Optional(CONF_STEP, default=1): cv.float_,
+                cv.Optional(
+                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_SECOND
+                ): cv.string_strict,
+            }
+        ),
+        cv.Optional(
+            CONF_CHARGING_OVERTEMPERATURE_PROTECTION
+        ): HELTEC_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=-40.0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=120.0): cv.float_,
+                cv.Optional(CONF_STEP, default=0.1): cv.float_,
+                cv.Optional(
+                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_CELSIUS
+                ): cv.string_strict,
+            }
+        ),
+        cv.Optional(
+            CONF_CHARGING_OVERTEMPERATURE_RECOVERY
+        ): HELTEC_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=-40.0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=120.0): cv.float_,
+                cv.Optional(CONF_STEP, default=0.1): cv.float_,
+                cv.Optional(
+                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_CELSIUS
+                ): cv.string_strict,
+            }
+        ),
+        cv.Optional(
+            CONF_CHARGING_UNDERTEMPERATURE_PROTECTION
+        ): HELTEC_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=-40.0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=120.0): cv.float_,
+                cv.Optional(CONF_STEP, default=0.1): cv.float_,
+                cv.Optional(
+                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_CELSIUS
+                ): cv.string_strict,
+            }
+        ),
+        cv.Optional(
+            CONF_CHARGING_UNDERTEMPERATURE_RECOVERY
+        ): HELTEC_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=-40.0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=120.0): cv.float_,
+                cv.Optional(CONF_STEP, default=0.1): cv.float_,
+                cv.Optional(
+                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_CELSIUS
+                ): cv.string_strict,
+            }
+        ),
+        cv.Optional(
+            CONF_DISCHARGING_OVERTEMPERATURE_PROTECTION
+        ): HELTEC_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=-40.0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=120.0): cv.float_,
+                cv.Optional(CONF_STEP, default=0.1): cv.float_,
+                cv.Optional(
+                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_CELSIUS
+                ): cv.string_strict,
+            }
+        ),
+        cv.Optional(
+            CONF_DISCHARGING_OVERTEMPERATURE_RECOVERY
+        ): HELTEC_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=-40.0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=120.0): cv.float_,
+                cv.Optional(CONF_STEP, default=0.1): cv.float_,
+                cv.Optional(
+                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_CELSIUS
+                ): cv.string_strict,
+            }
+        ),
+        cv.Optional(
+            CONF_DISCHARGING_UNDERTEMPERATURE_PROTECTION
+        ): HELTEC_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=-40.0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=120.0): cv.float_,
+                cv.Optional(CONF_STEP, default=0.1): cv.float_,
+                cv.Optional(
+                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_CELSIUS
+                ): cv.string_strict,
+            }
+        ),
+        cv.Optional(
+            CONF_DISCHARGING_UNDERTEMPERATURE_RECOVERY
+        ): HELTEC_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=-40.0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=120.0): cv.float_,
+                cv.Optional(CONF_STEP, default=0.1): cv.float_,
+                cv.Optional(
+                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_CELSIUS
+                ): cv.string_strict,
+            }
+        ),
     }
 )
 
@@ -179,3 +677,19 @@ async def to_code(config):
             cg.add(getattr(hub, f"set_{key}_number")(var))
             cg.add(var.set_parent(hub))
             cg.add(var.set_holding_register(address))
+            cg.add(var.set_integer_payload(address in {0x01, 0x16}))
+    for key, (reg, cmd, typ, *_) in V2_NUMBERS.items():
+        if key in config:
+            conf = config[key]
+            var = await number.new_number(
+                conf,
+                min_value=conf[CONF_MIN_VALUE],
+                max_value=conf[CONF_MAX_VALUE],
+                step=conf[CONF_STEP],
+            )
+            await cg.register_component(var, conf)
+            cg.add(getattr(hub, f"set_{key}_number")(var))
+            cg.add(var.set_parent(hub))
+            cg.add(var.set_holding_register(reg))
+            cg.add(var.set_holding_command(cmd))
+            cg.add(var.set_integer_payload(typ == "int"))
