@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 from esphome.components import binary_sensor
 import esphome.config_validation as cv
-from esphome.const import ENTITY_CATEGORY_DIAGNOSTIC
+from esphome.const import DEVICE_CLASS_PROBLEM, ENTITY_CATEGORY_DIAGNOSTIC
 
 from . import CONF_JK_BMS_DISPLAY_ID, JK_BMS_DISPLAY_COMPONENT_SCHEMA
 
@@ -28,31 +28,49 @@ ICON_DISCHARGING = "mdi:power-plug"
 ICON_BALANCING = "mdi:battery-heart-variant"
 
 BINARY_SENSOR_DEFS = {
-    CONF_SYSTEM_WARNING: {"entity_category": ENTITY_CATEGORY_DIAGNOSTIC},
+    CONF_SYSTEM_WARNING: {
+        "device_class": DEVICE_CLASS_PROBLEM,
+        "entity_category": ENTITY_CATEGORY_DIAGNOSTIC,
+    },
     CONF_BALANCING_SWITCH: {"icon": ICON_BALANCING},
     CONF_CHARGING: {"icon": ICON_CHARGING},
     CONF_DISCHARGING: {"icon": ICON_DISCHARGING},
     CONF_CELL_VOLTAGE_UNDERVOLTAGE_PROTECTION: {
-        "entity_category": ENTITY_CATEGORY_DIAGNOSTIC
+        "device_class": DEVICE_CLASS_PROBLEM,
+        "entity_category": ENTITY_CATEGORY_DIAGNOSTIC,
     },
     CONF_CELL_VOLTAGE_OVERVOLTAGE_PROTECTION: {
-        "entity_category": ENTITY_CATEGORY_DIAGNOSTIC
+        "device_class": DEVICE_CLASS_PROBLEM,
+        "entity_category": ENTITY_CATEGORY_DIAGNOSTIC,
     },
-    CONF_OVERCURRENT_PROTECTION: {"entity_category": ENTITY_CATEGORY_DIAGNOSTIC},
+    CONF_OVERCURRENT_PROTECTION: {
+        "device_class": DEVICE_CLASS_PROBLEM,
+        "entity_category": ENTITY_CATEGORY_DIAGNOSTIC,
+    },
     CONF_MOSFET_OVERTEMPERATURE_PROTECTION: {
-        "entity_category": ENTITY_CATEGORY_DIAGNOSTIC
+        "device_class": DEVICE_CLASS_PROBLEM,
+        "entity_category": ENTITY_CATEGORY_DIAGNOSTIC,
     },
     CONF_BATTERY_TEMPERATURE_PROTECTION: {
-        "entity_category": ENTITY_CATEGORY_DIAGNOSTIC
+        "device_class": DEVICE_CLASS_PROBLEM,
+        "entity_category": ENTITY_CATEGORY_DIAGNOSTIC,
     },
-    CONF_SHORT_CIRCUIT_PROTECTION: {"entity_category": ENTITY_CATEGORY_DIAGNOSTIC},
+    CONF_SHORT_CIRCUIT_PROTECTION: {
+        "device_class": DEVICE_CLASS_PROBLEM,
+        "entity_category": ENTITY_CATEGORY_DIAGNOSTIC,
+    },
     CONF_COPROCESSOR_COMMUNICATION_ERROR: {
-        "entity_category": ENTITY_CATEGORY_DIAGNOSTIC
+        "device_class": DEVICE_CLASS_PROBLEM,
+        "entity_category": ENTITY_CATEGORY_DIAGNOSTIC,
     },
     CONF_BALANCER_WIRE_RESISTANCE_TOO_HIGH: {
-        "entity_category": ENTITY_CATEGORY_DIAGNOSTIC
+        "device_class": DEVICE_CLASS_PROBLEM,
+        "entity_category": ENTITY_CATEGORY_DIAGNOSTIC,
     },
-    CONF_CELL_COUNT_MISMATCH: {"entity_category": ENTITY_CATEGORY_DIAGNOSTIC},
+    CONF_CELL_COUNT_MISMATCH: {
+        "device_class": DEVICE_CLASS_PROBLEM,
+        "entity_category": ENTITY_CATEGORY_DIAGNOSTIC,
+    },
 }
 
 CONFIG_SCHEMA = JK_BMS_DISPLAY_COMPONENT_SCHEMA.extend(
