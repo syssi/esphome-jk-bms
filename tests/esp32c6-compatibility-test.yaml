@@ -47,9 +47,9 @@ esp32_ble_tracker:
     active: false
 
 ble_client:
-  - mac_address: C8:47:8C:E1:E2:AA
+  - mac_address: !secret bms0_mac_address
     id: client0
-  - mac_address: C8:47:8C:E1:E2:BB
+  - mac_address: !secret bms1_mac_address
     id: client1
 
 # jk_bms
