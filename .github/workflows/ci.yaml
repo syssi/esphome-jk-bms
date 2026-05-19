@@ -493,7 +493,7 @@ jobs:
       - name: Validate example configurations
         run: |
           . venv/bin/activate
-          echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password" > secrets.yaml
+          echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password\nbms0_mac_address: 70:3e:97:07:c0:3e\nbms1_mac_address: 70:3e:97:07:c0:3f\nbalancer0_mac_address: 70:3e:97:07:c0:40\nbalancer1_mac_address: 70:3e:97:07:c0:41" > secrets.yaml
           for YAML in esp*.yaml; do
             esphome -s external_components_source components config $YAML
           done
@@ -501,7 +501,7 @@ jobs:
       - name: Validate YAML snippets
         run: |
           . venv/bin/activate
-          echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password" > yaml-snippets/secrets.yaml
+          echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password\nbms0_mac_address: 70:3e:97:07:c0:3e\nbms1_mac_address: 70:3e:97:07:c0:3f\nbalancer0_mac_address: 70:3e:97:07:c0:40\nbalancer1_mac_address: 70:3e:97:07:c0:41" > yaml-snippets/secrets.yaml
           for YAML in yaml-snippets/esp*.yaml; do
             esphome -s external_components_source ../components config $YAML
           done
@@ -509,7 +509,7 @@ jobs:
       - name: Validate test configurations
         run: |
           . venv/bin/activate
-          echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password" > tests/secrets.yaml
+          echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password\nbms0_mac_address: 70:3e:97:07:c0:3e\nbms1_mac_address: 70:3e:97:07:c0:3f\nbalancer0_mac_address: 70:3e:97:07:c0:40\nbalancer1_mac_address: 70:3e:97:07:c0:41" > tests/secrets.yaml
           for YAML in tests/esp*.yaml; do
             esphome -s external_components_source ../components config $YAML
           done
@@ -535,7 +535,7 @@ jobs:
 
       - name: Write secrets.yaml
         shell: bash
-        run: 'echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password" > secrets.yaml'
+        run: 'echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password\nbms0_mac_address: 70:3e:97:07:c0:3e\nbms1_mac_address: 70:3e:97:07:c0:3f\nbalancer0_mac_address: 70:3e:97:07:c0:40\nbalancer1_mac_address: 70:3e:97:07:c0:41" > secrets.yaml'
 
       - name: Cache platformio
         if: github.ref == 'refs/heads/main'
@@ -610,7 +610,7 @@ jobs:
 
       - name: Write tests/secrets.yaml
         shell: bash
-        run: 'echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password" > tests/secrets.yaml'
+        run: 'echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password\nbms0_mac_address: 70:3e:97:07:c0:3e\nbms1_mac_address: 70:3e:97:07:c0:3f\nbalancer0_mac_address: 70:3e:97:07:c0:40\nbalancer1_mac_address: 70:3e:97:07:c0:41" > tests/secrets.yaml'
 
       - name: Compile test configurations
         run: |

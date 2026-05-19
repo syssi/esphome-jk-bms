@@ -2,8 +2,6 @@ substitutions:
   name: heltec-balancer-ek-b24s8e200a
   device_description: "Monitor and control a NEEY EK-B24S8E200A 8A balancer via bluetooth"
   external_components_source: github://syssi/esphome-jk-bms@main
-  mac_address: 00:00:00:00:00:00
-
 esphome:
   name: ${name}
   friendly_name: ${name}
@@ -53,7 +51,7 @@ esp32_ble_tracker:
     active: false
 
 ble_client:
-  - mac_address: ${mac_address}
+  - mac_address: !secret balancer0_mac_address
     id: client0
 
 heltec_balancer_ble:

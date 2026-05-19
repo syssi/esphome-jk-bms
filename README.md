@@ -127,6 +127,14 @@ wifi_password: MY_WIFI_PASSWORD
 mqtt_host: MY_MQTT_HOST
 mqtt_username: MY_MQTT_USERNAME
 mqtt_password: MY_MQTT_PASSWORD
+
+# BMS MAC address(es) — replace with the actual Bluetooth address of your device(s)
+bms0_mac_address: C8:47:8C:E1:E2:AA
+bms1_mac_address: C8:47:8C:E1:E2:BB
+
+# Heltec/NEEY balancer MAC address(es) — only needed for balancer example configurations
+balancer0_mac_address: C8:47:8C:E1:E2:AA
+balancer1_mac_address: C8:47:8C:E1:E2:BB
 EOF
 
 # Validate the configuration, create a binary, upload it, and start logs

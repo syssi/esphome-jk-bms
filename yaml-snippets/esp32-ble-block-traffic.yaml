@@ -1,8 +1,6 @@
 substitutions:
   name: jk-bms
   device_description: "Occupy the BLE module of the BMS to prevent advertising and block connections from foreign devices"
-  mac_address: C8:47:8C:E1:E2:AA
-
 esphome:
   name: ${name}
   friendly_name: ${name}
@@ -45,7 +43,7 @@ api:
 esp32_ble_tracker:
 
 ble_client:
-  - mac_address: ${mac_address}
+  - mac_address: !secret bms0_mac_address
     id: client0
 
 switch:
