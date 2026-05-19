@@ -63,6 +63,7 @@ esp32:
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
+  min_auth_mode: WPA2
   # This can help if you experience wifi connection issues and see errors like
   # bssid=12:34:56:78:9A:CB[redacted] reason=‘Auth Expired’
   # output_power: "8.5dB"
