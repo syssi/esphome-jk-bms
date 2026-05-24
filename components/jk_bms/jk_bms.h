@@ -195,9 +195,7 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
   void set_sleep_wait_time_sensor(sensor::Sensor *sleep_wait_time_sensor) {
     sleep_wait_time_sensor_ = sleep_wait_time_sensor;
   }
-  void set_low_soc_alarm_sensor(sensor::Sensor *low_soc_alarm_sensor) {
-    low_soc_alarm_sensor_ = low_soc_alarm_sensor;
-  }
+  void set_low_soc_alarm_sensor(sensor::Sensor *low_soc_alarm_sensor) { low_soc_alarm_sensor_ = low_soc_alarm_sensor; }
   void set_manufacturing_date_sensor(sensor::Sensor *manufacturing_date_sensor) {
     manufacturing_date_sensor_ = manufacturing_date_sensor;
   }
