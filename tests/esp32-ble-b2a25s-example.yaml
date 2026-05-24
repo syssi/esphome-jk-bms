@@ -298,8 +298,8 @@ sensor:
       name: "charging power"
     discharging_power:
       name: "discharging power"
-    balancing:
-      name: "balancing"
+    balancer_status:
+      name: "balancer status"
     state_of_charge:
       name: "state of charge"
     capacity_remaining:
