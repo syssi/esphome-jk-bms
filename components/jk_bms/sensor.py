@@ -101,7 +101,7 @@ CONF_FULL_CHARGE_CAPACITY = "full_charge_capacity"
 CONF_CURRENT_CALIBRATION = "current_calibration"
 CONF_DEVICE_ADDRESS = "device_address"
 CONF_SLEEP_WAIT_TIME = "sleep_wait_time"
-CONF_ALARM_LOW_VOLUME = "alarm_low_volume"
+CONF_LOW_SOC_ALARM = "low_soc_alarm"
 CONF_MANUFACTURING_DATE = "manufacturing_date"
 CONF_TOTAL_RUNTIME = "total_runtime"
 CONF_START_CURRENT_CALIBRATION = "start_current_calibration"
@@ -121,7 +121,7 @@ ICON_DEVICE_ADDRESS = "mdi:identifier"
 ICON_ERRORS_BITMASK = "mdi:alert-circle-outline"
 ICON_OPERATION_MODE_BITMASK = "mdi:heart-pulse"
 ICON_CHARGING_CYCLES = "mdi:battery-sync"
-ICON_ALARM_LOW_VOLUME = "mdi:volume-high"
+ICON_LOW_SOC_ALARM = "mdi:battery-alert"
 
 UNIT_SECONDS = "s"
 UNIT_HOURS = "h"
@@ -501,9 +501,9 @@ SENSOR_DEFS = {
         "device_class": DEVICE_CLASS_EMPTY,
         "state_class": STATE_CLASS_MEASUREMENT,
     },
-    CONF_ALARM_LOW_VOLUME: {
+    CONF_LOW_SOC_ALARM: {
         "unit_of_measurement": UNIT_PERCENT,
-        "icon": ICON_ALARM_LOW_VOLUME,
+        "icon": ICON_LOW_SOC_ALARM,
         "accuracy_decimals": 0,
         "device_class": DEVICE_CLASS_EMPTY,
         "state_class": STATE_CLASS_MEASUREMENT,
@@ -560,6 +560,9 @@ CONFIG_SCHEMA = (
             ),
             cv.Optional("balance_opening_pressure_difference"): cv.invalid(
                 "sensor.balance_opening_pressure_difference has been renamed to sensor.balancing_delta_voltage"
+            ),
+            cv.Optional("alarm_low_volume"): cv.invalid(
+                "sensor.alarm_low_volume has been renamed to sensor.low_soc_alarm"
             ),
         }
     )
