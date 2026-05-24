@@ -153,9 +153,9 @@ sensor:
     discharging_power:
       name: "discharging power"
     state_of_charge:
+      name: "state of charge"
+    capacity_remaining:
       name: "capacity remaining"
-    capacity_remaining_derived:
-      name: "capacity remaining derived"
     temperature_sensors:
       name: "temperature sensors"
     charging_cycles:
