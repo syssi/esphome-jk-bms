@@ -108,6 +108,20 @@ TEST(JkBmsStatusDataTest, Capacity) {
   EXPECT_FLOAT_EQ(nominal.state, 14.0f);               // 14 Ah
 }
 
+// ── Balancing configuration ──────────────────────────────────────────────────
+
+TEST(JkBmsStatusDataTest, BalancingConfig) {
+  TestableJkBms bms;
+  sensor::Sensor starting_voltage, delta_voltage;
+  bms.set_balance_starting_voltage_sensor(&starting_voltage);
+  bms.set_balancing_delta_voltage_sensor(&delta_voltage);
+
+  bms.on_jk_modbus_data(FUNCTION_READ_ALL, STATUS_FRAME_14S);
+
+  EXPECT_NEAR(starting_voltage.state, 3.300f, 0.001f);  // 3300 × 0.001
+  EXPECT_NEAR(delta_voltage.state, 0.008f, 0.001f);     // 8 × 0.001
+}
+
 // ── Errors ───────────────────────────────────────────────────────────────────
 
 TEST(JkBmsStatusDataTest, NoErrors) {
