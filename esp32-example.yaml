@@ -163,7 +163,7 @@ sensor:
       name: "charging cycles"
     total_charging_cycle_capacity:
       name: "total charging cycle capacity"
-    battery_strings:
+    cell_count:
       name: "battery strings"
     errors_bitmask:
       name: "errors bitmask"

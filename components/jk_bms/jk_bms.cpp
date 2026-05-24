@@ -178,7 +178,7 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->total_charging_cycle_capacity_sensor_, (float) jk_get_32bit(offset + 4 + 3 * 6));
 
   // 0x8A 0x00 0x0E: Total number of battery strings             14                        1.0  count
-  this->publish_state_(this->battery_strings_sensor_, (float) jk_get_16bit(offset + 6 + 3 * 7));
+  this->publish_state_(this->cell_count_sensor_, (float) jk_get_16bit(offset + 6 + 3 * 7));
 
   // 0x8B 0x00 0x00: Battery warning message                     0000 0000 0000 0000
   //
@@ -442,7 +442,7 @@ void JkBms::publish_device_unavailable_() {
   this->publish_state_(temperature_sensors_sensor_, NAN);
   this->publish_state_(charging_cycles_sensor_, NAN);
   this->publish_state_(total_charging_cycle_capacity_sensor_, NAN);
-  this->publish_state_(battery_strings_sensor_, NAN);
+  this->publish_state_(cell_count_sensor_, NAN);
   this->publish_state_(errors_bitmask_sensor_, NAN);
   this->publish_state_(operation_mode_bitmask_sensor_, NAN);
   this->publish_state_(total_voltage_overvoltage_protection_sensor_, NAN);
@@ -612,7 +612,7 @@ void JkBms::dump_config() {  // NOLINT(google-readability-function-size,readabil
   LOG_SENSOR("", "Temperature Sensors", this->temperature_sensors_sensor_);
   LOG_SENSOR("", "Charging Cycles", this->charging_cycles_sensor_);
   LOG_SENSOR("", "Total Charging Cycle Capacity", this->total_charging_cycle_capacity_sensor_);
-  LOG_SENSOR("", "Battery Strings", this->battery_strings_sensor_);
+  LOG_SENSOR("", "Cell Count", this->cell_count_sensor_);
   LOG_SENSOR("", "Errors Bitmask", this->errors_bitmask_sensor_);
   LOG_SENSOR("", "Operation Mode Bitmask", this->operation_mode_bitmask_sensor_);
   LOG_SENSOR("", "Total Voltage Overvoltage Protection", this->total_voltage_overvoltage_protection_sensor_);
