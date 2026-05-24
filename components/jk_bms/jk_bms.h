@@ -141,8 +141,8 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
   void set_balance_starting_voltage_sensor(sensor::Sensor *balance_starting_voltage_sensor) {
     balance_starting_voltage_sensor_ = balance_starting_voltage_sensor;
   }
-  void set_balance_opening_pressure_difference_sensor(sensor::Sensor *balance_opening_pressure_difference_sensor) {
-    balance_opening_pressure_difference_sensor_ = balance_opening_pressure_difference_sensor;
+  void set_balancing_delta_voltage_sensor(sensor::Sensor *balancing_delta_voltage_sensor) {
+    balancing_delta_voltage_sensor_ = balancing_delta_voltage_sensor;
   }
   void set_power_tube_temperature_protection_sensor(sensor::Sensor *power_tube_temperature_protection_sensor) {
     power_tube_temperature_protection_sensor_ = power_tube_temperature_protection_sensor;
@@ -291,7 +291,7 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
   sensor::Sensor *charging_overcurrent_protection_sensor_{nullptr};
   sensor::Sensor *charging_overcurrent_delay_sensor_{nullptr};
   sensor::Sensor *balance_starting_voltage_sensor_{nullptr};
-  sensor::Sensor *balance_opening_pressure_difference_sensor_{nullptr};
+  sensor::Sensor *balancing_delta_voltage_sensor_{nullptr};
   sensor::Sensor *power_tube_temperature_protection_sensor_{nullptr};
   sensor::Sensor *power_tube_temperature_recovery_sensor_{nullptr};
   sensor::Sensor *temperature_sensor_temperature_protection_sensor_{nullptr};
