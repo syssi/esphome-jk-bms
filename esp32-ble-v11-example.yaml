@@ -294,8 +294,8 @@ sensor:
       name: "temperature sensor 4"
     power_tube_temperature:
       name: "power tube temperature"
-    balancing:
-      name: "balancing"
+    balancer_status:
+      name: "balancer status"
     state_of_charge:
       name: "state of charge"
     capacity_remaining:

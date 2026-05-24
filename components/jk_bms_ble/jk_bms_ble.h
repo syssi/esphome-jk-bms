@@ -169,7 +169,9 @@ class JkBmsBle :
   void set_balancing_binary_sensor(binary_sensor::BinarySensor *balancing_binary_sensor) {
     balancing_binary_sensor_ = balancing_binary_sensor;
   }
-  void set_balancing_sensor(sensor::Sensor *balancing_sensor) { balancing_sensor_ = balancing_sensor; }
+  void set_balancer_status_sensor(sensor::Sensor *balancer_status_sensor) {
+    balancer_status_sensor_ = balancer_status_sensor;
+  }
   void set_precharging_binary_sensor(binary_sensor::BinarySensor *precharging_binary_sensor) {
     precharging_binary_sensor_ = precharging_binary_sensor;
   }
@@ -387,7 +389,7 @@ class JkBmsBle :
   number::Number *heating_stop_temperature_number_{nullptr};
   number::Number *re_bulk_soc_number_{nullptr};
 
-  sensor::Sensor *balancing_sensor_{nullptr};
+  sensor::Sensor *balancer_status_sensor_{nullptr};
   sensor::Sensor *min_cell_voltage_sensor_{nullptr};
   sensor::Sensor *max_cell_voltage_sensor_{nullptr};
   sensor::Sensor *min_voltage_cell_sensor_{nullptr};
