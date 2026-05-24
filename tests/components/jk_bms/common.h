@@ -190,15 +190,15 @@ static const std::vector<uint8_t> STATUS_FRAME_14S = {
     0x9F,
     0x00,
     0x46,
-    // bytes 133-135: temperature sensor temperature protection = 100°C
+    // bytes 133-135: battery overtemperature protection = 100°C
     0xA0,
     0x00,
     0x64,
-    // bytes 136-138: temperature sensor temperature recovery = 100°C
+    // bytes 136-138: battery overtemperature recovery = 100°C
     0xA1,
     0x00,
     0x64,
-    // bytes 139-141: temperature sensor temperature difference protection = 20°C
+    // bytes 139-141: battery temperature difference protection = 20°C
     0xA2,
     0x00,
     0x14,

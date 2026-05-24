@@ -203,12 +203,12 @@ sensor:
       name: "mosfet temperature protection"
     mosfet_temperature_recovery:
       name: "mosfet temperature recovery"
-    temperature_sensor_temperature_protection:
-      name: "temperature sensor temperature protection"
-    temperature_sensor_temperature_recovery:
-      name: "temperature sensor temperature recovery"
-    temperature_sensor_temperature_difference_protection:
-      name: "temperature sensor temperature difference protection"
+    battery_overtemperature_protection:
+      name: "battery overtemperature protection"
+    battery_overtemperature_recovery:
+      name: "battery overtemperature recovery"
+    battery_temperature_difference_protection:
+      name: "battery temperature difference protection"
     charging_high_temperature_protection:
       name: "charging high temperature protection"
     discharging_high_temperature_protection:
