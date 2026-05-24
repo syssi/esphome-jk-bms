@@ -568,8 +568,8 @@ sensor:
     power_tube_temperature:
       name: "power tube temperature"
       device_id: device0
-    balancing:
-      name: "balancing"
+    balancer_status:
+      name: "balancer status"
       device_id: device0
     state_of_charge:
       name: "state of charge"
@@ -800,8 +800,8 @@ sensor:
     power_tube_temperature:
       name: "power tube temperature"
       device_id: device1
-    balancing:
-      name: "balancing"
+    balancer_status:
+      name: "balancer status"
       device_id: device1
     state_of_charge:
       name: "state of charge"

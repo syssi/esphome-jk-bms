@@ -25,7 +25,6 @@ from esphome.const import (
 )
 
 from . import CONF_JK_BMS_BLE_ID, JK_BMS_BLE_COMPONENT_SCHEMA
-from .const import CONF_BALANCING
 
 CODEOWNERS = ["@syssi", "@txubelaxu"]
 
@@ -59,6 +58,7 @@ CONF_CHARGE_STATUS_ID = "charge_status_id"
 CONF_CHARGE_STATUS_TIME_ELAPSED = "charge_status_time_elapsed"
 CONF_DETAIL_LOG_COUNT = "detail_log_count"
 CONF_BATTERY_TYPE_ID = "battery_type_id"
+CONF_BALANCER_STATUS = "balancer_status"
 
 UNIT_AMPERE_HOURS = "Ah"
 UNIT_OHM = "Ω"
@@ -104,7 +104,7 @@ _TEMPERATURE_SCHEMA = sensor.sensor_schema(
 )
 
 SENSOR_DEFS = {
-    CONF_BALANCING: {
+    CONF_BALANCER_STATUS: {
         "unit_of_measurement": UNIT_EMPTY,
         "icon": ICON_BALANCER,
         "accuracy_decimals": 0,
@@ -304,6 +304,9 @@ CONFIG_SCHEMA = (
         {
             cv.Optional("errors_bitmask"): cv.invalid(
                 "sensor.errors_bitmask has been removed; use text_sensor.errors_bitmask_hex instead"
+            ),
+            cv.Optional("balancing"): cv.invalid(
+                "sensor.balancing has been renamed to sensor.balancer_status"
             ),
         }
     )
