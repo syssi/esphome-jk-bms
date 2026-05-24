@@ -176,15 +176,15 @@ TEST(JkBmsStatusDataTest, SwitchStates) {
 
 TEST(JkBmsStatusDataTest, BatteryInfo) {
   TestableJkBms bms;
-  sensor::Sensor strings, cycles;
+  sensor::Sensor cell_count, cycles;
   text_sensor::TextSensor battery_type;
-  bms.set_battery_strings_sensor(&strings);
+  bms.set_cell_count_sensor(&cell_count);
   bms.set_charging_cycles_sensor(&cycles);
   bms.set_battery_type_text_sensor(&battery_type);
 
   bms.on_jk_modbus_data(FUNCTION_READ_ALL, STATUS_FRAME_14S);
 
-  EXPECT_FLOAT_EQ(strings.state, 14.0f);
+  EXPECT_FLOAT_EQ(cell_count.state, 14.0f);
   EXPECT_FLOAT_EQ(cycles.state, 4.0f);
   EXPECT_EQ(battery_type.state, "Ternary Lithium");
 }
