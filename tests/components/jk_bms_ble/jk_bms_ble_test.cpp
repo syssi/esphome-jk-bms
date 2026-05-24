@@ -187,7 +187,7 @@ TEST(JkBmsBleJk02CellInfoTest, Capacity) {
   TestableJkBmsBle bms;
   sensor::Sensor remaining, nominal, cycles;
   bms.set_capacity_remaining_sensor(&remaining);
-  bms.set_total_battery_capacity_setting_sensor(&nominal);
+  bms.set_full_charge_capacity_sensor(&nominal);
   bms.set_charging_cycles_sensor(&cycles);
 
   bms.decode_jk02_cell_info_(CELL_INFO_JK02_24S_V10);
