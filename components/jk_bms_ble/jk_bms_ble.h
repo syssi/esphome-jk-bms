@@ -254,9 +254,6 @@ class JkBmsBle :
   void set_balancing_current_sensor(sensor::Sensor *balancing_current_sensor) {
     balancing_current_sensor_ = balancing_current_sensor;
   }
-  void set_errors_bitmask_sensor(sensor::Sensor *errors_bitmask_sensor) {
-    errors_bitmask_sensor_ = errors_bitmask_sensor;
-  }
   void set_emergency_time_countdown_sensor(sensor::Sensor *emergency_time_countdown_sensor) {
     emergency_time_countdown_sensor_ = emergency_time_countdown_sensor;
   }
@@ -276,6 +273,9 @@ class JkBmsBle :
     battery_type_id_sensor_ = battery_type_id_sensor;
   }
 
+  void set_errors_bitmask_hex_text_sensor(text_sensor::TextSensor *errors_bitmask_hex_text_sensor) {
+    errors_bitmask_hex_text_sensor_ = errors_bitmask_hex_text_sensor;
+  }
   void set_errors_text_sensor(text_sensor::TextSensor *errors_text_sensor) { errors_text_sensor_ = errors_text_sensor; }
   void set_operation_status_text_sensor(text_sensor::TextSensor *operation_status_text_sensor) {
     operation_status_text_sensor_ = operation_status_text_sensor;
@@ -408,7 +408,6 @@ class JkBmsBle :
   sensor::Sensor *total_charging_cycle_capacity_sensor_{nullptr};
   sensor::Sensor *total_runtime_sensor_{nullptr};
   sensor::Sensor *balancing_current_sensor_{nullptr};
-  sensor::Sensor *errors_bitmask_sensor_{nullptr};
   sensor::Sensor *emergency_time_countdown_sensor_{nullptr};
   sensor::Sensor *heating_current_sensor_{nullptr};
   sensor::Sensor *charge_status_id_sensor_{nullptr};
@@ -428,6 +427,7 @@ class JkBmsBle :
   switch_::Switch *disable_pcl_module_switch_{nullptr};
   switch_::Switch *charging_float_mode_switch_{nullptr};
 
+  text_sensor::TextSensor *errors_bitmask_hex_text_sensor_{nullptr};
   text_sensor::TextSensor *errors_text_sensor_{nullptr};
   text_sensor::TextSensor *operation_status_text_sensor_{nullptr};
   text_sensor::TextSensor *total_runtime_formatted_text_sensor_{nullptr};
@@ -460,7 +460,8 @@ class JkBmsBle :
   void publish_device_unavailable_();
   void reset_online_status_tracker_();
   void track_online_status_();
-  std::string error_bits_to_string_(uint16_t bitmask);
+  std::string to_hex_string_(uint32_t mask);
+  std::string error_bits_to_string_(uint32_t bitmask, const char *const *errors, uint8_t errors_size);
   std::string charge_status_id_to_string_(uint8_t status);
   std::string battery_type_id_to_string_(uint8_t code);
 

@@ -53,7 +53,6 @@ CONF_CHARGING_CYCLES = "charging_cycles"
 CONF_TOTAL_CHARGING_CYCLE_CAPACITY = "total_charging_cycle_capacity"
 CONF_TOTAL_RUNTIME = "total_runtime"
 CONF_BALANCING_CURRENT = "balancing_current"
-CONF_ERRORS_BITMASK = "errors_bitmask"
 CONF_EMERGENCY_TIME_COUNTDOWN = "emergency_time_countdown"
 CONF_HEATING_CURRENT = "heating_current"
 CONF_CHARGE_STATUS_ID = "charge_status_id"
@@ -71,7 +70,6 @@ ICON_MIN_VOLTAGE_CELL = "mdi:battery-minus-outline"
 ICON_MAX_VOLTAGE_CELL = "mdi:battery-plus-outline"
 ICON_CAPACITY_REMAINING = "mdi:battery-50"
 ICON_CHARGING_CYCLES = "mdi:battery-sync"
-ICON_ERRORS_BITMASK = "mdi:alert-circle-outline"
 ICON_CELL_RESISTANCE = "mdi:omega"
 ICON_BALANCER = "mdi:seesaw"
 ICON_CHARGE_STATUS_ID = "mdi:battery-clock"
@@ -251,13 +249,6 @@ SENSOR_DEFS = {
         "device_class": DEVICE_CLASS_CURRENT,
         "state_class": STATE_CLASS_MEASUREMENT,
     },
-    CONF_ERRORS_BITMASK: {
-        "unit_of_measurement": UNIT_EMPTY,
-        "icon": ICON_ERRORS_BITMASK,
-        "accuracy_decimals": 0,
-        "device_class": DEVICE_CLASS_EMPTY,
-        "entity_category": ENTITY_CATEGORY_DIAGNOSTIC,
-    },
     CONF_EMERGENCY_TIME_COUNTDOWN: {
         "unit_of_measurement": UNIT_SECONDS,
         "icon": ICON_TIMELAPSE,
@@ -309,6 +300,13 @@ CONFIG_SCHEMA = (
     .extend({cv.Optional(key): _CELL_VOLTAGE_SCHEMA for key in CELL_VOLTAGES})
     .extend({cv.Optional(key): _CELL_RESISTANCE_SCHEMA for key in CELL_RESISTANCES})
     .extend({cv.Optional(key): _TEMPERATURE_SCHEMA for key in TEMPERATURES})
+    .extend(
+        {
+            cv.Optional("errors_bitmask"): cv.invalid(
+                "sensor.errors_bitmask has been removed; use text_sensor.errors_bitmask_hex instead"
+            ),
+        }
+    )
 )
 
 

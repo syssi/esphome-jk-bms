@@ -139,14 +139,14 @@ TEST(JkBmsBleJk02CellInfoTest, Temperatures) {
 
 TEST(JkBmsBleJk02CellInfoTest, NoErrors) {
   TestableJkBmsBle bms;
-  sensor::Sensor errors_bitmask;
+  text_sensor::TextSensor errors_bitmask_hex;
   text_sensor::TextSensor errors_text;
-  bms.set_errors_bitmask_sensor(&errors_bitmask);
+  bms.set_errors_bitmask_hex_text_sensor(&errors_bitmask_hex);
   bms.set_errors_text_sensor(&errors_text);
 
   bms.decode_jk02_cell_info_(CELL_INFO_JK02_24S_V10);
 
-  EXPECT_FLOAT_EQ(errors_bitmask.state, 0.0f);
+  EXPECT_EQ(errors_bitmask_hex.state, "0x00000000");
   EXPECT_EQ(errors_text.state, "");
 }
 
