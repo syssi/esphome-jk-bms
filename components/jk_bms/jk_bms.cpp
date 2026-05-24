@@ -323,10 +323,10 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
   // 0xA9 0x0E: Battery string setting                                      14              1.0 count
   // this->publish_state_(this->battery_string_setting_sensor_, (float) data[offset + 8 + 3 * 36]);
   // 0xAA 0x00 0x00 0x02 0x30: Total battery capacity setting              560 Ah           1.0 Ah
-  uint32_t raw_total_battery_capacity_setting = jk_get_32bit(offset + 10 + 3 * 36);
-  this->publish_state_(this->total_battery_capacity_setting_sensor_, (float) raw_total_battery_capacity_setting);
+  uint32_t raw_full_charge_capacity = jk_get_32bit(offset + 10 + 3 * 36);
+  this->publish_state_(this->full_charge_capacity_sensor_, (float) raw_full_charge_capacity);
   this->publish_state_(this->capacity_remaining_derived_sensor_,
-                       (float) (raw_total_battery_capacity_setting * (raw_battery_remaining_capacity * 0.01f)));
+                       (float) (raw_full_charge_capacity * (raw_battery_remaining_capacity * 0.01f)));
 
   // 0xAB 0x01: Charging MOS tube switch                                     1 (on)         Bool       0 (off), 1 (on)
   this->publish_state_(this->charging_switch_binary_sensor_, (bool) data[offset + 15 + 3 * 36]);
@@ -473,7 +473,7 @@ void JkBms::publish_device_unavailable_() {
   this->publish_state_(charging_low_temperature_recovery_sensor_, NAN);
   this->publish_state_(discharging_low_temperature_protection_sensor_, NAN);
   this->publish_state_(discharging_low_temperature_recovery_sensor_, NAN);
-  this->publish_state_(total_battery_capacity_setting_sensor_, NAN);
+  this->publish_state_(full_charge_capacity_sensor_, NAN);
   this->publish_state_(charging_sensor_, NAN);
   this->publish_state_(discharging_sensor_, NAN);
   this->publish_state_(current_calibration_sensor_, NAN);
@@ -644,7 +644,7 @@ void JkBms::dump_config() {  // NOLINT(google-readability-function-size,readabil
   LOG_SENSOR("", "Charging Low Temperature Recovery", this->charging_low_temperature_recovery_sensor_);
   LOG_SENSOR("", "Discharging Low Temperature Protection", this->discharging_low_temperature_protection_sensor_);
   LOG_SENSOR("", "Discharging Low Temperature Recovery", this->discharging_low_temperature_recovery_sensor_);
-  LOG_SENSOR("", "Total Battery Capacity Setting", this->total_battery_capacity_setting_sensor_);
+  LOG_SENSOR("", "Full Charge Capacity", this->full_charge_capacity_sensor_);
   LOG_SENSOR("", "Current Calibration", this->current_calibration_sensor_);
   LOG_SENSOR("", "Device Address", this->device_address_sensor_);
   LOG_TEXT_SENSOR("", "Battery Type", this->battery_type_text_sensor_);

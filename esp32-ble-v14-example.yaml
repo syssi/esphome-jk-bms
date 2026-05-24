@@ -312,8 +312,8 @@ sensor:
       name: "state of health"
     capacity_remaining:
       name: "capacity remaining"
-    total_battery_capacity_setting:
-      name: "total battery capacity setting"
+    full_charge_capacity:
+      name: "full charge capacity"
     charging_cycles:
       name: "charging cycles"
     total_charging_cycle_capacity:

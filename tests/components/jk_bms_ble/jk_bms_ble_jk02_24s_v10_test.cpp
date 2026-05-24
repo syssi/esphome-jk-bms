@@ -72,7 +72,7 @@ TEST(JkBmsV10CellInfoTest, Capacity) {
   TestableJkBmsBle bms;
   sensor::Sensor remaining, nominal;
   bms.set_capacity_remaining_sensor(&remaining);
-  bms.set_total_battery_capacity_setting_sensor(&nominal);
+  bms.set_full_charge_capacity_sensor(&nominal);
   bms.decode_jk02_cell_info_(CELL_INFO_JK02_24S_V10);
   EXPECT_NEAR(remaining.state, 42.804f, 0.001f);
   EXPECT_NEAR(nominal.state, 50.0f, 0.001f);

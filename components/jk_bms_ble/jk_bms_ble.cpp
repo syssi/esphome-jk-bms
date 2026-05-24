@@ -168,7 +168,7 @@ void JkBmsBle::dump_config() {  // NOLINT(google-readability-function-size,reada
   LOG_SENSOR("", "State Of Charge", this->state_of_charge_sensor_);
   LOG_SENSOR("", "State Of Health", this->state_of_health_sensor_);
   LOG_SENSOR("", "Capacity Remaining", this->capacity_remaining_sensor_);
-  LOG_SENSOR("", "Total Battery Capacity Setting", this->total_battery_capacity_setting_sensor_);
+  LOG_SENSOR("", "Full Charge Capacity", this->full_charge_capacity_sensor_);
   LOG_SENSOR("", "Charging Cycles", this->charging_cycles_sensor_);
   LOG_SENSOR("", "Total Charging Cycle Capacity", this->total_charging_cycle_capacity_sensor_);
   LOG_SENSOR("", "Total Runtime", this->total_runtime_sensor_);
@@ -610,7 +610,7 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->capacity_remaining_sensor_, (float) jk_get_32bit(142 + offset) * 0.001f);
 
   // 146   4   0x68 0x3C 0x01 0x00    Nominal_Capacity     0.001         Ah
-  this->publish_state_(this->total_battery_capacity_setting_sensor_, (float) jk_get_32bit(146 + offset) * 0.001f);
+  this->publish_state_(this->full_charge_capacity_sensor_, (float) jk_get_32bit(146 + offset) * 0.001f);
 
   // 150   4   0x00 0x00 0x00 0x00    Cycle_Count          1.0
   this->publish_state_(this->charging_cycles_sensor_, (float) jk_get_32bit(150 + offset));
@@ -1613,7 +1613,7 @@ void JkBmsBle::publish_device_unavailable_() {
   this->publish_state_(state_of_charge_sensor_, NAN);
   this->publish_state_(state_of_health_sensor_, NAN);
   this->publish_state_(capacity_remaining_sensor_, NAN);
-  this->publish_state_(total_battery_capacity_setting_sensor_, NAN);
+  this->publish_state_(full_charge_capacity_sensor_, NAN);
   this->publish_state_(charging_cycles_sensor_, NAN);
   this->publish_state_(total_charging_cycle_capacity_sensor_, NAN);
   this->publish_state_(total_runtime_sensor_, NAN);

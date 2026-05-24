@@ -99,7 +99,7 @@ TEST(JkBmsStatusDataTest, Capacity) {
   sensor::Sensor remaining, remaining_derived, nominal;
   bms.set_capacity_remaining_sensor(&remaining);
   bms.set_capacity_remaining_derived_sensor(&remaining_derived);
-  bms.set_total_battery_capacity_setting_sensor(&nominal);
+  bms.set_full_charge_capacity_sensor(&nominal);
 
   bms.on_jk_modbus_data(FUNCTION_READ_ALL, STATUS_FRAME_14S);
 
