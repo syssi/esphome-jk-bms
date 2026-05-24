@@ -45,7 +45,7 @@ CONF_CHARGING_POWER = "charging_power"
 CONF_DISCHARGING_POWER = "discharging_power"
 CONF_STATE_OF_CHARGE = "state_of_charge"
 CONF_CAPACITY_REMAINING = "capacity_remaining"
-CONF_TEMPERATURE_SENSORS = "temperature_sensors"
+CONF_TEMPERATURE_SENSOR_COUNT = "temperature_sensor_count"
 CONF_CHARGING_CYCLES = "charging_cycles"
 CONF_TOTAL_CHARGING_CYCLE_CAPACITY = "total_charging_cycle_capacity"
 CONF_CELL_COUNT = "cell_count"
@@ -249,7 +249,7 @@ SENSOR_DEFS = {
         "device_class": DEVICE_CLASS_EMPTY,
         "state_class": STATE_CLASS_MEASUREMENT,
     },
-    CONF_TEMPERATURE_SENSORS: {
+    CONF_TEMPERATURE_SENSOR_COUNT: {
         "unit_of_measurement": UNIT_EMPTY,
         "icon": ICON_EMPTY,
         "accuracy_decimals": 0,
@@ -569,6 +569,9 @@ CONFIG_SCHEMA = (
             ),
             cv.Optional("battery_strings"): cv.invalid(
                 "sensor.battery_strings has been renamed to sensor.cell_count"
+            ),
+            cv.Optional("temperature_sensors"): cv.invalid(
+                "sensor.temperature_sensors has been renamed to sensor.temperature_sensor_count"
             ),
         }
     )

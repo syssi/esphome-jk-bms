@@ -80,16 +80,18 @@ TEST(JkBmsStatusDataTest, ChargingCurrentAndPower) {
 
 TEST(JkBmsStatusDataTest, Temperatures) {
   TestableJkBms bms;
-  sensor::Sensor tube, t1, t2;
+  sensor::Sensor tube, t1, t2, count;
   bms.set_power_tube_temperature_sensor(&tube);
   bms.set_temperature_sensor_1_sensor(&t1);
   bms.set_temperature_sensor_2_sensor(&t2);
+  bms.set_temperature_sensor_count_sensor(&count);
 
   bms.on_jk_modbus_data(FUNCTION_READ_ALL, STATUS_FRAME_14S);
 
   EXPECT_FLOAT_EQ(tube.state, 29.0f);
   EXPECT_FLOAT_EQ(t1.state, 30.0f);
   EXPECT_FLOAT_EQ(t2.state, 28.0f);
+  EXPECT_FLOAT_EQ(count.state, 2.0f);
 }
 
 // ── Capacity ─────────────────────────────────────────────────────────────────
