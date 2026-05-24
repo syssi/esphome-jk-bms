@@ -272,8 +272,7 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->balance_starting_voltage_sensor_, (float) jk_get_16bit(offset + 6 + 3 * 23) * 0.001f);
 
   // 0x9C 0x00 0x08: Balanced opening pressure difference           8 * 0.001 = 0.008V     0.001 V     0.01-1V
-  this->publish_state_(this->balance_opening_pressure_difference_sensor_,
-                       (float) jk_get_16bit(offset + 6 + 3 * 24) * 0.001f);
+  this->publish_state_(this->balancing_delta_voltage_sensor_, (float) jk_get_16bit(offset + 6 + 3 * 24) * 0.001f);
 
   // 0x9D 0x01: Active balance switch                              1 (on)                     Bool     0 (off), 1 (on)
   this->publish_state_(this->balancing_switch_binary_sensor_, (bool) data[offset + 6 + 3 * 25]);
@@ -461,7 +460,7 @@ void JkBms::publish_device_unavailable_() {
   this->publish_state_(charging_overcurrent_protection_sensor_, NAN);
   this->publish_state_(charging_overcurrent_delay_sensor_, NAN);
   this->publish_state_(balance_starting_voltage_sensor_, NAN);
-  this->publish_state_(balance_opening_pressure_difference_sensor_, NAN);
+  this->publish_state_(balancing_delta_voltage_sensor_, NAN);
   this->publish_state_(power_tube_temperature_protection_sensor_, NAN);
   this->publish_state_(power_tube_temperature_recovery_sensor_, NAN);
   this->publish_state_(temperature_sensor_temperature_protection_sensor_, NAN);
@@ -631,7 +630,7 @@ void JkBms::dump_config() {  // NOLINT(google-readability-function-size,readabil
   LOG_SENSOR("", "Charging Overcurrent Protection", this->charging_overcurrent_protection_sensor_);
   LOG_SENSOR("", "Charging Overcurrent Delay", this->charging_overcurrent_delay_sensor_);
   LOG_SENSOR("", "Balance Starting Voltage", this->balance_starting_voltage_sensor_);
-  LOG_SENSOR("", "Balance Opening Pressure Difference", this->balance_opening_pressure_difference_sensor_);
+  LOG_SENSOR("", "Balancing Delta Voltage", this->balancing_delta_voltage_sensor_);
   LOG_SENSOR("", "Power Tube Temperature Protection", this->power_tube_temperature_protection_sensor_);
   LOG_SENSOR("", "Power Tube Temperature Recovery", this->power_tube_temperature_recovery_sensor_);
   LOG_SENSOR("", "Temperature Sensor Temperature Protection", this->temperature_sensor_temperature_protection_sensor_);

@@ -175,7 +175,7 @@ static const std::vector<uint8_t> STATUS_FRAME_14S = {
     0x9B,
     0x0C,
     0xE4,
-    // bytes 122-124: balance opening pressure difference = 8 × 0.001 = 0.008 V
+    // bytes 122-124: balancing delta voltage = 8 × 0.001 = 0.008 V
     0x9C,
     0x00,
     0x08,
