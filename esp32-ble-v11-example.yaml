@@ -310,8 +310,6 @@ sensor:
       name: "total runtime"
     balancing_current:
       name: "balancing current"
-    errors_bitmask:
-      name: "errors bitmask"
     emergency_time_countdown:
       name: "emergency time countdown"
     detail_log_count:
@@ -351,6 +349,8 @@ text_sensor:
   - platform: jk_bms_ble
     errors:
       name: "errors"
+    errors_bitmask_hex:
+      name: "errors bitmask hex"
     total_runtime_formatted:
       name: "total runtime formatted"
     software_version:
