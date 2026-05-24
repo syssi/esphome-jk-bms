@@ -253,7 +253,7 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->cell_voltage_undervoltage_delay_sensor_, (float) jk_get_16bit(offset + 6 + 3 * 17));
 
   // 0x96 0x01 0x2C: Cell pressure difference protection value    300 * 0.001 = 0.300V     0.001 V     0.000-1.000V
-  this->publish_state_(this->cell_pressure_difference_protection_sensor_,
+  this->publish_state_(this->cell_voltage_difference_protection_sensor_,
                        (float) jk_get_16bit(offset + 6 + 3 * 18) * 0.001f);
 
   // 0x97 0x00 0x07: Discharge overcurrent protection value       7A                         1.0 A
@@ -455,7 +455,7 @@ void JkBms::publish_device_unavailable_() {
   this->publish_state_(cell_voltage_undervoltage_protection_sensor_, NAN);
   this->publish_state_(cell_voltage_undervoltage_recovery_sensor_, NAN);
   this->publish_state_(cell_voltage_undervoltage_delay_sensor_, NAN);
-  this->publish_state_(cell_pressure_difference_protection_sensor_, NAN);
+  this->publish_state_(cell_voltage_difference_protection_sensor_, NAN);
   this->publish_state_(discharging_overcurrent_protection_sensor_, NAN);
   this->publish_state_(discharging_overcurrent_delay_sensor_, NAN);
   this->publish_state_(charging_overcurrent_protection_sensor_, NAN);
@@ -625,7 +625,7 @@ void JkBms::dump_config() {  // NOLINT(google-readability-function-size,readabil
   LOG_SENSOR("", "Cell Voltage Undervoltage Protection", this->cell_voltage_undervoltage_protection_sensor_);
   LOG_SENSOR("", "Cell Voltage Undervoltage Recovery", this->cell_voltage_undervoltage_recovery_sensor_);
   LOG_SENSOR("", "Cell Voltage Undervoltage Delay", this->cell_voltage_undervoltage_delay_sensor_);
-  LOG_SENSOR("", "Cell Pressure Difference Protection", this->cell_pressure_difference_protection_sensor_);
+  LOG_SENSOR("", "Cell Voltage Difference Protection", this->cell_voltage_difference_protection_sensor_);
   LOG_SENSOR("", "Discharging Overcurrent Protection", this->discharging_overcurrent_protection_sensor_);
   LOG_SENSOR("", "Discharging Overcurrent Delay", this->discharging_overcurrent_delay_sensor_);
   LOG_SENSOR("", "Charging Overcurrent Protection", this->charging_overcurrent_protection_sensor_);
