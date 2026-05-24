@@ -189,6 +189,18 @@ TEST(JkBmsStatusDataTest, BatteryInfo) {
   EXPECT_EQ(battery_type.state, "Ternary Lithium");
 }
 
+// ── Alarm thresholds ─────────────────────────────────────────────────────────
+
+TEST(JkBmsStatusDataTest, LowSocAlarm) {
+  TestableJkBms bms;
+  sensor::Sensor low_soc_alarm;
+  bms.set_low_soc_alarm_sensor(&low_soc_alarm);
+
+  bms.on_jk_modbus_data(FUNCTION_READ_ALL, STATUS_FRAME_14S);
+
+  EXPECT_FLOAT_EQ(low_soc_alarm.state, 20.0f);  // 0x14 = 20 %
+}
+
 // ── Version and runtime ──────────────────────────────────────────────────────
 
 TEST(JkBmsStatusDataTest, SoftwareVersion) {
