@@ -188,7 +188,7 @@ sensor:
       name: "discharging power"
     state_of_charge:
       name: "capacity remaining"
-    capacity_remaining_derived:
+    capacity_remaining:
       name: "capacity remaining derived"
     errors_bitmask:
       name: "errors bitmask"

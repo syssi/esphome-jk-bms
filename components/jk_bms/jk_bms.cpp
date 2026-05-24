@@ -324,7 +324,7 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
   // 0xAA 0x00 0x00 0x02 0x30: Total battery capacity setting              560 Ah           1.0 Ah
   uint32_t raw_full_charge_capacity = jk_get_32bit(offset + 10 + 3 * 36);
   this->publish_state_(this->full_charge_capacity_sensor_, (float) raw_full_charge_capacity);
-  this->publish_state_(this->capacity_remaining_derived_sensor_,
+  this->publish_state_(this->capacity_remaining_sensor_,
                        (float) (raw_full_charge_capacity * (raw_soc * 0.01f)));
 
   // 0xAB 0x01: Charging MOS tube switch                                     1 (on)         Bool       0 (off), 1 (on)
@@ -439,7 +439,7 @@ void JkBms::publish_device_unavailable_() {
   this->publish_state_(charging_power_sensor_, NAN);
   this->publish_state_(discharging_power_sensor_, NAN);
   this->publish_state_(state_of_charge_sensor_, NAN);
-  this->publish_state_(capacity_remaining_derived_sensor_, NAN);
+  this->publish_state_(capacity_remaining_sensor_, NAN);
   this->publish_state_(temperature_sensors_sensor_, NAN);
   this->publish_state_(charging_cycles_sensor_, NAN);
   this->publish_state_(total_charging_cycle_capacity_sensor_, NAN);
@@ -609,7 +609,7 @@ void JkBms::dump_config() {  // NOLINT(google-readability-function-size,readabil
   LOG_SENSOR("", "Charging Power", this->charging_power_sensor_);
   LOG_SENSOR("", "Discharging Power", this->discharging_power_sensor_);
   LOG_SENSOR("", "State of Charge", this->state_of_charge_sensor_);
-  LOG_SENSOR("", "Capacity Remaining Derived", this->capacity_remaining_derived_sensor_);
+  LOG_SENSOR("", "Capacity Remaining", this->capacity_remaining_sensor_);
   LOG_SENSOR("", "Temperature Sensors", this->temperature_sensors_sensor_);
   LOG_SENSOR("", "Charging Cycles", this->charging_cycles_sensor_);
   LOG_SENSOR("", "Total Charging Cycle Capacity", this->total_charging_cycle_capacity_sensor_);

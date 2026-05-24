@@ -98,7 +98,7 @@ TEST(JkBmsStatusDataTest, Capacity) {
   TestableJkBms bms;
   sensor::Sensor soc, soc_derived, full_charge_capacity;
   bms.set_state_of_charge_sensor(&soc);
-  bms.set_capacity_remaining_derived_sensor(&soc_derived);
+  bms.set_capacity_remaining_sensor(&soc_derived);
   bms.set_full_charge_capacity_sensor(&full_charge_capacity);
 
   bms.on_jk_modbus_data(FUNCTION_READ_ALL, STATUS_FRAME_14S);

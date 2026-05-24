@@ -44,7 +44,7 @@ CONF_TOTAL_VOLTAGE = "total_voltage"
 CONF_CHARGING_POWER = "charging_power"
 CONF_DISCHARGING_POWER = "discharging_power"
 CONF_STATE_OF_CHARGE = "state_of_charge"
-CONF_CAPACITY_REMAINING_DERIVED = "capacity_remaining_derived"
+CONF_CAPACITY_REMAINING = "capacity_remaining"
 CONF_TEMPERATURE_SENSORS = "temperature_sensors"
 CONF_CHARGING_CYCLES = "charging_cycles"
 CONF_TOTAL_CHARGING_CYCLE_CAPACITY = "total_charging_cycle_capacity"
@@ -113,7 +113,7 @@ ICON_MIN_VOLTAGE_CELL = "mdi:battery-minus-outline"
 ICON_MAX_VOLTAGE_CELL = "mdi:battery-plus-outline"
 
 ICON_BATTERY_STRINGS = "mdi:car-battery"
-ICON_CAPACITY_REMAINING_DERIVED = "mdi:battery-50"
+ICON_CAPACITY_REMAINING = "mdi:battery-50"
 ICON_ACTUAL_BATTERY_CAPACITY = "mdi:battery-50"
 ICON_TOTAL_BATTERY_CAPACITY_SETTING = "mdi:battery-sync"
 
@@ -242,9 +242,9 @@ SENSOR_DEFS = {
         "device_class": DEVICE_CLASS_BATTERY,
         "state_class": STATE_CLASS_MEASUREMENT,
     },
-    CONF_CAPACITY_REMAINING_DERIVED: {
+    CONF_CAPACITY_REMAINING: {
         "unit_of_measurement": UNIT_AMPERE_HOURS,
-        "icon": ICON_CAPACITY_REMAINING_DERIVED,
+        "icon": ICON_CAPACITY_REMAINING,
         "accuracy_decimals": 1,
         "device_class": DEVICE_CLASS_EMPTY,
         "state_class": STATE_CLASS_MEASUREMENT,
@@ -566,6 +566,9 @@ CONFIG_SCHEMA = (
             ),
             cv.Optional("capacity_remaining"): cv.invalid(
                 "sensor.capacity_remaining has been renamed to sensor.state_of_charge"
+            ),
+            cv.Optional("capacity_remaining_derived"): cv.invalid(
+                "sensor.capacity_remaining_derived has been renamed to sensor.capacity_remaining"
             ),
         }
     )
