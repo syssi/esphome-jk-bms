@@ -241,8 +241,8 @@ class JkBmsBle :
   void set_capacity_remaining_sensor(sensor::Sensor *capacity_remaining_sensor) {
     capacity_remaining_sensor_ = capacity_remaining_sensor;
   }
-  void set_total_battery_capacity_setting_sensor(sensor::Sensor *total_battery_capacity_setting_sensor) {
-    total_battery_capacity_setting_sensor_ = total_battery_capacity_setting_sensor;
+  void set_full_charge_capacity_sensor(sensor::Sensor *full_charge_capacity_sensor) {
+    full_charge_capacity_sensor_ = full_charge_capacity_sensor;
   }
   void set_charging_cycles_sensor(sensor::Sensor *charging_cycles_sensor) {
     charging_cycles_sensor_ = charging_cycles_sensor;
@@ -403,7 +403,7 @@ class JkBmsBle :
   sensor::Sensor *state_of_charge_sensor_{nullptr};
   sensor::Sensor *state_of_health_sensor_{nullptr};
   sensor::Sensor *capacity_remaining_sensor_{nullptr};
-  sensor::Sensor *total_battery_capacity_setting_sensor_{nullptr};
+  sensor::Sensor *full_charge_capacity_sensor_{nullptr};
   sensor::Sensor *charging_cycles_sensor_{nullptr};
   sensor::Sensor *total_charging_cycle_capacity_sensor_{nullptr};
   sensor::Sensor *total_runtime_sensor_{nullptr};

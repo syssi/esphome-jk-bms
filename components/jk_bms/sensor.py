@@ -96,7 +96,7 @@ CONF_DISCHARGING_LOW_TEMPERATURE_RECOVERY = "discharging_low_temperature_recover
 
 # r/w
 # CONF_BATTERY_STRINGS = "battery_strings"
-CONF_TOTAL_BATTERY_CAPACITY_SETTING = "total_battery_capacity_setting"
+CONF_FULL_CHARGE_CAPACITY = "full_charge_capacity"
 
 CONF_CURRENT_CALIBRATION = "current_calibration"
 CONF_DEVICE_ADDRESS = "device_address"
@@ -473,7 +473,7 @@ SENSOR_DEFS = {
         "device_class": DEVICE_CLASS_TEMPERATURE,
         "state_class": STATE_CLASS_MEASUREMENT,
     },
-    CONF_TOTAL_BATTERY_CAPACITY_SETTING: {
+    CONF_FULL_CHARGE_CAPACITY: {
         "unit_of_measurement": UNIT_AMPERE_HOURS,
         "icon": ICON_TOTAL_BATTERY_CAPACITY_SETTING,
         "accuracy_decimals": 0,

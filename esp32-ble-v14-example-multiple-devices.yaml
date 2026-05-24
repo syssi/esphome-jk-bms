@@ -577,8 +577,8 @@ sensor:
     capacity_remaining:
       name: "capacity remaining"
       device_id: device0
-    total_battery_capacity_setting:
-      name: "total battery capacity setting"
+    full_charge_capacity:
+      name: "full charge capacity"
       device_id: device0
     charging_cycles:
       name: "charging cycles"
@@ -809,8 +809,8 @@ sensor:
     capacity_remaining:
       name: "capacity remaining"
       device_id: device1
-    total_battery_capacity_setting:
-      name: "total battery capacity setting"
+    full_charge_capacity:
+      name: "full charge capacity"
       device_id: device1
     charging_cycles:
       name: "charging cycles"
