@@ -64,7 +64,7 @@ CONF_CELL_VOLTAGE_UNDERVOLTAGE_PROTECTION = "cell_voltage_undervoltage_protectio
 CONF_CELL_VOLTAGE_UNDERVOLTAGE_RECOVERY = "cell_voltage_undervoltage_recovery"
 CONF_CELL_VOLTAGE_UNDERVOLTAGE_DELAY = "cell_voltage_undervoltage_delay"
 
-CONF_CELL_PRESSURE_DIFFERENCE_PROTECTION = "cell_pressure_difference_protection"
+CONF_CELL_VOLTAGE_DIFFERENCE_PROTECTION = "cell_voltage_difference_protection"
 
 CONF_DISCHARGING_OVERCURRENT_PROTECTION = "discharging_overcurrent_protection"
 CONF_DISCHARGING_OVERCURRENT_DELAY = "discharging_overcurrent_delay"
@@ -347,7 +347,7 @@ SENSOR_DEFS = {
         "device_class": DEVICE_CLASS_EMPTY,
         "state_class": STATE_CLASS_MEASUREMENT,
     },
-    CONF_CELL_PRESSURE_DIFFERENCE_PROTECTION: {
+    CONF_CELL_VOLTAGE_DIFFERENCE_PROTECTION: {
         "unit_of_measurement": UNIT_VOLT,
         "icon": ICON_EMPTY,
         "accuracy_decimals": 3,
@@ -545,12 +545,22 @@ SENSOR_DEFS = {
     },
 }
 
-CONFIG_SCHEMA = JK_BMS_COMPONENT_SCHEMA.extend(
-    {
-        cv.Optional(key): sensor.sensor_schema(**kwargs)
-        for key, kwargs in SENSOR_DEFS.items()
-    }
-).extend({cv.Optional(key): _CELL_VOLTAGE_SCHEMA for key in CELLS})
+CONFIG_SCHEMA = (
+    JK_BMS_COMPONENT_SCHEMA.extend(
+        {
+            cv.Optional(key): sensor.sensor_schema(**kwargs)
+            for key, kwargs in SENSOR_DEFS.items()
+        }
+    )
+    .extend({cv.Optional(key): _CELL_VOLTAGE_SCHEMA for key in CELLS})
+    .extend(
+        {
+            cv.Optional("cell_pressure_difference_protection"): cv.invalid(
+                "sensor.cell_pressure_difference_protection has been renamed to sensor.cell_voltage_difference_protection"
+            ),
+        }
+    )
+)
 
 
 async def to_code(config):
