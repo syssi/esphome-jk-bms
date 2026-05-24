@@ -169,7 +169,7 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->state_of_charge_sensor_, (float) raw_soc);
 
   // 0x86 0x02: Number of battery temperature sensors             2                        1.0  count
-  this->publish_state_(this->temperature_sensors_sensor_, (float) data[offset + 2 + 3 * 5]);
+  this->publish_state_(this->temperature_sensor_count_sensor_, (float) data[offset + 2 + 3 * 5]);
 
   // 0x87 0x00 0x04: Number of battery cycles                     4                        1.0  count
   this->publish_state_(this->charging_cycles_sensor_, (float) jk_get_16bit(offset + 4 + 3 * 5));
@@ -439,7 +439,7 @@ void JkBms::publish_device_unavailable_() {
   this->publish_state_(discharging_power_sensor_, NAN);
   this->publish_state_(state_of_charge_sensor_, NAN);
   this->publish_state_(capacity_remaining_sensor_, NAN);
-  this->publish_state_(temperature_sensors_sensor_, NAN);
+  this->publish_state_(temperature_sensor_count_sensor_, NAN);
   this->publish_state_(charging_cycles_sensor_, NAN);
   this->publish_state_(total_charging_cycle_capacity_sensor_, NAN);
   this->publish_state_(cell_count_sensor_, NAN);
@@ -609,7 +609,7 @@ void JkBms::dump_config() {  // NOLINT(google-readability-function-size,readabil
   LOG_SENSOR("", "Discharging Power", this->discharging_power_sensor_);
   LOG_SENSOR("", "State of Charge", this->state_of_charge_sensor_);
   LOG_SENSOR("", "Capacity Remaining", this->capacity_remaining_sensor_);
-  LOG_SENSOR("", "Temperature Sensors", this->temperature_sensors_sensor_);
+  LOG_SENSOR("", "Temperature Sensor Count", this->temperature_sensor_count_sensor_);
   LOG_SENSOR("", "Charging Cycles", this->charging_cycles_sensor_);
   LOG_SENSOR("", "Total Charging Cycle Capacity", this->total_charging_cycle_capacity_sensor_);
   LOG_SENSOR("", "Cell Count", this->cell_count_sensor_);
