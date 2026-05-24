@@ -107,7 +107,7 @@ static const std::vector<uint8_t> STATUS_FRAME_14S = {
     0x00,
     0x00,
     0x00,
-    // bytes 71-73: battery strings = 14
+    // bytes 71-73: cell count = 14
     0x8A,
     0x00,
     0x0E,
