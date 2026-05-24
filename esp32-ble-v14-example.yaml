@@ -332,7 +332,8 @@ sensor:
       name: "charge status time elapsed"
     detail_log_count:
       name: "detail log count"
-
+    battery_type_id:
+      name: "battery type id"
 switch:
   - platform: jk_bms_ble
     charging:
@@ -375,3 +376,5 @@ text_sensor:
       name: "software version"
     hardware_version:
       name: "hardware version"
+    battery_type:
+      name: "battery type"

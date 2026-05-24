@@ -120,4 +120,22 @@ TEST(JkBmsV19CellInfoTest, DetailLogCount) {
   EXPECT_FLOAT_EQ(detail_log_count.state, 62.0f);
 }
 
+TEST(JkBmsV19CellInfoTest, BatteryTypeCode) {
+  TestableJkBmsBle bms;
+  bms.set_protocol_version(PROTOCOL_VERSION_JK02_32S);
+  sensor::Sensor battery_type_id;
+  bms.set_battery_type_id_sensor(&battery_type_id);
+  bms.decode_jk02_cell_info_(CELL_INFO_JK02_32S_V19);
+  EXPECT_FLOAT_EQ(battery_type_id.state, 0.0f);  // LFP
+}
+
+TEST(JkBmsV19CellInfoTest, BatteryType) {
+  TestableJkBmsBle bms;
+  bms.set_protocol_version(PROTOCOL_VERSION_JK02_32S);
+  text_sensor::TextSensor battery_type;
+  bms.set_battery_type_text_sensor(&battery_type);
+  bms.decode_jk02_cell_info_(CELL_INFO_JK02_32S_V19);
+  EXPECT_EQ(battery_type.state, "LFP");
+}
+
 }  // namespace esphome::jk_bms_ble::testing

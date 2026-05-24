@@ -162,6 +162,7 @@ void JkBmsBle::dump_config() {  // NOLINT(google-readability-function-size,reada
   LOG_SENSOR("", "Emergency Time Countdown", this->emergency_time_countdown_sensor_);
   LOG_SENSOR("", "Charge Status ID", this->charge_status_id_sensor_);
   LOG_SENSOR("", "Charge Status Time Elapsed", this->charge_status_time_elapsed_sensor_);
+  LOG_SENSOR("", "Battery Type ID", this->battery_type_id_sensor_);
 
   LOG_TEXT_SENSOR("", "Operation Status", this->operation_status_text_sensor_);
   LOG_TEXT_SENSOR("", "Total Runtime Formatted", this->total_runtime_formatted_text_sensor_);
@@ -169,6 +170,7 @@ void JkBmsBle::dump_config() {  // NOLINT(google-readability-function-size,reada
   LOG_TEXT_SENSOR("", "Charge Status", this->charge_status_text_sensor_);
   LOG_TEXT_SENSOR("", "Software Version", this->software_version_text_sensor_);
   LOG_TEXT_SENSOR("", "Hardware Version", this->hardware_version_text_sensor_);
+  LOG_TEXT_SENSOR("", "Battery Type", this->battery_type_text_sensor_);
 }
 
 #ifdef USE_ESP32
@@ -701,6 +703,10 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
 
     // 234+32  4   0x3E 0x00 0x00 0x00    Detail log count     1
     this->publish_state_(this->detail_log_count_sensor_, (float) jk_get_32bit(234 + offset));
+
+    // 243+32  1   0x00                   Battery type code    0=LFP, 1=Li-ion, 2=LTO
+    this->publish_state_(this->battery_type_id_sensor_, (float) data[243 + offset]);
+    this->publish_state_(this->battery_type_text_sensor_, this->battery_type_id_to_string_(data[243 + offset]));
 
     // 246+32  2   0x00 0x00              Charge status time
     this->publish_state_(this->charge_status_time_elapsed_sensor_, (float) jk_get_16bit(246 + offset));
@@ -1686,6 +1692,19 @@ static std::string unknown_to_string(const uint8_t value) {
   char buf[15];
   snprintf(buf, sizeof(buf), "Unknown (0x%02X)", value);
   return buf;
+}
+
+std::string JkBmsBle::battery_type_id_to_string_(const uint8_t code) {
+  switch (code) {
+    case 0x00:
+      return "LFP";
+    case 0x01:
+      return "Li-ion";
+    case 0x02:
+      return "LTO";
+    default:
+      return unknown_to_string(code);
+  }
 }
 
 std::string JkBmsBle::charge_status_id_to_string_(const uint8_t status) {
