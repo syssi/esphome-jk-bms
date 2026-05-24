@@ -190,7 +190,7 @@ sensor:
     balancing_current:
       name: "balancing current"
     mosfet_temperature:
-      name: "power tube temperature"
+      name: "mosfet temperature"
 
 switch:
   - platform: jk_bms_ble

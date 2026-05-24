@@ -165,9 +165,9 @@ number:
     discharge_undertemperature_protection_recovery:
       name: "discharge undertemperature protection recovery"
     mosfet_overtemperature_protection:
-      name: "power tube overtemperature protection"
+      name: "mosfet overtemperature protection"
     mosfet_overtemperature_protection_recovery:
-      name: "power tube overtemperature protection recovery"
+      name: "mosfet overtemperature protection recovery"
     discharge_precharge_time:
       name: "discharge precharge time"
     heating_start_temperature:
@@ -309,7 +309,7 @@ sensor:
     temperature_sensor_5:
       name: "temperature sensor 5"
     mosfet_temperature:
-      name: "power tube temperature"
+      name: "mosfet temperature"
     balancer_status:
       name: "balancer status"
     state_of_charge:

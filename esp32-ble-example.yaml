@@ -141,9 +141,9 @@ number:
     charge_undertemperature_protection_recovery:
       name: "charge undertemperature protection recovery"
     mosfet_overtemperature_protection:
-      name: "power tube overtemperature protection"
+      name: "mosfet overtemperature protection"
     mosfet_overtemperature_protection_recovery:
-      name: "power tube overtemperature protection recovery"
+      name: "mosfet overtemperature protection recovery"
 
 sensor:
   - platform: jk_bms_ble
@@ -277,7 +277,7 @@ sensor:
     # temperature_sensor_4:
     #   name: "temperature sensor 4"
     mosfet_temperature:
-      name: "power tube temperature"
+      name: "mosfet temperature"
     balancer_status:
       name: "balancer status"
     state_of_charge:

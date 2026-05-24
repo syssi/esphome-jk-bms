@@ -24,8 +24,8 @@
 [number:012]: 'jk-bms discharge overtemperature protection recovery': Sending state 60.000000
 [number:012]: 'jk-bms charge undertemperature protection': Sending state 5.000000
 [number:012]: 'jk-bms charge undertemperature protection recovery': Sending state 10.000000
-[number:012]: 'jk-bms power tube overtemperature protection': Sending state 100.000000
-[number:012]: 'jk-bms power tube overtemperature protection recovery': Sending state 80.000000
+[number:012]: 'jk-bms mosfet overtemperature protection': Sending state 100.000000
+[number:012]: 'jk-bms mosfet overtemperature protection recovery': Sending state 80.000000
 [number:012]: 'jk-bms cell count': Sending state 13.000000
 [switch:055]: 'jk-bms charging': Sending state ON
 [switch:055]: 'jk-bms discharging': Sending state ON
@@ -136,7 +136,7 @@
 [sensor:094]: 'jk-bms delta cell voltage': Sending state 0.22300 V with 3 decimals of accuracy
 [sensor:094]: 'jk-bms max voltage cell': Sending state 4.00000  with 0 decimals of accuracy
 [sensor:094]: 'jk-bms min voltage cell': Sending state 7.00000  with 0 decimals of accuracy
-[sensor:094]: 'jk-bms power tube temperature': Sending state 26.80000 °C with 1 decimals of accuracy
+[sensor:094]: 'jk-bms mosfet temperature': Sending state 26.80000 °C with 1 decimals of accuracy
 [jk_bms_ble:425]: Wire resistance warning bitmask: 0x00 0x00 0x00 0x00
 [sensor:094]: 'jk-bms total voltage': Sending state 52.52900 V with 2 decimals of accuracy
 [sensor:094]: 'jk-bms current': Sending state 0.00000 A with 2 decimals of accuracy

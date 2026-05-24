@@ -140,7 +140,7 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
 
   uint16_t offset = data[1] + 3;
 
-  // 0x80 0x00 0x1D: Read power tube temperature                 29°C                      1.0 °C
+  // 0x80 0x00 0x1D: Read mosfet temperature                    29°C                      1.0 °C
   // --->  99 = 99°C, 100 = 100°C, 101 = -1°C, 140 = -40°C
   this->publish_state_(this->mosfet_temperature_sensor_, get_temperature_(jk_get_16bit(offset + 3 * 0)));
 
@@ -201,8 +201,8 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
   //
   // Examples:
   // 0x0001 = 00000000 00000001: Low capacity alarm
-  // 0x0002 = 00000000 00000010: MOS tube over-temperature alarm
-  // 0x0003 = 00000000 00000011: Low capacity alarm AND power tube over-temperature alarm
+  // 0x0002 = 00000000 00000010: Mosfet over-temperature alarm
+  // 0x0003 = 00000000 00000011: Low capacity alarm AND mosfet over-temperature alarm
   uint16_t raw_errors_bitmask = jk_get_16bit(offset + 6 + 3 * 8);
   this->publish_state_(this->errors_bitmask_sensor_, (float) raw_errors_bitmask);
   this->publish_state_(this->errors_text_sensor_, this->error_bits_to_string_(raw_errors_bitmask));

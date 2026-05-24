@@ -176,7 +176,7 @@ sensor:
       name: "power"
       device_id: device0
     mosfet_temperature:
-      name: "power tube temperature"
+      name: "mosfet temperature"
       device_id: device0
     # ...
 
@@ -198,7 +198,7 @@ sensor:
       name: "power"
       device_id: device1
     mosfet_temperature:
-      name: "power tube temperature"
+      name: "mosfet temperature"
       device_id: device1
     # ...
 

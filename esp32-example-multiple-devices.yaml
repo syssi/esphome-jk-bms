@@ -121,7 +121,7 @@ sensor:
       name: "average cell voltage"
       device_id: device0
     mosfet_temperature:
-      name: "power tube temperature"
+      name: "mosfet temperature"
       device_id: device0
     total_voltage:
       name: "total voltage"
@@ -143,7 +143,7 @@ sensor:
       name: "average cell voltage"
       device_id: device1
     mosfet_temperature:
-      name: "power tube temperature"
+      name: "mosfet temperature"
       device_id: device1
     total_voltage:
       name: "total voltage"
