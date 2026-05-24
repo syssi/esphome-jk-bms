@@ -189,7 +189,7 @@ sensor:
       name: "total runtime"
     balancing_current:
       name: "balancing current"
-    power_tube_temperature:
+    mosfet_temperature:
       name: "power tube temperature"
 
 switch:

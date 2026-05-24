@@ -142,7 +142,7 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
 
   // 0x80 0x00 0x1D: Read power tube temperature                 29°C                      1.0 °C
   // --->  99 = 99°C, 100 = 100°C, 101 = -1°C, 140 = -40°C
-  this->publish_state_(this->power_tube_temperature_sensor_, get_temperature_(jk_get_16bit(offset + 3 * 0)));
+  this->publish_state_(this->mosfet_temperature_sensor_, get_temperature_(jk_get_16bit(offset + 3 * 0)));
 
   // 0x81 0x00 0x1E: Read the temperature in the battery box     30°C                      1.0 °C
   this->publish_state_(this->temperature_sensor_1_sensor_, get_temperature_(jk_get_16bit(offset + 3 * 1)));
@@ -279,10 +279,10 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->balancer_switch_, (bool) data[offset + 6 + 3 * 25]);
 
   // 0x9E 0x00 0x5A: Power tube temperature protection value                90°C            1.0 °C     0-100°C
-  this->publish_state_(this->power_tube_temperature_protection_sensor_, (float) jk_get_16bit(offset + 8 + 3 * 25));
+  this->publish_state_(this->mosfet_temperature_protection_sensor_, (float) jk_get_16bit(offset + 8 + 3 * 25));
 
   // 0x9F 0x00 0x46: Power tube temperature recovery value                  70°C            1.0 °C     0-100°C
-  this->publish_state_(this->power_tube_temperature_recovery_sensor_, (float) jk_get_16bit(offset + 8 + 3 * 26));
+  this->publish_state_(this->mosfet_temperature_recovery_sensor_, (float) jk_get_16bit(offset + 8 + 3 * 26));
 
   // 0xA0 0x00 0x64: Temperature protection value in the battery box       100°C            1.0 °C     40-100°C
   this->publish_state_(this->temperature_sensor_temperature_protection_sensor_,
@@ -429,7 +429,7 @@ void JkBms::publish_device_unavailable_() {
   this->publish_state_(max_voltage_cell_sensor_, NAN);
   this->publish_state_(delta_cell_voltage_sensor_, NAN);
   this->publish_state_(average_cell_voltage_sensor_, NAN);
-  this->publish_state_(power_tube_temperature_sensor_, NAN);
+  this->publish_state_(mosfet_temperature_sensor_, NAN);
   this->publish_state_(temperature_sensor_1_sensor_, NAN);
   this->publish_state_(temperature_sensor_2_sensor_, NAN);
   this->publish_state_(total_voltage_sensor_, NAN);
@@ -460,8 +460,8 @@ void JkBms::publish_device_unavailable_() {
   this->publish_state_(charging_overcurrent_delay_sensor_, NAN);
   this->publish_state_(balance_starting_voltage_sensor_, NAN);
   this->publish_state_(balancing_delta_voltage_sensor_, NAN);
-  this->publish_state_(power_tube_temperature_protection_sensor_, NAN);
-  this->publish_state_(power_tube_temperature_recovery_sensor_, NAN);
+  this->publish_state_(mosfet_temperature_protection_sensor_, NAN);
+  this->publish_state_(mosfet_temperature_recovery_sensor_, NAN);
   this->publish_state_(temperature_sensor_temperature_protection_sensor_, NAN);
   this->publish_state_(temperature_sensor_temperature_recovery_sensor_, NAN);
   this->publish_state_(temperature_sensor_temperature_difference_protection_sensor_, NAN);
@@ -599,7 +599,7 @@ void JkBms::dump_config() {  // NOLINT(google-readability-function-size,readabil
   LOG_SENSOR("", "Cell Voltage 22", this->cells_[21].cell_voltage_sensor_);
   LOG_SENSOR("", "Cell Voltage 23", this->cells_[22].cell_voltage_sensor_);
   LOG_SENSOR("", "Cell Voltage 24", this->cells_[23].cell_voltage_sensor_);
-  LOG_SENSOR("", "Power Tube Temperature", this->power_tube_temperature_sensor_);
+  LOG_SENSOR("", "Mosfet Temperature", this->mosfet_temperature_sensor_);
   LOG_SENSOR("", "Temperature Sensor 1", this->temperature_sensor_1_sensor_);
   LOG_SENSOR("", "Temperature Sensor 2", this->temperature_sensor_2_sensor_);
   LOG_SENSOR("", "Total Voltage", this->total_voltage_sensor_);
@@ -630,8 +630,8 @@ void JkBms::dump_config() {  // NOLINT(google-readability-function-size,readabil
   LOG_SENSOR("", "Charging Overcurrent Delay", this->charging_overcurrent_delay_sensor_);
   LOG_SENSOR("", "Balance Starting Voltage", this->balance_starting_voltage_sensor_);
   LOG_SENSOR("", "Balancing Delta Voltage", this->balancing_delta_voltage_sensor_);
-  LOG_SENSOR("", "Power Tube Temperature Protection", this->power_tube_temperature_protection_sensor_);
-  LOG_SENSOR("", "Power Tube Temperature Recovery", this->power_tube_temperature_recovery_sensor_);
+  LOG_SENSOR("", "Mosfet Temperature Protection", this->mosfet_temperature_protection_sensor_);
+  LOG_SENSOR("", "Mosfet Temperature Recovery", this->mosfet_temperature_recovery_sensor_);
   LOG_SENSOR("", "Temperature Sensor Temperature Protection", this->temperature_sensor_temperature_protection_sensor_);
   LOG_SENSOR("", "Temperature Sensor Temperature Recovery", this->temperature_sensor_temperature_recovery_sensor_);
   LOG_SENSOR("", "Temperature Sensor Temperature Difference Protection",

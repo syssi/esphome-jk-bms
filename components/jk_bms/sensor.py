@@ -37,7 +37,7 @@ CONF_MAX_VOLTAGE_CELL = "max_voltage_cell"
 CONF_DELTA_CELL_VOLTAGE = "delta_cell_voltage"
 CONF_AVERAGE_CELL_VOLTAGE = "average_cell_voltage"
 
-CONF_POWER_TUBE_TEMPERATURE = "power_tube_temperature"
+CONF_MOSFET_TEMPERATURE = "mosfet_temperature"
 CONF_TEMPERATURE_SENSOR_1 = "temperature_sensor_1"
 CONF_TEMPERATURE_SENSOR_2 = "temperature_sensor_2"
 CONF_TOTAL_VOLTAGE = "total_voltage"
@@ -75,8 +75,8 @@ CONF_CHARGING_OVERCURRENT_DELAY = "charging_overcurrent_delay"
 CONF_BALANCE_STARTING_VOLTAGE = "balance_starting_voltage"
 CONF_BALANCING_DELTA_VOLTAGE = "balancing_delta_voltage"
 
-CONF_POWER_TUBE_TEMPERATURE_PROTECTION = "power_tube_temperature_protection"
-CONF_POWER_TUBE_TEMPERATURE_RECOVERY = "power_tube_temperature_recovery"
+CONF_MOSFET_TEMPERATURE_PROTECTION = "mosfet_temperature_protection"
+CONF_MOSFET_TEMPERATURE_RECOVERY = "mosfet_temperature_recovery"
 
 CONF_TEMPERATURE_SENSOR_TEMPERATURE_PROTECTION = (
     "temperature_sensor_temperature_protection"
@@ -180,7 +180,7 @@ SENSOR_DEFS = {
         "device_class": DEVICE_CLASS_VOLTAGE,
         "state_class": STATE_CLASS_MEASUREMENT,
     },
-    CONF_POWER_TUBE_TEMPERATURE: {
+    CONF_MOSFET_TEMPERATURE: {
         "unit_of_measurement": UNIT_CELSIUS,
         "icon": ICON_EMPTY,
         "accuracy_decimals": 0,
@@ -396,14 +396,14 @@ SENSOR_DEFS = {
         "device_class": DEVICE_CLASS_VOLTAGE,
         "state_class": STATE_CLASS_MEASUREMENT,
     },
-    CONF_POWER_TUBE_TEMPERATURE_PROTECTION: {
+    CONF_MOSFET_TEMPERATURE_PROTECTION: {
         "unit_of_measurement": UNIT_CELSIUS,
         "icon": ICON_EMPTY,
         "accuracy_decimals": 0,
         "device_class": DEVICE_CLASS_TEMPERATURE,
         "state_class": STATE_CLASS_MEASUREMENT,
     },
-    CONF_POWER_TUBE_TEMPERATURE_RECOVERY: {
+    CONF_MOSFET_TEMPERATURE_RECOVERY: {
         "unit_of_measurement": UNIT_CELSIUS,
         "icon": ICON_EMPTY,
         "accuracy_decimals": 0,
@@ -554,6 +554,9 @@ _RENAMED_SENSORS = {
     "battery_strings": "cell_count",
     "temperature_sensors": "temperature_sensor_count",
     "total_battery_capacity_setting": "full_charge_capacity",
+    "power_tube_temperature": "mosfet_temperature",
+    "power_tube_temperature_protection": "mosfet_temperature_protection",
+    "power_tube_temperature_recovery": "mosfet_temperature_recovery",
 }
 
 CONFIG_SCHEMA = cv.All(

@@ -140,9 +140,9 @@ number:
       name: "charge undertemperature protection"
     charge_undertemperature_protection_recovery:
       name: "charge undertemperature protection recovery"
-    power_tube_overtemperature_protection:
+    mosfet_overtemperature_protection:
       name: "power tube overtemperature protection"
-    power_tube_overtemperature_protection_recovery:
+    mosfet_overtemperature_protection_recovery:
       name: "power tube overtemperature protection recovery"
 
 sensor:
@@ -276,7 +276,7 @@ sensor:
     #   name: "temperature sensor 3"
     # temperature_sensor_4:
     #   name: "temperature sensor 4"
-    power_tube_temperature:
+    mosfet_temperature:
       name: "power tube temperature"
     balancer_status:
       name: "balancer status"

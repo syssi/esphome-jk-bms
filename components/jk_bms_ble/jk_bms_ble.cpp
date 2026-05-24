@@ -158,7 +158,7 @@ void JkBmsBle::dump_config() {  // NOLINT(google-readability-function-size,reada
   LOG_SENSOR("", "Power", this->power_sensor_);
   LOG_SENSOR("", "Charging Power", this->charging_power_sensor_);
   LOG_SENSOR("", "Discharging Power", this->discharging_power_sensor_);
-  LOG_SENSOR("", "Power Tube Temperature", this->power_tube_temperature_sensor_);
+  LOG_SENSOR("", "Mosfet Temperature", this->mosfet_temperature_sensor_);
   LOG_SENSOR("", "Temperature Sensor 1", this->temperatures_[0].temperature_sensor_);
   LOG_SENSOR("", "Temperature Sensor 2", this->temperatures_[1].temperature_sensor_);
   LOG_SENSOR("", "Temperature Sensor 3", this->temperatures_[2].temperature_sensor_);
@@ -542,7 +542,7 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
 
   // 112   2   0x00 0x00              Unknown112
   if (frame_version == FRAME_VERSION_JK02_32S) {
-    this->publish_state_(this->power_tube_temperature_sensor_, (float) ((int16_t) jk_get_16bit(112 + offset)) * 0.1f);
+    this->publish_state_(this->mosfet_temperature_sensor_, (float) ((int16_t) jk_get_16bit(112 + offset)) * 0.1f);
   } else {
     ESP_LOGD(TAG, "Unknown112: 0x%02X 0x%02X", data[112 + offset], data[113 + offset]);
   }
@@ -582,7 +582,7 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
     this->publish_state_(this->errors_bitmask_hex_text_sensor_, this->to_hex_string_(raw_errors_bitmask));
     this->publish_state_(this->errors_text_sensor_, this->error_bits_to_string_(raw_errors_bitmask, ERRORS_JK02, 32));
   } else {
-    this->publish_state_(this->power_tube_temperature_sensor_, (float) ((int16_t) jk_get_16bit(134 + offset)) * 0.1f);
+    this->publish_state_(this->mosfet_temperature_sensor_, (float) ((int16_t) jk_get_16bit(134 + offset)) * 0.1f);
   }
 
   // 136-137: errors bitmask (JK02_24S only), little-endian 16-bit
@@ -1045,12 +1045,11 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
 
   // 106   4   0x84 0x03 0x00 0x00    MOS OTP
   ESP_LOGV(TAG, "  Mosfet OTP: %f °C", (float) ((int32_t) jk_get_32bit(106)) * 0.1f);
-  this->publish_state_(this->power_tube_overtemperature_protection_number_,
-                       (float) ((int32_t) jk_get_32bit(106)) * 0.1f);
+  this->publish_state_(this->mosfet_overtemperature_protection_number_, (float) ((int32_t) jk_get_32bit(106)) * 0.1f);
 
   // 110   4   0xBC 0x02 0x00 0x00    MOS OTP Recovery
   ESP_LOGV(TAG, "  Mosfet OTP recovery: %f °C", (float) ((int32_t) jk_get_32bit(110)) * 0.1f);
-  this->publish_state_(this->power_tube_overtemperature_protection_recovery_number_,
+  this->publish_state_(this->mosfet_overtemperature_protection_recovery_number_,
                        (float) ((int32_t) jk_get_32bit(110)) * 0.1f);
 
   // 114   4   0x0D 0x00 0x00 0x00    Cell count
@@ -1608,7 +1607,7 @@ void JkBmsBle::publish_device_unavailable_() {
   this->publish_state_(power_sensor_, NAN);
   this->publish_state_(charging_power_sensor_, NAN);
   this->publish_state_(discharging_power_sensor_, NAN);
-  this->publish_state_(power_tube_temperature_sensor_, NAN);
+  this->publish_state_(mosfet_temperature_sensor_, NAN);
   this->publish_state_(balancer_status_sensor_, NAN);
   this->publish_state_(state_of_charge_sensor_, NAN);
   this->publish_state_(state_of_health_sensor_, NAN);

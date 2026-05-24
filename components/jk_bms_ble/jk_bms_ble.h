@@ -148,12 +148,12 @@ class JkBmsBle :
       number::Number *discharge_undertemperature_protection_recovery_number) {
     discharge_undertemperature_protection_recovery_number_ = discharge_undertemperature_protection_recovery_number;
   }
-  void set_power_tube_overtemperature_protection_number(number::Number *power_tube_overtemperature_protection_number) {
-    power_tube_overtemperature_protection_number_ = power_tube_overtemperature_protection_number;
+  void set_mosfet_overtemperature_protection_number(number::Number *mosfet_overtemperature_protection_number) {
+    mosfet_overtemperature_protection_number_ = mosfet_overtemperature_protection_number;
   }
-  void set_power_tube_overtemperature_protection_recovery_number(
-      number::Number *power_tube_overtemperature_protection_recovery_number) {
-    power_tube_overtemperature_protection_recovery_number_ = power_tube_overtemperature_protection_recovery_number;
+  void set_mosfet_overtemperature_protection_recovery_number(
+      number::Number *mosfet_overtemperature_protection_recovery_number) {
+    mosfet_overtemperature_protection_recovery_number_ = mosfet_overtemperature_protection_recovery_number;
   }
   void set_discharge_precharge_time_number(number::Number *discharge_precharge_time_number) {
     discharge_precharge_time_number_ = discharge_precharge_time_number;
@@ -231,8 +231,8 @@ class JkBmsBle :
   void set_temperature_sensor(uint8_t temperature, sensor::Sensor *temperature_sensor) {
     this->temperatures_[temperature].temperature_sensor_ = temperature_sensor;
   }
-  void set_power_tube_temperature_sensor(sensor::Sensor *power_tube_temperature_sensor) {
-    power_tube_temperature_sensor_ = power_tube_temperature_sensor;
+  void set_mosfet_temperature_sensor(sensor::Sensor *mosfet_temperature_sensor) {
+    mosfet_temperature_sensor_ = mosfet_temperature_sensor;
   }
   void set_state_of_charge_sensor(sensor::Sensor *state_of_charge_sensor) {
     state_of_charge_sensor_ = state_of_charge_sensor;
@@ -382,8 +382,8 @@ class JkBmsBle :
   number::Number *charge_undertemperature_protection_recovery_number_{nullptr};
   number::Number *discharge_undertemperature_protection_number_{nullptr};
   number::Number *discharge_undertemperature_protection_recovery_number_{nullptr};
-  number::Number *power_tube_overtemperature_protection_number_{nullptr};
-  number::Number *power_tube_overtemperature_protection_recovery_number_{nullptr};
+  number::Number *mosfet_overtemperature_protection_number_{nullptr};
+  number::Number *mosfet_overtemperature_protection_recovery_number_{nullptr};
   number::Number *discharge_precharge_time_number_{nullptr};
   number::Number *heating_start_temperature_number_{nullptr};
   number::Number *heating_stop_temperature_number_{nullptr};
@@ -401,7 +401,7 @@ class JkBmsBle :
   sensor::Sensor *power_sensor_{nullptr};
   sensor::Sensor *charging_power_sensor_{nullptr};
   sensor::Sensor *discharging_power_sensor_{nullptr};
-  sensor::Sensor *power_tube_temperature_sensor_{nullptr};
+  sensor::Sensor *mosfet_temperature_sensor_{nullptr};
   sensor::Sensor *state_of_charge_sensor_{nullptr};
   sensor::Sensor *state_of_health_sensor_{nullptr};
   sensor::Sensor *capacity_remaining_sensor_{nullptr};
