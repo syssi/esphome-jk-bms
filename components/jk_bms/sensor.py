@@ -73,7 +73,7 @@ CONF_CHARGING_OVERCURRENT_PROTECTION = "charging_overcurrent_protection"
 CONF_CHARGING_OVERCURRENT_DELAY = "charging_overcurrent_delay"
 
 CONF_BALANCE_STARTING_VOLTAGE = "balance_starting_voltage"
-CONF_BALANCE_OPENING_PRESSURE_DIFFERENCE = "balance_opening_pressure_difference"
+CONF_BALANCING_DELTA_VOLTAGE = "balancing_delta_voltage"
 
 CONF_POWER_TUBE_TEMPERATURE_PROTECTION = "power_tube_temperature_protection"
 CONF_POWER_TUBE_TEMPERATURE_RECOVERY = "power_tube_temperature_recovery"
@@ -389,7 +389,7 @@ SENSOR_DEFS = {
         "device_class": DEVICE_CLASS_VOLTAGE,
         "state_class": STATE_CLASS_MEASUREMENT,
     },
-    CONF_BALANCE_OPENING_PRESSURE_DIFFERENCE: {
+    CONF_BALANCING_DELTA_VOLTAGE: {
         "unit_of_measurement": UNIT_VOLT,
         "icon": ICON_EMPTY,
         "accuracy_decimals": 3,
@@ -557,6 +557,9 @@ CONFIG_SCHEMA = (
         {
             cv.Optional("cell_pressure_difference_protection"): cv.invalid(
                 "sensor.cell_pressure_difference_protection has been renamed to sensor.cell_voltage_difference_protection"
+            ),
+            cv.Optional("balance_opening_pressure_difference"): cv.invalid(
+                "sensor.balance_opening_pressure_difference has been renamed to sensor.balancing_delta_voltage"
             ),
         }
     )
