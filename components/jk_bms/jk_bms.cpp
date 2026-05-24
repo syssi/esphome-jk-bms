@@ -272,8 +272,7 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->balance_starting_voltage_sensor_, (float) jk_get_16bit(offset + 6 + 3 * 23) * 0.001f);
 
   // 0x9C 0x00 0x08: Balanced opening pressure difference           8 * 0.001 = 0.008V     0.001 V     0.01-1V
-  this->publish_state_(this->balancing_delta_voltage_sensor_,
-                       (float) jk_get_16bit(offset + 6 + 3 * 24) * 0.001f);
+  this->publish_state_(this->balancing_delta_voltage_sensor_, (float) jk_get_16bit(offset + 6 + 3 * 24) * 0.001f);
 
   // 0x9D 0x01: Active balance switch                              1 (on)                     Bool     0 (off), 1 (on)
   this->publish_state_(this->balancing_switch_binary_sensor_, (bool) data[offset + 6 + 3 * 25]);
