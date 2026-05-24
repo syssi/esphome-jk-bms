@@ -166,7 +166,7 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
 
   // 0x85 0x0F: Battery remaining capacity                       15 %
   uint8_t raw_battery_remaining_capacity = data[offset + 3 * 5];
-  this->publish_state_(this->capacity_remaining_sensor_, (float) raw_battery_remaining_capacity);
+  this->publish_state_(this->state_of_charge_sensor_, (float) raw_battery_remaining_capacity);
 
   // 0x86 0x02: Number of battery temperature sensors             2                        1.0  count
   this->publish_state_(this->temperature_sensors_sensor_, (float) data[offset + 2 + 3 * 5]);
@@ -438,7 +438,7 @@ void JkBms::publish_device_unavailable_() {
   this->publish_state_(power_sensor_, NAN);
   this->publish_state_(charging_power_sensor_, NAN);
   this->publish_state_(discharging_power_sensor_, NAN);
-  this->publish_state_(capacity_remaining_sensor_, NAN);
+  this->publish_state_(state_of_charge_sensor_, NAN);
   this->publish_state_(capacity_remaining_derived_sensor_, NAN);
   this->publish_state_(temperature_sensors_sensor_, NAN);
   this->publish_state_(charging_cycles_sensor_, NAN);
@@ -608,7 +608,7 @@ void JkBms::dump_config() {  // NOLINT(google-readability-function-size,readabil
   LOG_SENSOR("", "Power", this->power_sensor_);
   LOG_SENSOR("", "Charging Power", this->charging_power_sensor_);
   LOG_SENSOR("", "Discharging Power", this->discharging_power_sensor_);
-  LOG_SENSOR("", "Capacity Remaining", this->capacity_remaining_sensor_);
+  LOG_SENSOR("", "State of Charge", this->state_of_charge_sensor_);
   LOG_SENSOR("", "Capacity Remaining Derived", this->capacity_remaining_derived_sensor_);
   LOG_SENSOR("", "Temperature Sensors", this->temperature_sensors_sensor_);
   LOG_SENSOR("", "Charging Cycles", this->charging_cycles_sensor_);

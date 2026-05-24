@@ -97,7 +97,7 @@ TEST(JkBmsStatusDataTest, Temperatures) {
 TEST(JkBmsStatusDataTest, Capacity) {
   TestableJkBms bms;
   sensor::Sensor remaining, remaining_derived, nominal;
-  bms.set_capacity_remaining_sensor(&remaining);
+  bms.set_state_of_charge_sensor(&remaining);
   bms.set_capacity_remaining_derived_sensor(&remaining_derived);
   bms.set_full_charge_capacity_sensor(&nominal);
 
