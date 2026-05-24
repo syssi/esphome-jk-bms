@@ -120,12 +120,12 @@ entities:
     name: Temperature Sensor 1
   - entity: sensor.jk_bms_temperature_sensor_2
     name: Temperature Sensor 2
-  - entity: sensor.jk_bms_temperature_sensor_temperature_difference_protection
-    name: Temperature Sensor Temperature Difference Protection
-  - entity: sensor.jk_bms_temperature_sensor_temperature_protection
-    name: Temperature Sensor Temperature Protection
-  - entity: sensor.jk_bms_temperature_sensor_temperature_recovery
-    name: Temperature Sensor Temperature Recovery
+  - entity: sensor.jk_bms_battery_temperature_difference_protection
+    name: Battery Temperature Difference Protection
+  - entity: sensor.jk_bms_battery_overtemperature_protection
+    name: Battery Overtemperature Protection
+  - entity: sensor.jk_bms_battery_overtemperature_recovery
+    name: Battery Overtemperature Recovery
   - entity: sensor.jk_bms_temperature_sensor_count
     name: Temperature Sensors
   - entity: sensor.jk_bms_total_charging_cycle_capacity

@@ -78,12 +78,10 @@ CONF_BALANCING_DELTA_VOLTAGE = "balancing_delta_voltage"
 CONF_MOSFET_TEMPERATURE_PROTECTION = "mosfet_temperature_protection"
 CONF_MOSFET_TEMPERATURE_RECOVERY = "mosfet_temperature_recovery"
 
-CONF_TEMPERATURE_SENSOR_TEMPERATURE_PROTECTION = (
-    "temperature_sensor_temperature_protection"
-)
-CONF_TEMPERATURE_SENSOR_TEMPERATURE_RECOVERY = "temperature_sensor_temperature_recovery"
-CONF_TEMPERATURE_SENSOR_TEMPERATURE_DIFFERENCE_PROTECTION = (
-    "temperature_sensor_temperature_difference_protection"
+CONF_BATTERY_OVERTEMPERATURE_PROTECTION = "battery_overtemperature_protection"
+CONF_BATTERY_OVERTEMPERATURE_RECOVERY = "battery_overtemperature_recovery"
+CONF_BATTERY_TEMPERATURE_DIFFERENCE_PROTECTION = (
+    "battery_temperature_difference_protection"
 )
 
 CONF_CHARGING_HIGH_TEMPERATURE_PROTECTION = "charging_high_temperature_protection"
@@ -410,21 +408,21 @@ SENSOR_DEFS = {
         "device_class": DEVICE_CLASS_TEMPERATURE,
         "state_class": STATE_CLASS_MEASUREMENT,
     },
-    CONF_TEMPERATURE_SENSOR_TEMPERATURE_PROTECTION: {
+    CONF_BATTERY_OVERTEMPERATURE_PROTECTION: {
         "unit_of_measurement": UNIT_CELSIUS,
         "icon": ICON_EMPTY,
         "accuracy_decimals": 0,
         "device_class": DEVICE_CLASS_TEMPERATURE,
         "state_class": STATE_CLASS_MEASUREMENT,
     },
-    CONF_TEMPERATURE_SENSOR_TEMPERATURE_RECOVERY: {
+    CONF_BATTERY_OVERTEMPERATURE_RECOVERY: {
         "unit_of_measurement": UNIT_CELSIUS,
         "icon": ICON_EMPTY,
         "accuracy_decimals": 0,
         "device_class": DEVICE_CLASS_TEMPERATURE,
         "state_class": STATE_CLASS_MEASUREMENT,
     },
-    CONF_TEMPERATURE_SENSOR_TEMPERATURE_DIFFERENCE_PROTECTION: {
+    CONF_BATTERY_TEMPERATURE_DIFFERENCE_PROTECTION: {
         "unit_of_measurement": UNIT_CELSIUS,
         "icon": ICON_EMPTY,
         "accuracy_decimals": 0,
@@ -557,6 +555,9 @@ _RENAMED_SENSORS = {
     "power_tube_temperature": "mosfet_temperature",
     "power_tube_temperature_protection": "mosfet_temperature_protection",
     "power_tube_temperature_recovery": "mosfet_temperature_recovery",
+    "temperature_sensor_temperature_protection": "battery_overtemperature_protection",
+    "temperature_sensor_temperature_recovery": "battery_overtemperature_recovery",
+    "temperature_sensor_temperature_difference_protection": "battery_temperature_difference_protection",
 }
 
 CONFIG_SCHEMA = cv.All(
