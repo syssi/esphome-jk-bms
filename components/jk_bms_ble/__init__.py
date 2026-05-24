@@ -1,12 +1,33 @@
+import logging
+
 import esphome.codegen as cg
 from esphome.components import ble_client
 import esphome.config_validation as cv
 from esphome.const import CONF_ID, CONF_THROTTLE
 
+_LOGGER = logging.getLogger(__name__)
+
 CODEOWNERS = ["@syssi", "@txubelaxu"]
 DEPENDENCIES = ["ble_client"]
 AUTO_LOAD = ["binary_sensor", "button", "number", "sensor", "switch", "text_sensor"]
 MULTI_CONF = True
+
+
+def deprecated_renames(renames: dict[str, str]):
+    def validator(config):
+        config = config.copy()
+        for old, new in renames.items():
+            if old in config:
+                _LOGGER.warning(
+                    "'%s' is deprecated, use '%s' instead. Will be removed in a future release.",
+                    old,
+                    new,
+                )
+                config[new] = config.pop(old)
+        return config
+
+    return validator
+
 
 CONF_JK_BMS_BLE_ID = "jk_bms_ble_id"
 CONF_PROTOCOL_VERSION = "protocol_version"

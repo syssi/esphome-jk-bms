@@ -24,7 +24,7 @@ from esphome.const import (
     UNIT_WATT,
 )
 
-from . import CONF_JK_BMS_ID, JK_BMS_COMPONENT_SCHEMA
+from . import CONF_JK_BMS_ID, JK_BMS_COMPONENT_SCHEMA, deprecated_renames
 
 DEPENDENCIES = ["jk_bms"]
 
@@ -545,36 +545,23 @@ SENSOR_DEFS = {
     },
 }
 
-CONFIG_SCHEMA = (
+_RENAMED_SENSORS = {
+    "cell_pressure_difference_protection": "cell_voltage_difference_protection",
+    "balance_opening_pressure_difference": "balancing_delta_voltage",
+    "alarm_low_volume": "low_soc_alarm",
+    "capacity_remaining_derived": "capacity_remaining",
+    "battery_strings": "cell_count",
+    "temperature_sensors": "temperature_sensor_count",
+}
+
+CONFIG_SCHEMA = cv.All(
+    deprecated_renames(_RENAMED_SENSORS),
     JK_BMS_COMPONENT_SCHEMA.extend(
         {
             cv.Optional(key): sensor.sensor_schema(**kwargs)
             for key, kwargs in SENSOR_DEFS.items()
         }
-    )
-    .extend({cv.Optional(key): _CELL_VOLTAGE_SCHEMA for key in CELLS})
-    .extend(
-        {
-            cv.Optional("cell_pressure_difference_protection"): cv.invalid(
-                "sensor.cell_pressure_difference_protection has been renamed to sensor.cell_voltage_difference_protection"
-            ),
-            cv.Optional("balance_opening_pressure_difference"): cv.invalid(
-                "sensor.balance_opening_pressure_difference has been renamed to sensor.balancing_delta_voltage"
-            ),
-            cv.Optional("alarm_low_volume"): cv.invalid(
-                "sensor.alarm_low_volume has been renamed to sensor.low_soc_alarm"
-            ),
-            cv.Optional("capacity_remaining_derived"): cv.invalid(
-                "sensor.capacity_remaining_derived has been renamed to sensor.capacity_remaining"
-            ),
-            cv.Optional("battery_strings"): cv.invalid(
-                "sensor.battery_strings has been renamed to sensor.cell_count"
-            ),
-            cv.Optional("temperature_sensors"): cv.invalid(
-                "sensor.temperature_sensors has been renamed to sensor.temperature_sensor_count"
-            ),
-        }
-    )
+    ).extend({cv.Optional(key): _CELL_VOLTAGE_SCHEMA for key in CELLS}),
 )
 
 
