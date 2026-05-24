@@ -24,7 +24,7 @@ from esphome.const import (
     UNIT_WATT,
 )
 
-from . import CONF_JK_BMS_BLE_ID, JK_BMS_BLE_COMPONENT_SCHEMA
+from . import CONF_JK_BMS_BLE_ID, JK_BMS_BLE_COMPONENT_SCHEMA, deprecated_renames
 
 CODEOWNERS = ["@syssi", "@txubelaxu"]
 
@@ -290,7 +290,13 @@ SENSOR_DEFS = {
     },
 }
 
-CONFIG_SCHEMA = (
+_RENAMED_SENSORS = {
+    "balancing": "balancer_status",
+    "total_battery_capacity_setting": "full_charge_capacity",
+}
+
+CONFIG_SCHEMA = cv.All(
+    deprecated_renames(_RENAMED_SENSORS),
     JK_BMS_BLE_COMPONENT_SCHEMA.extend(
         {
             cv.Optional(key): sensor.sensor_schema(**kwargs)
@@ -305,14 +311,8 @@ CONFIG_SCHEMA = (
             cv.Optional("errors_bitmask"): cv.invalid(
                 "sensor.errors_bitmask has been removed; use text_sensor.errors_bitmask_hex instead"
             ),
-            cv.Optional("balancing"): cv.invalid(
-                "sensor.balancing has been renamed to sensor.balancer_status"
-            ),
-            cv.Optional("total_battery_capacity_setting"): cv.invalid(
-                "sensor.total_battery_capacity_setting has been renamed to sensor.full_charge_capacity"
-            ),
         }
-    )
+    ),
 )
 
 
