@@ -196,7 +196,7 @@ sensor:
       name: "charging overcurrent delay"
     balance_starting_voltage:
       name: "balance starting voltage"
-    balance_opening_pressure_difference:
+    balancing_delta_voltage:
       name: "balance opening pressure difference"
     power_tube_temperature_protection:
       name: "power tube temperature protection"
