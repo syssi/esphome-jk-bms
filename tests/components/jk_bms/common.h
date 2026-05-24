@@ -18,7 +18,7 @@ class TestableJkBms : public JkBms {
 //   delta_cell_voltage: 0.024 V          average_cell_voltage: 3.82821 V
 //   total_voltage: 53.59 V               current: 2.08 A (charging, protocol version 1)
 //   power_tube_temperature: 29°C         temperature_sensor_1: 30°C  temperature_sensor_2: 28°C
-//   capacity_remaining: 15 %             total_battery_capacity: 14 Ah
+//   state_of_charge: 15 %                total_battery_capacity: 14 Ah
 //   errors_bitmask: 0                    operation_modes: charging+discharging+balancer (0x07)
 //   battery_strings: 14                  charging_cycles: 4
 //   software_version: "H6.X__S6.1.3S__" total_runtime: 57856 min ("40d 4h")
