@@ -171,7 +171,7 @@ static const std::vector<uint8_t> STATUS_FRAME_14S = {
     0x9A,
     0x00,
     0x05,
-    // bytes 119-121: balance starting voltage = 3300 × 0.001 = 3.300 V
+    // bytes 119-121: balancing start voltage = 3300 × 0.001 = 3.300 V
     0x9B,
     0x0C,
     0xE4,

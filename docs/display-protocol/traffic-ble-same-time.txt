@@ -32,7 +32,7 @@
 [switch:055]: 'jk-bms balancer': Sending state OFF
 [number:012]: 'jk-bms total battery capacity': Sending state 40.000000
 [number:012]: 'jk-bms short circuit protection delay': Sending state 1500.000000
-[number:012]: 'jk-bms balance starting voltage': Sending state 3.000000
+[number:012]: 'jk-bms balancing start voltage': Sending state 3.000000
 [jk_bms_ble:992]:   Con. wire resistance 1: 0.000000 Ohm
 [jk_bms_ble:992]:   Con. wire resistance 2: 0.000000 Ohm
 [jk_bms_ble:992]:   Con. wire resistance 3: 0.000000 Ohm

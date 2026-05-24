@@ -136,8 +136,8 @@ number:
     balance_trigger_voltage:
       name: "balance trigger voltage"
       device_id: device0
-    balance_starting_voltage:
-      name: "balance starting voltage"
+    balancing_start_voltage:
+      name: "balancing start voltage"
       device_id: device0
     power_off_voltage:
       name: "power off voltage"
@@ -149,8 +149,8 @@ number:
     balance_trigger_voltage:
       name: "balance trigger voltage"
       device_id: device1
-    balance_starting_voltage:
-      name: "balance starting voltage"
+    balancing_start_voltage:
+      name: "balancing start voltage"
       device_id: device1
     power_off_voltage:
       name: "power off voltage"

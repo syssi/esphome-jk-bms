@@ -194,8 +194,8 @@ sensor:
       name: "charging overcurrent protection"
     charging_overcurrent_delay:
       name: "charging overcurrent delay"
-    balance_starting_voltage:
-      name: "balance starting voltage"
+    balancing_start_voltage:
+      name: "balancing start voltage"
     balancing_delta_voltage:
       name: "balance opening pressure difference"
     mosfet_temperature_protection:

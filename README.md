@@ -186,7 +186,7 @@ esphome run esp32-example.yaml
 [sensor:127]: 'jk-bms discharging overcurrent delay': Sending state 300.00000 s with 0 decimals of accuracy
 [sensor:127]: 'jk-bms charging overcurrent protection': Sending state 25.00000 A with 0 decimals of accuracy
 [sensor:127]: 'jk-bms charging overcurrent delay': Sending state 30.00000 s with 0 decimals of accuracy
-[sensor:127]: 'jk-bms balance starting voltage': Sending state 3.30000 V with 3 decimals of accuracy
+[sensor:127]: 'jk-bms balancing start voltage': Sending state 3.30000 V with 3 decimals of accuracy
 [sensor:127]: 'jk-bms balance opening pressure difference': Sending state 0.01000 V with 3 decimals of accuracy
 [switch:045]: 'jk-bms balancing': Sending state ON
 [sensor:127]: 'jk-bms mosfet temperature protection': Sending state 90.00000 °C with 0 decimals of accuracy
