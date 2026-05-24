@@ -76,7 +76,7 @@ TEST(JkBmsV19CellInfoTest, Capacity) {
   bms.set_protocol_version(PROTOCOL_VERSION_JK02_32S);
   sensor::Sensor remaining, nominal;
   bms.set_capacity_remaining_sensor(&remaining);
-  bms.set_total_battery_capacity_setting_sensor(&nominal);
+  bms.set_full_charge_capacity_sensor(&nominal);
   bms.decode_jk02_cell_info_(CELL_INFO_JK02_32S_V19);
   EXPECT_NEAR(remaining.state, 312.898f, 0.001f);
   EXPECT_NEAR(nominal.state, 314.000f, 0.001f);

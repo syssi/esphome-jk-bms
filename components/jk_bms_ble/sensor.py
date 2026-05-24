@@ -48,7 +48,7 @@ CONF_POWER_TUBE_TEMPERATURE = "power_tube_temperature"
 CONF_STATE_OF_CHARGE = "state_of_charge"
 CONF_STATE_OF_HEALTH = "state_of_health"
 CONF_CAPACITY_REMAINING = "capacity_remaining"
-CONF_TOTAL_BATTERY_CAPACITY_SETTING = "total_battery_capacity_setting"
+CONF_FULL_CHARGE_CAPACITY = "full_charge_capacity"
 CONF_CHARGING_CYCLES = "charging_cycles"
 CONF_TOTAL_CHARGING_CYCLE_CAPACITY = "total_charging_cycle_capacity"
 CONF_TOTAL_RUNTIME = "total_runtime"
@@ -214,7 +214,7 @@ SENSOR_DEFS = {
         "device_class": DEVICE_CLASS_EMPTY,
         "state_class": STATE_CLASS_MEASUREMENT,
     },
-    CONF_TOTAL_BATTERY_CAPACITY_SETTING: {
+    CONF_FULL_CHARGE_CAPACITY: {
         "unit_of_measurement": UNIT_AMPERE_HOURS,
         "icon": ICON_EMPTY,
         "accuracy_decimals": 0,

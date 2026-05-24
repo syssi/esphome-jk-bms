@@ -183,8 +183,8 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
   void set_discharging_low_temperature_recovery_sensor(sensor::Sensor *discharging_low_temperature_recovery_sensor) {
     discharging_low_temperature_recovery_sensor_ = discharging_low_temperature_recovery_sensor;
   }
-  void set_total_battery_capacity_setting_sensor(sensor::Sensor *total_battery_capacity_setting_sensor) {
-    total_battery_capacity_setting_sensor_ = total_battery_capacity_setting_sensor;
+  void set_full_charge_capacity_sensor(sensor::Sensor *full_charge_capacity_sensor) {
+    full_charge_capacity_sensor_ = full_charge_capacity_sensor;
   }
   void set_current_calibration_sensor(sensor::Sensor *current_calibration_sensor) {
     current_calibration_sensor_ = current_calibration_sensor;
@@ -303,7 +303,7 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
   sensor::Sensor *charging_low_temperature_recovery_sensor_{nullptr};
   sensor::Sensor *discharging_low_temperature_protection_sensor_{nullptr};
   sensor::Sensor *discharging_low_temperature_recovery_sensor_{nullptr};
-  sensor::Sensor *total_battery_capacity_setting_sensor_{nullptr};
+  sensor::Sensor *full_charge_capacity_sensor_{nullptr};
   sensor::Sensor *charging_sensor_{nullptr};
   sensor::Sensor *discharging_sensor_{nullptr};
   sensor::Sensor *current_calibration_sensor_{nullptr};
