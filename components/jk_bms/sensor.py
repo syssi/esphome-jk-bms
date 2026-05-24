@@ -43,7 +43,7 @@ CONF_TEMPERATURE_SENSOR_2 = "temperature_sensor_2"
 CONF_TOTAL_VOLTAGE = "total_voltage"
 CONF_CHARGING_POWER = "charging_power"
 CONF_DISCHARGING_POWER = "discharging_power"
-CONF_CAPACITY_REMAINING = "capacity_remaining"
+CONF_STATE_OF_CHARGE = "state_of_charge"
 CONF_CAPACITY_REMAINING_DERIVED = "capacity_remaining_derived"
 CONF_TEMPERATURE_SENSORS = "temperature_sensors"
 CONF_CHARGING_CYCLES = "charging_cycles"
@@ -236,7 +236,7 @@ SENSOR_DEFS = {
         "device_class": DEVICE_CLASS_POWER,
         "state_class": STATE_CLASS_MEASUREMENT,
     },
-    CONF_CAPACITY_REMAINING: {
+    CONF_STATE_OF_CHARGE: {
         "unit_of_measurement": UNIT_PERCENT,
         "accuracy_decimals": 0,
         "device_class": DEVICE_CLASS_BATTERY,
@@ -563,6 +563,9 @@ CONFIG_SCHEMA = (
             ),
             cv.Optional("alarm_low_volume"): cv.invalid(
                 "sensor.alarm_low_volume has been renamed to sensor.low_soc_alarm"
+            ),
+            cv.Optional("capacity_remaining"): cv.invalid(
+                "sensor.capacity_remaining has been renamed to sensor.state_of_charge"
             ),
         }
     )

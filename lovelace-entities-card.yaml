@@ -36,7 +36,7 @@ entities:
     name: Balancing
   - entity: switch.jk_bms_dedicated_charger
     name: Dedicated Charger
-  - entity: sensor.jk_bms_capacity_remaining
+  - entity: sensor.jk_bms_state_of_charge
     name: Capacity Remaining
   - entity: sensor.jk_bms_actual_battery_capacity
     name: Battery Capacity
