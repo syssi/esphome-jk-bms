@@ -598,6 +598,9 @@ sensor:
     emergency_time_countdown:
       name: "emergency time countdown"
       device_id: device0
+    detail_log_count:
+      name: "detail log count"
+      device_id: device0
     # ...
 
   - platform: jk_bms_ble
@@ -829,6 +832,9 @@ sensor:
       device_id: device1
     emergency_time_countdown:
       name: "emergency time countdown"
+      device_id: device1
+    detail_log_count:
+      name: "detail log count"
       device_id: device1
     # ...
 

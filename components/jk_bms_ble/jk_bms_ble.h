@@ -269,6 +269,9 @@ class JkBmsBle :
   void set_charge_status_time_elapsed_sensor(sensor::Sensor *charge_status_time_elapsed_sensor) {
     charge_status_time_elapsed_sensor_ = charge_status_time_elapsed_sensor;
   }
+  void set_detail_log_count_sensor(sensor::Sensor *detail_log_count_sensor) {
+    detail_log_count_sensor_ = detail_log_count_sensor;
+  }
 
   void set_errors_text_sensor(text_sensor::TextSensor *errors_text_sensor) { errors_text_sensor_ = errors_text_sensor; }
   void set_operation_status_text_sensor(text_sensor::TextSensor *operation_status_text_sensor) {
@@ -404,6 +407,7 @@ class JkBmsBle :
   sensor::Sensor *heating_current_sensor_{nullptr};
   sensor::Sensor *charge_status_id_sensor_{nullptr};
   sensor::Sensor *charge_status_time_elapsed_sensor_{nullptr};
+  sensor::Sensor *detail_log_count_sensor_{nullptr};
 
   switch_::Switch *charging_switch_{nullptr};
   switch_::Switch *discharging_switch_{nullptr};

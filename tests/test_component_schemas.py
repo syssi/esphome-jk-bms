@@ -114,7 +114,8 @@ class TestJkBmsBleSensorLists:
 
     def test_sensor_defs_completeness(self):
         assert "total_voltage" in ble_sensor.SENSOR_DEFS
-        assert len(ble_sensor.SENSOR_DEFS) == 26
+        assert "detail_log_count" in ble_sensor.SENSOR_DEFS
+        assert len(ble_sensor.SENSOR_DEFS) == 27
 
 
 class TestJkBmsBleBinarySensorConstants:
