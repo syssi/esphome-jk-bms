@@ -191,9 +191,9 @@ esphome run esp32-example.yaml
 [switch:045]: 'jk-bms balancing': Sending state ON
 [sensor:127]: 'jk-bms mosfet temperature protection': Sending state 90.00000 °C with 0 decimals of accuracy
 [sensor:127]: 'jk-bms mosfet temperature recovery': Sending state 70.00000 °C with 0 decimals of accuracy
-[sensor:127]: 'jk-bms temperature sensor temperature protection': Sending state 100.00000 °C with 0 decimals of accuracy
-[sensor:127]: 'jk-bms temperature sensor temperature recovery': Sending state 100.00000 °C with 0 decimals of accuracy
-[sensor:127]: 'jk-bms temperature sensor temperature difference protection': Sending state 20.00000 °C with 0 decimals of accuracy
+[sensor:127]: 'jk-bms battery overtemperature protection': Sending state 100.00000 °C with 0 decimals of accuracy
+[sensor:127]: 'jk-bms battery overtemperature recovery': Sending state 100.00000 °C with 0 decimals of accuracy
+[sensor:127]: 'jk-bms battery temperature difference protection': Sending state 20.00000 °C with 0 decimals of accuracy
 [sensor:127]: 'jk-bms charging high temperature protection': Sending state 70.00000 °C with 0 decimals of accuracy
 [sensor:127]: 'jk-bms discharging high temperature protection': Sending state 70.00000 °C with 0 decimals of accuracy
 [sensor:127]: 'jk-bms charging low temperature protection': Sending state -20.00000 °C with 0 decimals of accuracy
