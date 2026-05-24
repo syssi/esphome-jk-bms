@@ -26,8 +26,6 @@ from esphome.const import (
 
 from . import CONF_JK_BMS_BLE_ID, JK_BMS_BLE_COMPONENT_SCHEMA
 
-CONF_BALANCER_STATUS = "balancer_status"
-
 CODEOWNERS = ["@syssi", "@txubelaxu"]
 
 CONF_MIN_CELL_VOLTAGE = "min_cell_voltage"
@@ -60,6 +58,7 @@ CONF_CHARGE_STATUS_ID = "charge_status_id"
 CONF_CHARGE_STATUS_TIME_ELAPSED = "charge_status_time_elapsed"
 CONF_DETAIL_LOG_COUNT = "detail_log_count"
 CONF_BATTERY_TYPE_ID = "battery_type_id"
+CONF_BALANCER_STATUS = "balancer_status"
 
 UNIT_AMPERE_HOURS = "Ah"
 UNIT_OHM = "Ω"
