@@ -126,7 +126,7 @@ entities:
     name: Temperature Sensor Temperature Protection
   - entity: sensor.jk_bms_temperature_sensor_temperature_recovery
     name: Temperature Sensor Temperature Recovery
-  - entity: sensor.jk_bms_temperature_sensors
+  - entity: sensor.jk_bms_temperature_sensor_count
     name: Temperature Sensors
   - entity: sensor.jk_bms_total_charging_cycle_capacity
     name: Total Charging Cycle Capacity

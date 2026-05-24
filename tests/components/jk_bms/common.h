@@ -94,7 +94,7 @@ static const std::vector<uint8_t> STATUS_FRAME_14S = {
     // bytes 59-60: capacity remaining = 15 %
     0x85,
     0x0F,
-    // bytes 61-62: temperature sensors count = 2
+    // bytes 61-62: temperature sensor count = 2
     0x86,
     0x02,
     // bytes 63-65: charging cycles = 4

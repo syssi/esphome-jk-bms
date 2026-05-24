@@ -157,7 +157,7 @@ sensor:
       name: "state of charge"
     capacity_remaining:
       name: "capacity remaining"
-    temperature_sensors:
+    temperature_sensor_count:
       name: "temperature sensors"
     charging_cycles:
       name: "charging cycles"
