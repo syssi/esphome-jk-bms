@@ -89,7 +89,7 @@ C0 01
 | RW   | Code | Name                                                | Bytes | Type  | Info |
 | ---: | :--- | :-------------------------------------------------- | :---: | :---: | :--- |
 |    R | 0x79 | Individual Cell voltage                             |   3*n |  Hex  | The first byte is the cell number, the next two bytes is the voltage value MV. When reading all the data at the same time, 0x79 is followed by one byte length data, n as shown above, and then a group of three bytes represents the | electricity Cell voltage. |
-|    R | 0x80 | Read power tube temperature                         |    2  |  Hex  | 0-140 (-40 to 100) The part exceeding 100 is negative temperature, such as 101 is negative 1 degree (100 Benchmark) |
+|    R | 0x80 | Read mosfet temperature                         |    2  |  Hex  | 0-140 (-40 to 100) The part exceeding 100 is negative temperature, such as 101 is negative 1 degree (100 Benchmark) |
 |    R | 0x81 | Read the temperature in the battery box             |    2  |  Hex  | 0-140 (-40 to 100) The part exceeding 100 is negative temperature, the same as above (100 reference) |
 |    R | 0x82 | Read battery temperature                            |    2  |  Hex  | 0-140 (-40 to 100) The part exceeding 100 is negative temperature, the same as above (100 reference) |
 |    R | 0x83 | Total battery voltage                               |    2  |  Hex  | 0.01V 3500*0.01=35.00v minimum unit 10mV |

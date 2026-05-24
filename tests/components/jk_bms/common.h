@@ -17,7 +17,7 @@ class TestableJkBms : public JkBms {
 //   min_cell_voltage: 3.811 V (cell 9)   max_cell_voltage: 3.835 V (cell 12)
 //   delta_cell_voltage: 0.024 V          average_cell_voltage: 3.82821 V
 //   total_voltage: 53.59 V               current: 2.08 A (charging, protocol version 1)
-//   power_tube_temperature: 29°C         temperature_sensor_1: 30°C  temperature_sensor_2: 28°C
+//   mosfet_temperature: 29°C         temperature_sensor_1: 30°C  temperature_sensor_2: 28°C
 //   state_of_charge: 15 %                total_battery_capacity: 14 Ah
 //   errors_bitmask: 0                    operation_modes: charging+discharging+balancer (0x07)
 //   cell_count: 14                        charging_cycles: 4
@@ -71,7 +71,7 @@ static const std::vector<uint8_t> STATUS_FRAME_14S = {
     0x0E,
     0xF2,  // cell 14: 3826 → 3.826 V
     // offset = data[1] + 3 = 42 + 3 = 45
-    // bytes 44-46: power tube temperature = 29°C
+    // bytes 44-46: mosfet temperature = 29°C
     0x80,
     0x00,
     0x1D,
@@ -182,11 +182,11 @@ static const std::vector<uint8_t> STATUS_FRAME_14S = {
     // bytes 125-126: balancing switch = on
     0x9D,
     0x01,
-    // bytes 127-129: power tube temperature protection = 90°C
+    // bytes 127-129: mosfet temperature protection = 90°C
     0x9E,
     0x00,
     0x5A,
-    // bytes 130-132: power tube temperature recovery = 70°C
+    // bytes 130-132: mosfet temperature recovery = 70°C
     0x9F,
     0x00,
     0x46,

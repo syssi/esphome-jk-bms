@@ -244,11 +244,11 @@ number:
     discharge_undertemperature_protection_recovery:
       name: "discharge undertemperature protection recovery"
       device_id: device0
-    power_tube_overtemperature_protection:
-      name: "power tube overtemperature protection"
+    mosfet_overtemperature_protection:
+      name: "mosfet overtemperature protection"
       device_id: device0
-    power_tube_overtemperature_protection_recovery:
-      name: "power tube overtemperature protection recovery"
+    mosfet_overtemperature_protection_recovery:
+      name: "mosfet overtemperature protection recovery"
       device_id: device0
     # ...
 
@@ -359,11 +359,11 @@ number:
     discharge_undertemperature_protection_recovery:
       name: "discharge undertemperature protection recovery"
       device_id: device1
-    power_tube_overtemperature_protection:
-      name: "power tube overtemperature protection"
+    mosfet_overtemperature_protection:
+      name: "mosfet overtemperature protection"
       device_id: device1
-    power_tube_overtemperature_protection_recovery:
-      name: "power tube overtemperature protection recovery"
+    mosfet_overtemperature_protection_recovery:
+      name: "mosfet overtemperature protection recovery"
       device_id: device1
     # ...
 
@@ -565,8 +565,8 @@ sensor:
     temperature_sensor_5:
       name: "temperature sensor 5"
       device_id: device0
-    power_tube_temperature:
-      name: "power tube temperature"
+    mosfet_temperature:
+      name: "mosfet temperature"
       device_id: device0
     balancer_status:
       name: "balancer status"
@@ -797,8 +797,8 @@ sensor:
     temperature_sensor_5:
       name: "temperature sensor 5"
       device_id: device1
-    power_tube_temperature:
-      name: "power tube temperature"
+    mosfet_temperature:
+      name: "mosfet temperature"
       device_id: device1
     balancer_status:
       name: "balancer status"

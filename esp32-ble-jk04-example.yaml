@@ -189,8 +189,8 @@ sensor:
       name: "total runtime"
     balancing_current:
       name: "balancing current"
-    power_tube_temperature:
-      name: "power tube temperature"
+    mosfet_temperature:
+      name: "mosfet temperature"
 
 switch:
   - platform: jk_bms_ble

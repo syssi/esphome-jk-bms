@@ -159,7 +159,7 @@ esphome run esp32-example.yaml
 [sensor:127]: 'jk-bms cell voltage 11': Sending state 4.12800 V with 3 decimals of accuracy
 [sensor:127]: 'jk-bms cell voltage 12': Sending state 4.13100 V with 3 decimals of accuracy
 [sensor:127]: 'jk-bms cell voltage 13': Sending state 4.12400 V with 3 decimals of accuracy
-[sensor:127]: 'jk-bms power tube temperature': Sending state 24.00000 °C with 0 decimals of accuracy
+[sensor:127]: 'jk-bms mosfet temperature': Sending state 24.00000 °C with 0 decimals of accuracy
 [sensor:127]: 'jk-bms temperature sensor 1': Sending state 22.00000 °C with 0 decimals of accuracy
 [sensor:127]: 'jk-bms temperature sensor 2': Sending state 22.00000 °C with 0 decimals of accuracy
 [sensor:127]: 'jk-bms total voltage': Sending state 53.64000 V with 2 decimals of accuracy
@@ -189,8 +189,8 @@ esphome run esp32-example.yaml
 [sensor:127]: 'jk-bms balance starting voltage': Sending state 3.30000 V with 3 decimals of accuracy
 [sensor:127]: 'jk-bms balance opening pressure difference': Sending state 0.01000 V with 3 decimals of accuracy
 [switch:045]: 'jk-bms balancing': Sending state ON
-[sensor:127]: 'jk-bms power tube temperature protection': Sending state 90.00000 °C with 0 decimals of accuracy
-[sensor:127]: 'jk-bms power tube temperature recovery': Sending state 70.00000 °C with 0 decimals of accuracy
+[sensor:127]: 'jk-bms mosfet temperature protection': Sending state 90.00000 °C with 0 decimals of accuracy
+[sensor:127]: 'jk-bms mosfet temperature recovery': Sending state 70.00000 °C with 0 decimals of accuracy
 [sensor:127]: 'jk-bms temperature sensor temperature protection': Sending state 100.00000 °C with 0 decimals of accuracy
 [sensor:127]: 'jk-bms temperature sensor temperature recovery': Sending state 100.00000 °C with 0 decimals of accuracy
 [sensor:127]: 'jk-bms temperature sensor temperature difference protection': Sending state 20.00000 °C with 0 decimals of accuracy

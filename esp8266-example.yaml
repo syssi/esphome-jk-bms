@@ -136,8 +136,8 @@ sensor:
       name: "cell voltage 23"
     cell_voltage_24:
       name: "cell voltage 24"
-    power_tube_temperature:
-      name: "power tube temperature"
+    mosfet_temperature:
+      name: "mosfet temperature"
     temperature_sensor_1:
       name: "temperature sensor 1"
     temperature_sensor_2:
@@ -198,10 +198,10 @@ sensor:
       name: "balance starting voltage"
     balancing_delta_voltage:
       name: "balance opening pressure difference"
-    power_tube_temperature_protection:
-      name: "power tube temperature protection"
-    power_tube_temperature_recovery:
-      name: "power tube temperature recovery"
+    mosfet_temperature_protection:
+      name: "mosfet temperature protection"
+    mosfet_temperature_recovery:
+      name: "mosfet temperature recovery"
     temperature_sensor_temperature_protection:
       name: "temperature sensor temperature protection"
     temperature_sensor_temperature_recovery:
