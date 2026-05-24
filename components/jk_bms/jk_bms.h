@@ -148,18 +148,15 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
   void set_mosfet_temperature_recovery_sensor(sensor::Sensor *mosfet_temperature_recovery_sensor) {
     mosfet_temperature_recovery_sensor_ = mosfet_temperature_recovery_sensor;
   }
-  void set_temperature_sensor_temperature_protection_sensor(
-      sensor::Sensor *temperature_sensor_temperature_protection_sensor) {
-    temperature_sensor_temperature_protection_sensor_ = temperature_sensor_temperature_protection_sensor;
+  void set_battery_overtemperature_protection_sensor(sensor::Sensor *battery_overtemperature_protection_sensor) {
+    battery_overtemperature_protection_sensor_ = battery_overtemperature_protection_sensor;
   }
-  void set_temperature_sensor_temperature_recovery_sensor(
-      sensor::Sensor *temperature_sensor_temperature_recovery_sensor) {
-    temperature_sensor_temperature_recovery_sensor_ = temperature_sensor_temperature_recovery_sensor;
+  void set_battery_overtemperature_recovery_sensor(sensor::Sensor *battery_overtemperature_recovery_sensor) {
+    battery_overtemperature_recovery_sensor_ = battery_overtemperature_recovery_sensor;
   }
-  void set_temperature_sensor_temperature_difference_protection_sensor(
-      sensor::Sensor *temperature_sensor_temperature_difference_protection_sensor) {
-    temperature_sensor_temperature_difference_protection_sensor_ =
-        temperature_sensor_temperature_difference_protection_sensor;
+  void set_battery_temperature_difference_protection_sensor(
+      sensor::Sensor *battery_temperature_difference_protection_sensor) {
+    battery_temperature_difference_protection_sensor_ = battery_temperature_difference_protection_sensor;
   }
   void set_charging_high_temperature_protection_sensor(sensor::Sensor *charging_high_temperature_protection_sensor) {
     charging_high_temperature_protection_sensor_ = charging_high_temperature_protection_sensor;
@@ -290,9 +287,9 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
   sensor::Sensor *balancing_delta_voltage_sensor_{nullptr};
   sensor::Sensor *mosfet_temperature_protection_sensor_{nullptr};
   sensor::Sensor *mosfet_temperature_recovery_sensor_{nullptr};
-  sensor::Sensor *temperature_sensor_temperature_protection_sensor_{nullptr};
-  sensor::Sensor *temperature_sensor_temperature_recovery_sensor_{nullptr};
-  sensor::Sensor *temperature_sensor_temperature_difference_protection_sensor_{nullptr};
+  sensor::Sensor *battery_overtemperature_protection_sensor_{nullptr};
+  sensor::Sensor *battery_overtemperature_recovery_sensor_{nullptr};
+  sensor::Sensor *battery_temperature_difference_protection_sensor_{nullptr};
   sensor::Sensor *charging_high_temperature_protection_sensor_{nullptr};
   sensor::Sensor *discharging_high_temperature_protection_sensor_{nullptr};
   sensor::Sensor *charging_low_temperature_protection_sensor_{nullptr};
