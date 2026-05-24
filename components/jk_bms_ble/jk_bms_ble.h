@@ -272,6 +272,9 @@ class JkBmsBle :
   void set_detail_log_count_sensor(sensor::Sensor *detail_log_count_sensor) {
     detail_log_count_sensor_ = detail_log_count_sensor;
   }
+  void set_battery_type_id_sensor(sensor::Sensor *battery_type_id_sensor) {
+    battery_type_id_sensor_ = battery_type_id_sensor;
+  }
 
   void set_errors_text_sensor(text_sensor::TextSensor *errors_text_sensor) { errors_text_sensor_ = errors_text_sensor; }
   void set_operation_status_text_sensor(text_sensor::TextSensor *operation_status_text_sensor) {
@@ -288,6 +291,9 @@ class JkBmsBle :
   }
   void set_hardware_version_text_sensor(text_sensor::TextSensor *hardware_version_text_sensor) {
     hardware_version_text_sensor_ = hardware_version_text_sensor;
+  }
+  void set_battery_type_text_sensor(text_sensor::TextSensor *battery_type_text_sensor) {
+    battery_type_text_sensor_ = battery_type_text_sensor;
   }
 
   void set_charging_switch(switch_::Switch *charging_switch) { charging_switch_ = charging_switch; }
@@ -408,6 +414,7 @@ class JkBmsBle :
   sensor::Sensor *charge_status_id_sensor_{nullptr};
   sensor::Sensor *charge_status_time_elapsed_sensor_{nullptr};
   sensor::Sensor *detail_log_count_sensor_{nullptr};
+  sensor::Sensor *battery_type_id_sensor_{nullptr};
 
   switch_::Switch *charging_switch_{nullptr};
   switch_::Switch *discharging_switch_{nullptr};
@@ -427,6 +434,7 @@ class JkBmsBle :
   text_sensor::TextSensor *charge_status_text_sensor_{nullptr};
   text_sensor::TextSensor *software_version_text_sensor_{nullptr};
   text_sensor::TextSensor *hardware_version_text_sensor_{nullptr};
+  text_sensor::TextSensor *battery_type_text_sensor_{nullptr};
 
   std::vector<uint8_t> frame_buffer_;
   bool status_notification_received_ = false;
@@ -454,6 +462,7 @@ class JkBmsBle :
   void track_online_status_();
   std::string error_bits_to_string_(uint16_t bitmask);
   std::string charge_status_id_to_string_(uint8_t status);
+  std::string battery_type_id_to_string_(uint8_t code);
 
   std::string format_total_runtime_(const uint32_t value) {
     int seconds = (int) value;

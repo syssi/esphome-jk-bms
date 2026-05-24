@@ -59,6 +59,7 @@ CONF_HEATING_CURRENT = "heating_current"
 CONF_CHARGE_STATUS_ID = "charge_status_id"
 CONF_CHARGE_STATUS_TIME_ELAPSED = "charge_status_time_elapsed"
 CONF_DETAIL_LOG_COUNT = "detail_log_count"
+CONF_BATTERY_TYPE_ID = "battery_type_id"
 
 UNIT_AMPERE_HOURS = "Ah"
 UNIT_OHM = "Ω"
@@ -285,6 +286,13 @@ SENSOR_DEFS = {
     CONF_DETAIL_LOG_COUNT: {
         "unit_of_measurement": UNIT_EMPTY,
         "icon": ICON_COUNTER,
+        "accuracy_decimals": 0,
+        "device_class": DEVICE_CLASS_EMPTY,
+        "entity_category": ENTITY_CATEGORY_DIAGNOSTIC,
+    },
+    CONF_BATTERY_TYPE_ID: {
+        "unit_of_measurement": UNIT_EMPTY,
+        "icon": ICON_EMPTY,
         "accuracy_decimals": 0,
         "device_class": DEVICE_CLASS_EMPTY,
         "entity_category": ENTITY_CATEGORY_DIAGNOSTIC,
