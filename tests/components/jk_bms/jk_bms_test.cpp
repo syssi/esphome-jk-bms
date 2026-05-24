@@ -81,7 +81,7 @@ TEST(JkBmsStatusDataTest, ChargingCurrentAndPower) {
 TEST(JkBmsStatusDataTest, Temperatures) {
   TestableJkBms bms;
   sensor::Sensor tube, t1, t2, count;
-  bms.set_power_tube_temperature_sensor(&tube);
+  bms.set_mosfet_temperature_sensor(&tube);
   bms.set_temperature_sensor_1_sensor(&t1);
   bms.set_temperature_sensor_2_sensor(&t2);
   bms.set_temperature_sensor_count_sensor(&count);

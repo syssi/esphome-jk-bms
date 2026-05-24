@@ -43,7 +43,7 @@ CONF_TEMPERATURE_SENSOR_2 = "temperature_sensor_2"
 CONF_TEMPERATURE_SENSOR_3 = "temperature_sensor_3"
 CONF_TEMPERATURE_SENSOR_4 = "temperature_sensor_4"
 CONF_TEMPERATURE_SENSOR_5 = "temperature_sensor_5"
-CONF_POWER_TUBE_TEMPERATURE = "power_tube_temperature"
+CONF_MOSFET_TEMPERATURE = "mosfet_temperature"
 CONF_STATE_OF_CHARGE = "state_of_charge"
 CONF_STATE_OF_HEALTH = "state_of_health"
 CONF_CAPACITY_REMAINING = "capacity_remaining"
@@ -188,7 +188,7 @@ SENSOR_DEFS = {
         "device_class": DEVICE_CLASS_POWER,
         "state_class": STATE_CLASS_MEASUREMENT,
     },
-    CONF_POWER_TUBE_TEMPERATURE: {
+    CONF_MOSFET_TEMPERATURE: {
         "unit_of_measurement": UNIT_CELSIUS,
         "icon": ICON_EMPTY,
         "accuracy_decimals": 1,
@@ -293,6 +293,7 @@ SENSOR_DEFS = {
 _RENAMED_SENSORS = {
     "balancing": "balancer_status",
     "total_battery_capacity_setting": "full_charge_capacity",
+    "power_tube_temperature": "mosfet_temperature",
 }
 
 CONFIG_SCHEMA = cv.All(

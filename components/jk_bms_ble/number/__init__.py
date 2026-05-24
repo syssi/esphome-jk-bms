@@ -17,7 +17,12 @@ from esphome.const import (
     UNIT_VOLT,
 )
 
-from .. import CONF_JK_BMS_BLE_ID, JK_BMS_BLE_COMPONENT_SCHEMA, jk_bms_ble_ns
+from .. import (
+    CONF_JK_BMS_BLE_ID,
+    JK_BMS_BLE_COMPONENT_SCHEMA,
+    deprecated_renames,
+    jk_bms_ble_ns,
+)
 
 DEPENDENCIES = ["jk_bms_ble"]
 
@@ -182,9 +187,9 @@ CONF_DISCHARGE_UNDERTEMPERATURE_PROTECTION = "discharge_undertemperature_protect
 CONF_DISCHARGE_UNDERTEMPERATURE_PROTECTION_RECOVERY = (
     "discharge_undertemperature_protection_recovery"
 )
-CONF_POWER_TUBE_OVERTEMPERATURE_PROTECTION = "power_tube_overtemperature_protection"
-CONF_POWER_TUBE_OVERTEMPERATURE_PROTECTION_RECOVERY = (
-    "power_tube_overtemperature_protection_recovery"
+CONF_MOSFET_OVERTEMPERATURE_PROTECTION = "mosfet_overtemperature_protection"
+CONF_MOSFET_OVERTEMPERATURE_PROTECTION_RECOVERY = (
+    "mosfet_overtemperature_protection_recovery"
 )
 CONF_DISCHARGE_PRECHARGE_TIME = "discharge_precharge_time"
 CONF_HEATING_START_TEMPERATURE = "heating_start_temperature"
@@ -298,14 +303,14 @@ NUMBERS = {
         1.0,
         1,
     ],
-    CONF_POWER_TUBE_OVERTEMPERATURE_PROTECTION: [
+    CONF_MOSFET_OVERTEMPERATURE_PROTECTION: [
         0x00,
         0x1A,
         0x1A,
         10.0,
         4,
     ],
-    CONF_POWER_TUBE_OVERTEMPERATURE_PROTECTION_RECOVERY: [
+    CONF_MOSFET_OVERTEMPERATURE_PROTECTION_RECOVERY: [
         0x00,
         0x1B,
         0x1B,
@@ -337,7 +342,12 @@ JK_NUMBER_SCHEMA = (
     .extend(cv.COMPONENT_SCHEMA)
 )
 
-CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
+_RENAMED_NUMBERS = {
+    "power_tube_overtemperature_protection": "mosfet_overtemperature_protection",
+    "power_tube_overtemperature_protection_recovery": "mosfet_overtemperature_protection_recovery",
+}
+
+_NUMBER_CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
     {
         cv.Optional(CONF_SMART_SLEEP_VOLTAGE): JK_NUMBER_SCHEMA.extend(
             {
@@ -678,9 +688,7 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
                 ): cv.string_strict,
             }
         ),
-        cv.Optional(
-            CONF_POWER_TUBE_OVERTEMPERATURE_PROTECTION
-        ): JK_NUMBER_SCHEMA.extend(
+        cv.Optional(CONF_MOSFET_OVERTEMPERATURE_PROTECTION): JK_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=50): cv.float_,
                 cv.Optional(CONF_MAX_VALUE, default=110): cv.float_,
@@ -691,7 +699,7 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
             }
         ),
         cv.Optional(
-            CONF_POWER_TUBE_OVERTEMPERATURE_PROTECTION_RECOVERY
+            CONF_MOSFET_OVERTEMPERATURE_PROTECTION_RECOVERY
         ): JK_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=50): cv.float_,
@@ -734,6 +742,8 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
         ),
     }
 )
+
+CONFIG_SCHEMA = cv.All(deprecated_renames(_RENAMED_NUMBERS), _NUMBER_CONFIG_SCHEMA)
 
 
 async def to_code(config):
