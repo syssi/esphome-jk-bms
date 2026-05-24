@@ -48,7 +48,7 @@ CONF_CAPACITY_REMAINING = "capacity_remaining"
 CONF_TEMPERATURE_SENSORS = "temperature_sensors"
 CONF_CHARGING_CYCLES = "charging_cycles"
 CONF_TOTAL_CHARGING_CYCLE_CAPACITY = "total_charging_cycle_capacity"
-CONF_BATTERY_STRINGS = "battery_strings"
+CONF_CELL_COUNT = "cell_count"
 
 CONF_ERRORS_BITMASK = "errors_bitmask"
 CONF_OPERATION_MODE_BITMASK = "operation_mode_bitmask"
@@ -95,7 +95,7 @@ CONF_DISCHARGING_LOW_TEMPERATURE_PROTECTION = "discharging_low_temperature_prote
 CONF_DISCHARGING_LOW_TEMPERATURE_RECOVERY = "discharging_low_temperature_recovery"
 
 # r/w
-# CONF_BATTERY_STRINGS = "battery_strings"
+# CONF_CELL_COUNT = "cell_count"
 CONF_FULL_CHARGE_CAPACITY = "full_charge_capacity"
 
 CONF_CURRENT_CALIBRATION = "current_calibration"
@@ -112,7 +112,7 @@ ICON_CURRENT_DC = "mdi:current-dc"
 ICON_MIN_VOLTAGE_CELL = "mdi:battery-minus-outline"
 ICON_MAX_VOLTAGE_CELL = "mdi:battery-plus-outline"
 
-ICON_BATTERY_STRINGS = "mdi:car-battery"
+ICON_CELL_COUNT = "mdi:car-battery"
 ICON_CAPACITY_REMAINING = "mdi:battery-50"
 ICON_ACTUAL_BATTERY_CAPACITY = "mdi:battery-50"
 ICON_TOTAL_BATTERY_CAPACITY_SETTING = "mdi:battery-sync"
@@ -270,9 +270,9 @@ SENSOR_DEFS = {
         "device_class": DEVICE_CLASS_EMPTY,
         "state_class": STATE_CLASS_TOTAL_INCREASING,
     },
-    CONF_BATTERY_STRINGS: {
+    CONF_CELL_COUNT: {
         "unit_of_measurement": UNIT_EMPTY,
-        "icon": ICON_BATTERY_STRINGS,
+        "icon": ICON_CELL_COUNT,
         "accuracy_decimals": 0,
         "device_class": DEVICE_CLASS_EMPTY,
         "state_class": STATE_CLASS_MEASUREMENT,
@@ -566,6 +566,9 @@ CONFIG_SCHEMA = (
             ),
             cv.Optional("capacity_remaining_derived"): cv.invalid(
                 "sensor.capacity_remaining_derived has been renamed to sensor.capacity_remaining"
+            ),
+            cv.Optional("battery_strings"): cv.invalid(
+                "sensor.battery_strings has been renamed to sensor.cell_count"
             ),
         }
     )

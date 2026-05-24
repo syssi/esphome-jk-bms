@@ -178,7 +178,7 @@ TEST(JkBmsStatusDataTest, BatteryInfo) {
   TestableJkBms bms;
   sensor::Sensor strings, cycles;
   text_sensor::TextSensor battery_type;
-  bms.set_battery_strings_sensor(&strings);
+  bms.set_cell_count_sensor(&strings);
   bms.set_charging_cycles_sensor(&cycles);
   bms.set_battery_type_text_sensor(&battery_type);
 

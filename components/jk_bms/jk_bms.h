@@ -90,8 +90,8 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
   void set_total_charging_cycle_capacity_sensor(sensor::Sensor *total_charging_cycle_capacity_sensor) {
     total_charging_cycle_capacity_sensor_ = total_charging_cycle_capacity_sensor;
   }
-  void set_battery_strings_sensor(sensor::Sensor *battery_strings_sensor) {
-    battery_strings_sensor_ = battery_strings_sensor;
+  void set_cell_count_sensor(sensor::Sensor *cell_count_sensor) {
+    cell_count_sensor_ = cell_count_sensor;
   }
   void set_errors_bitmask_sensor(sensor::Sensor *errors_bitmask_sensor) {
     errors_bitmask_sensor_ = errors_bitmask_sensor;
@@ -272,7 +272,7 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
   sensor::Sensor *temperature_sensors_sensor_{nullptr};
   sensor::Sensor *charging_cycles_sensor_{nullptr};
   sensor::Sensor *total_charging_cycle_capacity_sensor_{nullptr};
-  sensor::Sensor *battery_strings_sensor_{nullptr};
+  sensor::Sensor *cell_count_sensor_{nullptr};
   sensor::Sensor *errors_bitmask_sensor_{nullptr};
   sensor::Sensor *operation_mode_bitmask_sensor_{nullptr};
   sensor::Sensor *total_voltage_overvoltage_protection_sensor_{nullptr};

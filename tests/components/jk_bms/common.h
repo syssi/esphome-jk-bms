@@ -20,7 +20,7 @@ class TestableJkBms : public JkBms {
 //   power_tube_temperature: 29°C         temperature_sensor_1: 30°C  temperature_sensor_2: 28°C
 //   state_of_charge: 15 %                total_battery_capacity: 14 Ah
 //   errors_bitmask: 0                    operation_modes: charging+discharging+balancer (0x07)
-//   battery_strings: 14                  charging_cycles: 4
+//   cell_count: 14                        charging_cycles: 4
 //   software_version: "H6.X__S6.1.3S__" total_runtime: 57856 min ("40d 4h")
 //   balancing_switch: on                 charging_switch: on  discharging_switch: on
 static const std::vector<uint8_t> STATUS_FRAME_14S = {

@@ -26,7 +26,7 @@ entities:
     name: Cell Voltage 12
   - entity: sensor.jk_bms_cell_voltage_13
     name: Cell Voltage 13
-  - entity: sensor.jk_bms_battery_strings
+  - entity: sensor.jk_bms_cell_count
     name: Battery Strings
   - entity: switch.jk_bms_charging
     name: Charging
