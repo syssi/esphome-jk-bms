@@ -707,6 +707,9 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
     //                                                                                 0x02: Float
     this->publish_state_(this->charge_status_id_sensor_, (float) data[248 + offset]);
     this->publish_state_(this->charge_status_text_sensor_, this->charge_status_id_to_string_(data[248 + offset]));
+
+    // 234+32  4   0x3E 0x00 0x00 0x00    Detail log count     1
+    this->publish_state_(this->detail_log_count_sensor_, (float) jk_get_32bit(234 + offset));
   }
 
   // 299   1   0xCD                   CRC

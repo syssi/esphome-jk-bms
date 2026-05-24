@@ -330,6 +330,8 @@ sensor:
       name: "charge status id"
     charge_status_time_elapsed:
       name: "charge status time elapsed"
+    detail_log_count:
+      name: "detail log count"
 
 switch:
   - platform: jk_bms_ble

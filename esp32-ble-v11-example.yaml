@@ -314,6 +314,8 @@ sensor:
       name: "errors bitmask"
     emergency_time_countdown:
       name: "emergency time countdown"
+    detail_log_count:
+      name: "detail log count"
 
 switch:
   - platform: jk_bms_ble
