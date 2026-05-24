@@ -170,8 +170,8 @@ sensor:
       name: "cell voltage 15"
     cell_voltage_16:
       name: "cell voltage 16"
-    power_tube_temperature:
-      name: "power tube temperature"
+    mosfet_temperature:
+      name: "mosfet temperature"
     temperature_sensor_1:
       name: "temperature sensor 1"
     temperature_sensor_2:

@@ -106,12 +106,12 @@ entities:
     name: Operation Mode Bitmask
   - entity: sensor.jk_bms_password
     name: Password
-  - entity: sensor.jk_bms_power_tube_temperature
-    name: Power Tube Temperature
-  - entity: sensor.jk_bms_power_tube_temperature_protection
-    name: Power Tube Temperature Protection
-  - entity: sensor.jk_bms_power_tube_temperature_recovery
-    name: Power Tube Temperature Recovery
+  - entity: sensor.jk_bms_mosfet_temperature
+    name: Mosfet Temperature
+  - entity: sensor.jk_bms_mosfet_temperature_protection
+    name: Mosfet Temperature Protection
+  - entity: sensor.jk_bms_mosfet_temperature_recovery
+    name: Mosfet Temperature Recovery
   - entity: sensor.jk_bms_sleep_wait_time
     name: Sleep Wait Time
   - entity: sensor.jk_bms_software_version

@@ -73,7 +73,7 @@ TEST(JkBmsV15CellInfoTest, Temperatures) {
   sensor::Sensor t1, t2, tube;
   bms.set_temperature_sensor(0, &t1);
   bms.set_temperature_sensor(1, &t2);
-  bms.set_power_tube_temperature_sensor(&tube);
+  bms.set_mosfet_temperature_sensor(&tube);
   bms.decode_jk02_cell_info_(CELL_INFO_JK02_32S_V15);
   EXPECT_NEAR(t1.state, 13.4f, 0.1f);
   EXPECT_NEAR(t2.state, 12.8f, 0.1f);
