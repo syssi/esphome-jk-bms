@@ -48,7 +48,7 @@ entities:
     name: Balance Starting Voltage
   - entity: sensor.jk_bms_battery_type
     name: Battery Type
-  - entity: sensor.jk_bms_cell_pressure_difference_protection
+  - entity: sensor.jk_bms_cell_voltage_difference_protection
     name: Cell Pressure Difference Protection
   - entity: sensor.jk_bms_cell_voltage_overvoltage_delay
     name: Cell Voltage Overvoltage Delay

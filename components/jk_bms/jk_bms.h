@@ -123,8 +123,8 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
   void set_cell_voltage_undervoltage_delay_sensor(sensor::Sensor *cell_voltage_undervoltage_delay_sensor) {
     cell_voltage_undervoltage_delay_sensor_ = cell_voltage_undervoltage_delay_sensor;
   }
-  void set_cell_pressure_difference_protection_sensor(sensor::Sensor *cell_pressure_difference_protection_sensor) {
-    cell_pressure_difference_protection_sensor_ = cell_pressure_difference_protection_sensor;
+  void set_cell_voltage_difference_protection_sensor(sensor::Sensor *cell_voltage_difference_protection_sensor) {
+    cell_voltage_difference_protection_sensor_ = cell_voltage_difference_protection_sensor;
   }
   void set_discharging_overcurrent_protection_sensor(sensor::Sensor *discharging_overcurrent_protection_sensor) {
     discharging_overcurrent_protection_sensor_ = discharging_overcurrent_protection_sensor;
@@ -285,7 +285,7 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
   sensor::Sensor *cell_voltage_undervoltage_protection_sensor_{nullptr};
   sensor::Sensor *cell_voltage_undervoltage_recovery_sensor_{nullptr};
   sensor::Sensor *cell_voltage_undervoltage_delay_sensor_{nullptr};
-  sensor::Sensor *cell_pressure_difference_protection_sensor_{nullptr};
+  sensor::Sensor *cell_voltage_difference_protection_sensor_{nullptr};
   sensor::Sensor *discharging_overcurrent_protection_sensor_{nullptr};
   sensor::Sensor *discharging_overcurrent_delay_sensor_{nullptr};
   sensor::Sensor *charging_overcurrent_protection_sensor_{nullptr};

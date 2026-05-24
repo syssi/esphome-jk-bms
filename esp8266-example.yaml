@@ -184,7 +184,7 @@ sensor:
       name: "cell voltage undervoltage recovery"
     cell_voltage_undervoltage_delay:
       name: "cell voltage undervoltage delay"
-    cell_pressure_difference_protection:
+    cell_voltage_difference_protection:
       name: "cell pressure difference protection"
     discharging_overcurrent_protection:
       name: "discharging overcurrent protection"
