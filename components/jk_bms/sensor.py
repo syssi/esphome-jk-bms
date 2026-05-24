@@ -564,9 +564,6 @@ CONFIG_SCHEMA = (
             cv.Optional("alarm_low_volume"): cv.invalid(
                 "sensor.alarm_low_volume has been renamed to sensor.low_soc_alarm"
             ),
-            cv.Optional("capacity_remaining"): cv.invalid(
-                "sensor.capacity_remaining has been renamed to sensor.state_of_charge"
-            ),
             cv.Optional("capacity_remaining_derived"): cv.invalid(
                 "sensor.capacity_remaining_derived has been renamed to sensor.capacity_remaining"
             ),
