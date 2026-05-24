@@ -354,7 +354,7 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->sleep_wait_time_sensor_, (float) jk_get_16bit(offset + 23 + 3 * 37));
 
   // 0xB1 0x14: Low volume alarm                                             20%            1.0 %      0-80%
-  this->publish_state_(this->alarm_low_volume_sensor_, (float) data[offset + 23 + 3 * 38]);
+  this->publish_state_(this->low_soc_alarm_sensor_, (float) data[offset + 23 + 3 * 38]);
 
   // 0xB2 0x31 0x32 0x33 0x34 0x35 0x36 0x00 0x00 0x00 0x00: Modify parameter password
   auto password_begin = data.begin() + offset + 25 + 3 * 38;
@@ -478,7 +478,7 @@ void JkBms::publish_device_unavailable_() {
   this->publish_state_(current_calibration_sensor_, NAN);
   this->publish_state_(device_address_sensor_, NAN);
   this->publish_state_(sleep_wait_time_sensor_, NAN);
-  this->publish_state_(alarm_low_volume_sensor_, NAN);
+  this->publish_state_(low_soc_alarm_sensor_, NAN);
   this->publish_state_(password_sensor_, NAN);
   this->publish_state_(manufacturing_date_sensor_, NAN);
   this->publish_state_(total_runtime_sensor_, NAN);
@@ -648,7 +648,7 @@ void JkBms::dump_config() {  // NOLINT(google-readability-function-size,readabil
   LOG_SENSOR("", "Device Address", this->device_address_sensor_);
   LOG_TEXT_SENSOR("", "Battery Type", this->battery_type_text_sensor_);
   LOG_SENSOR("", "Sleep Wait Time", this->sleep_wait_time_sensor_);
-  LOG_SENSOR("", "Alarm Low Volume", this->alarm_low_volume_sensor_);
+  LOG_SENSOR("", "Low SOC Alarm", this->low_soc_alarm_sensor_);
   LOG_TEXT_SENSOR("", "Password", this->password_text_sensor_);
   LOG_TEXT_SENSOR("", "Device Type", this->device_type_text_sensor_);
   LOG_SENSOR("", "Manufacturing Date", this->manufacturing_date_sensor_);
