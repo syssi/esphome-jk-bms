@@ -308,6 +308,9 @@ CONFIG_SCHEMA = (
             cv.Optional("balancing"): cv.invalid(
                 "sensor.balancing has been renamed to sensor.balancer_status"
             ),
+            cv.Optional("total_battery_capacity_setting"): cv.invalid(
+                "sensor.total_battery_capacity_setting has been renamed to sensor.full_charge_capacity"
+            ),
         }
     )
 )
