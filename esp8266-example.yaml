@@ -228,8 +228,8 @@ sensor:
       name: "device address"
     sleep_wait_time:
       name: "sleep wait time"
-    low_soc_alarm:
-      name: "alarm low volume"
+    low_soc_alarm_threshold:
+      name: "Low SOC alarm threshold"
     manufacturing_date:
       name: "manufacturing date"
     total_runtime:

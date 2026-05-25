@@ -40,7 +40,7 @@ entities:
     name: Capacity Remaining
   - entity: sensor.jk_bms_actual_battery_capacity
     name: Battery Capacity
-  - entity: sensor.jk_bms_low_soc_alarm
+  - entity: sensor.jk_bms_low_soc_alarm_threshold
     name: Alarm Low Volume
   - entity: sensor.jk_bms_balancing_delta_voltage
     name: Balance Opening Pressure Difference

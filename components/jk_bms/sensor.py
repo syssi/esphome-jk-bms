@@ -99,7 +99,7 @@ CONF_FULL_CHARGE_CAPACITY = "full_charge_capacity"
 CONF_CURRENT_CALIBRATION = "current_calibration"
 CONF_DEVICE_ADDRESS = "device_address"
 CONF_SLEEP_WAIT_TIME = "sleep_wait_time"
-CONF_LOW_SOC_ALARM = "low_soc_alarm"
+CONF_LOW_SOC_ALARM_THRESHOLD = "low_soc_alarm_threshold"
 CONF_MANUFACTURING_DATE = "manufacturing_date"
 CONF_TOTAL_RUNTIME = "total_runtime"
 CONF_START_CURRENT_CALIBRATION = "start_current_calibration"
@@ -119,7 +119,7 @@ ICON_DEVICE_ADDRESS = "mdi:identifier"
 ICON_ERRORS_BITMASK = "mdi:alert-circle-outline"
 ICON_OPERATION_MODE_BITMASK = "mdi:heart-pulse"
 ICON_CHARGING_CYCLES = "mdi:battery-sync"
-ICON_LOW_SOC_ALARM = "mdi:battery-alert"
+ICON_LOW_SOC_ALARM_THRESHOLD = "mdi:battery-alert"
 
 UNIT_SECONDS = "s"
 UNIT_HOURS = "h"
@@ -499,9 +499,9 @@ SENSOR_DEFS = {
         "device_class": DEVICE_CLASS_EMPTY,
         "state_class": STATE_CLASS_MEASUREMENT,
     },
-    CONF_LOW_SOC_ALARM: {
+    CONF_LOW_SOC_ALARM_THRESHOLD: {
         "unit_of_measurement": UNIT_PERCENT,
-        "icon": ICON_LOW_SOC_ALARM,
+        "icon": ICON_LOW_SOC_ALARM_THRESHOLD,
         "accuracy_decimals": 0,
         "device_class": DEVICE_CLASS_EMPTY,
         "state_class": STATE_CLASS_MEASUREMENT,
@@ -546,7 +546,7 @@ SENSOR_DEFS = {
 _RENAMED_SENSORS = {
     "cell_pressure_difference_protection": "cell_voltage_difference_protection",
     "balance_opening_pressure_difference": "balancing_delta_voltage",
-    "alarm_low_volume": "low_soc_alarm",
+    "alarm_low_volume": "low_soc_alarm_threshold",
     "capacity_remaining": "state_of_charge",
     "capacity_remaining_derived": "capacity_remaining",
     "battery_strings": "cell_count",

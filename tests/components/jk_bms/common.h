@@ -260,7 +260,7 @@ static const std::vector<uint8_t> STATUS_FRAME_14S = {
     0xB0,
     0x00,
     0x0A,
-    // bytes 181-182: low_soc_alarm = 20 %
+    // bytes 181-182: low_soc_alarm_threshold = 20 %
     0xB1,
     0x14,
     // bytes 183-193: password = "123456" (10 bytes, null-padded)
