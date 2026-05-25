@@ -10,30 +10,20 @@ DEPENDENCIES = ["jk_bms"]
 
 CODEOWNERS = ["@syssi"]
 
-CONF_CHARGING_SWITCH = (
-    "charging_switch"  # @DEPRECATED and superseded by switch.charging
-)
-CONF_DISCHARGING_SWITCH = (
-    "discharging_switch"  # @DEPRECATED and superseded by switch.discharging
-)
 CONF_BALANCING = "balancing"
 CONF_BALANCING_SWITCH = "balancing_switch"
 CONF_DEDICATED_CHARGER_SWITCH = "dedicated_charger_switch"
 CONF_ONLINE_STATUS = "online_status"
 
 ICON_CHARGING = "mdi:battery-charging"
-ICON_CHARGING_SWITCH = "mdi:battery-charging"
 ICON_DISCHARGING = "mdi:power-plug"
-ICON_DISCHARGING_SWITCH = "mdi:power-plug"
 ICON_BALANCING = "mdi:battery-heart-variant"
 ICON_BALANCING_SWITCH = "mdi:battery-heart-variant"
 ICON_DEDICATED_CHARGER_SWITCH = "mdi:battery-charging"
 
 BINARY_SENSOR_DEFS = {
     CONF_CHARGING: {"icon": ICON_CHARGING},
-    CONF_CHARGING_SWITCH: {"icon": ICON_CHARGING_SWITCH},
     CONF_DISCHARGING: {"icon": ICON_DISCHARGING},
-    CONF_DISCHARGING_SWITCH: {"icon": ICON_DISCHARGING_SWITCH},
     CONF_BALANCING: {"icon": ICON_BALANCING},
     CONF_BALANCING_SWITCH: {"icon": ICON_BALANCING_SWITCH},
     CONF_DEDICATED_CHARGER_SWITCH: {"icon": ICON_DEDICATED_CHARGER_SWITCH},
@@ -47,6 +37,15 @@ CONFIG_SCHEMA = JK_BMS_COMPONENT_SCHEMA.extend(
     {
         cv.Optional(key): binary_sensor.binary_sensor_schema(**kwargs)
         for key, kwargs in BINARY_SENSOR_DEFS.items()
+    }
+).extend(
+    {
+        cv.Optional("charging_switch"): cv.invalid(
+            "binary_sensor.charging_switch has been removed; use switch.charging instead"
+        ),
+        cv.Optional("discharging_switch"): cv.invalid(
+            "binary_sensor.discharging_switch has been removed; use switch.discharging instead"
+        ),
     }
 )
 

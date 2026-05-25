@@ -78,7 +78,7 @@ class TestJkBmsBinarySensorConstants:
         assert CONF_DISCHARGING in binary_sensor.BINARY_SENSOR_DEFS
         assert binary_sensor.CONF_BALANCING in binary_sensor.BINARY_SENSOR_DEFS
         assert binary_sensor.CONF_ONLINE_STATUS in binary_sensor.BINARY_SENSOR_DEFS
-        assert len(binary_sensor.BINARY_SENSOR_DEFS) == 8
+        assert len(binary_sensor.BINARY_SENSOR_DEFS) == 6
 
 
 class TestJkBmsTextSensorConstants:

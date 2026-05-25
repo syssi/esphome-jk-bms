@@ -162,9 +162,10 @@ TEST(JkBmsStatusDataTest, OperationModes) {
 
 TEST(JkBmsStatusDataTest, SwitchStates) {
   TestableJkBms bms;
-  binary_sensor::BinarySensor charging_sw, discharging_sw, balancing_sw;
-  bms.set_charging_switch_binary_sensor(&charging_sw);
-  bms.set_discharging_switch_binary_sensor(&discharging_sw);
+  TestSwitch charging_sw, discharging_sw;
+  binary_sensor::BinarySensor balancing_sw;
+  bms.set_charging_switch(&charging_sw);
+  bms.set_discharging_switch(&discharging_sw);
   bms.set_balancing_switch_binary_sensor(&balancing_sw);
 
   bms.on_jk_modbus_data(FUNCTION_READ_ALL, STATUS_FRAME_14S);
