@@ -13,20 +13,20 @@ static const uint8_t FUNCTION_WRITE_REGISTER = 0x02;
 
 static const uint8_t ERRORS_SIZE = 14;
 static constexpr const char *const ERRORS[ERRORS_SIZE] = {
-    "Low capacity",              // Byte 0.0, warning
-    "MOSFET overtemperature",    // Byte 0.1, alarm
-    "Charge overvoltage",        // Byte 0.2, alarm
-    "Discharge undervoltage",    // Byte 0.3, alarm
-    "Battery overtemperature",   // Byte 0.4, alarm
-    "Charge overcurrent",        // Byte 0.5, alarm
-    "Discharge overcurrent",     // Byte 0.6, alarm
-    "Cell pressure difference",  // Byte 0.7, alarm
+    "Low capacity",                 // Byte 0.0, warning
+    "MOSFET overtemperature",       // Byte 0.1, alarm
+    "Charge overvoltage",           // Byte 0.2, alarm
+    "Discharge undervoltage",       // Byte 0.3, alarm
+    "Battery overtemperature",      // Byte 0.4, alarm
+    "Charge overcurrent",           // Byte 0.5, alarm
+    "Discharge overcurrent",        // Byte 0.6, alarm
+    "Cell pressure difference",     // Byte 0.7, alarm
     "Battery box overtemperature",  // Byte 1.0, alarm
-    "Battery undertemperature",  // Byte 1.1, alarm
-    "Cell overvoltage",          // Byte 1.2, alarm
-    "Cell undervoltage",         // Byte 1.3, alarm
-    "309_A protection",          // Byte 1.4, alarm
-    "309_A protection",          // Byte 1.5, alarm
+    "Battery undertemperature",     // Byte 1.1, alarm
+    "Cell overvoltage",             // Byte 1.2, alarm
+    "Cell undervoltage",            // Byte 1.3, alarm
+    "309_A protection",             // Byte 1.4, alarm
+    "309_A protection",             // Byte 1.5, alarm
 };
 
 static const uint8_t OPERATION_MODES_SIZE = 4;
