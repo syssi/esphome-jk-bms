@@ -114,10 +114,10 @@ TEST(JkBmsV19CellInfoTest, MosfetState) {
 TEST(JkBmsV19CellInfoTest, DetailLogCount) {
   TestableJkBmsBle bms;
   bms.set_protocol_version(PROTOCOL_VERSION_JK02_32S);
-  sensor::Sensor detail_log_count;
-  bms.set_detail_log_count_sensor(&detail_log_count);
+  sensor::Sensor detail_log_entry_count;
+  bms.set_detail_log_entry_count_sensor(&detail_log_entry_count);
   bms.decode_jk02_cell_info_(CELL_INFO_JK02_32S_V19);
-  EXPECT_FLOAT_EQ(detail_log_count.state, 62.0f);
+  EXPECT_FLOAT_EQ(detail_log_entry_count.state, 62.0f);
 }
 
 TEST(JkBmsV19CellInfoTest, BatteryTypeCode) {

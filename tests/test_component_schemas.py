@@ -116,7 +116,7 @@ class TestJkBmsBleSensorLists:
         assert "total_voltage" in ble_sensor.SENSOR_DEFS
         assert "full_charge_capacity" in ble_sensor.SENSOR_DEFS
         assert "balancer_status" in ble_sensor.SENSOR_DEFS
-        assert "detail_log_count" in ble_sensor.SENSOR_DEFS
+        assert "detail_log_entry_count" in ble_sensor.SENSOR_DEFS
         assert "battery_type_id" in ble_sensor.SENSOR_DEFS
         assert len(ble_sensor.SENSOR_DEFS) == 27
 

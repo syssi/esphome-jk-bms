@@ -268,8 +268,8 @@ class JkBmsBle :
   void set_charge_status_time_elapsed_sensor(sensor::Sensor *charge_status_time_elapsed_sensor) {
     charge_status_time_elapsed_sensor_ = charge_status_time_elapsed_sensor;
   }
-  void set_detail_log_count_sensor(sensor::Sensor *detail_log_count_sensor) {
-    detail_log_count_sensor_ = detail_log_count_sensor;
+  void set_detail_log_entry_count_sensor(sensor::Sensor *detail_log_entry_count_sensor) {
+    detail_log_entry_count_sensor_ = detail_log_entry_count_sensor;
   }
   void set_battery_type_id_sensor(sensor::Sensor *battery_type_id_sensor) {
     battery_type_id_sensor_ = battery_type_id_sensor;
@@ -414,7 +414,7 @@ class JkBmsBle :
   sensor::Sensor *heating_current_sensor_{nullptr};
   sensor::Sensor *charge_status_id_sensor_{nullptr};
   sensor::Sensor *charge_status_time_elapsed_sensor_{nullptr};
-  sensor::Sensor *detail_log_count_sensor_{nullptr};
+  sensor::Sensor *detail_log_entry_count_sensor_{nullptr};
   sensor::Sensor *battery_type_id_sensor_{nullptr};
 
   switch_::Switch *charging_switch_{nullptr};

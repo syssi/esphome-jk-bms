@@ -56,7 +56,7 @@ CONF_EMERGENCY_TIME_COUNTDOWN = "emergency_time_countdown"
 CONF_HEATING_CURRENT = "heating_current"
 CONF_CHARGE_STATUS_ID = "charge_status_id"
 CONF_CHARGE_STATUS_TIME_ELAPSED = "charge_status_time_elapsed"
-CONF_DETAIL_LOG_COUNT = "detail_log_count"
+CONF_DETAIL_LOG_ENTRY_COUNT = "detail_log_entry_count"
 CONF_BATTERY_TYPE_ID = "battery_type_id"
 CONF_BALANCER_STATUS = "balancer_status"
 
@@ -274,7 +274,7 @@ SENSOR_DEFS = {
         "accuracy_decimals": 0,
         "device_class": DEVICE_CLASS_EMPTY,
     },
-    CONF_DETAIL_LOG_COUNT: {
+    CONF_DETAIL_LOG_ENTRY_COUNT: {
         "unit_of_measurement": UNIT_EMPTY,
         "icon": ICON_COUNTER,
         "accuracy_decimals": 0,
@@ -294,6 +294,7 @@ _RENAMED_SENSORS = {
     "balancing": "balancer_status",
     "total_battery_capacity_setting": "full_charge_capacity",
     "power_tube_temperature": "mosfet_temperature",
+    "detail_log_count": "detail_log_entry_count",
 }
 
 CONFIG_SCHEMA = cv.All(
