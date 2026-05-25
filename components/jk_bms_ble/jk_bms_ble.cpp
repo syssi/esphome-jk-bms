@@ -164,7 +164,7 @@ void JkBmsBle::dump_config() {  // NOLINT(google-readability-function-size,reada
   LOG_SENSOR("", "Temperature Sensor 3", this->temperatures_[2].temperature_sensor_);
   LOG_SENSOR("", "Temperature Sensor 4", this->temperatures_[3].temperature_sensor_);
   LOG_SENSOR("", "Temperature Sensor 5", this->temperatures_[4].temperature_sensor_);
-  LOG_SENSOR("", "Balancing", this->balancer_status_sensor_);
+  LOG_SENSOR("", "Balancer Status Bitmask", this->balancer_status_bitmask_sensor_);
   LOG_SENSOR("", "State Of Charge", this->state_of_charge_sensor_);
   LOG_SENSOR("", "State Of Health", this->state_of_health_sensor_);
   LOG_SENSOR("", "Capacity Remaining", this->capacity_remaining_sensor_);
@@ -179,7 +179,7 @@ void JkBmsBle::dump_config() {  // NOLINT(google-readability-function-size,reada
   LOG_SENSOR("", "Charge Status Time Elapsed", this->charge_status_time_elapsed_sensor_);
   LOG_SENSOR("", "Battery Type ID", this->battery_type_id_sensor_);
 
-  LOG_TEXT_SENSOR("", "Operation Status", this->operation_status_text_sensor_);
+  LOG_TEXT_SENSOR("", "Balancer Status", this->balancer_status_text_sensor_);
   LOG_TEXT_SENSOR("", "Total Runtime Formatted", this->total_runtime_formatted_text_sensor_);
   LOG_TEXT_SENSOR("", "Errors", this->errors_text_sensor_);
   LOG_TEXT_SENSOR("", "Errors Bitmask Hex", this->errors_bitmask_hex_text_sensor_);
@@ -599,8 +599,9 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // 140   1   0x00                   Balancing action                   0x00: Off
   //                                                                     0x01: Charging balancer
   //                                                                     0x02: Discharging balancer
-  this->publish_state_(this->balancer_status_sensor_, (data[140 + offset]));
+  this->publish_state_(this->balancer_status_bitmask_sensor_, (data[140 + offset]));
   this->publish_state_(this->balancing_binary_sensor_, (data[140 + offset] != 0x00));
+  this->publish_state_(this->balancer_status_text_sensor_, (data[140 + offset] != 0x00) ? "Balancing" : "Idle");
   ESP_LOGD(TAG, "Balancing indicator (legacy): %s", YESNO(data[140 + offset] != 0x00));
 
   // 141   1   0x54                   State of charge in   1.0           %
@@ -865,7 +866,8 @@ void JkBmsBle::decode_jk04_cell_info_(const std::vector<uint8_t> &data) {
   // 220   1   0x00                  Blink cells (0x00: Off, 0x01: Charging balancer, 0x02: Discharging balancer)
   bool balancing = (data[220] != 0x00);
   this->publish_state_(this->balancing_binary_sensor_, balancing);
-  this->publish_state_(this->operation_status_text_sensor_, (balancing) ? "Balancing" : "Idle");
+  this->publish_state_(this->balancer_status_bitmask_sensor_, (float) data[220]);
+  this->publish_state_(this->balancer_status_text_sensor_, balancing ? "Balancing" : "Idle");
 
   // 221   1   0x01                  Unknown221
   ESP_LOGD(TAG, "Unknown221: 0x%02X", data[221]);
@@ -1608,7 +1610,7 @@ void JkBmsBle::publish_device_unavailable_() {
   this->publish_state_(charging_power_sensor_, NAN);
   this->publish_state_(discharging_power_sensor_, NAN);
   this->publish_state_(mosfet_temperature_sensor_, NAN);
-  this->publish_state_(balancer_status_sensor_, NAN);
+  this->publish_state_(balancer_status_bitmask_sensor_, NAN);
   this->publish_state_(state_of_charge_sensor_, NAN);
   this->publish_state_(state_of_health_sensor_, NAN);
   this->publish_state_(capacity_remaining_sensor_, NAN);

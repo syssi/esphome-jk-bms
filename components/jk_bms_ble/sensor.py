@@ -58,7 +58,7 @@ CONF_CHARGE_STATUS_ID = "charge_status_id"
 CONF_CHARGE_STATUS_TIME_ELAPSED = "charge_status_time_elapsed"
 CONF_DETAIL_LOG_ENTRY_COUNT = "detail_log_entry_count"
 CONF_BATTERY_TYPE_ID = "battery_type_id"
-CONF_BALANCER_STATUS = "balancer_status"
+CONF_BALANCER_STATUS_BITMASK = "balancer_status_bitmask"
 
 UNIT_AMPERE_HOURS = "Ah"
 UNIT_OHM = "Ω"
@@ -104,7 +104,7 @@ _TEMPERATURE_SCHEMA = sensor.sensor_schema(
 )
 
 SENSOR_DEFS = {
-    CONF_BALANCER_STATUS: {
+    CONF_BALANCER_STATUS_BITMASK: {
         "unit_of_measurement": UNIT_EMPTY,
         "icon": ICON_BALANCER,
         "accuracy_decimals": 0,
@@ -291,10 +291,11 @@ SENSOR_DEFS = {
 }
 
 _RENAMED_SENSORS = {
-    "balancing": "balancer_status",
+    "balancing": "balancer_status_bitmask",
     "total_battery_capacity_setting": "full_charge_capacity",
     "power_tube_temperature": "mosfet_temperature",
     "detail_log_count": "detail_log_entry_count",
+    "balancer_status": "balancer_status_bitmask",
 }
 
 CONFIG_SCHEMA = cv.All(

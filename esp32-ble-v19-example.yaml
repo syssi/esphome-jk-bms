@@ -310,8 +310,8 @@ sensor:
       name: "temperature sensor 5"
     mosfet_temperature:
       name: "mosfet temperature"
-    balancer_status:
-      name: "balancer status"
+    balancer_status_bitmask:
+      name: "balancer status bitmask"
     state_of_charge:
       name: "state of charge"
     state_of_health:
@@ -374,6 +374,8 @@ text_sensor:
       name: "errors"
     errors_bitmask_hex:
       name: "errors bitmask hex"
+    balancer_status:
+      name: "balancer status"
     total_runtime_formatted:
       name: "total runtime formatted"
     charge_status:

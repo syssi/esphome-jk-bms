@@ -169,8 +169,8 @@ class JkBmsBle :
   void set_balancing_binary_sensor(binary_sensor::BinarySensor *balancing_binary_sensor) {
     balancing_binary_sensor_ = balancing_binary_sensor;
   }
-  void set_balancer_status_sensor(sensor::Sensor *balancer_status_sensor) {
-    balancer_status_sensor_ = balancer_status_sensor;
+  void set_balancer_status_bitmask_sensor(sensor::Sensor *balancer_status_sensor) {
+    balancer_status_bitmask_sensor_ = balancer_status_sensor;
   }
   void set_precharging_binary_sensor(binary_sensor::BinarySensor *precharging_binary_sensor) {
     precharging_binary_sensor_ = precharging_binary_sensor;
@@ -279,8 +279,8 @@ class JkBmsBle :
     errors_bitmask_hex_text_sensor_ = errors_bitmask_hex_text_sensor;
   }
   void set_errors_text_sensor(text_sensor::TextSensor *errors_text_sensor) { errors_text_sensor_ = errors_text_sensor; }
-  void set_operation_status_text_sensor(text_sensor::TextSensor *operation_status_text_sensor) {
-    operation_status_text_sensor_ = operation_status_text_sensor;
+  void set_balancer_status_text_sensor(text_sensor::TextSensor *operation_status_text_sensor) {
+    balancer_status_text_sensor_ = operation_status_text_sensor;
   }
   void set_total_runtime_formatted_text_sensor(text_sensor::TextSensor *total_runtime_formatted_text_sensor) {
     total_runtime_formatted_text_sensor_ = total_runtime_formatted_text_sensor;
@@ -389,7 +389,7 @@ class JkBmsBle :
   number::Number *heating_stop_temperature_number_{nullptr};
   number::Number *re_bulk_soc_number_{nullptr};
 
-  sensor::Sensor *balancer_status_sensor_{nullptr};
+  sensor::Sensor *balancer_status_bitmask_sensor_{nullptr};
   sensor::Sensor *min_cell_voltage_sensor_{nullptr};
   sensor::Sensor *max_cell_voltage_sensor_{nullptr};
   sensor::Sensor *min_voltage_cell_sensor_{nullptr};
@@ -431,7 +431,7 @@ class JkBmsBle :
 
   text_sensor::TextSensor *errors_bitmask_hex_text_sensor_{nullptr};
   text_sensor::TextSensor *errors_text_sensor_{nullptr};
-  text_sensor::TextSensor *operation_status_text_sensor_{nullptr};
+  text_sensor::TextSensor *balancer_status_text_sensor_{nullptr};
   text_sensor::TextSensor *total_runtime_formatted_text_sensor_{nullptr};
   text_sensor::TextSensor *charge_status_text_sensor_{nullptr};
   text_sensor::TextSensor *software_version_text_sensor_{nullptr};
