@@ -4,20 +4,18 @@
 import re
 import sys
 
-SENSOR_RENAMES = {
+# jk_bms (UART/RS485) sensor renames
+UART_SENSOR_RENAMES = {
     "alarm_low_volume": "low_soc_alarm_threshold",
     "balance_opening_pressure_difference": "balancing_delta_voltage",
     "balance_starting_voltage": "balancing_start_voltage",
-    "balancer_status": "balancer_status_bitmask",
-    "balancing": "balancer_status_bitmask",
     "battery_strings": "cell_count",
-    "capacity_remaining_derived": "capacity_remaining",
     "capacity_remaining": "state_of_charge",
+    "capacity_remaining_derived": "capacity_remaining",
     "cell_pressure_difference_protection": "cell_voltage_difference_protection",
     "charging_high_temperature_protection": "charging_overtemperature_protection",
     "charging_low_temperature_protection": "charging_undertemperature_protection",
     "charging_low_temperature_recovery": "charging_undertemperature_recovery",
-    "detail_log_count": "detail_log_entry_count",
     "discharging_high_temperature_protection": "discharging_overtemperature_protection",
     "discharging_low_temperature_protection": "discharging_undertemperature_protection",
     "discharging_low_temperature_recovery": "discharging_undertemperature_recovery",
@@ -34,6 +32,23 @@ SENSOR_RENAMES = {
     "total_battery_capacity_setting": "full_charge_capacity",
 }
 
+# jk_bms_ble (Bluetooth) sensor renames
+BLE_SENSOR_RENAMES = {
+    "balancer_status": "balancer_status_bitmask",
+    "balancing": "balancer_status_bitmask",
+    "detail_log_count": "detail_log_entry_count",
+    "power_tube_overtemperature_protection": "mosfet_overtemperature_protection",
+    "power_tube_overtemperature_protection_recovery": "mosfet_overtemperature_protection_recovery",
+    "power_tube_temperature": "mosfet_temperature",
+    "total_battery_capacity_setting": "full_charge_capacity",
+}
+
+NUMBER_RENAMES = {
+    "balance_starting_voltage": "balancing_start_voltage",
+    "power_tube_overtemperature_protection": "mosfet_overtemperature_protection",
+    "power_tube_overtemperature_protection_recovery": "mosfet_overtemperature_protection_recovery",
+}
+
 TEXT_SENSOR_RENAMES = {
     "operation_status": "balancer_status",
 }
@@ -43,12 +58,31 @@ BINARY_SENSOR_REMOVED = {
     "discharging_switch": "use switch.discharging instead",
 }
 
-SECTION_KEYS = {"sensor", "binary_sensor", "text_sensor"}
+SENSOR_REMOVED = {
+    "errors_bitmask": "removed from sensor; add errors_bitmask_hex under text_sensor instead",
+}
+
+SECTION_KEYS = {"sensor", "binary_sensor", "text_sensor", "number"}
+
+
+def detect_component(lines):
+    for line in lines:
+        if re.match(r"^jk_bms_ble\s*:", line):
+            return "ble"
+    return "uart"
 
 
 def migrate(path):
     with open(path) as f:
         lines = f.readlines()
+
+    component = detect_component(lines)
+    sensor_renames = BLE_SENSOR_RENAMES if component == "ble" else UART_SENSOR_RENAMES
+    print(
+        f"Detected component: jk_bms{'_ble' if component == 'ble' else ''} (UART/RS485)"
+        if component != "ble"
+        else "Detected component: jk_bms_ble (Bluetooth)"
+    )
 
     section = None
     out = []
@@ -70,8 +104,19 @@ def migrate(path):
         if key_match and indent > 0:
             key = key_match.group(2)
 
-            if section == "sensor" and key in SENSOR_RENAMES:
-                new_key = SENSOR_RENAMES[key]
+            if section == "sensor" and key in SENSOR_REMOVED:
+                print(
+                    f"  line {lineno}: ACTION REQUIRED: {key} — {SENSOR_REMOVED[key]}"
+                )
+
+            elif section == "sensor" and key in sensor_renames:
+                new_key = sensor_renames[key]
+                line = line[: key_match.start(2)] + new_key + line[key_match.end(2) :]
+                print(f"  line {lineno}: {key} -> {new_key}")
+                changes += 1
+
+            elif section == "number" and key in NUMBER_RENAMES:
+                new_key = NUMBER_RENAMES[key]
                 line = line[: key_match.start(2)] + new_key + line[key_match.end(2) :]
                 print(f"  line {lineno}: {key} -> {new_key}")
                 changes += 1

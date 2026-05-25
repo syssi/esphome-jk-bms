@@ -294,6 +294,8 @@ _RENAMED_SENSORS = {
     "balancing": "balancer_status_bitmask",
     "total_battery_capacity_setting": "full_charge_capacity",
     "power_tube_temperature": "mosfet_temperature",
+    "power_tube_overtemperature_protection": "mosfet_overtemperature_protection",
+    "power_tube_overtemperature_protection_recovery": "mosfet_overtemperature_protection_recovery",
     "detail_log_count": "detail_log_entry_count",
     "balancer_status": "balancer_status_bitmask",
 }
