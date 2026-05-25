@@ -547,7 +547,6 @@ _RENAMED_SENSORS = {
     "cell_pressure_difference_protection": "cell_voltage_difference_protection",
     "balance_opening_pressure_difference": "balancing_delta_voltage",
     "alarm_low_volume": "low_soc_alarm_threshold",
-    "capacity_remaining": "state_of_charge",
     "capacity_remaining_derived": "capacity_remaining",
     "battery_strings": "cell_count",
     "temperature_sensors": "temperature_sensor_count",
