@@ -20,14 +20,8 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
   void set_charging_binary_sensor(binary_sensor::BinarySensor *charging_binary_sensor) {
     charging_binary_sensor_ = charging_binary_sensor;
   }
-  void set_charging_switch_binary_sensor(binary_sensor::BinarySensor *charging_switch_binary_sensor) {
-    charging_switch_binary_sensor_ = charging_switch_binary_sensor;
-  }
   void set_discharging_binary_sensor(binary_sensor::BinarySensor *discharging_binary_sensor) {
     discharging_binary_sensor_ = discharging_binary_sensor;
-  }
-  void set_discharging_switch_binary_sensor(binary_sensor::BinarySensor *discharging_switch_binary_sensor) {
-    discharging_switch_binary_sensor_ = discharging_switch_binary_sensor;
   }
   void set_dedicated_charger_switch_binary_sensor(binary_sensor::BinarySensor *dedicated_charger_switch_binary_sensor) {
     dedicated_charger_switch_binary_sensor_ = dedicated_charger_switch_binary_sensor;
@@ -242,9 +236,7 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
   binary_sensor::BinarySensor *balancing_binary_sensor_{nullptr};
   binary_sensor::BinarySensor *balancing_switch_binary_sensor_{nullptr};
   binary_sensor::BinarySensor *charging_binary_sensor_{nullptr};
-  binary_sensor::BinarySensor *charging_switch_binary_sensor_{nullptr};
   binary_sensor::BinarySensor *discharging_binary_sensor_{nullptr};
-  binary_sensor::BinarySensor *discharging_switch_binary_sensor_{nullptr};
   binary_sensor::BinarySensor *dedicated_charger_switch_binary_sensor_{nullptr};
   binary_sensor::BinarySensor *online_status_binary_sensor_{nullptr};
 

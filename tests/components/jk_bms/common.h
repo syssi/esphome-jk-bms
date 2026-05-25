@@ -2,8 +2,13 @@
 #include <cstdint>
 #include <vector>
 #include "esphome/components/jk_bms/jk_bms.h"
+#include "esphome/components/switch/switch.h"
 
 namespace esphome::jk_bms::testing {
+
+struct TestSwitch : switch_::Switch {
+  void write_state(bool) override {}
+};
 
 class TestableJkBms : public JkBms {
  public:

@@ -324,11 +324,9 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->capacity_remaining_sensor_, (float) (raw_full_charge_capacity * (raw_soc * 0.01f)));
 
   // 0xAB 0x01: Charging MOS tube switch                                     1 (on)         Bool       0 (off), 1 (on)
-  this->publish_state_(this->charging_switch_binary_sensor_, (bool) data[offset + 15 + 3 * 36]);
   this->publish_state_(this->charging_switch_, (bool) data[offset + 15 + 3 * 36]);
 
   // 0xAC 0x01: Discharge MOS tube switch                                    1 (on)         Bool       0 (off), 1 (on)
-  this->publish_state_(this->discharging_switch_binary_sensor_, (bool) data[offset + 17 + 3 * 36]);
   this->publish_state_(this->discharging_switch_, (bool) data[offset + 17 + 3 * 36]);
 
   // 0xAD 0x04 0x11: Current calibration                       1041mA * 0.001 = 1.041A     0.001 A     0.1-2.0A
@@ -561,9 +559,7 @@ void JkBms::dump_config() {  // NOLINT(google-readability-function-size,readabil
   LOG_BINARY_SENSOR("", "Balancing", this->balancing_binary_sensor_);
   LOG_BINARY_SENSOR("", "Balancing Switch", this->balancing_switch_binary_sensor_);
   LOG_BINARY_SENSOR("", "Charging", this->charging_binary_sensor_);
-  LOG_BINARY_SENSOR("", "Charging Switch", this->charging_switch_binary_sensor_);
   LOG_BINARY_SENSOR("", "Discharging", this->discharging_binary_sensor_);
-  LOG_BINARY_SENSOR("", "Discharging Switch", this->discharging_switch_binary_sensor_);
   LOG_BINARY_SENSOR("", "Dedicated Charger Switch", this->dedicated_charger_switch_binary_sensor_);
   LOG_BINARY_SENSOR("", "Online Status", this->online_status_binary_sensor_);
   LOG_SENSOR("", "Minimum Cell Voltage", this->min_cell_voltage_sensor_);
