@@ -64,11 +64,11 @@ entities:
     name: Cell Voltage Undervoltage Recovery
   - entity: sensor.jk_bms_charging_cycles
     name: Charging Cycles
-  - entity: sensor.jk_bms_charging_high_temperature_protection
+  - entity: sensor.jk_bms_charging_overtemperature_protection
     name: Charging High Temperature Protection
-  - entity: sensor.jk_bms_charging_low_temperature_protection
+  - entity: sensor.jk_bms_charging_undertemperature_protection
     name: Charging Low Temperature Protection
-  - entity: sensor.jk_bms_charging_low_temperature_recovery
+  - entity: sensor.jk_bms_charging_undertemperature_recovery
     name: Charging Low Temperature Recovery
   - entity: sensor.jk_bms_charging_overcurrent_delay
     name: Charging Overcurrent Delay
@@ -82,11 +82,11 @@ entities:
     name: Device Address
   - entity: sensor.jk_bms_device_type
     name: Device Type
-  - entity: sensor.jk_bms_discharging_high_temperature_protection
+  - entity: sensor.jk_bms_discharging_overtemperature_protection
     name: Discharging High Temperature Protection
-  - entity: sensor.jk_bms_discharging_low_temperature_protection
+  - entity: sensor.jk_bms_discharging_undertemperature_protection
     name: Discharging Low Temperature Protection
-  - entity: sensor.jk_bms_discharging_low_temperature_recovery
+  - entity: sensor.jk_bms_discharging_undertemperature_recovery
     name: Discharging Low Temperature Recovery
   - entity: sensor.jk_bms_discharging_overcurrent_delay
     name: Discharging Overcurrent Delay
@@ -108,9 +108,9 @@ entities:
     name: Password
   - entity: sensor.jk_bms_mosfet_temperature
     name: Mosfet Temperature
-  - entity: sensor.jk_bms_mosfet_temperature_protection
+  - entity: sensor.jk_bms_mosfet_overtemperature_protection
     name: Mosfet Temperature Protection
-  - entity: sensor.jk_bms_mosfet_temperature_recovery
+  - entity: sensor.jk_bms_mosfet_overtemperature_recovery
     name: Mosfet Temperature Recovery
   - entity: sensor.jk_bms_sleep_wait_time
     name: Sleep Wait Time

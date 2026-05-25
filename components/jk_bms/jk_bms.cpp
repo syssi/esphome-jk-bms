@@ -279,10 +279,10 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->balancer_switch_, (bool) data[offset + 6 + 3 * 25]);
 
   // 0x9E 0x00 0x5A: Power tube temperature protection value                90°C            1.0 °C     0-100°C
-  this->publish_state_(this->mosfet_temperature_protection_sensor_, (float) jk_get_16bit(offset + 8 + 3 * 25));
+  this->publish_state_(this->mosfet_overtemperature_protection_sensor_, (float) jk_get_16bit(offset + 8 + 3 * 25));
 
   // 0x9F 0x00 0x46: Power tube temperature recovery value                  70°C            1.0 °C     0-100°C
-  this->publish_state_(this->mosfet_temperature_recovery_sensor_, (float) jk_get_16bit(offset + 8 + 3 * 26));
+  this->publish_state_(this->mosfet_overtemperature_recovery_sensor_, (float) jk_get_16bit(offset + 8 + 3 * 26));
 
   // 0xA0 0x00 0x64: Temperature protection value in the battery box       100°C            1.0 °C     40-100°C
   this->publish_state_(this->battery_overtemperature_protection_sensor_, (float) jk_get_16bit(offset + 8 + 3 * 27));
@@ -295,26 +295,26 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
                        (float) jk_get_16bit(offset + 8 + 3 * 29));
 
   // 0xA3 0x00 0x46: Battery charging high temperature protection value     70°C            1.0 °C     0-100°C
-  this->publish_state_(this->charging_high_temperature_protection_sensor_, (float) jk_get_16bit(offset + 8 + 3 * 30));
+  this->publish_state_(this->charging_overtemperature_protection_sensor_, (float) jk_get_16bit(offset + 8 + 3 * 30));
 
   // 0xA4 0x00 0x46: Battery discharge high temperature protection value    70°C            1.0 °C     0-100°C
-  this->publish_state_(this->discharging_high_temperature_protection_sensor_,
+  this->publish_state_(this->discharging_overtemperature_protection_sensor_,
                        (float) jk_get_16bit(offset + 8 + 3 * 31));
 
   // 0xA5 0xFF 0xEC: Charging low temperature protection value             -20°C            1.0 °C     -45...25°C
-  this->publish_state_(this->charging_low_temperature_protection_sensor_,
+  this->publish_state_(this->charging_undertemperature_protection_sensor_,
                        (float) (int16_t) jk_get_16bit(offset + 8 + 3 * 32));
 
   // 0xA6 0xFF 0xF6: Charging low temperature protection recovery value    -10°C            1.0 °C     -45...25°C
-  this->publish_state_(this->charging_low_temperature_recovery_sensor_,
+  this->publish_state_(this->charging_undertemperature_recovery_sensor_,
                        (float) (int16_t) jk_get_16bit(offset + 8 + 3 * 33));
 
   // 0xA7 0xFF 0xEC: Discharge low temperature protection value            -20°C            1.0 °C     -45...25°C
-  this->publish_state_(this->discharging_low_temperature_protection_sensor_,
+  this->publish_state_(this->discharging_undertemperature_protection_sensor_,
                        (float) (int16_t) jk_get_16bit(offset + 8 + 3 * 34));
 
   // 0xA8 0xFF 0xF6: Discharge low temperature protection recovery value   -10°C            1.0 °C     -45...25°C
-  this->publish_state_(this->discharging_low_temperature_recovery_sensor_,
+  this->publish_state_(this->discharging_undertemperature_recovery_sensor_,
                        (float) (int16_t) jk_get_16bit(offset + 8 + 3 * 35));
 
   // 0xA9 0x0E: Battery string setting                                      14              1.0 count
@@ -458,17 +458,17 @@ void JkBms::publish_device_unavailable_() {
   this->publish_state_(charging_overcurrent_delay_sensor_, NAN);
   this->publish_state_(balancing_start_voltage_sensor_, NAN);
   this->publish_state_(balancing_delta_voltage_sensor_, NAN);
-  this->publish_state_(mosfet_temperature_protection_sensor_, NAN);
-  this->publish_state_(mosfet_temperature_recovery_sensor_, NAN);
+  this->publish_state_(mosfet_overtemperature_protection_sensor_, NAN);
+  this->publish_state_(mosfet_overtemperature_recovery_sensor_, NAN);
   this->publish_state_(battery_overtemperature_protection_sensor_, NAN);
   this->publish_state_(battery_overtemperature_recovery_sensor_, NAN);
   this->publish_state_(battery_temperature_difference_protection_sensor_, NAN);
-  this->publish_state_(charging_high_temperature_protection_sensor_, NAN);
-  this->publish_state_(discharging_high_temperature_protection_sensor_, NAN);
-  this->publish_state_(charging_low_temperature_protection_sensor_, NAN);
-  this->publish_state_(charging_low_temperature_recovery_sensor_, NAN);
-  this->publish_state_(discharging_low_temperature_protection_sensor_, NAN);
-  this->publish_state_(discharging_low_temperature_recovery_sensor_, NAN);
+  this->publish_state_(charging_overtemperature_protection_sensor_, NAN);
+  this->publish_state_(discharging_overtemperature_protection_sensor_, NAN);
+  this->publish_state_(charging_undertemperature_protection_sensor_, NAN);
+  this->publish_state_(charging_undertemperature_recovery_sensor_, NAN);
+  this->publish_state_(discharging_undertemperature_protection_sensor_, NAN);
+  this->publish_state_(discharging_undertemperature_recovery_sensor_, NAN);
   this->publish_state_(full_charge_capacity_sensor_, NAN);
   this->publish_state_(charging_sensor_, NAN);
   this->publish_state_(discharging_sensor_, NAN);
@@ -628,17 +628,17 @@ void JkBms::dump_config() {  // NOLINT(google-readability-function-size,readabil
   LOG_SENSOR("", "Charging Overcurrent Delay", this->charging_overcurrent_delay_sensor_);
   LOG_SENSOR("", "Balancing Start Voltage", this->balancing_start_voltage_sensor_);
   LOG_SENSOR("", "Balancing Delta Voltage", this->balancing_delta_voltage_sensor_);
-  LOG_SENSOR("", "Mosfet Temperature Protection", this->mosfet_temperature_protection_sensor_);
-  LOG_SENSOR("", "Mosfet Temperature Recovery", this->mosfet_temperature_recovery_sensor_);
+  LOG_SENSOR("", "Mosfet Overtemperature Protection", this->mosfet_overtemperature_protection_sensor_);
+  LOG_SENSOR("", "Mosfet Overtemperature Recovery", this->mosfet_overtemperature_recovery_sensor_);
   LOG_SENSOR("", "Battery Overtemperature Protection", this->battery_overtemperature_protection_sensor_);
   LOG_SENSOR("", "Battery Overtemperature Recovery", this->battery_overtemperature_recovery_sensor_);
   LOG_SENSOR("", "Battery Temperature Difference Protection", this->battery_temperature_difference_protection_sensor_);
-  LOG_SENSOR("", "Charging High Temperature Protection", this->charging_high_temperature_protection_sensor_);
-  LOG_SENSOR("", "Discharging High Temperature Protection", this->discharging_high_temperature_protection_sensor_);
-  LOG_SENSOR("", "Charging Low Temperature Protection", this->charging_low_temperature_protection_sensor_);
-  LOG_SENSOR("", "Charging Low Temperature Recovery", this->charging_low_temperature_recovery_sensor_);
-  LOG_SENSOR("", "Discharging Low Temperature Protection", this->discharging_low_temperature_protection_sensor_);
-  LOG_SENSOR("", "Discharging Low Temperature Recovery", this->discharging_low_temperature_recovery_sensor_);
+  LOG_SENSOR("", "Charging Overtemperature Protection", this->charging_overtemperature_protection_sensor_);
+  LOG_SENSOR("", "Discharging Overtemperature Protection", this->discharging_overtemperature_protection_sensor_);
+  LOG_SENSOR("", "Charging Undertemperature Protection", this->charging_undertemperature_protection_sensor_);
+  LOG_SENSOR("", "Charging Undertemperature Recovery", this->charging_undertemperature_recovery_sensor_);
+  LOG_SENSOR("", "Discharging Undertemperature Protection", this->discharging_undertemperature_protection_sensor_);
+  LOG_SENSOR("", "Discharging Undertemperature Recovery", this->discharging_undertemperature_recovery_sensor_);
   LOG_SENSOR("", "Full Charge Capacity", this->full_charge_capacity_sensor_);
   LOG_SENSOR("", "Current Calibration", this->current_calibration_sensor_);
   LOG_SENSOR("", "Device Address", this->device_address_sensor_);
