@@ -65,24 +65,26 @@ SENSOR_REMOVED = {
 SECTION_KEYS = {"sensor", "binary_sensor", "text_sensor", "number"}
 
 
-def detect_component(lines):
-    for line in lines:
-        if re.match(r"^jk_bms_ble\s*:", line):
-            return "ble"
-    return "uart"
+def detect_components(lines):
+    has_ble = any(re.match(r"^jk_bms_ble\s*:", line) for line in lines)
+    has_uart = any(re.match(r"^jk_bms\s*:", line) for line in lines)
+    return has_ble, has_uart
 
 
 def migrate(path):
     with open(path) as f:
         lines = f.readlines()
 
-    component = detect_component(lines)
-    sensor_renames = BLE_SENSOR_RENAMES if component == "ble" else UART_SENSOR_RENAMES
-    print(
-        f"Detected component: jk_bms{'_ble' if component == 'ble' else ''} (UART/RS485)"
-        if component != "ble"
-        else "Detected component: jk_bms_ble (Bluetooth)"
-    )
+    has_ble, has_uart = detect_components(lines)
+    if has_ble and has_uart:
+        sensor_renames = {**UART_SENSOR_RENAMES, **BLE_SENSOR_RENAMES}
+        print("Detected component: jk_bms + jk_bms_ble (hybrid)")
+    elif has_ble:
+        sensor_renames = BLE_SENSOR_RENAMES
+        print("Detected component: jk_bms_ble (Bluetooth)")
+    else:
+        sensor_renames = UART_SENSOR_RENAMES
+        print("Detected component: jk_bms (UART/RS485)")
 
     section = None
     out = []
