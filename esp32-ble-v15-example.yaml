@@ -106,8 +106,8 @@ number:
       name: "cell voltage undervoltage protection"
     cell_voltage_undervoltage_recovery:
       name: "cell voltage undervoltage recovery"
-    balance_starting_voltage:
-      name: "balance starting voltage"
+    balancing_start_voltage:
+      name: "balancing start voltage"
     voltage_calibration:
       name: "voltage calibration"
     current_calibration:

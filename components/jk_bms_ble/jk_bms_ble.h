@@ -77,8 +77,8 @@ class JkBmsBle :
   void set_cell_voltage_undervoltage_recovery_number(number::Number *cell_voltage_undervoltage_recovery_number) {
     cell_voltage_undervoltage_recovery_number_ = cell_voltage_undervoltage_recovery_number;
   }
-  void set_balance_starting_voltage_number(number::Number *balance_starting_voltage_number) {
-    balance_starting_voltage_number_ = balance_starting_voltage_number;
+  void set_balancing_start_voltage_number(number::Number *balancing_start_voltage_number) {
+    balancing_start_voltage_number_ = balancing_start_voltage_number;
   }
   void set_voltage_calibration_number(number::Number *voltage_calibration_number) {
     voltage_calibration_number_ = voltage_calibration_number;
@@ -361,7 +361,7 @@ class JkBmsBle :
   number::Number *cell_voltage_overvoltage_recovery_number_{nullptr};
   number::Number *cell_voltage_undervoltage_protection_number_{nullptr};
   number::Number *cell_voltage_undervoltage_recovery_number_{nullptr};
-  number::Number *balance_starting_voltage_number_{nullptr};
+  number::Number *balancing_start_voltage_number_{nullptr};
   number::Number *voltage_calibration_number_{nullptr};  // @FIXME: Identify value at the settings frame
   number::Number *current_calibration_number_{nullptr};  // @FIXME: Identify value at the settings frame
   number::Number *power_off_voltage_number_{nullptr};

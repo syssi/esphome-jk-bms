@@ -44,8 +44,8 @@ entities:
     name: Alarm Low Volume
   - entity: sensor.jk_bms_balancing_delta_voltage
     name: Balance Opening Pressure Difference
-  - entity: sensor.jk_bms_balance_starting_voltage
-    name: Balance Starting Voltage
+  - entity: sensor.jk_bms_balancing_start_voltage
+    name: Balancing Start Voltage
   - entity: sensor.jk_bms_battery_type
     name: Battery Type
   - entity: sensor.jk_bms_cell_voltage_difference_protection

@@ -115,7 +115,7 @@ TEST(JkBmsStatusDataTest, Capacity) {
 TEST(JkBmsStatusDataTest, BalancingConfig) {
   TestableJkBms bms;
   sensor::Sensor starting_voltage, delta_voltage;
-  bms.set_balance_starting_voltage_sensor(&starting_voltage);
+  bms.set_balancing_start_voltage_sensor(&starting_voltage);
   bms.set_balancing_delta_voltage_sensor(&delta_voltage);
 
   bms.on_jk_modbus_data(FUNCTION_READ_ALL, STATUS_FRAME_14S);
