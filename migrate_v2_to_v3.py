@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Migrate JK BMS ESPHome YAML config keys from v2 to v3 naming."""
 
+from pathlib import Path
 import re
+import shutil
 import sys
 
 # jk_bms (UART/RS485) sensor renames
@@ -72,6 +74,14 @@ def detect_components(lines):
 
 
 def migrate(path):
+    backup = Path(path).with_suffix(Path(path).suffix + ".bak")
+    if backup.exists():
+        print(f"error: backup already exists: {backup}")
+        print("Remove it manually if you want to re-run the migration.")
+        sys.exit(1)
+    shutil.copy2(path, backup)
+    print(f"Backup created: {backup}")
+
     with open(path) as f:
         lines = f.readlines()
 
