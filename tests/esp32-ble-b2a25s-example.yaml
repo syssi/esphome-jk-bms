@@ -112,10 +112,10 @@ number:
       name: "power off voltage"
     max_balance_current:
       name: "max balance current"
-    max_charge_current:
-      name: "max charge current"
-    max_discharge_current:
-      name: "max discharge current"
+    max_charging_current:
+      name: "max charging current"
+    max_discharging_current:
+      name: "max discharging current"
     smart_sleep_voltage:
       name: "smart sleep voltage"
     cell_soc100_voltage:
@@ -130,14 +130,14 @@ number:
       name: "cell request charge voltage time"
     cell_request_float_voltage_time:
       name: "cell request float voltage time"
-    charge_overcurrent_protection_delay:
-      name: "charge overcurrent protection delay"
-    charge_overcurrent_protection_recovery_time:
-      name: "charge overcurrent protection recovery time"
-    discharge_overcurrent_protection_delay:
-      name: "discharge overcurrent protection delay"
-    discharge_overcurrent_protection_recovery_time:
-      name: "discharge overcurrent protection recovery time"
+    charging_overcurrent_protection_delay:
+      name: "charging overcurrent protection delay"
+    charging_overcurrent_protection_recovery_time:
+      name: "charging overcurrent protection recovery time"
+    discharging_overcurrent_protection_delay:
+      name: "discharging overcurrent protection delay"
+    discharging_overcurrent_protection_recovery_time:
+      name: "discharging overcurrent protection recovery time"
     short_circuit_protection_delay:
       name: "short circuit protection delay"
     short_circuit_protection_recovery_time:
@@ -316,10 +316,10 @@ sensor:
       name: "balancing current"
     emergency_time_countdown:
       name: "emergency time countdown"
-    charge_status_id:
-      name: "charge status id"
-    charge_status_time_elapsed:
-      name: "charge status time elapsed"
+    charging_status_id:
+      name: "charging status id"
+    charging_status_time_elapsed:
+      name: "charging status time elapsed"
 
 switch:
   - platform: jk_bms_ble
@@ -355,5 +355,5 @@ text_sensor:
       name: "errors bitmask hex"
     total_runtime_formatted:
       name: "total runtime formatted"
-    charge_status:
-      name: "charge status"
+    charging_status:
+      name: "charging status"

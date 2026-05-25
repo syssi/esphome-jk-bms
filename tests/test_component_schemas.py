@@ -160,7 +160,7 @@ class TestJkBleTextSensorConstants:
     def test_text_sensors_list(self):
         assert ble_text_sensor.CONF_ERRORS in ble_text_sensor.TEXT_SENSORS
         assert ble_text_sensor.CONF_OPERATION_STATUS in ble_text_sensor.TEXT_SENSORS
-        assert ble_text_sensor.CONF_CHARGE_STATUS in ble_text_sensor.TEXT_SENSORS
+        assert ble_text_sensor.CONF_CHARGING_STATUS in ble_text_sensor.TEXT_SENSORS
         assert ble_text_sensor.CONF_BATTERY_TYPE in ble_text_sensor.TEXT_SENSORS
         assert len(ble_text_sensor.TEXT_SENSORS) == 8
 

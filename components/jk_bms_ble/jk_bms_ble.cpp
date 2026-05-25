@@ -175,15 +175,15 @@ void JkBmsBle::dump_config() {  // NOLINT(google-readability-function-size,reada
   LOG_SENSOR("", "Heating Current", this->heating_current_sensor_);
   LOG_SENSOR("", "Balancing Current", this->balancing_current_sensor_);
   LOG_SENSOR("", "Emergency Time Countdown", this->emergency_time_countdown_sensor_);
-  LOG_SENSOR("", "Charge Status ID", this->charge_status_id_sensor_);
-  LOG_SENSOR("", "Charge Status Time Elapsed", this->charge_status_time_elapsed_sensor_);
+  LOG_SENSOR("", "Charging Status ID", this->charging_status_id_sensor_);
+  LOG_SENSOR("", "Charging Status Time Elapsed", this->charging_status_time_elapsed_sensor_);
   LOG_SENSOR("", "Battery Type ID", this->battery_type_id_sensor_);
 
   LOG_TEXT_SENSOR("", "Operation Status", this->operation_status_text_sensor_);
   LOG_TEXT_SENSOR("", "Total Runtime Formatted", this->total_runtime_formatted_text_sensor_);
   LOG_TEXT_SENSOR("", "Errors", this->errors_text_sensor_);
   LOG_TEXT_SENSOR("", "Errors Bitmask Hex", this->errors_bitmask_hex_text_sensor_);
-  LOG_TEXT_SENSOR("", "Charge Status", this->charge_status_text_sensor_);
+  LOG_TEXT_SENSOR("", "Charging Status", this->charging_status_text_sensor_);
   LOG_TEXT_SENSOR("", "Software Version", this->software_version_text_sensor_);
   LOG_TEXT_SENSOR("", "Hardware Version", this->hardware_version_text_sensor_);
   LOG_TEXT_SENSOR("", "Battery Type", this->battery_type_text_sensor_);
@@ -706,13 +706,13 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
     this->publish_state_(this->battery_type_text_sensor_, this->battery_type_id_to_string_(data[243 + offset]));
 
     // 246+32  2   0x00 0x00              Charge status time
-    this->publish_state_(this->charge_status_time_elapsed_sensor_, (float) jk_get_16bit(246 + offset));
+    this->publish_state_(this->charging_status_time_elapsed_sensor_, (float) jk_get_16bit(246 + offset));
 
     // 248+32  1   0x00                   Charge status                                0x00: Bulk
     //                                                                                 0x01: Absorption
     //                                                                                 0x02: Float
-    this->publish_state_(this->charge_status_id_sensor_, (float) data[248 + offset]);
-    this->publish_state_(this->charge_status_text_sensor_, this->charge_status_id_to_string_(data[248 + offset]));
+    this->publish_state_(this->charging_status_id_sensor_, (float) data[248 + offset]);
+    this->publish_state_(this->charging_status_text_sensor_, this->charging_status_id_to_string_(data[248 + offset]));
   }
 
   // 299   1   0xCD                   CRC
@@ -988,27 +988,27 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
 
   // 50    4   0xA8 0x61 0x00 0x00    Max. charge current
   ESP_LOGV(TAG, "  Max. charge current: %f A", (float) jk_get_32bit(50) * 0.001f);
-  this->publish_state_(this->max_charge_current_number_, (float) jk_get_32bit(50) * 0.001f);
+  this->publish_state_(this->max_charging_current_number_, (float) jk_get_32bit(50) * 0.001f);
 
   // 54    4   0x1E 0x00 0x00 0x00    Charge OCP delay
   ESP_LOGV(TAG, "  Charge OCP delay: %f s", (float) jk_get_32bit(54));
-  this->publish_state_(this->charge_overcurrent_protection_delay_number_, (float) jk_get_32bit(54));
+  this->publish_state_(this->charging_overcurrent_protection_delay_number_, (float) jk_get_32bit(54));
 
   // 58    4   0x3C 0x00 0x00 0x00    Charge OCP recovery time
   ESP_LOGV(TAG, "  Charge OCP recovery time: %f s", (float) jk_get_32bit(58));
-  this->publish_state_(this->charge_overcurrent_protection_recovery_time_number_, (float) jk_get_32bit(58));
+  this->publish_state_(this->charging_overcurrent_protection_recovery_time_number_, (float) jk_get_32bit(58));
 
   // 62    4   0xF0 0x49 0x02 0x00    Max. discharge current
   ESP_LOGV(TAG, "  Max. discharge current: %f A", (float) jk_get_32bit(62) * 0.001f);
-  this->publish_state_(this->max_discharge_current_number_, (float) jk_get_32bit(62) * 0.001f);
+  this->publish_state_(this->max_discharging_current_number_, (float) jk_get_32bit(62) * 0.001f);
 
   // 66    4   0x2C 0x01 0x00 0x00    Discharge OCP delay
   ESP_LOGV(TAG, "  Discharge OCP delay: %f s", (float) jk_get_32bit(66));
-  this->publish_state_(this->discharge_overcurrent_protection_delay_number_, (float) jk_get_32bit(66));
+  this->publish_state_(this->discharging_overcurrent_protection_delay_number_, (float) jk_get_32bit(66));
 
   // 70    4   0x3C 0x00 0x00 0x00    Discharge OCP recovery time
   ESP_LOGV(TAG, "  Discharge OCP recovery time: %f s", (float) jk_get_32bit(70));
-  this->publish_state_(this->discharge_overcurrent_protection_recovery_time_number_, (float) jk_get_32bit(70));
+  this->publish_state_(this->discharging_overcurrent_protection_recovery_time_number_, (float) jk_get_32bit(70));
 
   // 74    4   0x3C 0x00 0x00 0x00    SCPR time
   ESP_LOGV(TAG, "  Short circuit protection recovery time: %f s", (float) jk_get_32bit(74));
@@ -1020,27 +1020,27 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
 
   // 82    4   0xBC 0x02 0x00 0x00    Charge OTP
   ESP_LOGV(TAG, "  Charge OTP: %f °C", (float) jk_get_32bit(82) * 0.1f);
-  this->publish_state_(this->charge_overtemperature_protection_number_, (float) jk_get_32bit(82) * 0.1f);
+  this->publish_state_(this->charging_overtemperature_protection_number_, (float) jk_get_32bit(82) * 0.1f);
 
   // 86    4   0x58 0x02 0x00 0x00    Charge OTP Recovery
   ESP_LOGV(TAG, "  Charge OTP recovery: %f °C", (float) jk_get_32bit(86) * 0.1f);
-  this->publish_state_(this->charge_overtemperature_protection_recovery_number_, (float) jk_get_32bit(86) * 0.1f);
+  this->publish_state_(this->charging_overtemperature_protection_recovery_number_, (float) jk_get_32bit(86) * 0.1f);
 
   // 90    4   0xBC 0x02 0x00 0x00    Discharge OTP
   ESP_LOGV(TAG, "  Discharge OTP: %f °C", (float) jk_get_32bit(90) * 0.1f);
-  this->publish_state_(this->discharge_overtemperature_protection_number_, (float) jk_get_32bit(90) * 0.1f);
+  this->publish_state_(this->discharging_overtemperature_protection_number_, (float) jk_get_32bit(90) * 0.1f);
 
   // 94    4   0x58 0x02 0x00 0x00    Discharge OTP Recovery
   ESP_LOGV(TAG, "  Discharge OTP recovery: %f °C", (float) jk_get_32bit(94) * 0.1f);
-  this->publish_state_(this->discharge_overtemperature_protection_recovery_number_, (float) jk_get_32bit(94) * 0.1f);
+  this->publish_state_(this->discharging_overtemperature_protection_recovery_number_, (float) jk_get_32bit(94) * 0.1f);
 
   // 98    4   0x38 0xFF 0xFF 0xFF    Charge UTP
   ESP_LOGV(TAG, "  Charge UTP: %f °C", (float) ((int32_t) jk_get_32bit(98)) * 0.1f);
-  this->publish_state_(this->charge_undertemperature_protection_number_, (float) ((int32_t) jk_get_32bit(98)) * 0.1f);
+  this->publish_state_(this->charging_undertemperature_protection_number_, (float) ((int32_t) jk_get_32bit(98)) * 0.1f);
 
   // 102   4   0x9C 0xFF 0xFF 0xFF    Charge UTP Recovery
   ESP_LOGV(TAG, "  Charge UTP recovery: %f °C", (float) ((int32_t) jk_get_32bit(102)) * 0.1f);
-  this->publish_state_(this->charge_undertemperature_protection_recovery_number_,
+  this->publish_state_(this->charging_undertemperature_protection_recovery_number_,
                        (float) ((int32_t) jk_get_32bit(102)) * 0.1f);
 
   // 106   4   0x84 0x03 0x00 0x00    MOS OTP
@@ -1140,7 +1140,7 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
 
     // 274   4   0x00 0x00 0x00 0x00
     ESP_LOGI(TAG, "  Precharge time: %d s", data[274]);
-    this->publish_state_(this->discharge_precharge_time_number_, (float) data[274]);
+    this->publish_state_(this->discharging_precharge_time_number_, (float) data[274]);
 
     // 278   4   0x00 0x00 0x00 0x00
     // 282   2   0x00 0x00                 New controls bitmask
@@ -1192,11 +1192,11 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
 
     // 296   1   0x00                   Discharge UTP
     ESP_LOGV(TAG, "  Discharge UTP: %d °C", (int8_t) data[296]);
-    this->publish_state_(this->discharge_undertemperature_protection_number_, (float) ((int8_t) data[296]));
+    this->publish_state_(this->discharging_undertemperature_protection_number_, (float) ((int8_t) data[296]));
 
     // 297   1   0x00                   Discharge UTP Recovery
     ESP_LOGV(TAG, "  Discharge UTP recovery: %d °C", (int8_t) data[297]);
-    this->publish_state_(this->discharge_undertemperature_protection_recovery_number_, (float) ((int8_t) data[297]));
+    this->publish_state_(this->discharging_undertemperature_protection_recovery_number_, (float) ((int8_t) data[297]));
 
     // 298   1   0x00
     // 299   1   0x40                   CRC
@@ -1706,7 +1706,7 @@ std::string JkBmsBle::battery_type_id_to_string_(const uint8_t code) {
   }
 }
 
-std::string JkBmsBle::charge_status_id_to_string_(const uint8_t status) {
+std::string JkBmsBle::charging_status_id_to_string_(const uint8_t status) {
   switch (status) {
     case 0x00:
       return "Bulk";

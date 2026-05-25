@@ -54,8 +54,8 @@ CONF_TOTAL_RUNTIME = "total_runtime"
 CONF_BALANCING_CURRENT = "balancing_current"
 CONF_EMERGENCY_TIME_COUNTDOWN = "emergency_time_countdown"
 CONF_HEATING_CURRENT = "heating_current"
-CONF_CHARGE_STATUS_ID = "charge_status_id"
-CONF_CHARGE_STATUS_TIME_ELAPSED = "charge_status_time_elapsed"
+CONF_CHARGING_STATUS_ID = "charging_status_id"
+CONF_CHARGING_STATUS_TIME_ELAPSED = "charging_status_time_elapsed"
 CONF_DETAIL_LOG_COUNT = "detail_log_count"
 CONF_BATTERY_TYPE_ID = "battery_type_id"
 CONF_BALANCER_STATUS = "balancer_status"
@@ -72,8 +72,8 @@ ICON_CAPACITY_REMAINING = "mdi:battery-50"
 ICON_CHARGING_CYCLES = "mdi:battery-sync"
 ICON_CELL_RESISTANCE = "mdi:omega"
 ICON_BALANCER = "mdi:seesaw"
-ICON_CHARGE_STATUS_ID = "mdi:battery-clock"
-ICON_CHARGE_STATUS_TIME_ELAPSED = "mdi:timer-outline"
+ICON_CHARGING_STATUS_ID = "mdi:battery-clock"
+ICON_CHARGING_STATUS_TIME_ELAPSED = "mdi:timer-outline"
 
 CELL_VOLTAGES = [f"cell_voltage_{i}" for i in range(1, 33)]
 CELL_RESISTANCES = [f"cell_resistance_{i}" for i in range(1, 33)]
@@ -262,15 +262,15 @@ SENSOR_DEFS = {
         "device_class": DEVICE_CLASS_CURRENT,
         "state_class": STATE_CLASS_MEASUREMENT,
     },
-    CONF_CHARGE_STATUS_ID: {
+    CONF_CHARGING_STATUS_ID: {
         "unit_of_measurement": UNIT_EMPTY,
-        "icon": ICON_CHARGE_STATUS_ID,
+        "icon": ICON_CHARGING_STATUS_ID,
         "accuracy_decimals": 0,
         "device_class": DEVICE_CLASS_EMPTY,
     },
-    CONF_CHARGE_STATUS_TIME_ELAPSED: {
+    CONF_CHARGING_STATUS_TIME_ELAPSED: {
         "unit_of_measurement": UNIT_SECONDS,
-        "icon": ICON_CHARGE_STATUS_TIME_ELAPSED,
+        "icon": ICON_CHARGING_STATUS_TIME_ELAPSED,
         "accuracy_decimals": 0,
         "device_class": DEVICE_CLASS_EMPTY,
     },
@@ -294,6 +294,8 @@ _RENAMED_SENSORS = {
     "balancing": "balancer_status",
     "total_battery_capacity_setting": "full_charge_capacity",
     "power_tube_temperature": "mosfet_temperature",
+    "charge_status_id": "charging_status_id",
+    "charge_status_time_elapsed": "charging_status_time_elapsed",
 }
 
 CONFIG_SCHEMA = cv.All(

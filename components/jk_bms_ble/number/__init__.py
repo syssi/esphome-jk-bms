@@ -158,40 +158,42 @@ CONF_VOLTAGE_CALIBRATION = "voltage_calibration"
 CONF_CURRENT_CALIBRATION = "current_calibration"
 CONF_POWER_OFF_VOLTAGE = "power_off_voltage"
 CONF_MAX_BALANCE_CURRENT = "max_balance_current"
-CONF_MAX_CHARGE_CURRENT = "max_charge_current"
-CONF_MAX_DISCHARGE_CURRENT = "max_discharge_current"
+CONF_MAX_CHARGING_CURRENT = "max_charging_current"
+CONF_MAX_DISCHARGING_CURRENT = "max_discharging_current"
 
-CONF_CHARGE_OVERCURRENT_PROTECTION_DELAY = "charge_overcurrent_protection_delay"
-CONF_CHARGE_OVERCURRENT_PROTECTION_RECOVERY_TIME = (
-    "charge_overcurrent_protection_recovery_time"
+CONF_CHARGING_OVERCURRENT_PROTECTION_DELAY = "charging_overcurrent_protection_delay"
+CONF_CHARGING_OVERCURRENT_PROTECTION_RECOVERY_TIME = (
+    "charging_overcurrent_protection_recovery_time"
 )
-CONF_DISCHARGE_OVERCURRENT_PROTECTION_DELAY = "discharge_overcurrent_protection_delay"
-CONF_DISCHARGE_OVERCURRENT_PROTECTION_RECOVERY_TIME = (
-    "discharge_overcurrent_protection_recovery_time"
+CONF_DISCHARGING_OVERCURRENT_PROTECTION_DELAY = (
+    "discharging_overcurrent_protection_delay"
+)
+CONF_DISCHARGING_OVERCURRENT_PROTECTION_RECOVERY_TIME = (
+    "discharging_overcurrent_protection_recovery_time"
 )
 CONF_SHORT_CIRCUIT_PROTECTION_DELAY = "short_circuit_protection_delay"
 CONF_SHORT_CIRCUIT_PROTECTION_RECOVERY_TIME = "short_circuit_protection_recovery_time"
-CONF_CHARGE_OVERTEMPERATURE_PROTECTION = "charge_overtemperature_protection"
-CONF_CHARGE_OVERTMPERATURE_PROTECTION_RECOVERY = (
-    "charge_overtemperature_protection_recovery"
+CONF_CHARGING_OVERTEMPERATURE_PROTECTION = "charging_overtemperature_protection"
+CONF_CHARGING_OVERTEMPERATURE_PROTECTION_RECOVERY = (
+    "charging_overtemperature_protection_recovery"
 )
-CONF_DISCHARGE_OVERTEMPERATURE_PROTECTION = "discharge_overtemperature_protection"
-CONF_DISCHARGE_OVERTEMPERATURE_PROTECTION_RECOVERY = (
-    "discharge_overtemperature_protection_recovery"
+CONF_DISCHARGING_OVERTEMPERATURE_PROTECTION = "discharging_overtemperature_protection"
+CONF_DISCHARGING_OVERTEMPERATURE_PROTECTION_RECOVERY = (
+    "discharging_overtemperature_protection_recovery"
 )
-CONF_CHARGE_UNDERTEMPERATURE_PROTECTION = "charge_undertemperature_protection"
-CONF_CHARGE_UNDERTMPERATURE_PROTECTION_RECOVERY = (
-    "charge_undertemperature_protection_recovery"
+CONF_CHARGING_UNDERTEMPERATURE_PROTECTION = "charging_undertemperature_protection"
+CONF_CHARGING_UNDERTEMPERATURE_PROTECTION_RECOVERY = (
+    "charging_undertemperature_protection_recovery"
 )
-CONF_DISCHARGE_UNDERTEMPERATURE_PROTECTION = "discharge_undertemperature_protection"
-CONF_DISCHARGE_UNDERTEMPERATURE_PROTECTION_RECOVERY = (
-    "discharge_undertemperature_protection_recovery"
+CONF_DISCHARGING_UNDERTEMPERATURE_PROTECTION = "discharging_undertemperature_protection"
+CONF_DISCHARGING_UNDERTEMPERATURE_PROTECTION_RECOVERY = (
+    "discharging_undertemperature_protection_recovery"
 )
 CONF_MOSFET_OVERTEMPERATURE_PROTECTION = "mosfet_overtemperature_protection"
 CONF_MOSFET_OVERTEMPERATURE_PROTECTION_RECOVERY = (
     "mosfet_overtemperature_protection_recovery"
 )
-CONF_DISCHARGE_PRECHARGE_TIME = "discharge_precharge_time"
+CONF_DISCHARGING_PRECHARGE_TIME = "discharging_precharge_time"
 CONF_HEATING_START_TEMPERATURE = "heating_start_temperature"
 CONF_HEATING_STOP_TEMPERATURE = "heating_stop_temperature"
 
@@ -221,24 +223,24 @@ NUMBERS = {
     CONF_CURRENT_CALIBRATION: [0x00, 0x24, 0x67, 1000.0, 4],
     CONF_POWER_OFF_VOLTAGE: [0x00, 0x0B, 0x0B, 1000.0, 4],
     CONF_MAX_BALANCE_CURRENT: [0x00, 0x13, 0x13, 1000.0, 4],
-    CONF_MAX_CHARGE_CURRENT: [0x00, 0x0C, 0x0C, 1000.0, 4],
-    CONF_MAX_DISCHARGE_CURRENT: [0x00, 0x0F, 0x0F, 1000.0, 4],
-    CONF_CHARGE_OVERCURRENT_PROTECTION_DELAY: [0x00, 0x0D, 0x0D, 1.0, 4],
-    CONF_CHARGE_OVERCURRENT_PROTECTION_RECOVERY_TIME: [
+    CONF_MAX_CHARGING_CURRENT: [0x00, 0x0C, 0x0C, 1000.0, 4],
+    CONF_MAX_DISCHARGING_CURRENT: [0x00, 0x0F, 0x0F, 1000.0, 4],
+    CONF_CHARGING_OVERCURRENT_PROTECTION_DELAY: [0x00, 0x0D, 0x0D, 1.0, 4],
+    CONF_CHARGING_OVERCURRENT_PROTECTION_RECOVERY_TIME: [
         0x00,
         0x0E,
         0x0E,
         1.0,
         4,
     ],
-    CONF_DISCHARGE_OVERCURRENT_PROTECTION_DELAY: [
+    CONF_DISCHARGING_OVERCURRENT_PROTECTION_DELAY: [
         0x00,
         0x10,
         0x10,
         1.0,
         4,
     ],
-    CONF_DISCHARGE_OVERCURRENT_PROTECTION_RECOVERY_TIME: [
+    CONF_DISCHARGING_OVERCURRENT_PROTECTION_RECOVERY_TIME: [
         0x00,
         0x11,
         0x11,
@@ -253,50 +255,50 @@ NUMBERS = {
         1.0,
         4,
     ],
-    CONF_CHARGE_OVERTEMPERATURE_PROTECTION: [0x00, 0x14, 0x14, 10.0, 4],
-    CONF_CHARGE_OVERTMPERATURE_PROTECTION_RECOVERY: [
+    CONF_CHARGING_OVERTEMPERATURE_PROTECTION: [0x00, 0x14, 0x14, 10.0, 4],
+    CONF_CHARGING_OVERTEMPERATURE_PROTECTION_RECOVERY: [
         0x00,
         0x15,
         0x15,
         10.0,
         4,
     ],
-    CONF_DISCHARGE_OVERTEMPERATURE_PROTECTION: [
+    CONF_DISCHARGING_OVERTEMPERATURE_PROTECTION: [
         0x00,
         0x16,
         0x16,
         10.0,
         4,
     ],
-    CONF_DISCHARGE_OVERTEMPERATURE_PROTECTION_RECOVERY: [
+    CONF_DISCHARGING_OVERTEMPERATURE_PROTECTION_RECOVERY: [
         0x00,
         0x17,
         0x17,
         10.0,
         4,
     ],
-    CONF_CHARGE_UNDERTEMPERATURE_PROTECTION: [
+    CONF_CHARGING_UNDERTEMPERATURE_PROTECTION: [
         0x00,
         0x18,
         0x18,
         10.0,
         4,
     ],
-    CONF_CHARGE_UNDERTMPERATURE_PROTECTION_RECOVERY: [
+    CONF_CHARGING_UNDERTEMPERATURE_PROTECTION_RECOVERY: [
         0x00,
         0x19,
         0x19,
         10.0,
         4,
     ],
-    CONF_DISCHARGE_UNDERTEMPERATURE_PROTECTION: [
+    CONF_DISCHARGING_UNDERTEMPERATURE_PROTECTION: [
         0x00,
         0x00,
         0x3A,
         1.0,
         1,
     ],
-    CONF_DISCHARGE_UNDERTEMPERATURE_PROTECTION_RECOVERY: [
+    CONF_DISCHARGING_UNDERTEMPERATURE_PROTECTION_RECOVERY: [
         0x00,
         0x00,
         0x3B,
@@ -317,7 +319,7 @@ NUMBERS = {
         10.0,
         4,
     ],
-    CONF_DISCHARGE_PRECHARGE_TIME: [0x00, 0x00, 0x25, 1.0, 4],
+    CONF_DISCHARGING_PRECHARGE_TIME: [0x00, 0x00, 0x25, 1.0, 4],
     CONF_HEATING_START_TEMPERATURE: [0x00, 0x00, 0x37, 1.0, 1],
     CONF_HEATING_STOP_TEMPERATURE: [0x00, 0x00, 0x38, 1.0, 1],
 }
@@ -346,6 +348,21 @@ _RENAMED_NUMBERS = {
     "power_tube_overtemperature_protection": "mosfet_overtemperature_protection",
     "power_tube_overtemperature_protection_recovery": "mosfet_overtemperature_protection_recovery",
     "balance_starting_voltage": "balancing_start_voltage",
+    "max_charge_current": "max_charging_current",
+    "max_discharge_current": "max_discharging_current",
+    "charge_overcurrent_protection_delay": "charging_overcurrent_protection_delay",
+    "charge_overcurrent_protection_recovery_time": "charging_overcurrent_protection_recovery_time",
+    "discharge_overcurrent_protection_delay": "discharging_overcurrent_protection_delay",
+    "discharge_overcurrent_protection_recovery_time": "discharging_overcurrent_protection_recovery_time",
+    "charge_overtemperature_protection": "charging_overtemperature_protection",
+    "charge_overtemperature_protection_recovery": "charging_overtemperature_protection_recovery",
+    "discharge_overtemperature_protection": "discharging_overtemperature_protection",
+    "discharge_overtemperature_protection_recovery": "discharging_overtemperature_protection_recovery",
+    "charge_undertemperature_protection": "charging_undertemperature_protection",
+    "charge_undertemperature_protection_recovery": "charging_undertemperature_protection_recovery",
+    "discharge_undertemperature_protection": "discharging_undertemperature_protection",
+    "discharge_undertemperature_protection_recovery": "discharging_undertemperature_protection_recovery",
+    "discharge_precharge_time": "discharging_precharge_time",
 }
 
 _NUMBER_CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
@@ -511,7 +528,7 @@ _NUMBER_CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
                 ): cv.string_strict,
             }
         ),
-        cv.Optional(CONF_MAX_CHARGE_CURRENT): JK_NUMBER_SCHEMA.extend(
+        cv.Optional(CONF_MAX_CHARGING_CURRENT): JK_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=1.0): cv.float_,
                 cv.Optional(CONF_MAX_VALUE, default=600.1): cv.float_,
@@ -521,7 +538,7 @@ _NUMBER_CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
                 ): cv.string_strict,
             }
         ),
-        cv.Optional(CONF_MAX_DISCHARGE_CURRENT): JK_NUMBER_SCHEMA.extend(
+        cv.Optional(CONF_MAX_DISCHARGING_CURRENT): JK_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=1.0): cv.float_,
                 cv.Optional(CONF_MAX_VALUE, default=1200.1): cv.float_,
@@ -531,7 +548,7 @@ _NUMBER_CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
                 ): cv.string_strict,
             }
         ),
-        cv.Optional(CONF_CHARGE_OVERCURRENT_PROTECTION_DELAY): JK_NUMBER_SCHEMA.extend(
+        cv.Optional(CONF_CHARGING_OVERCURRENT_PROTECTION_DELAY): JK_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=2): cv.float_,
                 cv.Optional(CONF_MAX_VALUE, default=600): cv.float_,
@@ -542,7 +559,7 @@ _NUMBER_CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
             }
         ),
         cv.Optional(
-            CONF_CHARGE_OVERCURRENT_PROTECTION_RECOVERY_TIME
+            CONF_CHARGING_OVERCURRENT_PROTECTION_RECOVERY_TIME
         ): JK_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=2): cv.float_,
@@ -554,7 +571,7 @@ _NUMBER_CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
             }
         ),
         cv.Optional(
-            CONF_DISCHARGE_OVERCURRENT_PROTECTION_DELAY
+            CONF_DISCHARGING_OVERCURRENT_PROTECTION_DELAY
         ): JK_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=2): cv.float_,
@@ -566,7 +583,7 @@ _NUMBER_CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
             }
         ),
         cv.Optional(
-            CONF_DISCHARGE_OVERCURRENT_PROTECTION_RECOVERY_TIME
+            CONF_DISCHARGING_OVERCURRENT_PROTECTION_RECOVERY_TIME
         ): JK_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=2): cv.float_,
@@ -599,7 +616,7 @@ _NUMBER_CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
                 ): cv.string_strict,
             }
         ),
-        cv.Optional(CONF_CHARGE_OVERTEMPERATURE_PROTECTION): JK_NUMBER_SCHEMA.extend(
+        cv.Optional(CONF_CHARGING_OVERTEMPERATURE_PROTECTION): JK_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=30): cv.float_,
                 cv.Optional(CONF_MAX_VALUE, default=80): cv.float_,
@@ -610,7 +627,7 @@ _NUMBER_CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
             }
         ),
         cv.Optional(
-            CONF_CHARGE_OVERTMPERATURE_PROTECTION_RECOVERY
+            CONF_CHARGING_OVERTEMPERATURE_PROTECTION_RECOVERY
         ): JK_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=30): cv.float_,
@@ -621,7 +638,7 @@ _NUMBER_CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
                 ): cv.string_strict,
             }
         ),
-        cv.Optional(CONF_DISCHARGE_OVERTEMPERATURE_PROTECTION): JK_NUMBER_SCHEMA.extend(
+        cv.Optional(CONF_DISCHARGING_OVERTEMPERATURE_PROTECTION): JK_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=30): cv.float_,
                 cv.Optional(CONF_MAX_VALUE, default=80): cv.float_,
@@ -632,7 +649,7 @@ _NUMBER_CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
             }
         ),
         cv.Optional(
-            CONF_DISCHARGE_OVERTEMPERATURE_PROTECTION_RECOVERY
+            CONF_DISCHARGING_OVERTEMPERATURE_PROTECTION_RECOVERY
         ): JK_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=30): cv.float_,
@@ -643,7 +660,7 @@ _NUMBER_CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
                 ): cv.string_strict,
             }
         ),
-        cv.Optional(CONF_CHARGE_UNDERTEMPERATURE_PROTECTION): JK_NUMBER_SCHEMA.extend(
+        cv.Optional(CONF_CHARGING_UNDERTEMPERATURE_PROTECTION): JK_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=-45): cv.float_,
                 cv.Optional(CONF_MAX_VALUE, default=20): cv.float_,
@@ -654,7 +671,7 @@ _NUMBER_CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
             }
         ),
         cv.Optional(
-            CONF_CHARGE_UNDERTMPERATURE_PROTECTION_RECOVERY
+            CONF_CHARGING_UNDERTEMPERATURE_PROTECTION_RECOVERY
         ): JK_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=-45): cv.float_,
@@ -666,7 +683,7 @@ _NUMBER_CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
             }
         ),
         cv.Optional(
-            CONF_DISCHARGE_UNDERTEMPERATURE_PROTECTION
+            CONF_DISCHARGING_UNDERTEMPERATURE_PROTECTION
         ): JK_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=-40): cv.float_,
@@ -678,7 +695,7 @@ _NUMBER_CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
             }
         ),
         cv.Optional(
-            CONF_DISCHARGE_UNDERTEMPERATURE_PROTECTION_RECOVERY
+            CONF_DISCHARGING_UNDERTEMPERATURE_PROTECTION_RECOVERY
         ): JK_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=-40): cv.float_,
@@ -711,7 +728,7 @@ _NUMBER_CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
                 ): cv.string_strict,
             }
         ),
-        cv.Optional(CONF_DISCHARGE_PRECHARGE_TIME): JK_NUMBER_SCHEMA.extend(
+        cv.Optional(CONF_DISCHARGING_PRECHARGE_TIME): JK_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=0.0): cv.float_,
                 cv.Optional(CONF_MAX_VALUE, default=255.0): cv.float_,

@@ -92,26 +92,26 @@ class JkBmsBle :
   void set_max_balance_current_number(number::Number *max_balance_current_number) {
     max_balance_current_number_ = max_balance_current_number;
   }
-  void set_max_charge_current_number(number::Number *max_charge_current_number) {
-    max_charge_current_number_ = max_charge_current_number;
+  void set_max_charging_current_number(number::Number *max_charging_current_number) {
+    max_charging_current_number_ = max_charging_current_number;
   }
-  void set_max_discharge_current_number(number::Number *max_discharge_current_number) {
-    max_discharge_current_number_ = max_discharge_current_number;
+  void set_max_discharging_current_number(number::Number *max_discharging_current_number) {
+    max_discharging_current_number_ = max_discharging_current_number;
   }
-  void set_charge_overcurrent_protection_delay_number(number::Number *charge_overcurrent_protection_delay_number) {
-    charge_overcurrent_protection_delay_number_ = charge_overcurrent_protection_delay_number;
+  void set_charging_overcurrent_protection_delay_number(number::Number *charging_overcurrent_protection_delay_number) {
+    charging_overcurrent_protection_delay_number_ = charging_overcurrent_protection_delay_number;
   }
-  void set_charge_overcurrent_protection_recovery_time_number(
-      number::Number *charge_overcurrent_protection_recovery_time_number) {
-    charge_overcurrent_protection_recovery_time_number_ = charge_overcurrent_protection_recovery_time_number;
+  void set_charging_overcurrent_protection_recovery_time_number(
+      number::Number *charging_overcurrent_protection_recovery_time_number) {
+    charging_overcurrent_protection_recovery_time_number_ = charging_overcurrent_protection_recovery_time_number;
   }
-  void set_discharge_overcurrent_protection_delay_number(
-      number::Number *discharge_overcurrent_protection_delay_number) {
-    discharge_overcurrent_protection_delay_number_ = discharge_overcurrent_protection_delay_number;
+  void set_discharging_overcurrent_protection_delay_number(
+      number::Number *discharging_overcurrent_protection_delay_number) {
+    discharging_overcurrent_protection_delay_number_ = discharging_overcurrent_protection_delay_number;
   }
-  void set_discharge_overcurrent_protection_recovery_time_number(
-      number::Number *discharge_overcurrent_protection_recovery_time_number) {
-    discharge_overcurrent_protection_recovery_time_number_ = discharge_overcurrent_protection_recovery_time_number;
+  void set_discharging_overcurrent_protection_recovery_time_number(
+      number::Number *discharging_overcurrent_protection_recovery_time_number) {
+    discharging_overcurrent_protection_recovery_time_number_ = discharging_overcurrent_protection_recovery_time_number;
   }
   void set_short_circuit_protection_delay_number(number::Number *short_circuit_protection_delay_number) {
     short_circuit_protection_delay_number_ = short_circuit_protection_delay_number;
@@ -120,33 +120,33 @@ class JkBmsBle :
       number::Number *short_circuit_protection_recovery_time_number) {
     short_circuit_protection_recovery_time_number_ = short_circuit_protection_recovery_time_number;
   }
-  void set_charge_overtemperature_protection_number(number::Number *charge_overtemperature_protection_number) {
-    charge_overtemperature_protection_number_ = charge_overtemperature_protection_number;
+  void set_charging_overtemperature_protection_number(number::Number *charging_overtemperature_protection_number) {
+    charging_overtemperature_protection_number_ = charging_overtemperature_protection_number;
   }
-  void set_charge_overtemperature_protection_recovery_number(
-      number::Number *charge_overtemperature_protection_recovery_number) {
-    charge_overtemperature_protection_recovery_number_ = charge_overtemperature_protection_recovery_number;
+  void set_charging_overtemperature_protection_recovery_number(
+      number::Number *charging_overtemperature_protection_recovery_number) {
+    charging_overtemperature_protection_recovery_number_ = charging_overtemperature_protection_recovery_number;
   }
-  void set_discharge_overtemperature_protection_number(number::Number *discharge_overtemperature_protection_number) {
-    discharge_overtemperature_protection_number_ = discharge_overtemperature_protection_number;
+  void set_discharging_overtemperature_protection_number(number::Number *discharging_overtemperature_protection_number) {
+    discharging_overtemperature_protection_number_ = discharging_overtemperature_protection_number;
   }
-  void set_discharge_overtemperature_protection_recovery_number(
-      number::Number *discharge_overtemperature_protection_recovery_number) {
-    discharge_overtemperature_protection_recovery_number_ = discharge_overtemperature_protection_recovery_number;
+  void set_discharging_overtemperature_protection_recovery_number(
+      number::Number *discharging_overtemperature_protection_recovery_number) {
+    discharging_overtemperature_protection_recovery_number_ = discharging_overtemperature_protection_recovery_number;
   }
-  void set_charge_undertemperature_protection_number(number::Number *charge_undertemperature_protection_number) {
-    charge_undertemperature_protection_number_ = charge_undertemperature_protection_number;
+  void set_charging_undertemperature_protection_number(number::Number *charging_undertemperature_protection_number) {
+    charging_undertemperature_protection_number_ = charging_undertemperature_protection_number;
   }
-  void set_charge_undertemperature_protection_recovery_number(
-      number::Number *charge_undertemperature_protection_recovery_number) {
-    charge_undertemperature_protection_recovery_number_ = charge_undertemperature_protection_recovery_number;
+  void set_charging_undertemperature_protection_recovery_number(
+      number::Number *charging_undertemperature_protection_recovery_number) {
+    charging_undertemperature_protection_recovery_number_ = charging_undertemperature_protection_recovery_number;
   }
-  void set_discharge_undertemperature_protection_number(number::Number *discharge_undertemperature_protection_number) {
-    discharge_undertemperature_protection_number_ = discharge_undertemperature_protection_number;
+  void set_discharging_undertemperature_protection_number(number::Number *discharging_undertemperature_protection_number) {
+    discharging_undertemperature_protection_number_ = discharging_undertemperature_protection_number;
   }
-  void set_discharge_undertemperature_protection_recovery_number(
-      number::Number *discharge_undertemperature_protection_recovery_number) {
-    discharge_undertemperature_protection_recovery_number_ = discharge_undertemperature_protection_recovery_number;
+  void set_discharging_undertemperature_protection_recovery_number(
+      number::Number *discharging_undertemperature_protection_recovery_number) {
+    discharging_undertemperature_protection_recovery_number_ = discharging_undertemperature_protection_recovery_number;
   }
   void set_mosfet_overtemperature_protection_number(number::Number *mosfet_overtemperature_protection_number) {
     mosfet_overtemperature_protection_number_ = mosfet_overtemperature_protection_number;
@@ -155,8 +155,8 @@ class JkBmsBle :
       number::Number *mosfet_overtemperature_protection_recovery_number) {
     mosfet_overtemperature_protection_recovery_number_ = mosfet_overtemperature_protection_recovery_number;
   }
-  void set_discharge_precharge_time_number(number::Number *discharge_precharge_time_number) {
-    discharge_precharge_time_number_ = discharge_precharge_time_number;
+  void set_discharging_precharge_time_number(number::Number *discharging_precharge_time_number) {
+    discharging_precharge_time_number_ = discharging_precharge_time_number;
   }
   void set_heating_start_temperature_number(number::Number *heating_start_temperature_number) {
     heating_start_temperature_number_ = heating_start_temperature_number;
@@ -262,11 +262,11 @@ class JkBmsBle :
   void set_heating_current_sensor(sensor::Sensor *heating_current_sensor) {
     heating_current_sensor_ = heating_current_sensor;
   }
-  void set_charge_status_id_sensor(sensor::Sensor *charge_status_id_sensor) {
-    charge_status_id_sensor_ = charge_status_id_sensor;
+  void set_charging_status_id_sensor(sensor::Sensor *charging_status_id_sensor) {
+    charging_status_id_sensor_ = charging_status_id_sensor;
   }
-  void set_charge_status_time_elapsed_sensor(sensor::Sensor *charge_status_time_elapsed_sensor) {
-    charge_status_time_elapsed_sensor_ = charge_status_time_elapsed_sensor;
+  void set_charging_status_time_elapsed_sensor(sensor::Sensor *charging_status_time_elapsed_sensor) {
+    charging_status_time_elapsed_sensor_ = charging_status_time_elapsed_sensor;
   }
   void set_detail_log_count_sensor(sensor::Sensor *detail_log_count_sensor) {
     detail_log_count_sensor_ = detail_log_count_sensor;
@@ -285,8 +285,8 @@ class JkBmsBle :
   void set_total_runtime_formatted_text_sensor(text_sensor::TextSensor *total_runtime_formatted_text_sensor) {
     total_runtime_formatted_text_sensor_ = total_runtime_formatted_text_sensor;
   }
-  void set_charge_status_text_sensor(text_sensor::TextSensor *charge_status_text_sensor) {
-    charge_status_text_sensor_ = charge_status_text_sensor;
+  void set_charging_status_text_sensor(text_sensor::TextSensor *charging_status_text_sensor) {
+    charging_status_text_sensor_ = charging_status_text_sensor;
   }
   void set_software_version_text_sensor(text_sensor::TextSensor *software_version_text_sensor) {
     software_version_text_sensor_ = software_version_text_sensor;
@@ -366,25 +366,25 @@ class JkBmsBle :
   number::Number *current_calibration_number_{nullptr};  // @FIXME: Identify value at the settings frame
   number::Number *power_off_voltage_number_{nullptr};
   number::Number *max_balance_current_number_{nullptr};
-  number::Number *max_charge_current_number_{nullptr};
-  number::Number *max_discharge_current_number_{nullptr};
-  number::Number *charge_overcurrent_protection_delay_number_{nullptr};
-  number::Number *charge_overcurrent_protection_recovery_time_number_{nullptr};
-  number::Number *discharge_overcurrent_protection_delay_number_{nullptr};
-  number::Number *discharge_overcurrent_protection_recovery_time_number_{nullptr};
+  number::Number *max_charging_current_number_{nullptr};
+  number::Number *max_discharging_current_number_{nullptr};
+  number::Number *charging_overcurrent_protection_delay_number_{nullptr};
+  number::Number *charging_overcurrent_protection_recovery_time_number_{nullptr};
+  number::Number *discharging_overcurrent_protection_delay_number_{nullptr};
+  number::Number *discharging_overcurrent_protection_recovery_time_number_{nullptr};
   number::Number *short_circuit_protection_delay_number_{nullptr};
   number::Number *short_circuit_protection_recovery_time_number_{nullptr};
-  number::Number *charge_overtemperature_protection_number_{nullptr};
-  number::Number *charge_overtemperature_protection_recovery_number_{nullptr};
-  number::Number *discharge_overtemperature_protection_number_{nullptr};
-  number::Number *discharge_overtemperature_protection_recovery_number_{nullptr};
-  number::Number *charge_undertemperature_protection_number_{nullptr};
-  number::Number *charge_undertemperature_protection_recovery_number_{nullptr};
-  number::Number *discharge_undertemperature_protection_number_{nullptr};
-  number::Number *discharge_undertemperature_protection_recovery_number_{nullptr};
+  number::Number *charging_overtemperature_protection_number_{nullptr};
+  number::Number *charging_overtemperature_protection_recovery_number_{nullptr};
+  number::Number *discharging_overtemperature_protection_number_{nullptr};
+  number::Number *discharging_overtemperature_protection_recovery_number_{nullptr};
+  number::Number *charging_undertemperature_protection_number_{nullptr};
+  number::Number *charging_undertemperature_protection_recovery_number_{nullptr};
+  number::Number *discharging_undertemperature_protection_number_{nullptr};
+  number::Number *discharging_undertemperature_protection_recovery_number_{nullptr};
   number::Number *mosfet_overtemperature_protection_number_{nullptr};
   number::Number *mosfet_overtemperature_protection_recovery_number_{nullptr};
-  number::Number *discharge_precharge_time_number_{nullptr};
+  number::Number *discharging_precharge_time_number_{nullptr};
   number::Number *heating_start_temperature_number_{nullptr};
   number::Number *heating_stop_temperature_number_{nullptr};
   number::Number *re_bulk_soc_number_{nullptr};
@@ -412,8 +412,8 @@ class JkBmsBle :
   sensor::Sensor *balancing_current_sensor_{nullptr};
   sensor::Sensor *emergency_time_countdown_sensor_{nullptr};
   sensor::Sensor *heating_current_sensor_{nullptr};
-  sensor::Sensor *charge_status_id_sensor_{nullptr};
-  sensor::Sensor *charge_status_time_elapsed_sensor_{nullptr};
+  sensor::Sensor *charging_status_id_sensor_{nullptr};
+  sensor::Sensor *charging_status_time_elapsed_sensor_{nullptr};
   sensor::Sensor *detail_log_count_sensor_{nullptr};
   sensor::Sensor *battery_type_id_sensor_{nullptr};
 
@@ -433,7 +433,7 @@ class JkBmsBle :
   text_sensor::TextSensor *errors_text_sensor_{nullptr};
   text_sensor::TextSensor *operation_status_text_sensor_{nullptr};
   text_sensor::TextSensor *total_runtime_formatted_text_sensor_{nullptr};
-  text_sensor::TextSensor *charge_status_text_sensor_{nullptr};
+  text_sensor::TextSensor *charging_status_text_sensor_{nullptr};
   text_sensor::TextSensor *software_version_text_sensor_{nullptr};
   text_sensor::TextSensor *hardware_version_text_sensor_{nullptr};
   text_sensor::TextSensor *battery_type_text_sensor_{nullptr};
@@ -464,7 +464,7 @@ class JkBmsBle :
   void track_online_status_();
   std::string to_hex_string_(uint32_t mask);
   std::string error_bits_to_string_(uint32_t bitmask, const char *const *errors, uint8_t errors_size);
-  std::string charge_status_id_to_string_(uint8_t status);
+  std::string charging_status_id_to_string_(uint8_t status);
   std::string battery_type_id_to_string_(uint8_t code);
 
   std::string format_total_runtime_(const uint32_t value) {

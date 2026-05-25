@@ -112,34 +112,34 @@ number:
       name: "power off voltage"
     max_balance_current:
       name: "max balance current"
-    max_charge_current:
-      name: "max charge current"
-    max_discharge_current:
-      name: "max discharge current"
-    charge_overcurrent_protection_delay:
-      name: "charge overcurrent protection delay"
-    charge_overcurrent_protection_recovery_time:
-      name: "charge overcurrent protection recovery time"
-    discharge_overcurrent_protection_delay:
-      name: "discharge overcurrent protection delay"
-    discharge_overcurrent_protection_recovery_time:
-      name: "discharge overcurrent protection recovery time"
+    max_charging_current:
+      name: "max charging current"
+    max_discharging_current:
+      name: "max discharging current"
+    charging_overcurrent_protection_delay:
+      name: "charging overcurrent protection delay"
+    charging_overcurrent_protection_recovery_time:
+      name: "charging overcurrent protection recovery time"
+    discharging_overcurrent_protection_delay:
+      name: "discharging overcurrent protection delay"
+    discharging_overcurrent_protection_recovery_time:
+      name: "discharging overcurrent protection recovery time"
     short_circuit_protection_delay:
       name: "short circuit protection delay"
     short_circuit_protection_recovery_time:
       name: "short circuit protection recovery time"
-    charge_overtemperature_protection:
-      name: "charge overtemperature protection"
-    charge_overtemperature_protection_recovery:
-      name: "charge overtemperature protection recovery"
-    discharge_overtemperature_protection:
-      name: "discharge overtemperature protection"
-    discharge_overtemperature_protection_recovery:
-      name: "discharge overtemperature protection recovery"
-    charge_undertemperature_protection:
-      name: "charge undertemperature protection"
-    charge_undertemperature_protection_recovery:
-      name: "charge undertemperature protection recovery"
+    charging_overtemperature_protection:
+      name: "charging overtemperature protection"
+    charging_overtemperature_protection_recovery:
+      name: "charging overtemperature protection recovery"
+    discharging_overtemperature_protection:
+      name: "discharging overtemperature protection"
+    discharging_overtemperature_protection_recovery:
+      name: "discharging overtemperature protection recovery"
+    charging_undertemperature_protection:
+      name: "charging undertemperature protection"
+    charging_undertemperature_protection_recovery:
+      name: "charging undertemperature protection recovery"
     mosfet_overtemperature_protection:
       name: "mosfet overtemperature protection"
     mosfet_overtemperature_protection_recovery:

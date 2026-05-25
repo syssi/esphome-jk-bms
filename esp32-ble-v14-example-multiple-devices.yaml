@@ -175,11 +175,11 @@ number:
     max_balance_current:
       name: "max balance current"
       device_id: device0
-    max_charge_current:
-      name: "max charge current"
+    max_charging_current:
+      name: "max charging current"
       device_id: device0
-    max_discharge_current:
-      name: "max discharge current"
+    max_discharging_current:
+      name: "max discharging current"
       device_id: device0
     smart_sleep_voltage:
       name: "smart sleep voltage"
@@ -202,17 +202,17 @@ number:
     cell_request_float_voltage_time:
       name: "cell request float voltage time"
       device_id: device0
-    charge_overcurrent_protection_delay:
-      name: "charge overcurrent protection delay"
+    charging_overcurrent_protection_delay:
+      name: "charging overcurrent protection delay"
       device_id: device0
-    charge_overcurrent_protection_recovery_time:
-      name: "charge overcurrent protection recovery time"
+    charging_overcurrent_protection_recovery_time:
+      name: "charging overcurrent protection recovery time"
       device_id: device0
-    discharge_overcurrent_protection_delay:
-      name: "discharge overcurrent protection delay"
+    discharging_overcurrent_protection_delay:
+      name: "discharging overcurrent protection delay"
       device_id: device0
-    discharge_overcurrent_protection_recovery_time:
-      name: "discharge overcurrent protection recovery time"
+    discharging_overcurrent_protection_recovery_time:
+      name: "discharging overcurrent protection recovery time"
       device_id: device0
     short_circuit_protection_delay:
       name: "short circuit protection delay"
@@ -220,29 +220,29 @@ number:
     short_circuit_protection_recovery_time:
       name: "short circuit protection recovery time"
       device_id: device0
-    charge_overtemperature_protection:
-      name: "charge overtemperature protection"
+    charging_overtemperature_protection:
+      name: "charging overtemperature protection"
       device_id: device0
-    charge_overtemperature_protection_recovery:
-      name: "charge overtemperature protection recovery"
+    charging_overtemperature_protection_recovery:
+      name: "charging overtemperature protection recovery"
       device_id: device0
-    discharge_overtemperature_protection:
-      name: "discharge overtemperature protection"
+    discharging_overtemperature_protection:
+      name: "discharging overtemperature protection"
       device_id: device0
-    discharge_overtemperature_protection_recovery:
-      name: "discharge overtemperature protection recovery"
+    discharging_overtemperature_protection_recovery:
+      name: "discharging overtemperature protection recovery"
       device_id: device0
-    charge_undertemperature_protection:
-      name: "charge undertemperature protection"
+    charging_undertemperature_protection:
+      name: "charging undertemperature protection"
       device_id: device0
-    charge_undertemperature_protection_recovery:
-      name: "charge undertemperature protection recovery"
+    charging_undertemperature_protection_recovery:
+      name: "charging undertemperature protection recovery"
       device_id: device0
-    discharge_undertemperature_protection:
-      name: "discharge undertemperature protection"
+    discharging_undertemperature_protection:
+      name: "discharging undertemperature protection"
       device_id: device0
-    discharge_undertemperature_protection_recovery:
-      name: "discharge undertemperature protection recovery"
+    discharging_undertemperature_protection_recovery:
+      name: "discharging undertemperature protection recovery"
       device_id: device0
     mosfet_overtemperature_protection:
       name: "mosfet overtemperature protection"
@@ -290,11 +290,11 @@ number:
     max_balance_current:
       name: "max balance current"
       device_id: device1
-    max_charge_current:
-      name: "max charge current"
+    max_charging_current:
+      name: "max charging current"
       device_id: device1
-    max_discharge_current:
-      name: "max discharge current"
+    max_discharging_current:
+      name: "max discharging current"
       device_id: device1
     smart_sleep_voltage:
       name: "smart sleep voltage"
@@ -317,17 +317,17 @@ number:
     cell_request_float_voltage_time:
       name: "cell request float voltage time"
       device_id: device1
-    charge_overcurrent_protection_delay:
-      name: "charge overcurrent protection delay"
+    charging_overcurrent_protection_delay:
+      name: "charging overcurrent protection delay"
       device_id: device1
-    charge_overcurrent_protection_recovery_time:
-      name: "charge overcurrent protection recovery time"
+    charging_overcurrent_protection_recovery_time:
+      name: "charging overcurrent protection recovery time"
       device_id: device1
-    discharge_overcurrent_protection_delay:
-      name: "discharge overcurrent protection delay"
+    discharging_overcurrent_protection_delay:
+      name: "discharging overcurrent protection delay"
       device_id: device1
-    discharge_overcurrent_protection_recovery_time:
-      name: "discharge overcurrent protection recovery time"
+    discharging_overcurrent_protection_recovery_time:
+      name: "discharging overcurrent protection recovery time"
       device_id: device1
     short_circuit_protection_delay:
       name: "short circuit protection delay"
@@ -335,29 +335,29 @@ number:
     short_circuit_protection_recovery_time:
       name: "short circuit protection recovery time"
       device_id: device1
-    charge_overtemperature_protection:
-      name: "charge overtemperature protection"
+    charging_overtemperature_protection:
+      name: "charging overtemperature protection"
       device_id: device1
-    charge_overtemperature_protection_recovery:
-      name: "charge overtemperature protection recovery"
+    charging_overtemperature_protection_recovery:
+      name: "charging overtemperature protection recovery"
       device_id: device1
-    discharge_overtemperature_protection:
-      name: "discharge overtemperature protection"
+    discharging_overtemperature_protection:
+      name: "discharging overtemperature protection"
       device_id: device1
-    discharge_overtemperature_protection_recovery:
-      name: "discharge overtemperature protection recovery"
+    discharging_overtemperature_protection_recovery:
+      name: "discharging overtemperature protection recovery"
       device_id: device1
-    charge_undertemperature_protection:
-      name: "charge undertemperature protection"
+    charging_undertemperature_protection:
+      name: "charging undertemperature protection"
       device_id: device1
-    charge_undertemperature_protection_recovery:
-      name: "charge undertemperature protection recovery"
+    charging_undertemperature_protection_recovery:
+      name: "charging undertemperature protection recovery"
       device_id: device1
-    discharge_undertemperature_protection:
-      name: "discharge undertemperature protection"
+    discharging_undertemperature_protection:
+      name: "discharging undertemperature protection"
       device_id: device1
-    discharge_undertemperature_protection_recovery:
-      name: "discharge undertemperature protection recovery"
+    discharging_undertemperature_protection_recovery:
+      name: "discharging undertemperature protection recovery"
       device_id: device1
     mosfet_overtemperature_protection:
       name: "mosfet overtemperature protection"
