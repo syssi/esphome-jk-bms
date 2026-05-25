@@ -72,7 +72,7 @@ CONF_DISCHARGING_OVERCURRENT_DELAY = "discharging_overcurrent_delay"
 CONF_CHARGING_OVERCURRENT_PROTECTION = "charging_overcurrent_protection"
 CONF_CHARGING_OVERCURRENT_DELAY = "charging_overcurrent_delay"
 
-CONF_BALANCE_STARTING_VOLTAGE = "balance_starting_voltage"
+CONF_BALANCING_START_VOLTAGE = "balancing_start_voltage"
 CONF_BALANCING_DELTA_VOLTAGE = "balancing_delta_voltage"
 
 CONF_MOSFET_TEMPERATURE_PROTECTION = "mosfet_temperature_protection"
@@ -380,7 +380,7 @@ SENSOR_DEFS = {
         "device_class": DEVICE_CLASS_EMPTY,
         "state_class": STATE_CLASS_MEASUREMENT,
     },
-    CONF_BALANCE_STARTING_VOLTAGE: {
+    CONF_BALANCING_START_VOLTAGE: {
         "unit_of_measurement": UNIT_VOLT,
         "icon": ICON_EMPTY,
         "accuracy_decimals": 3,
@@ -558,6 +558,7 @@ _RENAMED_SENSORS = {
     "temperature_sensor_temperature_protection": "battery_overtemperature_protection",
     "temperature_sensor_temperature_recovery": "battery_overtemperature_recovery",
     "temperature_sensor_temperature_difference_protection": "battery_temperature_difference_protection",
+    "balance_starting_voltage": "balancing_start_voltage",
 }
 
 CONFIG_SCHEMA = cv.All(

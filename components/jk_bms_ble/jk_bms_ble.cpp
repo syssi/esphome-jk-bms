@@ -1078,7 +1078,7 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
 
   // 138   4   0xE4 0x0C 0x00 0x00    Start balance voltage
   ESP_LOGV(TAG, "  Start balance voltage: %f V", (float) jk_get_32bit(138) * 0.001f);
-  this->publish_state_(this->balance_starting_voltage_number_, (float) jk_get_32bit(138) * 0.001f);
+  this->publish_state_(this->balancing_start_voltage_number_, (float) jk_get_32bit(138) * 0.001f);
 
   if (this->protocol_version_ == PROTOCOL_VERSION_JK02_24S) {
     ESP_LOGD(TAG, "  Unknown142: %f", (float) jk_get_32bit(142) * 0.001f);

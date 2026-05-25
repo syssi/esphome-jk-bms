@@ -116,8 +116,8 @@ number:
     jk_bms_ble_id: bmsble0
     balance_trigger_voltage:
       name: "balance trigger voltage"
-    balance_starting_voltage:
-      name: "balance starting voltage"
+    balancing_start_voltage:
+      name: "balancing start voltage"
     power_off_voltage:
       name: "power off voltage"
     max_balance_current:

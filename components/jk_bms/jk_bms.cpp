@@ -269,7 +269,7 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->charging_overcurrent_delay_sensor_, (float) jk_get_16bit(offset + 6 + 3 * 22));
 
   // 0x9B 0x0C 0xE4: Balanced starting voltage                   3300 * 0.001 = 3.300V     0.001 V
-  this->publish_state_(this->balance_starting_voltage_sensor_, (float) jk_get_16bit(offset + 6 + 3 * 23) * 0.001f);
+  this->publish_state_(this->balancing_start_voltage_sensor_, (float) jk_get_16bit(offset + 6 + 3 * 23) * 0.001f);
 
   // 0x9C 0x00 0x08: Balanced opening pressure difference           8 * 0.001 = 0.008V     0.001 V     0.01-1V
   this->publish_state_(this->balancing_delta_voltage_sensor_, (float) jk_get_16bit(offset + 6 + 3 * 24) * 0.001f);
@@ -456,7 +456,7 @@ void JkBms::publish_device_unavailable_() {
   this->publish_state_(discharging_overcurrent_delay_sensor_, NAN);
   this->publish_state_(charging_overcurrent_protection_sensor_, NAN);
   this->publish_state_(charging_overcurrent_delay_sensor_, NAN);
-  this->publish_state_(balance_starting_voltage_sensor_, NAN);
+  this->publish_state_(balancing_start_voltage_sensor_, NAN);
   this->publish_state_(balancing_delta_voltage_sensor_, NAN);
   this->publish_state_(mosfet_temperature_protection_sensor_, NAN);
   this->publish_state_(mosfet_temperature_recovery_sensor_, NAN);
@@ -626,7 +626,7 @@ void JkBms::dump_config() {  // NOLINT(google-readability-function-size,readabil
   LOG_SENSOR("", "Discharging Overcurrent Delay", this->discharging_overcurrent_delay_sensor_);
   LOG_SENSOR("", "Charging Overcurrent Protection", this->charging_overcurrent_protection_sensor_);
   LOG_SENSOR("", "Charging Overcurrent Delay", this->charging_overcurrent_delay_sensor_);
-  LOG_SENSOR("", "Balance Starting Voltage", this->balance_starting_voltage_sensor_);
+  LOG_SENSOR("", "Balancing Start Voltage", this->balancing_start_voltage_sensor_);
   LOG_SENSOR("", "Balancing Delta Voltage", this->balancing_delta_voltage_sensor_);
   LOG_SENSOR("", "Mosfet Temperature Protection", this->mosfet_temperature_protection_sensor_);
   LOG_SENSOR("", "Mosfet Temperature Recovery", this->mosfet_temperature_recovery_sensor_);

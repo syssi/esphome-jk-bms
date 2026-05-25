@@ -153,7 +153,7 @@ CONF_RE_BULK_SOC = "re_bulk_soc"
 CONF_CELL_COUNT = "cell_count"
 CONF_TOTAL_BATTERY_CAPACITY = "total_battery_capacity"
 
-CONF_BALANCE_STARTING_VOLTAGE = "balance_starting_voltage"
+CONF_BALANCING_START_VOLTAGE = "balancing_start_voltage"
 CONF_VOLTAGE_CALIBRATION = "voltage_calibration"
 CONF_CURRENT_CALIBRATION = "current_calibration"
 CONF_POWER_OFF_VOLTAGE = "power_off_voltage"
@@ -216,7 +216,7 @@ NUMBERS = {
     CONF_RE_BULK_SOC: [0x00, 0x00, 0xB7, 1.0, 1],
     CONF_CELL_COUNT: [0x00, 0x1C, 0x1C, 1.0, 4],
     CONF_TOTAL_BATTERY_CAPACITY: [0x00, 0x20, 0x20, 1000.0, 4],
-    CONF_BALANCE_STARTING_VOLTAGE: [0x00, 0x26, 0x22, 1000.0, 4],
+    CONF_BALANCING_START_VOLTAGE: [0x00, 0x26, 0x22, 1000.0, 4],
     CONF_VOLTAGE_CALIBRATION: [0x00, 0x21, 0x64, 1000.0, 4],
     CONF_CURRENT_CALIBRATION: [0x00, 0x24, 0x67, 1000.0, 4],
     CONF_POWER_OFF_VOLTAGE: [0x00, 0x0B, 0x0B, 1000.0, 4],
@@ -345,6 +345,7 @@ JK_NUMBER_SCHEMA = (
 _RENAMED_NUMBERS = {
     "power_tube_overtemperature_protection": "mosfet_overtemperature_protection",
     "power_tube_overtemperature_protection_recovery": "mosfet_overtemperature_protection_recovery",
+    "balance_starting_voltage": "balancing_start_voltage",
 }
 
 _NUMBER_CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
@@ -469,7 +470,7 @@ _NUMBER_CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
                 ): cv.string_strict,
             }
         ),
-        cv.Optional(CONF_BALANCE_STARTING_VOLTAGE): JK_NUMBER_SCHEMA.extend(
+        cv.Optional(CONF_BALANCING_START_VOLTAGE): JK_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=1.20): cv.float_,
                 cv.Optional(CONF_MAX_VALUE, default=4.25): cv.float_,

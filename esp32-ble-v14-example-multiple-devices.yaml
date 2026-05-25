@@ -160,8 +160,8 @@ number:
     cell_voltage_undervoltage_recovery:
       name: "cell voltage undervoltage recovery"
       device_id: device0
-    balance_starting_voltage:
-      name: "balance starting voltage"
+    balancing_start_voltage:
+      name: "balancing start voltage"
       device_id: device0
     voltage_calibration:
       name: "voltage calibration"
@@ -275,8 +275,8 @@ number:
     cell_voltage_undervoltage_recovery:
       name: "cell voltage undervoltage recovery"
       device_id: device1
-    balance_starting_voltage:
-      name: "balance starting voltage"
+    balancing_start_voltage:
+      name: "balancing start voltage"
       device_id: device1
     voltage_calibration:
       name: "voltage calibration"
