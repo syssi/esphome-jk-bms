@@ -230,7 +230,7 @@ sensor:
     sleep_wait_time:
       name: "sleep wait time"
     low_soc_alarm_threshold:
-      name: "alarm low volume"
+      name: "Low SOC alarm threshold"
     manufacturing_date:
       name: "manufacturing date"
     total_runtime:
