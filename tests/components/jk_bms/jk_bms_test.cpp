@@ -196,12 +196,12 @@ TEST(JkBmsStatusDataTest, BatteryInfo) {
 
 TEST(JkBmsStatusDataTest, LowSocAlarm) {
   TestableJkBms bms;
-  sensor::Sensor low_soc_alarm;
-  bms.set_low_soc_alarm_sensor(&low_soc_alarm);
+  sensor::Sensor low_soc_alarm_threshold;
+  bms.set_low_soc_alarm_threshold_sensor(&low_soc_alarm_threshold);
 
   bms.on_jk_modbus_data(FUNCTION_READ_ALL, STATUS_FRAME_14S);
 
-  EXPECT_FLOAT_EQ(low_soc_alarm.state, 20.0f);  // 0x14 = 20 %
+  EXPECT_FLOAT_EQ(low_soc_alarm_threshold.state, 20.0f);  // 0x14 = 20 %
 }
 
 // ── Version and runtime ──────────────────────────────────────────────────────
