@@ -116,9 +116,9 @@ def migrate(path):
         if key_match and indent > 0:
             key = key_match.group(2)
 
-            if section == "sensor" and key in SENSOR_REMOVED:
+            if section == "sensor" and has_ble and key in SENSOR_REMOVED:
                 print(
-                    f"  line {lineno}: ACTION REQUIRED: {key} — {SENSOR_REMOVED[key]}"
+                    f"  line {lineno}: ACTION REQUIRED: {key} - {SENSOR_REMOVED[key]}"
                 )
 
             elif section == "sensor" and key in sensor_renames:
