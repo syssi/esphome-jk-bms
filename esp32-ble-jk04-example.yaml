@@ -191,8 +191,22 @@ sensor:
       name: "balancing current"
     balancer_status_bitmask:
       name: "balancer status bitmask"
-    mosfet_temperature:
-      name: "mosfet temperature"
+
+number:
+  - platform: jk_bms_ble
+    jk_bms_ble_id: bms0
+    cell_count:
+      name: "cell count"
+    power_off_voltage:
+      name: "power off voltage"
+    balance_trigger_voltage:
+      name: "balance trigger voltage"
+    balancing_start_voltage:
+      name: "balancing start voltage"
+    max_balance_current:
+      name: "max balance current"
+    voltage_calibration:
+      name: "voltage calibration"
 
 switch:
   - platform: jk_bms_ble

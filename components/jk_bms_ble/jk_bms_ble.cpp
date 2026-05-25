@@ -316,32 +316,12 @@ void JkBmsBle::update() {
 }
 
 bool JkBmsBle::write_register(uint8_t address, uint32_t value, uint8_t length) {
-  uint8_t frame[20];
-  frame[0] = 0xAA;     // start sequence
-  frame[1] = 0x55;     // start sequence
-  frame[2] = 0x90;     // start sequence
-  frame[3] = 0xEB;     // start sequence
-  frame[4] = address;  // holding register
-  frame[5] = length;   // size of the value in byte
-  frame[6] = value >> 0;
-  frame[7] = value >> 8;
-  frame[8] = value >> 16;
-  frame[9] = value >> 24;
-  frame[10] = 0x00;
-  frame[11] = 0x00;
-  frame[12] = 0x00;
-  frame[13] = 0x00;
-  frame[14] = 0x00;
-  frame[15] = 0x00;
-  frame[16] = 0x00;
-  frame[17] = 0x00;
-  frame[18] = 0x00;
-  frame[19] = crc(frame, sizeof(frame) - 1);
+  auto frame = build_frame(address, value, length);
 
-  ESP_LOGD(TAG, "Write register: %s", format_hex_pretty(frame, sizeof(frame)).c_str());  // NOLINT
+  ESP_LOGD(TAG, "Write register: %s", format_hex_pretty(frame.data(), frame.size()).c_str());  // NOLINT
   auto status =
       esp_ble_gattc_write_char(this->parent_->get_gattc_if(), this->parent_->get_conn_id(), this->char_handle_,
-                               sizeof(frame), frame, ESP_GATT_WRITE_TYPE_NO_RSP, ESP_GATT_AUTH_REQ_NONE);
+                               frame.size(), frame.data(), ESP_GATT_WRITE_TYPE_NO_RSP, ESP_GATT_AUTH_REQ_NONE);
 
   if (status) {
     ESP_LOGW(TAG, "[%s] esp_ble_gattc_write_char failed, status=%d", ADDR_STR(this->parent_->address_str()), status);
@@ -355,6 +335,31 @@ bool JkBmsBle::write_register(uint8_t address, uint32_t value, uint8_t length) {
 void JkBmsBle::update() {}
 
 #endif  // USE_ESP32
+
+std::array<uint8_t, 20> JkBmsBle::build_frame(uint8_t address, uint32_t value, uint8_t length) {
+  std::array<uint8_t, 20> frame{};
+  frame[0] = 0xAA;     // start sequence
+  frame[1] = 0x55;     // start sequence
+  frame[2] = 0x90;     // start sequence
+  frame[3] = 0xEB;     // start sequence
+  frame[4] = address;  // holding register
+  frame[5] = length;   // size of the value in byte
+  frame[6] = value >> 0;
+  frame[7] = value >> 8;
+  frame[8] = value >> 16;
+  frame[9] = value >> 24;
+  frame[19] = crc(frame.data(), frame.size() - 1);
+  return frame;
+}
+
+uint32_t JkBmsBle::encode_jk04_payload(float value, uint8_t len, float factor) {
+  if (len == 4) {
+    uint32_t bits;
+    memcpy(&bits, &value, sizeof(bits));
+    return bits;
+  }
+  return (uint32_t) (int32_t) (value * factor);
+}
 
 // TODO: There is no need to assemble frames if the MTU can be increased to > 320 bytes
 void JkBmsBle::assemble(const uint8_t *data, uint16_t length) {
@@ -893,7 +898,8 @@ void JkBmsBle::decode_jk04_cell_info_(const std::vector<uint8_t> &data) {
   //           0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
   //           0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
   //           0x00 0x00 0x00 0x00 0x00
-  // 286   3   0x53 0x96 0x1C 0x00        Uptime
+
+  // 286   3   0x53 0x96 0x1C 0x00    Runtime
   this->publish_state_(this->total_runtime_sensor_, (float) jk_get_32bit(286));
   this->publish_state_(this->total_runtime_formatted_text_sensor_, format_total_runtime_(jk_get_32bit(286)));
 
@@ -1247,10 +1253,12 @@ void JkBmsBle::decode_jk04_settings_(const std::vector<uint8_t> &data) {
   // 26    4   0x00 0x00 0x00 0x00
   // 30    4   0x00 0x00 0x00 0x00
   // 34    4   0x10 0x00 0x00 0x00    Cell count
-  ESP_LOGI(TAG, "  Cell count: %d", data[34]);
+  ESP_LOGV(TAG, "  Cell count: %d", data[34]);
+  this->publish_state_(this->cell_count_number_, (float) data[34]);
 
   // 38    4   0x00 0x00 0x40 0x40    Power off voltage
-  ESP_LOGI(TAG, "  Power off voltage: %f V", (float) ieee_float_(jk_get_32bit(38)));
+  ESP_LOGV(TAG, "  Power off voltage: %f V", (float) ieee_float_(jk_get_32bit(38)));
+  this->publish_state_(this->power_off_voltage_number_, (float) ieee_float_(jk_get_32bit(38)));
 
   // 42    4   0x00 0x00 0x00 0x00
   // 46    4   0x00 0x00 0x00 0x00
@@ -1260,8 +1268,9 @@ void JkBmsBle::decode_jk04_settings_(const std::vector<uint8_t> &data) {
   // 62    4   0x00 0x00 0x00 0x00
   // 66    4   0x00 0x00 0x00 0x00
   // 70    4   0x00 0x00 0x00 0x00
-  // 74    4   0xA3 0xFD 0x40 0x40
-  ESP_LOGD(TAG, "  Unknown74: %f", (float) ieee_float_(jk_get_32bit(74)));
+  // 74    4   0xA3 0xFD 0x40 0x40    Voltage calibration (ADC Vref, reg 0x44)
+  ESP_LOGV(TAG, "  Voltage calibration (ADC Vref): %f", (float) ieee_float_(jk_get_32bit(74)));
+  this->publish_state_(this->voltage_calibration_number_, (float) ieee_float_(jk_get_32bit(74)));
 
   // 78    4   0x00 0x00 0x00 0x00
   // 82    4   0x00 0x00 0x00 0x00
@@ -1269,20 +1278,21 @@ void JkBmsBle::decode_jk04_settings_(const std::vector<uint8_t> &data) {
   // 90    4   0x00 0x00 0x00 0x00
   // 94    4   0x00 0x00 0x00 0x00
   // 98    4   0x00 0x00 0x88 0x40    Start balance voltage
-  ESP_LOGI(TAG, "  Start balance voltage: %f V", (float) ieee_float_(jk_get_32bit(98)));
+  ESP_LOGV(TAG, "  Start balance voltage: %f V", (float) ieee_float_(jk_get_32bit(98)));
+  this->publish_state_(this->balancing_start_voltage_number_, (float) ieee_float_(jk_get_32bit(98)));
 
   // 102   4   0x9A 0x99 0x59 0x40
   ESP_LOGD(TAG, "  Unknown102: %f", (float) ieee_float_(jk_get_32bit(102)));
 
   // 106   4   0x0A 0xD7 0xA3 0x3B    Trigger delta voltage
-  ESP_LOGI(TAG, "  Trigger Delta Voltage: %f V", (float) ieee_float_(jk_get_32bit(106)));
+  ESP_LOGV(TAG, "  Trigger Delta Voltage: %f V", (float) ieee_float_(jk_get_32bit(106)));
+  this->publish_state_(this->balance_trigger_voltage_number_, (float) ieee_float_(jk_get_32bit(106)));
 
   // 110   4   0x00 0x00 0x00 0x40    Max. balance current
-  ESP_LOGI(TAG, "  Max. balance current: %f A", (float) ieee_float_(jk_get_32bit(110)));
+  ESP_LOGV(TAG, "  Max. balance current: %f A", (float) ieee_float_(jk_get_32bit(110)));
+  this->publish_state_(this->max_balance_current_number_, (float) ieee_float_(jk_get_32bit(110)));
   // 114   4   0x01 0x00 0x00 0x00    Balancer switch
   this->publish_state_(this->balancer_switch_, (bool) (data[114]));
-
-  ESP_LOGI(TAG, "  ADC Vref: unknown V");  // 53.67 V?
 
   // 118  20   0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
   // 138  20   0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
