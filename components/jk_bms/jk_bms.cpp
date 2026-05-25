@@ -13,20 +13,20 @@ static const uint8_t FUNCTION_WRITE_REGISTER = 0x02;
 
 static const uint8_t ERRORS_SIZE = 14;
 static constexpr const char *const ERRORS[ERRORS_SIZE] = {
-    "Low capacity",                              // Byte 0.0, warning
-    "Power tube overtemperature",                // Byte 0.1, alarm
-    "Charging overvoltage",                      // Byte 0.2, alarm
-    "Discharging undervoltage",                  // Byte 0.3, alarm
-    "Battery over temperature",                  // Byte 0.4, alarm
-    "Charging overcurrent",                      // Byte 0.5, alarm
-    "Discharging overcurrent",                   // Byte 0.6, alarm
-    "Cell pressure difference",                  // Byte 0.7, alarm
-    "Overtemperature alarm in the battery box",  // Byte 1.0, alarm
-    "Battery low temperature",                   // Byte 1.1, alarm
-    "Cell overvoltage",                          // Byte 1.2, alarm
-    "Cell undervoltage",                         // Byte 1.3, alarm
-    "309_A protection",                          // Byte 1.4, alarm
-    "309_A protection",                          // Byte 1.5, alarm
+    "Low capacity",              // Byte 0.0, warning
+    "MOSFET overtemperature",    // Byte 0.1, alarm
+    "Charge overvoltage",        // Byte 0.2, alarm
+    "Discharge undervoltage",    // Byte 0.3, alarm
+    "Battery overtemperature",   // Byte 0.4, alarm
+    "Charge overcurrent",        // Byte 0.5, alarm
+    "Discharge overcurrent",     // Byte 0.6, alarm
+    "Cell pressure difference",  // Byte 0.7, alarm
+    "Battery box overtemperature",  // Byte 1.0, alarm
+    "Battery undertemperature",  // Byte 1.1, alarm
+    "Cell overvoltage",          // Byte 1.2, alarm
+    "Cell undervoltage",         // Byte 1.3, alarm
+    "309_A protection",          // Byte 1.4, alarm
+    "309_A protection",          // Byte 1.5, alarm
 };
 
 static const uint8_t OPERATION_MODES_SIZE = 4;
@@ -183,15 +183,15 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
   // 0x8B 0x00 0x00: Battery warning message                     0000 0000 0000 0000
   //
   // Bit 0    Low capacity                                1 (alarm), 0 (normal)    warning
-  // Bit 1    Power tube overtemperature                  1 (alarm), 0 (normal)    alarm
-  // Bit 2    Charging overvoltage                        1 (alarm), 0 (normal)    alarm
-  // Bit 3    Discharging undervoltage                    1 (alarm), 0 (normal)    alarm
-  // Bit 4    Battery over temperature                    1 (alarm), 0 (normal)    alarm
-  // Bit 5    Charging overcurrent                        1 (alarm), 0 (normal)    alarm
-  // Bit 6    Discharging overcurrent                     1 (alarm), 0 (normal)    alarm
+  // Bit 1    MOSFET overtemperature                      1 (alarm), 0 (normal)    alarm
+  // Bit 2    Charge overvoltage                          1 (alarm), 0 (normal)    alarm
+  // Bit 3    Discharge undervoltage                      1 (alarm), 0 (normal)    alarm
+  // Bit 4    Battery overtemperature                     1 (alarm), 0 (normal)    alarm
+  // Bit 5    Charge overcurrent                          1 (alarm), 0 (normal)    alarm
+  // Bit 6    Discharge overcurrent                       1 (alarm), 0 (normal)    alarm
   // Bit 7    Cell pressure difference                    1 (alarm), 0 (normal)    alarm
-  // Bit 8    Overtemperature alarm in the battery box    1 (alarm), 0 (normal)    alarm
-  // Bit 9    Battery low temperature                     1 (alarm), 0 (normal)    alarm
+  // Bit 8    Battery box overtemperature                 1 (alarm), 0 (normal)    alarm
+  // Bit 9    Battery undertemperature                    1 (alarm), 0 (normal)    alarm
   // Bit 10   Cell overvoltage                            1 (alarm), 0 (normal)    alarm
   // Bit 11   Cell undervoltage                           1 (alarm), 0 (normal)    alarm
   // Bit 12   309_A protection                            1 (alarm), 0 (normal)    alarm
@@ -201,8 +201,8 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
   //
   // Examples:
   // 0x0001 = 00000000 00000001: Low capacity alarm
-  // 0x0002 = 00000000 00000010: Mosfet over-temperature alarm
-  // 0x0003 = 00000000 00000011: Low capacity alarm AND mosfet over-temperature alarm
+  // 0x0002 = 00000000 00000010: MOSFET overtemperature alarm
+  // 0x0003 = 00000000 00000011: Low capacity alarm AND MOSFET overtemperature alarm
   uint16_t raw_errors_bitmask = jk_get_16bit(offset + 6 + 3 * 8);
   this->publish_state_(this->errors_bitmask_sensor_, (float) raw_errors_bitmask);
   this->publish_state_(this->errors_text_sensor_, this->error_bits_to_string_(raw_errors_bitmask));
