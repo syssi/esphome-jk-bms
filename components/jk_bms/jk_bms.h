@@ -291,8 +291,6 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
   sensor::Sensor *discharging_undertemperature_protection_sensor_{nullptr};
   sensor::Sensor *discharging_undertemperature_recovery_sensor_{nullptr};
   sensor::Sensor *full_charge_capacity_sensor_{nullptr};
-  sensor::Sensor *charging_sensor_{nullptr};
-  sensor::Sensor *discharging_sensor_{nullptr};
   sensor::Sensor *current_calibration_sensor_{nullptr};
   sensor::Sensor *device_address_sensor_{nullptr};
   sensor::Sensor *sleep_wait_time_sensor_{nullptr};

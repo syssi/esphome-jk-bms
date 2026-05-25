@@ -467,8 +467,7 @@ void JkBms::publish_device_unavailable_() {
   this->publish_state_(discharging_undertemperature_protection_sensor_, NAN);
   this->publish_state_(discharging_undertemperature_recovery_sensor_, NAN);
   this->publish_state_(full_charge_capacity_sensor_, NAN);
-  this->publish_state_(charging_sensor_, NAN);
-  this->publish_state_(discharging_sensor_, NAN);
+
   this->publish_state_(current_calibration_sensor_, NAN);
   this->publish_state_(device_address_sensor_, NAN);
   this->publish_state_(sleep_wait_time_sensor_, NAN);
