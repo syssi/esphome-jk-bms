@@ -313,7 +313,7 @@ sensor:
     emergency_time_countdown:
       name: "emergency time countdown"
     detail_log_entry_count:
-      name: "Detail log entry count"
+      name: "detail log entry count"
 
 switch:
   - platform: jk_bms_ble
