@@ -334,8 +334,8 @@ sensor:
       name: "charge status id"
     charge_status_time_elapsed:
       name: "charge status time elapsed"
-    detail_log_count:
-      name: "detail log count"
+    detail_log_entry_count:
+      name: "detail log entry count"
     battery_type_id:
       name: "battery type id"
 switch:

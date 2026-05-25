@@ -699,7 +699,7 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
                          (float) ((int16_t) jk_get_16bit(226 + offset)) * 0.1f);
 
     // 234+32  4   0x3E 0x00 0x00 0x00    Detail log count     1
-    this->publish_state_(this->detail_log_count_sensor_, (float) jk_get_32bit(234 + offset));
+    this->publish_state_(this->detail_log_entry_count_sensor_, (float) jk_get_32bit(234 + offset));
 
     // 243+32  1   0x00                   Battery type code    0=LFP, 1=Li-ion, 2=LTO
     this->publish_state_(this->battery_type_id_sensor_, (float) data[243 + offset]);

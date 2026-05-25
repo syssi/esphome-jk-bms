@@ -312,8 +312,8 @@ sensor:
       name: "balancing current"
     emergency_time_countdown:
       name: "emergency time countdown"
-    detail_log_count:
-      name: "detail log count"
+    detail_log_entry_count:
+      name: "detail log entry count"
 
 switch:
   - platform: jk_bms_ble

@@ -595,8 +595,8 @@ sensor:
     emergency_time_countdown:
       name: "emergency time countdown"
       device_id: device0
-    detail_log_count:
-      name: "detail log count"
+    detail_log_entry_count:
+      name: "detail log entry count"
       device_id: device0
     # ...
 
@@ -827,8 +827,8 @@ sensor:
     emergency_time_countdown:
       name: "emergency time countdown"
       device_id: device1
-    detail_log_count:
-      name: "detail log count"
+    detail_log_entry_count:
+      name: "detail log entry count"
       device_id: device1
     # ...
 
