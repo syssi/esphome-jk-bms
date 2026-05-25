@@ -115,7 +115,7 @@ class TestJkBmsBleSensorLists:
     def test_sensor_defs_completeness(self):
         assert "total_voltage" in ble_sensor.SENSOR_DEFS
         assert "full_charge_capacity" in ble_sensor.SENSOR_DEFS
-        assert "balancer_status" in ble_sensor.SENSOR_DEFS
+        assert "balancer_status_bitmask" in ble_sensor.SENSOR_DEFS
         assert "detail_log_entry_count" in ble_sensor.SENSOR_DEFS
         assert "battery_type_id" in ble_sensor.SENSOR_DEFS
         assert len(ble_sensor.SENSOR_DEFS) == 27
@@ -159,7 +159,7 @@ class TestJkBmsBleButtonConstants:
 class TestJkBleTextSensorConstants:
     def test_text_sensors_list(self):
         assert ble_text_sensor.CONF_ERRORS in ble_text_sensor.TEXT_SENSORS
-        assert ble_text_sensor.CONF_OPERATION_STATUS in ble_text_sensor.TEXT_SENSORS
+        assert ble_text_sensor.CONF_BALANCER_STATUS in ble_text_sensor.TEXT_SENSORS
         assert ble_text_sensor.CONF_CHARGE_STATUS in ble_text_sensor.TEXT_SENSORS
         assert ble_text_sensor.CONF_BATTERY_TYPE in ble_text_sensor.TEXT_SENSORS
         assert len(ble_text_sensor.TEXT_SENSORS) == 8

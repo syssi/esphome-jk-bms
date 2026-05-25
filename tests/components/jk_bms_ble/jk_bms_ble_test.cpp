@@ -152,14 +152,14 @@ TEST(JkBmsBleJk02CellInfoTest, NoErrors) {
 
 TEST(JkBmsBleJk02CellInfoTest, BalancingOff) {
   TestableJkBmsBle bms;
-  sensor::Sensor balancer_status;
+  sensor::Sensor balancer_status_bitmask;
   binary_sensor::BinarySensor balancing_binary;
-  bms.set_balancer_status_sensor(&balancer_status);
+  bms.set_balancer_status_bitmask_sensor(&balancer_status_bitmask);
   bms.set_balancing_binary_sensor(&balancing_binary);
 
   bms.decode_jk02_cell_info_(CELL_INFO_JK02_24S_V10);
 
-  EXPECT_FLOAT_EQ(balancer_status.state, 0.0f);
+  EXPECT_FLOAT_EQ(balancer_status_bitmask.state, 0.0f);
   EXPECT_FALSE(balancing_binary.state);
 }
 
