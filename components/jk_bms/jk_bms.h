@@ -142,11 +142,11 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
   void set_balancing_delta_voltage_sensor(sensor::Sensor *balancing_delta_voltage_sensor) {
     balancing_delta_voltage_sensor_ = balancing_delta_voltage_sensor;
   }
-  void set_mosfet_temperature_protection_sensor(sensor::Sensor *mosfet_temperature_protection_sensor) {
-    mosfet_temperature_protection_sensor_ = mosfet_temperature_protection_sensor;
+  void set_mosfet_overtemperature_protection_sensor(sensor::Sensor *mosfet_overtemperature_protection_sensor) {
+    mosfet_overtemperature_protection_sensor_ = mosfet_overtemperature_protection_sensor;
   }
-  void set_mosfet_temperature_recovery_sensor(sensor::Sensor *mosfet_temperature_recovery_sensor) {
-    mosfet_temperature_recovery_sensor_ = mosfet_temperature_recovery_sensor;
+  void set_mosfet_overtemperature_recovery_sensor(sensor::Sensor *mosfet_overtemperature_recovery_sensor) {
+    mosfet_overtemperature_recovery_sensor_ = mosfet_overtemperature_recovery_sensor;
   }
   void set_battery_overtemperature_protection_sensor(sensor::Sensor *battery_overtemperature_protection_sensor) {
     battery_overtemperature_protection_sensor_ = battery_overtemperature_protection_sensor;
@@ -158,25 +158,25 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
       sensor::Sensor *battery_temperature_difference_protection_sensor) {
     battery_temperature_difference_protection_sensor_ = battery_temperature_difference_protection_sensor;
   }
-  void set_charging_high_temperature_protection_sensor(sensor::Sensor *charging_high_temperature_protection_sensor) {
-    charging_high_temperature_protection_sensor_ = charging_high_temperature_protection_sensor;
+  void set_charging_overtemperature_protection_sensor(sensor::Sensor *charging_overtemperature_protection_sensor) {
+    charging_overtemperature_protection_sensor_ = charging_overtemperature_protection_sensor;
   }
-  void set_discharging_high_temperature_protection_sensor(
-      sensor::Sensor *discharging_high_temperature_protection_sensor) {
-    discharging_high_temperature_protection_sensor_ = discharging_high_temperature_protection_sensor;
+  void set_discharging_overtemperature_protection_sensor(
+      sensor::Sensor *discharging_overtemperature_protection_sensor) {
+    discharging_overtemperature_protection_sensor_ = discharging_overtemperature_protection_sensor;
   }
-  void set_charging_low_temperature_protection_sensor(sensor::Sensor *charging_low_temperature_protection_sensor) {
-    charging_low_temperature_protection_sensor_ = charging_low_temperature_protection_sensor;
+  void set_charging_undertemperature_protection_sensor(sensor::Sensor *charging_undertemperature_protection_sensor) {
+    charging_undertemperature_protection_sensor_ = charging_undertemperature_protection_sensor;
   }
-  void set_charging_low_temperature_recovery_sensor(sensor::Sensor *charging_low_temperature_recovery_sensor) {
-    charging_low_temperature_recovery_sensor_ = charging_low_temperature_recovery_sensor;
+  void set_charging_undertemperature_recovery_sensor(sensor::Sensor *charging_undertemperature_recovery_sensor) {
+    charging_undertemperature_recovery_sensor_ = charging_undertemperature_recovery_sensor;
   }
-  void set_discharging_low_temperature_protection_sensor(
-      sensor::Sensor *discharging_low_temperature_protection_sensor) {
-    discharging_low_temperature_protection_sensor_ = discharging_low_temperature_protection_sensor;
+  void set_discharging_undertemperature_protection_sensor(
+      sensor::Sensor *discharging_undertemperature_protection_sensor) {
+    discharging_undertemperature_protection_sensor_ = discharging_undertemperature_protection_sensor;
   }
-  void set_discharging_low_temperature_recovery_sensor(sensor::Sensor *discharging_low_temperature_recovery_sensor) {
-    discharging_low_temperature_recovery_sensor_ = discharging_low_temperature_recovery_sensor;
+  void set_discharging_undertemperature_recovery_sensor(sensor::Sensor *discharging_undertemperature_recovery_sensor) {
+    discharging_undertemperature_recovery_sensor_ = discharging_undertemperature_recovery_sensor;
   }
   void set_full_charge_capacity_sensor(sensor::Sensor *full_charge_capacity_sensor) {
     full_charge_capacity_sensor_ = full_charge_capacity_sensor;
@@ -285,17 +285,17 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
   sensor::Sensor *charging_overcurrent_delay_sensor_{nullptr};
   sensor::Sensor *balancing_start_voltage_sensor_{nullptr};
   sensor::Sensor *balancing_delta_voltage_sensor_{nullptr};
-  sensor::Sensor *mosfet_temperature_protection_sensor_{nullptr};
-  sensor::Sensor *mosfet_temperature_recovery_sensor_{nullptr};
+  sensor::Sensor *mosfet_overtemperature_protection_sensor_{nullptr};
+  sensor::Sensor *mosfet_overtemperature_recovery_sensor_{nullptr};
   sensor::Sensor *battery_overtemperature_protection_sensor_{nullptr};
   sensor::Sensor *battery_overtemperature_recovery_sensor_{nullptr};
   sensor::Sensor *battery_temperature_difference_protection_sensor_{nullptr};
-  sensor::Sensor *charging_high_temperature_protection_sensor_{nullptr};
-  sensor::Sensor *discharging_high_temperature_protection_sensor_{nullptr};
-  sensor::Sensor *charging_low_temperature_protection_sensor_{nullptr};
-  sensor::Sensor *charging_low_temperature_recovery_sensor_{nullptr};
-  sensor::Sensor *discharging_low_temperature_protection_sensor_{nullptr};
-  sensor::Sensor *discharging_low_temperature_recovery_sensor_{nullptr};
+  sensor::Sensor *charging_overtemperature_protection_sensor_{nullptr};
+  sensor::Sensor *discharging_overtemperature_protection_sensor_{nullptr};
+  sensor::Sensor *charging_undertemperature_protection_sensor_{nullptr};
+  sensor::Sensor *charging_undertemperature_recovery_sensor_{nullptr};
+  sensor::Sensor *discharging_undertemperature_protection_sensor_{nullptr};
+  sensor::Sensor *discharging_undertemperature_recovery_sensor_{nullptr};
   sensor::Sensor *full_charge_capacity_sensor_{nullptr};
   sensor::Sensor *charging_sensor_{nullptr};
   sensor::Sensor *discharging_sensor_{nullptr};

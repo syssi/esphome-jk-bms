@@ -182,11 +182,11 @@ static const std::vector<uint8_t> STATUS_FRAME_14S = {
     // bytes 125-126: balancing switch = on
     0x9D,
     0x01,
-    // bytes 127-129: mosfet temperature protection = 90°C
+    // bytes 127-129: mosfet overtemperature protection = 90°C
     0x9E,
     0x00,
     0x5A,
-    // bytes 130-132: mosfet temperature recovery = 70°C
+    // bytes 130-132: mosfet overtemperature recovery = 70°C
     0x9F,
     0x00,
     0x46,
@@ -202,27 +202,27 @@ static const std::vector<uint8_t> STATUS_FRAME_14S = {
     0xA2,
     0x00,
     0x14,
-    // bytes 142-144: charging high temperature protection = 70°C
+    // bytes 142-144: charging overtemperature protection = 70°C
     0xA3,
     0x00,
     0x46,
-    // bytes 145-147: discharging high temperature protection = 70°C
+    // bytes 145-147: discharging overtemperature protection = 70°C
     0xA4,
     0x00,
     0x46,
-    // bytes 148-150: charging low temperature protection = (int16_t)0xFFEC = -20°C
+    // bytes 148-150: charging undertemperature protection = (int16_t)0xFFEC = -20°C
     0xA5,
     0xFF,
     0xEC,
-    // bytes 151-153: charging low temperature recovery = (int16_t)0xFFF6 = -10°C
+    // bytes 151-153: charging undertemperature recovery = (int16_t)0xFFF6 = -10°C
     0xA6,
     0xFF,
     0xF6,
-    // bytes 154-156: discharging low temperature protection = -20°C
+    // bytes 154-156: discharging undertemperature protection = -20°C
     0xA7,
     0xFF,
     0xEC,
-    // bytes 157-159: discharging low temperature recovery = -10°C
+    // bytes 157-159: discharging undertemperature recovery = -10°C
     0xA8,
     0xFF,
     0xF6,

@@ -189,17 +189,17 @@ esphome run esp32-example.yaml
 [sensor:127]: 'jk-bms balancing start voltage': Sending state 3.30000 V with 3 decimals of accuracy
 [sensor:127]: 'jk-bms balance opening pressure difference': Sending state 0.01000 V with 3 decimals of accuracy
 [switch:045]: 'jk-bms balancing': Sending state ON
-[sensor:127]: 'jk-bms mosfet temperature protection': Sending state 90.00000 °C with 0 decimals of accuracy
-[sensor:127]: 'jk-bms mosfet temperature recovery': Sending state 70.00000 °C with 0 decimals of accuracy
+[sensor:127]: 'jk-bms mosfet overtemperature protection': Sending state 90.00000 °C with 0 decimals of accuracy
+[sensor:127]: 'jk-bms mosfet overtemperature recovery': Sending state 70.00000 °C with 0 decimals of accuracy
 [sensor:127]: 'jk-bms battery overtemperature protection': Sending state 100.00000 °C with 0 decimals of accuracy
 [sensor:127]: 'jk-bms battery overtemperature recovery': Sending state 100.00000 °C with 0 decimals of accuracy
 [sensor:127]: 'jk-bms battery temperature difference protection': Sending state 20.00000 °C with 0 decimals of accuracy
-[sensor:127]: 'jk-bms charging high temperature protection': Sending state 70.00000 °C with 0 decimals of accuracy
-[sensor:127]: 'jk-bms discharging high temperature protection': Sending state 70.00000 °C with 0 decimals of accuracy
-[sensor:127]: 'jk-bms charging low temperature protection': Sending state -20.00000 °C with 0 decimals of accuracy
-[sensor:127]: 'jk-bms charging low temperature recovery': Sending state -10.00000 °C with 0 decimals of accuracy
-[sensor:127]: 'jk-bms discharging low temperature protection': Sending state -20.00000 °C with 0 decimals of accuracy
-[sensor:127]: 'jk-bms discharging low temperature recovery': Sending state -10.00000 °C with 0 decimals of accuracy
+[sensor:127]: 'jk-bms charging overtemperature protection': Sending state 70.00000 °C with 0 decimals of accuracy
+[sensor:127]: 'jk-bms discharging overtemperature protection': Sending state 70.00000 °C with 0 decimals of accuracy
+[sensor:127]: 'jk-bms charging undertemperature protection': Sending state -20.00000 °C with 0 decimals of accuracy
+[sensor:127]: 'jk-bms charging undertemperature recovery': Sending state -10.00000 °C with 0 decimals of accuracy
+[sensor:127]: 'jk-bms discharging undertemperature protection': Sending state -20.00000 °C with 0 decimals of accuracy
+[sensor:127]: 'jk-bms discharging undertemperature recovery': Sending state -10.00000 °C with 0 decimals of accuracy
 [switch:045]: 'jk-bms charging': Sending state OFF
 [switch:045]: 'jk-bms discharging': Sending state OFF
 [sensor:127]: 'jk-bms current calibration': Sending state 0.72500 A with 3 decimals of accuracy

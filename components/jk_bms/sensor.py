@@ -75,8 +75,8 @@ CONF_CHARGING_OVERCURRENT_DELAY = "charging_overcurrent_delay"
 CONF_BALANCING_START_VOLTAGE = "balancing_start_voltage"
 CONF_BALANCING_DELTA_VOLTAGE = "balancing_delta_voltage"
 
-CONF_MOSFET_TEMPERATURE_PROTECTION = "mosfet_temperature_protection"
-CONF_MOSFET_TEMPERATURE_RECOVERY = "mosfet_temperature_recovery"
+CONF_MOSFET_OVERTEMPERATURE_PROTECTION = "mosfet_overtemperature_protection"
+CONF_MOSFET_OVERTEMPERATURE_RECOVERY = "mosfet_overtemperature_recovery"
 
 CONF_BATTERY_OVERTEMPERATURE_PROTECTION = "battery_overtemperature_protection"
 CONF_BATTERY_OVERTEMPERATURE_RECOVERY = "battery_overtemperature_recovery"
@@ -84,13 +84,13 @@ CONF_BATTERY_TEMPERATURE_DIFFERENCE_PROTECTION = (
     "battery_temperature_difference_protection"
 )
 
-CONF_CHARGING_HIGH_TEMPERATURE_PROTECTION = "charging_high_temperature_protection"
-CONF_DISCHARGING_HIGH_TEMPERATURE_PROTECTION = "discharging_high_temperature_protection"
+CONF_CHARGING_OVERTEMPERATURE_PROTECTION = "charging_overtemperature_protection"
+CONF_DISCHARGING_OVERTEMPERATURE_PROTECTION = "discharging_overtemperature_protection"
 
-CONF_CHARGING_LOW_TEMPERATURE_PROTECTION = "charging_low_temperature_protection"
-CONF_CHARGING_LOW_TEMPERATURE_RECOVERY = "charging_low_temperature_recovery"
-CONF_DISCHARGING_LOW_TEMPERATURE_PROTECTION = "discharging_low_temperature_protection"
-CONF_DISCHARGING_LOW_TEMPERATURE_RECOVERY = "discharging_low_temperature_recovery"
+CONF_CHARGING_UNDERTEMPERATURE_PROTECTION = "charging_undertemperature_protection"
+CONF_CHARGING_UNDERTEMPERATURE_RECOVERY = "charging_undertemperature_recovery"
+CONF_DISCHARGING_UNDERTEMPERATURE_PROTECTION = "discharging_undertemperature_protection"
+CONF_DISCHARGING_UNDERTEMPERATURE_RECOVERY = "discharging_undertemperature_recovery"
 
 # r/w
 # CONF_CELL_COUNT = "cell_count"
@@ -394,14 +394,14 @@ SENSOR_DEFS = {
         "device_class": DEVICE_CLASS_VOLTAGE,
         "state_class": STATE_CLASS_MEASUREMENT,
     },
-    CONF_MOSFET_TEMPERATURE_PROTECTION: {
+    CONF_MOSFET_OVERTEMPERATURE_PROTECTION: {
         "unit_of_measurement": UNIT_CELSIUS,
         "icon": ICON_EMPTY,
         "accuracy_decimals": 0,
         "device_class": DEVICE_CLASS_TEMPERATURE,
         "state_class": STATE_CLASS_MEASUREMENT,
     },
-    CONF_MOSFET_TEMPERATURE_RECOVERY: {
+    CONF_MOSFET_OVERTEMPERATURE_RECOVERY: {
         "unit_of_measurement": UNIT_CELSIUS,
         "icon": ICON_EMPTY,
         "accuracy_decimals": 0,
@@ -429,42 +429,42 @@ SENSOR_DEFS = {
         "device_class": DEVICE_CLASS_TEMPERATURE,
         "state_class": STATE_CLASS_MEASUREMENT,
     },
-    CONF_CHARGING_HIGH_TEMPERATURE_PROTECTION: {
+    CONF_CHARGING_OVERTEMPERATURE_PROTECTION: {
         "unit_of_measurement": UNIT_CELSIUS,
         "icon": ICON_EMPTY,
         "accuracy_decimals": 0,
         "device_class": DEVICE_CLASS_TEMPERATURE,
         "state_class": STATE_CLASS_MEASUREMENT,
     },
-    CONF_DISCHARGING_HIGH_TEMPERATURE_PROTECTION: {
+    CONF_DISCHARGING_OVERTEMPERATURE_PROTECTION: {
         "unit_of_measurement": UNIT_CELSIUS,
         "icon": ICON_EMPTY,
         "accuracy_decimals": 0,
         "device_class": DEVICE_CLASS_TEMPERATURE,
         "state_class": STATE_CLASS_MEASUREMENT,
     },
-    CONF_CHARGING_LOW_TEMPERATURE_PROTECTION: {
+    CONF_CHARGING_UNDERTEMPERATURE_PROTECTION: {
         "unit_of_measurement": UNIT_CELSIUS,
         "icon": ICON_EMPTY,
         "accuracy_decimals": 0,
         "device_class": DEVICE_CLASS_TEMPERATURE,
         "state_class": STATE_CLASS_MEASUREMENT,
     },
-    CONF_CHARGING_LOW_TEMPERATURE_RECOVERY: {
+    CONF_CHARGING_UNDERTEMPERATURE_RECOVERY: {
         "unit_of_measurement": UNIT_CELSIUS,
         "icon": ICON_EMPTY,
         "accuracy_decimals": 0,
         "device_class": DEVICE_CLASS_TEMPERATURE,
         "state_class": STATE_CLASS_MEASUREMENT,
     },
-    CONF_DISCHARGING_LOW_TEMPERATURE_PROTECTION: {
+    CONF_DISCHARGING_UNDERTEMPERATURE_PROTECTION: {
         "unit_of_measurement": UNIT_CELSIUS,
         "icon": ICON_EMPTY,
         "accuracy_decimals": 0,
         "device_class": DEVICE_CLASS_TEMPERATURE,
         "state_class": STATE_CLASS_MEASUREMENT,
     },
-    CONF_DISCHARGING_LOW_TEMPERATURE_RECOVERY: {
+    CONF_DISCHARGING_UNDERTEMPERATURE_RECOVERY: {
         "unit_of_measurement": UNIT_CELSIUS,
         "icon": ICON_EMPTY,
         "accuracy_decimals": 0,
@@ -553,8 +553,16 @@ _RENAMED_SENSORS = {
     "temperature_sensors": "temperature_sensor_count",
     "total_battery_capacity_setting": "full_charge_capacity",
     "power_tube_temperature": "mosfet_temperature",
-    "power_tube_temperature_protection": "mosfet_temperature_protection",
-    "power_tube_temperature_recovery": "mosfet_temperature_recovery",
+    "power_tube_temperature_protection": "mosfet_overtemperature_protection",
+    "power_tube_temperature_recovery": "mosfet_overtemperature_recovery",
+    "mosfet_temperature_protection": "mosfet_overtemperature_protection",
+    "mosfet_temperature_recovery": "mosfet_overtemperature_recovery",
+    "charging_high_temperature_protection": "charging_overtemperature_protection",
+    "discharging_high_temperature_protection": "discharging_overtemperature_protection",
+    "charging_low_temperature_protection": "charging_undertemperature_protection",
+    "charging_low_temperature_recovery": "charging_undertemperature_recovery",
+    "discharging_low_temperature_protection": "discharging_undertemperature_protection",
+    "discharging_low_temperature_recovery": "discharging_undertemperature_recovery",
     "temperature_sensor_temperature_protection": "battery_overtemperature_protection",
     "temperature_sensor_temperature_recovery": "battery_overtemperature_recovery",
     "temperature_sensor_temperature_difference_protection": "battery_temperature_difference_protection",
