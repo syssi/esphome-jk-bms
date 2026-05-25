@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include "esphome/core/component.h"
 #include "esphome/core/hal.h"
 #include "esphome/components/binary_sensor/binary_sensor.h"
@@ -323,6 +324,8 @@ class JkBmsBle :
   void assemble(const uint8_t *data, uint16_t length);
   void set_protocol_version(ProtocolVersion protocol_version) { protocol_version_ = protocol_version; }
   ProtocolVersion get_protocol_version() { return protocol_version_; }
+  static std::array<uint8_t, 20> build_frame(uint8_t address, uint32_t value, uint8_t length);
+  static uint32_t encode_jk04_payload(float value, uint8_t len, float factor);
 #ifdef USE_ESP32
   bool write_register(uint8_t address, uint32_t value, uint8_t length);
 #endif

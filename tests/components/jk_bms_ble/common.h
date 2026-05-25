@@ -5,6 +5,14 @@
 
 namespace esphome::jk_bms_ble::testing {
 
+struct TestNumber : number::Number {
+  void control(float) override {}
+};
+
+struct TestSwitch : switch_::Switch {
+  void write_state(bool) override {}
+};
+
 // Exposes protected decoder methods for direct testing.
 class TestableJkBmsBle : public JkBmsBle {
  public:
