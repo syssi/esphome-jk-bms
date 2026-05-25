@@ -298,8 +298,7 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->charging_overtemperature_protection_sensor_, (float) jk_get_16bit(offset + 8 + 3 * 30));
 
   // 0xA4 0x00 0x46: Battery discharge high temperature protection value    70°C            1.0 °C     0-100°C
-  this->publish_state_(this->discharging_overtemperature_protection_sensor_,
-                       (float) jk_get_16bit(offset + 8 + 3 * 31));
+  this->publish_state_(this->discharging_overtemperature_protection_sensor_, (float) jk_get_16bit(offset + 8 + 3 * 31));
 
   // 0xA5 0xFF 0xEC: Charging low temperature protection value             -20°C            1.0 °C     -45...25°C
   this->publish_state_(this->charging_undertemperature_protection_sensor_,
