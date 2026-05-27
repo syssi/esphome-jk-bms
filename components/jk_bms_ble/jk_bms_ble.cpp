@@ -24,6 +24,7 @@ static const uint16_t JK_BMS_CHARACTERISTIC_UUID = 0xFFE1;
 
 static const uint8_t COMMAND_CELL_INFO = 0x96;
 static const uint8_t COMMAND_DEVICE_INFO = 0x97;
+static const uint8_t COMMAND_LOGBOOK = 0xA1;
 
 static const uint16_t MIN_RESPONSE_SIZE = 300;
 static const uint16_t MAX_RESPONSE_SIZE = 384 + 16;
@@ -109,6 +110,78 @@ static constexpr const char *const CAN_PROTOCOLS[] = {
     "",                                                                  // 18
     "",                                                                  // 19
     "",                                                                  // 20
+};
+
+static constexpr const char *const LOGBOOK_CODES[] = {
+    "",                                                    // 0x00
+    "Boot",                                                // 0x01
+    "Shutdown",                                            // 0x02
+    "APP close charge",                                    // 0x03
+    "APP open charge",                                     // 0x04
+    "APP close discharge",                                 // 0x05
+    "APP open discharge",                                  // 0x06
+    "Remote close charge",                                 // 0x07
+    "Remote open charge",                                  // 0x08
+    "Remote close discharge",                              // 0x09
+    "Remote open discharge",                               // 0x0A
+    "MOS over temperature protection",                     // 0x0B
+    "MOS over-temperature protection is released",         // 0x0C
+    "Abnormal current sensor",                             // 0x0D
+    "Abnormal release of current sensor",                  // 0x0E
+    "Abnormal coprocessor communication",                  // 0x0F
+    "Abnormal cancellation of coprocessor communication",  // 0x10
+    "Cell overcharge protection",                          // 0x11
+    "Cell overcharge protection is released",              // 0x12
+    "Battery overcharge protection",                       // 0x13
+    "Battery overcharge protection is released",           // 0x14
+    "Charge overcurrent protection",                       // 0x15
+    "Charge overcurrent protection is released",           // 0x16
+    "Charge short circuit protection",                     // 0x17
+    "Charge short circuit protection is released",         // 0x18
+    "Charge over temperature protection",                  // 0x19
+    "Charge over temperature protection is released",      // 0x1A
+    "Charge low temperature protection",                   // 0x1B
+    "Charge low temperature protection is released",       // 0x1C
+    "Cell undervoltage protection",                        // 0x1D
+    "Cell undervoltage protection is released",            // 0x1E
+    "Battery undervoltage protection",                     // 0x1F
+    "Battery undervoltage protection is released",         // 0x20
+    "Discharge overcurrent protection",                    // 0x21
+    "Discharge overcurrent protection is released",        // 0x22
+    "Discharge short circuit protection",                  // 0x23
+    "Discharge short circuit protection released",         // 0x24
+    "Discharge over temperature protection",               // 0x25
+    "Discharge over-temperature protection is released",   // 0x26
+    "Reset Watch-Dog",                                     // 0x27
+    "Discharge level 2 short circuit protection",          // 0x28
+    "Manually enable the emergency mode",                  // 0x29
+    "Manually turn off the emergency mode",                // 0x2A
+    "Turn off the emergency mode automatically",           // 0x2B
+    "APP to turn it off",                                  // 0x2C
+    "Button to turn it off",                               // 0x2D
+    "Discharge On Failed",                                 // 0x2E
+    "RS485 power off",                                     // 0x2F
+    "CAN charge off",                                      // 0x30
+    "CAN charge on",                                       // 0x31
+    "CAN discharge off",                                   // 0x32
+    "CAN discharge on",                                    // 0x33
+    "RS485 charge off",                                    // 0x34
+    "RS485 charge on",                                     // 0x35
+    "RS485 discharge off",                                 // 0x36
+    "RS485 discharge on",                                  // 0x37
+    "Smart sleep",                                         // 0x38
+    "Charge MOS abnormal",                                 // 0x39
+    "Discharge MOS abnormal",                              // 0x3A
+    "Time calibration",                                    // 0x3B
+    "",                                               // 0x3C
+    "",                                               // 0x3D
+    "",                                               // 0x3E
+    "",                                               // 0x3F
+    "",                                               // 0x40
+    "",                                               // 0x41
+    "",                                               // 0x42
+    "",                                               // 0x43
+    "Factory setting LFP",                            // 0x44
 };
 
 uint8_t crc(const uint8_t data[], const uint16_t len) {
@@ -464,6 +537,9 @@ void JkBmsBle::decode_(const std::vector<uint8_t> &data) {
       break;
     case 0x03:
       this->decode_device_info_(data);
+      break;
+    case 0x05:
+      this->decode_logbook_(data);
       break;
     default:
       ESP_LOGW(TAG, "Unsupported message type (0x%02X)", data[4]);
@@ -1352,6 +1428,39 @@ void JkBmsBle::decode_jk04_settings_(const std::vector<uint8_t> &data) {
   // 258  20   0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
   // 278  20   0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
   // 298   2   0x00 0xCE
+}
+
+void JkBmsBle::decode_logbook_(const std::vector<uint8_t> &data) {
+  auto jk_get_32bit = [&](size_t i) -> uint32_t {
+    return (uint32_t(data[i + 3]) << 24) | (uint32_t(data[i + 2]) << 16) | (uint32_t(data[i + 1]) << 8) |
+           uint32_t(data[i]);
+  };
+
+  uint32_t log_count = jk_get_32bit(6);
+  ESP_LOGI(TAG, "Logbook frame (%zu bytes) received", data.size());
+  ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front(), 160).c_str());                      // NOLINT
+  ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front() + 160, data.size() - 160).c_str());  // NOLINT
+  ESP_LOGI(TAG, "  Log count: %lu", (unsigned long) log_count);
+
+  for (uint32_t i = 0; i < log_count && i < 50; i++) {
+    uint32_t ts = jk_get_32bit(11 + i * 5);
+    uint8_t code = data[11 + i * 5 + 4];
+
+    uint32_t d = ts / 86400;
+    uint32_t rem = ts % 86400;
+    uint8_t h = rem / 3600;
+    uint8_t m = (rem % 3600) / 60;
+    uint8_t s = rem % 60;
+
+    const char *name = code < sizeof(LOGBOOK_CODES) / sizeof(*LOGBOOK_CODES) ? LOGBOOK_CODES[code] : "";
+    if (name[0] != '\0') {
+      ESP_LOGI(TAG, "  [%lu] [%luD%02uH%02uM%02uS]: %s (0x%02X)", (unsigned long) (i + 1), (unsigned long) d, h, m, s,
+               name, code);
+    } else {
+      ESP_LOGI(TAG, "  [%lu] [%luD%02uH%02uM%02uS]: Unknown (0x%02X)", (unsigned long) (i + 1), (unsigned long) d, h, m,
+               s, code);
+    }
+  }
 }
 
 void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {

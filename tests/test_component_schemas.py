@@ -149,7 +149,8 @@ class TestJkBmsBleButtonConstants:
     def test_buttons_dict(self):
         assert ble_button.CONF_RETRIEVE_SETTINGS in ble_button.BUTTONS
         assert ble_button.CONF_RETRIEVE_DEVICE_INFO in ble_button.BUTTONS
-        assert len(ble_button.BUTTONS) == 2
+        assert ble_button.CONF_RETRIEVE_LOGBOOK in ble_button.BUTTONS
+        assert len(ble_button.BUTTONS) == 3
 
     def test_button_addresses_are_unique(self):
         addresses = list(ble_button.BUTTONS.values())

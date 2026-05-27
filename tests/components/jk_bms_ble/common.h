@@ -23,6 +23,7 @@ class TestableJkBmsBle : public JkBmsBle {
   using JkBmsBle::decode_jk04_cell_info_;
   using JkBmsBle::decode_jk02_settings_;
   using JkBmsBle::decode_jk04_settings_;
+  using JkBmsBle::decode_logbook_;
 };
 
 }  // namespace esphome::jk_bms_ble::testing

@@ -10,14 +10,17 @@ CODEOWNERS = ["@syssi", "@txubelaxu"]
 
 CONF_RETRIEVE_SETTINGS = "retrieve_settings"
 CONF_RETRIEVE_DEVICE_INFO = "retrieve_device_info"
+CONF_RETRIEVE_LOGBOOK = "retrieve_logbook"
 
 ICON_RETRIEVE_SETTINGS = "mdi:cog"
 ICON_RETRIEVE_DEVICE_INFO = "mdi:information-variant"
+ICON_RETRIEVE_LOGBOOK = "mdi:history"
 
 BUTTONS = {
     # The BMS responds to the 0x96 request with a single settings frame and enables the notification stream
     CONF_RETRIEVE_SETTINGS: 0x96,
     CONF_RETRIEVE_DEVICE_INFO: 0x97,
+    CONF_RETRIEVE_LOGBOOK: 0xA1,
 }
 
 JkButton = jk_bms_ble_ns.class_("JkButton", button.Button, cg.Component)
@@ -31,6 +34,10 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
         cv.Optional(CONF_RETRIEVE_DEVICE_INFO): button.button_schema(
             JkButton,
             icon=ICON_RETRIEVE_DEVICE_INFO,
+        ),
+        cv.Optional(CONF_RETRIEVE_LOGBOOK): button.button_schema(
+            JkButton,
+            icon=ICON_RETRIEVE_LOGBOOK,
         ),
     }
 )
