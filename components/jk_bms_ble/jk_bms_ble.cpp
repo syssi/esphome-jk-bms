@@ -1413,7 +1413,8 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
   ESP_LOGI(TAG, "  Device passcode: %s", std::string(data.begin() + 62, data.begin() + 62 + 16).c_str());
 
   // 78    8   0x32 0x33 0x31 0x31 0x31 0x38 0x00 0x00
-  ESP_LOGI(TAG, "  Manufacturing date: %s", std::string(data.begin() + 78, data.begin() + 78 + 8).c_str());
+  ESP_LOGI(TAG, "  Manufacturing date: 20%.2s-%.2s-%.2s", (const char *) &data[78], (const char *) &data[80],
+           (const char *) &data[82]);
 
   // 86    8   0x33 0x30 0x39 0x32 0x35 0x37 0x32 0x31 0x33 0x34 0x00
   ESP_LOGI(TAG, "  Serial number: %s", std::string(data.begin() + 86, data.begin() + 86 + 11).c_str());
