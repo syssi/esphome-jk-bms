@@ -11,7 +11,7 @@
 
 namespace esphome::jk_bms_ble {
 
-static const char *const TAG = "jk_bms_ble";
+static constexpr const char *const TAG = "jk_bms_ble";
 
 static const uint8_t MAX_NO_RESPONSE_COUNT = 10;
 
@@ -28,7 +28,7 @@ static const uint8_t COMMAND_DEVICE_INFO = 0x97;
 static const uint16_t MIN_RESPONSE_SIZE = 300;
 static const uint16_t MAX_RESPONSE_SIZE = 384 + 16;
 
-static const char *const ERRORS_JK02[] = {
+static constexpr const char *const ERRORS_JK02[] = {
     "Wire resistance",                      // bit 0
     "MOSFET overtemperature",               // bit 1
     "Cell count is not equal to settings",  // bit 2
@@ -63,7 +63,7 @@ static const char *const ERRORS_JK02[] = {
     "",                                     // bit 31
 };
 
-static const char *const UART_PROTOCOLS[] = {
+static constexpr const char *const UART_PROTOCOLS[] = {
     "4G-GPS module V4.2",                   // 0
     "JK BMS RS485 Modbus V1.0",             // 1
     "NIU U SERIES",                         // 2
@@ -87,7 +87,7 @@ static const char *const UART_PROTOCOLS[] = {
     "",                                     // 20
 };
 
-static const char *const CAN_PROTOCOLS[] = {
+static constexpr const char *const CAN_PROTOCOLS[] = {
     "JK BMS CAN 250K V2.0",               // 0
     "Deye low voltage CAN V1.0",          // 1
     "PYLON low voltage CAN V1.2",         // 2
