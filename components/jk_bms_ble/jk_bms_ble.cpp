@@ -64,51 +64,51 @@ static const char *const ERRORS_JK02[] = {
 };
 
 static const char *const UART_PROTOCOLS[] = {
-    "4G-GPS module V4.2",                    // 0
-    "JK BMS RS485 Modbus V1.0",              // 1
-    "NIU U SERIES",                          // 2
-    "China tower shared battery V1.1",       // 3
+    "4G-GPS module V4.2",                   // 0
+    "JK BMS RS485 Modbus V1.0",             // 1
+    "NIU U SERIES",                         // 2
+    "China tower shared battery V1.1",      // 3
     "PACE RS485 Modbus V1.3",               // 4
-    "PYLON low voltage RS485 V3.5",          // 5
-    "Growatt BMS RS485 Rev2.01",             // 6
-    "Voltronic Inverter BMS 485",            // 7
-    "China tower shared battery V2.0",       // 8
+    "PYLON low voltage RS485 V3.5",         // 5
+    "Growatt BMS RS485 Rev2.01",            // 6
+    "Voltronic Inverter BMS 485",           // 7
+    "China tower shared battery V2.0",      // 8
     "WOW RS485 Modbus V1.3",                // 9
-    "JK BMS LCD V2.0",                       // 10
-    "UART1 user customization",              // 11
-    "UART2 user customization",              // 12
-    "JK BMS RS485 Modbus V1.0 (9600)",       // 13
-    "PYLON low voltage RS485 V3.5 (9600)",   // 14
+    "JK BMS LCD V2.0",                      // 10
+    "UART1 user customization",             // 11
+    "UART2 user customization",             // 12
+    "JK BMS RS485 Modbus V1.0 (9600)",      // 13
+    "PYLON low voltage RS485 V3.5 (9600)",  // 14
     "JK BMS PBxx LCD V1.0",                 // 15
     "JK BMS LIN BUS V1.0",                  // 16
-    "",                                      // 17
-    "",                                      // 18
-    "",                                      // 19
-    "",                                      // 20
+    "",                                     // 17
+    "",                                     // 18
+    "",                                     // 19
+    "",                                     // 20
 };
 
 static const char *const CAN_PROTOCOLS[] = {
-    "JK BMS CAN 250K V2.0",                 // 0
-    "Deye low voltage CAN V1.0",             // 1
-    "PYLON low voltage CAN V1.2",            // 2
-    "Growatt BMS CAN low voltage Rev05",     // 3
-    "Victron CANbus BMS",                    // 4
-    "MEGAREVO Hybrid BMS CAN V1.0",          // 5
-    "JK BMS CAN 500K V2.0",                 // 6
-    "INVT BMS CAN V1.02",                   // 7
-    "GoodWe LV BMS",                         // 8
-    "FSS ConnectingBat TI V1.0",            // 9
-    "MUST PV1800F CAN V1.04.04",             // 10
-    "LuxpowerTek Battery CAN V01",           // 11
-    "CAN user customization 1",              // 12
-    "CAN user customization 2",              // 13
-    "",                                      // 14
-    "",                                      // 15
-    "",                                      // 16
-    "",                                      // 17
-    "",                                      // 18
-    "",                                      // 19
-    "",                                      // 20
+    "JK BMS CAN 250K V2.0",               // 0
+    "Deye low voltage CAN V1.0",          // 1
+    "PYLON low voltage CAN V1.2",         // 2
+    "Growatt BMS CAN low voltage Rev05",  // 3
+    "Victron CANbus BMS",                 // 4
+    "MEGAREVO Hybrid BMS CAN V1.0",       // 5
+    "JK BMS CAN 500K V2.0",               // 6
+    "INVT BMS CAN V1.02",                 // 7
+    "GoodWe LV BMS",                      // 8
+    "FSS ConnectingBat TI V1.0",          // 9
+    "MUST PV1800F CAN V1.04.04",          // 10
+    "LuxpowerTek Battery CAN V01",        // 11
+    "CAN user customization 1",           // 12
+    "CAN user customization 2",           // 13
+    "",                                   // 14
+    "",                                   // 15
+    "",                                   // 16
+    "",                                   // 17
+    "",                                   // 18
+    "",                                   // 19
+    "",                                   // 20
 };
 
 uint8_t crc(const uint8_t data[], const uint16_t len) {
