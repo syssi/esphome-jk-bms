@@ -11,7 +11,7 @@
 
 namespace esphome::jk_bms_ble {
 
-static const char *const TAG = "jk_bms_ble";
+static constexpr const char *const TAG = "jk_bms_ble";
 
 static const uint8_t MAX_NO_RESPONSE_COUNT = 10;
 
@@ -28,7 +28,7 @@ static const uint8_t COMMAND_DEVICE_INFO = 0x97;
 static const uint16_t MIN_RESPONSE_SIZE = 300;
 static const uint16_t MAX_RESPONSE_SIZE = 384 + 16;
 
-static const char *const ERRORS_JK02[] = {
+static constexpr const char *const ERRORS_JK02[] = {
     "Wire resistance",                      // bit 0
     "MOSFET overtemperature",               // bit 1
     "Cell count is not equal to settings",  // bit 2
@@ -61,6 +61,54 @@ static const char *const ERRORS_JK02[] = {
     "",                                     // bit 29
     "",                                     // bit 30
     "",                                     // bit 31
+};
+
+static constexpr const char *const UART_PROTOCOLS[] = {
+    "4G-GPS Remote module Common protocol V4.2",                       // 0
+    "JK BMS RS485 Modbus V1.0",                                        // 1
+    "NIU U SERIES",                                                    // 2
+    "China tower shared battery cabinet V1.1",                         // 3
+    "PACE_RS485_Modbus_V1.3",                                          // 4
+    "PYLON_low_voltage_Protocol_RS485_V3.5",                           // 5
+    "Growatt_BMS_RS485_Protocol_1xSxxP_ESS_Rev2.01",                   // 6
+    "Voltronic_Inverter_and_BMS_485_communication_protocol_20200325",  // 7
+    "China tower shared battery cabinet V2.0",                         // 8
+    "WOW_RS485_Modbus_V1.3",                                           // 9
+    "JK BMS LCD Protocol V2.0",                                        // 10
+    "UART1 User customization",                                        // 11
+    "UART2 User customization",                                        // 12
+    "(9600) JK BMS RS485 Modbus V1.0",                                 // 13
+    "(9600) PYLON_low_voltage_Protocol_RS485_V3.5",                    // 14
+    "JK BMS PBxx SERIES LCD Protocol V1.0",                            // 15
+    "JK BMS LIN BUS V1.0",                                             // 16
+    "RS485 Protocol 17",                                               // 17
+    "RS485 Protocol 18",                                               // 18
+    "RS485 Protocol 19",                                               // 19
+    "RS485 Protocol 20",                                               // 20
+};
+
+static constexpr const char *const CAN_PROTOCOLS[] = {
+    "JK BMS CAN Protocol (250K) V2.0",                                   // 0
+    "Deye Low-voltage hybrid inverter CAN communication protocol V1.0",  // 1
+    "PYLON-Low-voltage-V1.2",                                            // 2
+    "Growatt BMS CAN-Bus-protocol-low-voltage_Rev_05",                   // 3
+    "Victron_CANbus_BMS_protocol_20170717",                              // 4
+    "MEGAREVO_Hybird_BMSCAN_Protocol_V1.0",                              // 5
+    "JK BMS CAN Protocol (500K) V2.0",                                   // 6
+    "INVT BMS CAN Bus protocol V1.02",                                   // 7
+    "GoodWe LV BMS Protocol (EX/EM/S-BP/BP)",                            // 8
+    "FSS-ConnectingBat-TI-en-10 Version 1.0",                            // 9
+    "MUST PV1800F-CAN communication Protocol1.04.04",                    // 10
+    "LuxpowerTek Battery CAN protocol V01",                              // 11
+    "CAN BUS User customization 1",                                      // 12
+    "CAN BUS User customization 2",                                      // 13
+    "",                                                                  // 14
+    "",                                                                  // 15
+    "",                                                                  // 16
+    "",                                                                  // 17
+    "",                                                                  // 18
+    "",                                                                  // 19
+    "",                                                                  // 20
 };
 
 uint8_t crc(const uint8_t data[], const uint16_t len) {
@@ -1482,9 +1530,11 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
   // 182  0x00
   // 183  0x00
   // 184  0x01                  UART1M Protocol number
-  ESP_LOGI(TAG, "  UART1 Protocol: %d", data[184]);
+  ESP_LOGI(TAG, "  UART1 Protocol: %d (%s)", data[184],
+           data[184] < sizeof(UART_PROTOCOLS) / sizeof(*UART_PROTOCOLS) ? UART_PROTOCOLS[data[184]] : "Unknown");
   // 185  0x04                  CANM Protocol number
-  ESP_LOGI(TAG, "  CAN Protocol: %d", data[185]);
+  ESP_LOGI(TAG, "  CAN Protocol: %d (%s)", data[185],
+           data[185] < sizeof(CAN_PROTOCOLS) / sizeof(*CAN_PROTOCOLS) ? CAN_PROTOCOLS[data[185]] : "Unknown");
   // 186  0xCF
   // 187  0x03
   // 188  0x00
@@ -1508,7 +1558,8 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
   // 216  0x00
   // 217  0x00
   // 218  0x01                  UART2M Protocol number
-  ESP_LOGI(TAG, "  UART2 Protocol: %d", data[218]);
+  ESP_LOGI(TAG, "  UART2 Protocol: %d (%s)", data[218],
+           data[218] < sizeof(UART_PROTOCOLS) / sizeof(*UART_PROTOCOLS) ? UART_PROTOCOLS[data[218]] : "Unknown");
   // 219  0xCF                  UART2M Protocol enable
   // 220  0x03
   // 221  0x00
