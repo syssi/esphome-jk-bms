@@ -81,10 +81,10 @@ static constexpr const char *const UART_PROTOCOLS[] = {
     "(9600) PYLON_low_voltage_Protocol_RS485_V3.5",                    // 14
     "JK BMS PBxx SERIES LCD Protocol V1.0",                            // 15
     "JK BMS LIN BUS V1.0",                                             // 16
-    "",                                                                // 17
-    "",                                                                // 18
-    "",                                                                // 19
-    "",                                                                // 20
+    "RS485 Protocol 17",                                               // 17
+    "RS485 Protocol 18",                                               // 18
+    "RS485 Protocol 19",                                               // 19
+    "RS485 Protocol 20",                                               // 20
 };
 
 static constexpr const char *const CAN_PROTOCOLS[] = {
