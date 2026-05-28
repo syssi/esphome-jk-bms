@@ -24,6 +24,7 @@ static const uint16_t JK_BMS_CHARACTERISTIC_UUID = 0xFFE1;
 
 static const uint8_t COMMAND_CELL_INFO = 0x96;
 static const uint8_t COMMAND_DEVICE_INFO = 0x97;
+static const uint8_t COMMAND_LOGBOOK = 0xA1;
 
 static const uint16_t MIN_RESPONSE_SIZE = 300;
 static const uint16_t MAX_RESPONSE_SIZE = 384 + 16;
@@ -109,6 +110,265 @@ static constexpr const char *const CAN_PROTOCOLS[] = {
     "",                                                                  // 18
     "",                                                                  // 19
     "",                                                                  // 20
+};
+
+static constexpr const char *const LOGBOOK_CODES[] = {
+    "",                                                    // 0x00
+    "Boot",                                                // 0x01
+    "Shutdown",                                            // 0x02
+    "APP close charge",                                    // 0x03
+    "APP open charge",                                     // 0x04
+    "APP close discharge",                                 // 0x05
+    "APP open discharge",                                  // 0x06
+    "Remote close charge",                                 // 0x07
+    "Remote open charge",                                  // 0x08
+    "Remote close discharge",                              // 0x09
+    "Remote open discharge",                               // 0x0A
+    "MOS over temperature protection",                     // 0x0B
+    "MOS over-temperature protection is released",         // 0x0C
+    "Abnormal current sensor",                             // 0x0D
+    "Abnormal release of current sensor",                  // 0x0E
+    "Abnormal coprocessor communication",                  // 0x0F
+    "Abnormal cancellation of coprocessor communication",  // 0x10
+    "Cell overcharge protection",                          // 0x11
+    "Cell overcharge protection is released",              // 0x12
+    "Battery overcharge protection",                       // 0x13
+    "Battery overcharge protection is released",           // 0x14
+    "Charge overcurrent protection",                       // 0x15
+    "Charge overcurrent protection is released",           // 0x16
+    "Charge short circuit protection",                     // 0x17
+    "Charge short circuit protection is released",         // 0x18
+    "Charge over temperature protection",                  // 0x19
+    "Charge over temperature protection is released",      // 0x1A
+    "Charge low temperature protection",                   // 0x1B
+    "Charge low temperature protection is released",       // 0x1C
+    "Cell undervoltage protection",                        // 0x1D
+    "Cell undervoltage protection is released",            // 0x1E
+    "Battery undervoltage protection",                     // 0x1F
+    "Battery undervoltage protection is released",         // 0x20
+    "Discharge overcurrent protection",                    // 0x21
+    "Discharge overcurrent protection is released",        // 0x22
+    "Discharge short circuit protection",                  // 0x23
+    "Discharge short circuit protection released",         // 0x24
+    "Discharge over temperature protection",               // 0x25
+    "Discharge over-temperature protection is released",   // 0x26
+    "Reset Watch-Dog",                                     // 0x27
+    "Discharge level 2 short circuit protection",          // 0x28
+    "Manually enable the emergency mode",                  // 0x29
+    "Manually turn off the emergency mode",                // 0x2A
+    "Turn off the emergency mode automatically",           // 0x2B
+    "APP to turn it off",                                  // 0x2C
+    "Button to turn it off",                               // 0x2D
+    "Discharge On Failed",                                 // 0x2E
+    "RS485 power off",                                     // 0x2F
+    "CAN charge off",                                      // 0x30
+    "CAN charge on",                                       // 0x31
+    "CAN discharge off",                                   // 0x32
+    "CAN discharge on",                                    // 0x33
+    "RS485 charge off",                                    // 0x34
+    "RS485 charge on",                                     // 0x35
+    "RS485 discharge off",                                 // 0x36
+    "RS485 discharge on",                                  // 0x37
+    "Enter sleep",                                         // 0x38
+    "Charge MOS abnormal",                                 // 0x39
+    "Discharge MOS abnormal",                              // 0x3A
+    "Time calibration",                                    // 0x3B
+    "Cells Count Incorrect",                               // 0x3C
+    "Button Emergency On",                                 // 0x3D
+    "Button Emergency Off",                                // 0x3E
+    "Button Forced Heating",                               // 0x3F
+    "Discharge OCP II",                                    // 0x40
+    "Discharge OCP III",                                   // 0x41
+    "SCP Release Failed",                                  // 0x42
+    "Factory setting LION",                                // 0x43
+    "Factory setting LFP",                                 // 0x44
+    "Factory setting LTO",                                 // 0x45
+    "Remote Emergency On",                                 // 0x46
+    "Remote Emergency Off",                                // 0x47
+    "Discharge under temperature protection",              // 0x48
+    "Discharge under temperature protection Release",      // 0x49
+    "",                                                    // 0x4A
+    "",                                                    // 0x4B
+    "",                                                    // 0x4C
+    "",                                                    // 0x4D
+    "",                                                    // 0x4E
+    "",                                                    // 0x4F
+    "",                                                    // 0x50
+    "",                                                    // 0x51
+    "",                                                    // 0x52
+    "",                                                    // 0x53
+    "",                                                    // 0x54
+    "",                                                    // 0x55
+    "",                                                    // 0x56
+    "",                                                    // 0x57
+    "",                                                    // 0x58
+    "",                                                    // 0x59
+    "",                                                    // 0x5A
+    "",                                                    // 0x5B
+    "",                                                    // 0x5C
+    "",                                                    // 0x5D
+    "",                                                    // 0x5E
+    "",                                                    // 0x5F
+    "",                                                    // 0x60
+    "",                                                    // 0x61
+    "",                                                    // 0x62
+    "",                                                    // 0x63
+    "Cell 01 over charge protection",                      // 0x64
+    "Cell 02 over charge protection",                      // 0x65
+    "Cell 03 over charge protection",                      // 0x66
+    "Cell 04 over charge protection",                      // 0x67
+    "Cell 05 over charge protection",                      // 0x68
+    "Cell 06 over charge protection",                      // 0x69
+    "Cell 07 over charge protection",                      // 0x6A
+    "Cell 08 over charge protection",                      // 0x6B
+    "Cell 09 over charge protection",                      // 0x6C
+    "Cell 10 over charge protection",                      // 0x6D
+    "Cell 11 over charge protection",                      // 0x6E
+    "Cell 12 over charge protection",                      // 0x6F
+    "Cell 13 over charge protection",                      // 0x70
+    "Cell 14 over charge protection",                      // 0x71
+    "Cell 15 over charge protection",                      // 0x72
+    "Cell 16 over charge protection",                      // 0x73
+    "Cell 17 over charge protection",                      // 0x74
+    "Cell 18 over charge protection",                      // 0x75
+    "Cell 19 over charge protection",                      // 0x76
+    "Cell 20 over charge protection",                      // 0x77
+    "Cell 21 over charge protection",                      // 0x78
+    "Cell 22 over charge protection",                      // 0x79
+    "Cell 23 over charge protection",                      // 0x7A
+    "Cell 24 over charge protection",                      // 0x7B
+    "Cell 25 over charge protection",                      // 0x7C
+    "Cell 26 over charge protection",                      // 0x7D
+    "Cell 27 over charge protection",                      // 0x7E
+    "Cell 28 over charge protection",                      // 0x7F
+    "Cell 29 over charge protection",                      // 0x80
+    "Cell 30 over charge protection",                      // 0x81
+    "Cell 31 over charge protection",                      // 0x82
+    "Cell 32 over charge protection",                      // 0x83
+    "",                                                    // 0x84
+    "",                                                    // 0x85
+    "",                                                    // 0x86
+    "",                                                    // 0x87
+    "",                                                    // 0x88
+    "",                                                    // 0x89
+    "",                                                    // 0x8A
+    "",                                                    // 0x8B
+    "",                                                    // 0x8C
+    "",                                                    // 0x8D
+    "",                                                    // 0x8E
+    "",                                                    // 0x8F
+    "",                                                    // 0x90
+    "",                                                    // 0x91
+    "",                                                    // 0x92
+    "",                                                    // 0x93
+    "",                                                    // 0x94
+    "",                                                    // 0x95
+    "",                                                    // 0x96
+    "",                                                    // 0x97
+    "",                                                    // 0x98
+    "",                                                    // 0x99
+    "",                                                    // 0x9A
+    "",                                                    // 0x9B
+    "",                                                    // 0x9C
+    "",                                                    // 0x9D
+    "",                                                    // 0x9E
+    "",                                                    // 0x9F
+    "",                                                    // 0xA0
+    "",                                                    // 0xA1
+    "",                                                    // 0xA2
+    "",                                                    // 0xA3
+    "",                                                    // 0xA4
+    "",                                                    // 0xA5
+    "",                                                    // 0xA6
+    "",                                                    // 0xA7
+    "",                                                    // 0xA8
+    "",                                                    // 0xA9
+    "",                                                    // 0xAA
+    "",                                                    // 0xAB
+    "",                                                    // 0xAC
+    "",                                                    // 0xAD
+    "",                                                    // 0xAE
+    "",                                                    // 0xAF
+    "",                                                    // 0xB0
+    "",                                                    // 0xB1
+    "",                                                    // 0xB2
+    "",                                                    // 0xB3
+    "",                                                    // 0xB4
+    "",                                                    // 0xB5
+    "",                                                    // 0xB6
+    "",                                                    // 0xB7
+    "",                                                    // 0xB8
+    "",                                                    // 0xB9
+    "",                                                    // 0xBA
+    "",                                                    // 0xBB
+    "",                                                    // 0xBC
+    "",                                                    // 0xBD
+    "",                                                    // 0xBE
+    "",                                                    // 0xBF
+    "",                                                    // 0xC0
+    "",                                                    // 0xC1
+    "",                                                    // 0xC2
+    "",                                                    // 0xC3
+    "",                                                    // 0xC4
+    "",                                                    // 0xC5
+    "",                                                    // 0xC6
+    "",                                                    // 0xC7
+    "Cell 01 over discharge protection",                   // 0xC8
+    "Cell 02 over discharge protection",                   // 0xC9
+    "Cell 03 over discharge protection",                   // 0xCA
+    "Cell 04 over discharge protection",                   // 0xCB
+    "Cell 05 over discharge protection",                   // 0xCC
+    "Cell 06 over discharge protection",                   // 0xCD
+    "Cell 07 over discharge protection",                   // 0xCE
+    "Cell 08 over discharge protection",                   // 0xCF
+    "Cell 09 over discharge protection",                   // 0xD0
+    "Cell 10 over discharge protection",                   // 0xD1
+    "Cell 11 over discharge protection",                   // 0xD2
+    "Cell 12 over discharge protection",                   // 0xD3
+    "Cell 13 over discharge protection",                   // 0xD4
+    "Cell 14 over discharge protection",                   // 0xD5
+    "Cell 15 over discharge protection",                   // 0xD6
+    "Cell 16 over discharge protection",                   // 0xD7
+    "Cell 17 over discharge protection",                   // 0xD8
+    "Cell 18 over discharge protection",                   // 0xD9
+    "Cell 19 over discharge protection",                   // 0xDA
+    "Cell 20 over discharge protection",                   // 0xDB
+    "Cell 21 over discharge protection",                   // 0xDC
+    "Cell 22 over discharge protection",                   // 0xDD
+    "Cell 23 over discharge protection",                   // 0xDE
+    "Cell 24 over discharge protection",                   // 0xDF
+    "Cell 25 over discharge protection",                   // 0xE0
+    "Cell 26 over discharge protection",                   // 0xE1
+    "Cell 27 over discharge protection",                   // 0xE2
+    "Cell 28 over discharge protection",                   // 0xE3
+    "Cell 29 over discharge protection",                   // 0xE4
+    "Cell 30 over discharge protection",                   // 0xE5
+    "Cell 31 over discharge protection",                   // 0xE6
+    "Cell 32 over discharge protection",                   // 0xE7
+    "",                                                    // 0xE8
+    "",                                                    // 0xE9
+    "",                                                    // 0xEA
+    "",                                                    // 0xEB
+    "",                                                    // 0xEC
+    "",                                                    // 0xED
+    "",                                                    // 0xEE
+    "",                                                    // 0xEF
+    "",                                                    // 0xF0
+    "",                                                    // 0xF1
+    "",                                                    // 0xF2
+    "",                                                    // 0xF3
+    "",                                                    // 0xF4
+    "",                                                    // 0xF5
+    "",                                                    // 0xF6
+    "",                                                    // 0xF7
+    "",                                                    // 0xF8
+    "",                                                    // 0xF9
+    "",                                                    // 0xFA
+    "",                                                    // 0xFB
+    "",                                                    // 0xFC
+    "",                                                    // 0xFD
+    "",                                                    // 0xFE
+    "",                                                    // 0xFF
 };
 
 uint8_t crc(const uint8_t data[], const uint16_t len) {
@@ -464,6 +724,9 @@ void JkBmsBle::decode_(const std::vector<uint8_t> &data) {
       break;
     case 0x03:
       this->decode_device_info_(data);
+      break;
+    case 0x05:
+      this->decode_logbook_(data);
       break;
     default:
       ESP_LOGW(TAG, "Unsupported message type (0x%02X)", data[4]);
@@ -1352,6 +1615,39 @@ void JkBmsBle::decode_jk04_settings_(const std::vector<uint8_t> &data) {
   // 258  20   0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
   // 278  20   0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
   // 298   2   0x00 0xCE
+}
+
+void JkBmsBle::decode_logbook_(const std::vector<uint8_t> &data) {
+  auto jk_get_32bit = [&](size_t i) -> uint32_t {
+    return (uint32_t(data[i + 3]) << 24) | (uint32_t(data[i + 2]) << 16) | (uint32_t(data[i + 1]) << 8) |
+           uint32_t(data[i]);
+  };
+
+  uint32_t log_count = jk_get_32bit(6);
+  ESP_LOGI(TAG, "Logbook frame (%zu bytes) received", data.size());
+  ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front(), 160).c_str());                      // NOLINT
+  ESP_LOGVV(TAG, "  %s", format_hex_pretty(&data.front() + 160, data.size() - 160).c_str());  // NOLINT
+  ESP_LOGI(TAG, "  Log count: %lu", (unsigned long) log_count);
+
+  for (uint32_t i = 0; i < log_count && i < 50; i++) {
+    uint32_t ts = jk_get_32bit(11 + i * 5);
+    uint8_t code = data[11 + i * 5 + 4];
+
+    uint32_t d = ts / 86400;
+    uint32_t rem = ts % 86400;
+    uint8_t h = rem / 3600;
+    uint8_t m = (rem % 3600) / 60;
+    uint8_t s = rem % 60;
+
+    const char *name = LOGBOOK_CODES[code];
+    if (name[0] != '\0') {
+      ESP_LOGI(TAG, "  [%lu] [%luD%02uH%02uM%02uS]: %s (0x%02X)", (unsigned long) (i + 1), (unsigned long) d, h, m, s,
+               name, code);
+    } else {
+      ESP_LOGI(TAG, "  [%lu] [%luD%02uH%02uM%02uS]: Unknown (0x%02X)", (unsigned long) (i + 1), (unsigned long) d, h, m,
+               s, code);
+    }
+  }
 }
 
 void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {

@@ -452,6 +452,7 @@ class JkBmsBle :
   uint32_t throttle_{0};
 
   void decode_(const std::vector<uint8_t> &data);
+  void decode_logbook_(const std::vector<uint8_t> &data);
   void decode_device_info_(const std::vector<uint8_t> &data);
   void decode_jk02_cell_info_(const std::vector<uint8_t> &data);
   void decode_jk04_cell_info_(const std::vector<uint8_t> &data);

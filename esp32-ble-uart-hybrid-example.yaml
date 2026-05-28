@@ -110,6 +110,8 @@ button:
       name: "retrieve settings"
     retrieve_device_info:
       name: "retrieve device info"
+    retrieve_logbook:
+      name: "retrieve logbook"
 
 number:
   - platform: jk_bms_ble
