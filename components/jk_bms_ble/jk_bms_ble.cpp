@@ -173,15 +173,15 @@ static constexpr const char *const LOGBOOK_CODES[] = {
     "Charge MOS abnormal",                                 // 0x39
     "Discharge MOS abnormal",                              // 0x3A
     "Time calibration",                                    // 0x3B
-    "",                                               // 0x3C
-    "",                                               // 0x3D
-    "",                                               // 0x3E
-    "",                                               // 0x3F
-    "",                                               // 0x40
-    "",                                               // 0x41
-    "",                                               // 0x42
-    "",                                               // 0x43
-    "Factory setting LFP",                            // 0x44
+    "",                                                    // 0x3C
+    "",                                                    // 0x3D
+    "",                                                    // 0x3E
+    "",                                                    // 0x3F
+    "",                                                    // 0x40
+    "",                                                    // 0x41
+    "",                                                    // 0x42
+    "",                                                    // 0x43
+    "Factory setting LFP",                                 // 0x44
 };
 
 uint8_t crc(const uint8_t data[], const uint16_t len) {
