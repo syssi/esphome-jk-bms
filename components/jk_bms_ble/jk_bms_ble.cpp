@@ -1639,7 +1639,7 @@ void JkBmsBle::decode_logbook_(const std::vector<uint8_t> &data) {
     uint8_t m = (rem % 3600) / 60;
     uint8_t s = rem % 60;
 
-    const char *name = code < sizeof(LOGBOOK_CODES) / sizeof(*LOGBOOK_CODES) ? LOGBOOK_CODES[code] : "";
+    const char *name = LOGBOOK_CODES[code];
     if (name[0] != '\0') {
       ESP_LOGI(TAG, "  [%lu] [%luD%02uH%02uM%02uS]: %s (0x%02X)", (unsigned long) (i + 1), (unsigned long) d, h, m, s,
                name, code);
