@@ -64,54 +64,6 @@ static constexpr const char *const ERRORS_JK02[] = {
     "",                                     // bit 31
 };
 
-static constexpr const char *const UART_PROTOCOLS[] = {
-    "4G-GPS Remote module Common protocol V4.2",                       // 0
-    "JK BMS RS485 Modbus V1.0",                                        // 1
-    "NIU U SERIES",                                                    // 2
-    "China tower shared battery cabinet V1.1",                         // 3
-    "PACE_RS485_Modbus_V1.3",                                          // 4
-    "PYLON_low_voltage_Protocol_RS485_V3.5",                           // 5
-    "Growatt_BMS_RS485_Protocol_1xSxxP_ESS_Rev2.01",                   // 6
-    "Voltronic_Inverter_and_BMS_485_communication_protocol_20200325",  // 7
-    "China tower shared battery cabinet V2.0",                         // 8
-    "WOW_RS485_Modbus_V1.3",                                           // 9
-    "JK BMS LCD Protocol V2.0",                                        // 10
-    "UART1 User customization",                                        // 11
-    "UART2 User customization",                                        // 12
-    "(9600) JK BMS RS485 Modbus V1.0",                                 // 13
-    "(9600) PYLON_low_voltage_Protocol_RS485_V3.5",                    // 14
-    "JK BMS PBxx SERIES LCD Protocol V1.0",                            // 15
-    "JK BMS LIN BUS V1.0",                                             // 16
-    "RS485 Protocol 17",                                               // 17
-    "RS485 Protocol 18",                                               // 18
-    "RS485 Protocol 19",                                               // 19
-    "RS485 Protocol 20",                                               // 20
-};
-
-static constexpr const char *const CAN_PROTOCOLS[] = {
-    "JK BMS CAN Protocol (250K) V2.0",                                   // 0
-    "Deye Low-voltage hybrid inverter CAN communication protocol V1.0",  // 1
-    "PYLON-Low-voltage-V1.2",                                            // 2
-    "Growatt BMS CAN-Bus-protocol-low-voltage_Rev_05",                   // 3
-    "Victron_CANbus_BMS_protocol_20170717",                              // 4
-    "MEGAREVO_Hybird_BMSCAN_Protocol_V1.0",                              // 5
-    "JK BMS CAN Protocol (500K) V2.0",                                   // 6
-    "INVT BMS CAN Bus protocol V1.02",                                   // 7
-    "GoodWe LV BMS Protocol (EX/EM/S-BP/BP)",                            // 8
-    "FSS-ConnectingBat-TI-en-10 Version 1.0",                            // 9
-    "MUST PV1800F-CAN communication Protocol1.04.04",                    // 10
-    "LuxpowerTek Battery CAN protocol V01",                              // 11
-    "CAN BUS User customization 1",                                      // 12
-    "CAN BUS User customization 2",                                      // 13
-    "",                                                                  // 14
-    "",                                                                  // 15
-    "",                                                                  // 16
-    "",                                                                  // 17
-    "",                                                                  // 18
-    "",                                                                  // 19
-    "",                                                                  // 20
-};
-
 static constexpr const char *const LOGBOOK_CODES[] = {
     "",                                                    // 0x00
     "Boot",                                                // 0x01
@@ -1829,21 +1781,17 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
   // 182  0x00
   // 183  0x00
   // 184  0x01                  UART1M Protocol number
-  ESP_LOGI(TAG, "  UART1 Protocol: %d (%s)", data[184],
-           data[184] < sizeof(UART_PROTOCOLS) / sizeof(*UART_PROTOCOLS) ? UART_PROTOCOLS[data[184]] : "Unknown");
-  // 185  0x04                  CANM Protocol number
-  ESP_LOGI(TAG, "  CAN Protocol: %d (%s)", data[185],
-           data[185] < sizeof(CAN_PROTOCOLS) / sizeof(*CAN_PROTOCOLS) ? CAN_PROTOCOLS[data[185]] : "Unknown");
-  // 186  0xCF
-  // 187  0x03
-  // 188  0x00
-  // 189  0x00
+  if (const char *name = uart_protocol_table_.get(data[184]))
+    this->publish_state_(this->uart1_protocol_select_, name);
+  // 185  0x04                  CAN Protocol number
+  if (const char *name = can_protocol_table_.get(data[185]))
+    this->publish_state_(this->can_protocol_select_, name);
+  // 186  4    0xCF 0x03 0x00 0x00   UART1M Protocol enable
+  this->publish_state_(this->uart1_protocols_enabled_bitmask_sensor_, (float) jk_get_32bit(186));
   // 190  12   0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
   ESP_LOGI(TAG, "  Hardware option: %s", std::string(data.begin() + 190, data.begin() + 190 + 12).c_str());
-  // 202  0xDF
-  // 203  0x07
-  // 204  0x00
-  // 205  0x00
+  // 202  4    0xDF 0x07 0x00 0x00   CANM Protocol enable
+  this->publish_state_(this->can_protocols_enabled_bitmask_sensor_, (float) jk_get_32bit(202));
   // 206  0x00
   // 207  0x00
   // 208  0x00
@@ -1857,12 +1805,10 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
   // 216  0x00
   // 217  0x00
   // 218  0x01                  UART2M Protocol number
-  ESP_LOGI(TAG, "  UART2 Protocol: %d (%s)", data[218],
-           data[218] < sizeof(UART_PROTOCOLS) / sizeof(*UART_PROTOCOLS) ? UART_PROTOCOLS[data[218]] : "Unknown");
-  // 219  0xCF                  UART2M Protocol enable
-  // 220  0x03
-  // 221  0x00
-  // 222  0x00
+  if (const char *name = uart_protocol_table_.get(data[218]))
+    this->publish_state_(this->uart2_protocol_select_, name);
+  // 219  4    0xCF 0x03 0x00 0x00   UART2M Protocol enable
+  this->publish_state_(this->uart2_protocols_enabled_bitmask_sensor_, (float) jk_get_32bit(219));
   // 223  0x00
   // 224  0x00
   // 225  0x00
@@ -1875,6 +1821,8 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
   // 232  0x00
   // 233  0x00
   // 234  0x00                  LCD buzzer trigger
+  if (const char *name = lcd_buzzer_trigger_table_.get(data[234]))
+    this->publish_state_(this->lcd_buzzer_trigger_select_, name);
   // 235  0x0B                  DRY1 Trigger
   // 236  0x00                  DRY2 Trigger
   // 237  0x01                  UART protocol library version
@@ -2003,6 +1951,13 @@ void JkBmsBle::publish_state_(sensor::Sensor *sensor, float value) {
 }
 
 void JkBmsBle::publish_state_(switch_::Switch *obj, const bool &state) {
+  if (obj == nullptr)
+    return;
+
+  obj->publish_state(state);
+}
+
+void JkBmsBle::publish_state_(select::Select *obj, const std::string &state) {
   if (obj == nullptr)
     return;
 
