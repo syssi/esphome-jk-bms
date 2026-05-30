@@ -10,9 +10,12 @@ from ..const import (
     CONF_CHARGING_FLOAT_MODE,
     CONF_DISABLE_PCL_MODULE,
     CONF_DISABLE_TEMPERATURE_SENSORS,
+    CONF_DISCHARGE_OVERCURRENT_PROTECTION_2,
     CONF_DISCHARGING,
     CONF_DISPLAY_ALWAYS_ON,
+    CONF_DRY_CONTACT_ALARM_INTERMITTENT,
     CONF_EMERGENCY,
+    CONF_EMERGENCY_BUTTON_TRIGGER,
     CONF_HEATING,
     CONF_SMART_SLEEP,
     CONF_TIMED_STORED_DATA,
@@ -33,6 +36,9 @@ ICON_TIMED_STORED_DATA = "mdi:calendar-clock"
 ICON_DISABLE_PCL_MODULE = "mdi:power-plug-off"
 ICON_CHARGING_FLOAT_MODE = "mdi:battery-charging-80"
 ICON_DISPLAY_ALWAYS_ON = "mdi:television"
+ICON_EMERGENCY_BUTTON_TRIGGER = "mdi:button-pointer"
+ICON_DRY_CONTACT_ALARM_INTERMITTENT = "mdi:leak"
+ICON_DISCHARGE_OVERCURRENT_PROTECTION_2 = "mdi:current-dc"
 
 SWITCHES = {
     # JK04, JK02_24S, JK02_32S
@@ -47,6 +53,9 @@ SWITCHES = {
     CONF_DISABLE_PCL_MODULE: [0x00, 0x00, 0x2E],
     CONF_TIMED_STORED_DATA: [0x00, 0x00, 0x2F],
     CONF_CHARGING_FLOAT_MODE: [0x00, 0x00, 0x30],
+    CONF_EMERGENCY_BUTTON_TRIGGER: [0x00, 0x00, 0x31],
+    CONF_DRY_CONTACT_ALARM_INTERMITTENT: [0x00, 0x00, 0x32],
+    CONF_DISCHARGE_OVERCURRENT_PROTECTION_2: [0x00, 0x00, 0x33],
 }
 
 JkSwitch = jk_bms_ble_ns.class_("JkSwitch", switch.Switch, cg.Component)
@@ -103,6 +112,21 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
         cv.Optional(CONF_CHARGING_FLOAT_MODE): switch.switch_schema(
             JkSwitch,
             icon=ICON_CHARGING_FLOAT_MODE,
+            entity_category=ENTITY_CATEGORY_CONFIG,
+        ),
+        cv.Optional(CONF_EMERGENCY_BUTTON_TRIGGER): switch.switch_schema(
+            JkSwitch,
+            icon=ICON_EMERGENCY_BUTTON_TRIGGER,
+            entity_category=ENTITY_CATEGORY_CONFIG,
+        ),
+        cv.Optional(CONF_DRY_CONTACT_ALARM_INTERMITTENT): switch.switch_schema(
+            JkSwitch,
+            icon=ICON_DRY_CONTACT_ALARM_INTERMITTENT,
+            entity_category=ENTITY_CATEGORY_CONFIG,
+        ),
+        cv.Optional(CONF_DISCHARGE_OVERCURRENT_PROTECTION_2): switch.switch_schema(
+            JkSwitch,
+            icon=ICON_DISCHARGE_OVERCURRENT_PROTECTION_2,
             entity_category=ENTITY_CATEGORY_CONFIG,
         ),
     }

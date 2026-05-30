@@ -362,6 +362,12 @@ switch:
       name: "timed stored data"
     charging_float_mode:
       name: "charging float mode"
+    emergency_button_trigger:
+      name: "emergency button trigger"
+    dry_contact_alarm_intermittent:
+      name: "dry contact alarm intermittent"
+    discharge_overcurrent_protection_2:
+      name: "discharge overcurrent protection 2"
 
   - platform: ble_client
     ble_client_id: client0
