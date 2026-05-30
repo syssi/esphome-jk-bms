@@ -1491,6 +1491,9 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
     this->publish_state_(this->disable_pcl_module_switch_, check_bit_(data[282], 128));
     this->publish_state_(this->timed_stored_data_switch_, check_bit_(data[283], 1));
     this->publish_state_(this->charging_float_mode_switch_, check_bit_(data[283], 2));
+    this->publish_state_(this->button_trigger_emergency_switch_, check_bit_(data[283], 4));
+    this->publish_state_(this->dry_arm_intermittent_switch_, check_bit_(data[283], 8));
+    this->publish_state_(this->discharge_ocp_2_switch_, check_bit_(data[283], 16));
 
     // 284   1   0x00                   Heating start temperature
     this->publish_state_(this->heating_start_temperature_number_, (float) ((int8_t) data[284]));

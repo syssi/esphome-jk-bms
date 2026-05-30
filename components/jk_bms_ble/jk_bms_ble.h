@@ -320,6 +320,15 @@ class JkBmsBle :
   void set_charging_float_mode_switch(switch_::Switch *charging_float_mode_switch) {
     charging_float_mode_switch_ = charging_float_mode_switch;
   }
+  void set_button_trigger_emergency_switch(switch_::Switch *button_trigger_emergency_switch) {
+    button_trigger_emergency_switch_ = button_trigger_emergency_switch;
+  }
+  void set_dry_arm_intermittent_switch(switch_::Switch *dry_arm_intermittent_switch) {
+    dry_arm_intermittent_switch_ = dry_arm_intermittent_switch;
+  }
+  void set_discharge_ocp_2_switch(switch_::Switch *discharge_ocp_2_switch) {
+    discharge_ocp_2_switch_ = discharge_ocp_2_switch;
+  }
 
   void assemble(const uint8_t *data, uint16_t length);
   void set_protocol_version(ProtocolVersion protocol_version) { protocol_version_ = protocol_version; }
@@ -431,6 +440,9 @@ class JkBmsBle :
   switch_::Switch *timed_stored_data_switch_{nullptr};
   switch_::Switch *disable_pcl_module_switch_{nullptr};
   switch_::Switch *charging_float_mode_switch_{nullptr};
+  switch_::Switch *button_trigger_emergency_switch_{nullptr};
+  switch_::Switch *dry_arm_intermittent_switch_{nullptr};
+  switch_::Switch *discharge_ocp_2_switch_{nullptr};
 
   text_sensor::TextSensor *errors_bitmask_hex_text_sensor_{nullptr};
   text_sensor::TextSensor *errors_text_sensor_{nullptr};
