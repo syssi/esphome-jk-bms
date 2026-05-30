@@ -43,9 +43,9 @@ TEST(JkBmsWriteCommandTest, CrcMatchesByteSum) {
   EXPECT_EQ(f[19], expected);
 }
 
-// ── Button Trigger Emergency (register 0x31) ──────────────────────────────────
+// ── Emergency Button Trigger (register 0x31) ─────────────────────────────────
 
-TEST(JkBmsWriteCommandTest, ButtonTriggerEmergencyOn) {
+TEST(JkBmsWriteCommandTest, EmergencyButtonTriggerOn) {
   // Captured: AA 55 90 EB 31 04 01 00 00 00 ...
   auto f = JkBmsBle::build_frame(0x31, 0x00000001, 0x04);
 
@@ -58,7 +58,7 @@ TEST(JkBmsWriteCommandTest, ButtonTriggerEmergencyOn) {
   EXPECT_EQ(f[19], 0xB0);  // CRC = sum(AA+55+90+EB+31+04+01) & 0xFF
 }
 
-TEST(JkBmsWriteCommandTest, ButtonTriggerEmergencyOff) {
+TEST(JkBmsWriteCommandTest, EmergencyButtonTriggerOff) {
   auto f = JkBmsBle::build_frame(0x31, 0x00000000, 0x04);
 
   EXPECT_EQ(f[4], 0x31);
@@ -70,7 +70,7 @@ TEST(JkBmsWriteCommandTest, ButtonTriggerEmergencyOff) {
   EXPECT_EQ(f[19], 0xAF);
 }
 
-TEST(JkBmsWriteCommandTest, ButtonTriggerEmergencyFullFrameOn) {
+TEST(JkBmsWriteCommandTest, EmergencyButtonTriggerFullFrameOn) {
   // clang-format off
   const std::array<uint8_t, 20> expected = {
       0xAA, 0x55, 0x90, 0xEB, 0x31, 0x04, 0x01, 0x00,
@@ -81,9 +81,9 @@ TEST(JkBmsWriteCommandTest, ButtonTriggerEmergencyFullFrameOn) {
   EXPECT_EQ(JkBmsBle::build_frame(0x31, 0x00000001, 0x04), expected);
 }
 
-// ── DRY ARM Intermittent (register 0x32) ─────────────────────────────────────
+// ── Dry Contact Alarm Intermittent (register 0x32) ───────────────────────────
 
-TEST(JkBmsWriteCommandTest, DryArmIntermittentOn) {
+TEST(JkBmsWriteCommandTest, DryContactAlarmIntermittentOn) {
   // Captured: AA 55 90 EB 32 04 01 00 00 00 ...
   auto f = JkBmsBle::build_frame(0x32, 0x00000001, 0x04);
 
@@ -96,7 +96,7 @@ TEST(JkBmsWriteCommandTest, DryArmIntermittentOn) {
   EXPECT_EQ(f[19], 0xB1);
 }
 
-TEST(JkBmsWriteCommandTest, DryArmIntermittentOff) {
+TEST(JkBmsWriteCommandTest, DryContactAlarmIntermittentOff) {
   auto f = JkBmsBle::build_frame(0x32, 0x00000000, 0x04);
 
   EXPECT_EQ(f[4], 0x32);
@@ -104,7 +104,7 @@ TEST(JkBmsWriteCommandTest, DryArmIntermittentOff) {
   EXPECT_EQ(f[19], 0xB0);
 }
 
-TEST(JkBmsWriteCommandTest, DryArmIntermittentFullFrameOn) {
+TEST(JkBmsWriteCommandTest, DryContactAlarmIntermittentFullFrameOn) {
   // clang-format off
   const std::array<uint8_t, 20> expected = {
       0xAA, 0x55, 0x90, 0xEB, 0x32, 0x04, 0x01, 0x00,
@@ -115,9 +115,9 @@ TEST(JkBmsWriteCommandTest, DryArmIntermittentFullFrameOn) {
   EXPECT_EQ(JkBmsBle::build_frame(0x32, 0x00000001, 0x04), expected);
 }
 
-// ── Discharge OCP 2 (register 0x33) ──────────────────────────────────────────
+// ── Discharge Overcurrent Protection 2 (register 0x33) ───────────────────────
 
-TEST(JkBmsWriteCommandTest, DischargeOcp2Off) {
+TEST(JkBmsWriteCommandTest, DischargeOvercurrentProtection2Off) {
   // Captured: AA 55 90 EB 33 04 00 00 00 00 ...
   auto f = JkBmsBle::build_frame(0x33, 0x00000000, 0x04);
 
@@ -130,7 +130,7 @@ TEST(JkBmsWriteCommandTest, DischargeOcp2Off) {
   EXPECT_EQ(f[19], 0xB1);
 }
 
-TEST(JkBmsWriteCommandTest, DischargeOcp2On) {
+TEST(JkBmsWriteCommandTest, DischargeOvercurrentProtection2On) {
   auto f = JkBmsBle::build_frame(0x33, 0x00000001, 0x04);
 
   EXPECT_EQ(f[4], 0x33);
@@ -138,7 +138,7 @@ TEST(JkBmsWriteCommandTest, DischargeOcp2On) {
   EXPECT_EQ(f[19], 0xB2);
 }
 
-TEST(JkBmsWriteCommandTest, DischargeOcp2FullFrameOff) {
+TEST(JkBmsWriteCommandTest, DischargeOvercurrentProtection2FullFrameOff) {
   // clang-format off
   const std::array<uint8_t, 20> expected = {
       0xAA, 0x55, 0x90, 0xEB, 0x33, 0x04, 0x00, 0x00,
