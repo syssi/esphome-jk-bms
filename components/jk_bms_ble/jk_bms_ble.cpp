@@ -590,6 +590,18 @@ bool JkBmsBle::write_register(uint8_t address, uint32_t value, uint8_t length) {
   return (status == 0);
 }
 
+bool JkBmsBle::write_raw_frame(const std::array<uint8_t, 20> &frame) {
+  ESP_LOGD(TAG, "Write raw frame: %s", format_hex_pretty(frame.data(), frame.size()).c_str());  // NOLINT
+  auto status =
+      esp_ble_gattc_write_char(this->parent_->get_gattc_if(), this->parent_->get_conn_id(), this->char_handle_,
+                               frame.size(), const_cast<uint8_t *>(frame.data()), ESP_GATT_WRITE_TYPE_NO_RSP,
+                               ESP_GATT_AUTH_REQ_NONE);
+  if (status) {
+    ESP_LOGW(TAG, "[%s] esp_ble_gattc_write_char failed, status=%d", ADDR_STR(this->parent_->address_str()), status);
+  }
+  return (status == 0);
+}
+
 #else
 
 void JkBmsBle::update() {}

@@ -168,6 +168,19 @@ class TestJkBmsBleSelectConstants:
         assert ble_select.SELECTS["dry2_trigger"][0] == 0xAB
 
 
+class TestJkBmsBleLoadConfigPresetConstants:
+    def test_load_config_preset_options(self):
+        assert len(ble_select.LOAD_CONFIG_PRESET_OPTIONS) == 3
+        names = [opt for opt, _ in ble_select.LOAD_CONFIG_PRESET_OPTIONS]
+        assert "Li-Ion" in names
+        assert "LiFePO4" in names
+        assert "LTO" in names
+
+    def test_load_config_preset_frames_are_20_bytes(self):
+        for _, frame in ble_select.LOAD_CONFIG_PRESET_OPTIONS:
+            assert len(frame) == 20
+
+
 class TestJkBmsBleSwitchConstants:
     def test_switches_dict(self):
         assert len(ble_switch.SWITCHES) == 17
