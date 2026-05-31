@@ -5,9 +5,12 @@ import esphome.config_validation as cv
 from .. import CONF_JK_BMS_BLE_ID, JK_BMS_BLE_COMPONENT_SCHEMA, jk_bms_ble_ns
 from ..const import (
     CONF_CAN_PROTOCOL,
+    CONF_DRY1_TRIGGER,
+    CONF_DRY2_TRIGGER,
     CONF_LCD_BUZZER_TRIGGER,
     CONF_UART1_PROTOCOL,
     CONF_UART2_PROTOCOL,
+    CONF_UART3_PROTOCOL,
 )
 
 DEPENDENCIES = ["jk_bms_ble"]
@@ -74,8 +77,8 @@ LCD_BUZZER_TRIGGER_OPTIONS = [
 ]
 
 # Maps config key → (register, options, table setter, constexpr array name).
-# UART1 and UART2 share the same protocol list and the same LookupTable;
-# the arr_name is identical so cg.add_global() emits the array only once.
+# Entries sharing the same arr_name also share the same LookupTable in C++;
+# emitted_arrays in to_code() ensures the constexpr array is defined only once.
 _UART_ARR = "JK_BMS_BLE_UART_PROTOCOL_OPTS_"
 _CAN_ARR = "JK_BMS_BLE_CAN_PROTOCOL_OPTS_"
 _LCD_ARR = "JK_BMS_BLE_LCD_BUZZER_TRIGGER_OPTS_"
@@ -93,9 +96,27 @@ SELECTS = {
         "set_uart_protocol_table",
         _UART_ARR,
     ),
+    CONF_UART3_PROTOCOL: (
+        0xB6,
+        UART_PROTOCOL_OPTIONS,
+        "set_uart_protocol_table",
+        _UART_ARR,
+    ),
     CONF_CAN_PROTOCOL: (0xA6, CAN_PROTOCOL_OPTIONS, "set_can_protocol_table", _CAN_ARR),
     CONF_LCD_BUZZER_TRIGGER: (
         0xA9,
+        LCD_BUZZER_TRIGGER_OPTIONS,
+        "set_lcd_buzzer_trigger_table",
+        _LCD_ARR,
+    ),
+    CONF_DRY1_TRIGGER: (
+        0xAA,
+        LCD_BUZZER_TRIGGER_OPTIONS,
+        "set_lcd_buzzer_trigger_table",
+        _LCD_ARR,
+    ),
+    CONF_DRY2_TRIGGER: (
+        0xAB,
         LCD_BUZZER_TRIGGER_OPTIONS,
         "set_lcd_buzzer_trigger_table",
         _LCD_ARR,
@@ -106,18 +127,8 @@ JkSelect = jk_bms_ble_ns.class_("JkSelect", select.Select, cg.Component)
 
 CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
     {
-        cv.Optional(CONF_UART1_PROTOCOL): select.select_schema(JkSelect).extend(
-            cv.COMPONENT_SCHEMA
-        ),
-        cv.Optional(CONF_UART2_PROTOCOL): select.select_schema(JkSelect).extend(
-            cv.COMPONENT_SCHEMA
-        ),
-        cv.Optional(CONF_CAN_PROTOCOL): select.select_schema(JkSelect).extend(
-            cv.COMPONENT_SCHEMA
-        ),
-        cv.Optional(CONF_LCD_BUZZER_TRIGGER): select.select_schema(JkSelect).extend(
-            cv.COMPONENT_SCHEMA
-        ),
+        cv.Optional(key): select.select_schema(JkSelect).extend(cv.COMPONENT_SCHEMA)
+        for key in SELECTS
     }
 )
 

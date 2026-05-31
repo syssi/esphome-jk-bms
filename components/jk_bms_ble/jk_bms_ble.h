@@ -355,6 +355,11 @@ class JkBmsBle :
   void set_lcd_buzzer_trigger_select(select::Select *lcd_buzzer_trigger_select) {
     lcd_buzzer_trigger_select_ = lcd_buzzer_trigger_select;
   }
+  void set_uart3_protocol_select(select::Select *uart3_protocol_select) {
+    uart3_protocol_select_ = uart3_protocol_select;
+  }
+  void set_dry1_trigger_select(select::Select *dry1_trigger_select) { dry1_trigger_select_ = dry1_trigger_select; }
+  void set_dry2_trigger_select(select::Select *dry2_trigger_select) { dry2_trigger_select_ = dry2_trigger_select; }
   void set_uart_protocol_table(const char *const *entries, size_t count) { uart_protocol_table_ = {entries, count}; }
   void set_can_protocol_table(const char *const *entries, size_t count) { can_protocol_table_ = {entries, count}; }
   void set_lcd_buzzer_trigger_table(const char *const *entries, size_t count) {
@@ -480,8 +485,11 @@ class JkBmsBle :
 
   select::Select *uart1_protocol_select_{nullptr};
   select::Select *uart2_protocol_select_{nullptr};
+  select::Select *uart3_protocol_select_{nullptr};
   select::Select *can_protocol_select_{nullptr};
   select::Select *lcd_buzzer_trigger_select_{nullptr};
+  select::Select *dry1_trigger_select_{nullptr};
+  select::Select *dry2_trigger_select_{nullptr};
 
   LookupTable uart_protocol_table_;
   LookupTable can_protocol_table_;

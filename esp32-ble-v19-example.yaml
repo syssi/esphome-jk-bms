@@ -388,10 +388,16 @@ select:
       name: "uart1 protocol"
     uart2_protocol:
       name: "uart2 protocol"
+    uart3_protocol:
+      name: "uart3 protocol"
     can_protocol:
       name: "can protocol"
     lcd_buzzer_trigger:
       name: "lcd buzzer trigger"
+    dry1_trigger:
+      name: "dry1 trigger"
+    dry2_trigger:
+      name: "dry2 trigger"
 
 text_sensor:
   - platform: jk_bms_ble

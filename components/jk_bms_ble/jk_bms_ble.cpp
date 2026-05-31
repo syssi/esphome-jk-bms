@@ -1824,7 +1824,11 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
   if (const char *name = lcd_buzzer_trigger_table_.get(data[234]))
     this->publish_state_(this->lcd_buzzer_trigger_select_, name);
   // 235  0x0B                  DRY1 Trigger
+  if (const char *name = lcd_buzzer_trigger_table_.get(data[235]))
+    this->publish_state_(this->dry1_trigger_select_, name);
   // 236  0x00                  DRY2 Trigger
+  if (const char *name = lcd_buzzer_trigger_table_.get(data[236]))
+    this->publish_state_(this->dry2_trigger_select_, name);
   // 237  0x01                  UART protocol library version
   // 238  0x00 0x00 0x00 0x00   LCD Buzzer Trigger Value
   // 242  0x00 0x00 0x00 0x00   LCD Buzzer Release Value
@@ -1844,14 +1848,10 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
 
   // 268  0x01  CAN protocol library version
   // 269  0x00  Reserved
-  // 270  0x00
-  // 271  0x00
-  // 272  0x00
-  // 273  0x00
-  // 274  0x00
-  // 275  0x00
-  // 276  0x00
-  // 277  0x00
+  // 270  0x00                  UART3 Protocol number
+  if (const char *name = uart_protocol_table_.get(data[270]))
+    this->publish_state_(this->uart3_protocol_select_, name);
+  // 271  7    0x00 0x00 0x00 0x00 0x00 0x00 0x00   UART3 Protocol enable
   // 278  0x00  Re-Bulk SOC  %
   ESP_LOGI(TAG, "  Re-Bulk SOC: %d %%", data[278]);
   this->publish_state_(this->re_bulk_soc_number_, (float) data[278]);
