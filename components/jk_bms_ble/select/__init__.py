@@ -127,8 +127,27 @@ JkSelect = jk_bms_ble_ns.class_("JkSelect", select.Select, cg.Component)
 
 CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
     {
-        cv.Optional(key): select.select_schema(JkSelect).extend(cv.COMPONENT_SCHEMA)
-        for key in SELECTS
+        cv.Optional(CONF_UART1_PROTOCOL): select.select_schema(JkSelect).extend(
+            cv.COMPONENT_SCHEMA
+        ),
+        cv.Optional(CONF_UART2_PROTOCOL): select.select_schema(JkSelect).extend(
+            cv.COMPONENT_SCHEMA
+        ),
+        cv.Optional(CONF_UART3_PROTOCOL): select.select_schema(JkSelect).extend(
+            cv.COMPONENT_SCHEMA
+        ),
+        cv.Optional(CONF_CAN_PROTOCOL): select.select_schema(JkSelect).extend(
+            cv.COMPONENT_SCHEMA
+        ),
+        cv.Optional(CONF_LCD_BUZZER_TRIGGER): select.select_schema(JkSelect).extend(
+            cv.COMPONENT_SCHEMA
+        ),
+        cv.Optional(CONF_DRY1_TRIGGER): select.select_schema(JkSelect).extend(
+            cv.COMPONENT_SCHEMA
+        ),
+        cv.Optional(CONF_DRY2_TRIGGER): select.select_schema(JkSelect).extend(
+            cv.COMPONENT_SCHEMA
+        ),
     }
 )
 
