@@ -9,7 +9,15 @@ _LOGGER = logging.getLogger(__name__)
 
 CODEOWNERS = ["@syssi", "@txubelaxu"]
 DEPENDENCIES = ["ble_client"]
-AUTO_LOAD = ["binary_sensor", "button", "number", "sensor", "switch", "text_sensor"]
+AUTO_LOAD = [
+    "binary_sensor",
+    "button",
+    "number",
+    "select",
+    "sensor",
+    "switch",
+    "text_sensor",
+]
 MULTI_CONF = True
 
 

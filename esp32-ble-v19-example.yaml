@@ -340,6 +340,14 @@ sensor:
       name: "detail log entry count"
     battery_type_id:
       name: "battery type id"
+    uart1_protocols_enabled_bitmask:
+      name: "uart1 protocols enabled bitmask"
+    uart2_protocols_enabled_bitmask:
+      name: "uart2 protocols enabled bitmask"
+    uart3_protocols_enabled_bitmask:
+      name: "uart3 protocols enabled bitmask"
+    can_protocols_enabled_bitmask:
+      name: "can protocols enabled bitmask"
 switch:
   - platform: jk_bms_ble
     charging:
@@ -375,6 +383,23 @@ switch:
     ble_client_id: client0
     name: "enable bluetooth connection"
     id: ble_client_switch0
+
+select:
+  - platform: jk_bms_ble
+    uart1_protocol:
+      name: "uart1 protocol"
+    uart2_protocol:
+      name: "uart2 protocol"
+    uart3_protocol:
+      name: "uart3 protocol"
+    can_protocol:
+      name: "can protocol"
+    lcd_buzzer_trigger:
+      name: "lcd buzzer trigger"
+    dry1_trigger:
+      name: "dry1 trigger"
+    dry2_trigger:
+      name: "dry2 trigger"
 
 text_sensor:
   - platform: jk_bms_ble

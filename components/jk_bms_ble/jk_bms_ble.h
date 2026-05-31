@@ -6,6 +6,7 @@
 #include "esphome/components/binary_sensor/binary_sensor.h"
 #include "esphome/components/number/number.h"
 #include "esphome/components/sensor/sensor.h"
+#include "esphome/components/select/select.h"
 #include "esphome/components/switch/switch.h"
 #include "esphome/components/text_sensor/text_sensor.h"
 
@@ -17,6 +18,12 @@ namespace espbt = esphome::esp32_ble_tracker;
 #endif
 
 namespace esphome::jk_bms_ble {
+
+struct LookupTable {
+  const char *const *entries{nullptr};
+  size_t count{0};
+  const char *get(uint8_t index) const { return (entries != nullptr && index < count) ? entries[index] : nullptr; }
+};
 
 enum ProtocolVersion {
   PROTOCOL_VERSION_JK04,
@@ -275,6 +282,18 @@ class JkBmsBle :
   void set_battery_type_id_sensor(sensor::Sensor *battery_type_id_sensor) {
     battery_type_id_sensor_ = battery_type_id_sensor;
   }
+  void set_uart1_protocols_enabled_bitmask_sensor(sensor::Sensor *uart1_protocols_enabled_bitmask_sensor) {
+    uart1_protocols_enabled_bitmask_sensor_ = uart1_protocols_enabled_bitmask_sensor;
+  }
+  void set_uart2_protocols_enabled_bitmask_sensor(sensor::Sensor *uart2_protocols_enabled_bitmask_sensor) {
+    uart2_protocols_enabled_bitmask_sensor_ = uart2_protocols_enabled_bitmask_sensor;
+  }
+  void set_uart3_protocols_enabled_bitmask_sensor(sensor::Sensor *uart3_protocols_enabled_bitmask_sensor) {
+    uart3_protocols_enabled_bitmask_sensor_ = uart3_protocols_enabled_bitmask_sensor;
+  }
+  void set_can_protocols_enabled_bitmask_sensor(sensor::Sensor *can_protocols_enabled_bitmask_sensor) {
+    can_protocols_enabled_bitmask_sensor_ = can_protocols_enabled_bitmask_sensor;
+  }
 
   void set_errors_bitmask_hex_text_sensor(text_sensor::TextSensor *errors_bitmask_hex_text_sensor) {
     errors_bitmask_hex_text_sensor_ = errors_bitmask_hex_text_sensor;
@@ -328,6 +347,26 @@ class JkBmsBle :
   }
   void set_discharge_overcurrent_protection_2_switch(switch_::Switch *discharge_overcurrent_protection_2_switch) {
     discharge_overcurrent_protection_2_switch_ = discharge_overcurrent_protection_2_switch;
+  }
+  void set_uart1_protocol_select(select::Select *uart1_protocol_select) {
+    uart1_protocol_select_ = uart1_protocol_select;
+  }
+  void set_uart2_protocol_select(select::Select *uart2_protocol_select) {
+    uart2_protocol_select_ = uart2_protocol_select;
+  }
+  void set_can_protocol_select(select::Select *can_protocol_select) { can_protocol_select_ = can_protocol_select; }
+  void set_lcd_buzzer_trigger_select(select::Select *lcd_buzzer_trigger_select) {
+    lcd_buzzer_trigger_select_ = lcd_buzzer_trigger_select;
+  }
+  void set_uart3_protocol_select(select::Select *uart3_protocol_select) {
+    uart3_protocol_select_ = uart3_protocol_select;
+  }
+  void set_dry1_trigger_select(select::Select *dry1_trigger_select) { dry1_trigger_select_ = dry1_trigger_select; }
+  void set_dry2_trigger_select(select::Select *dry2_trigger_select) { dry2_trigger_select_ = dry2_trigger_select; }
+  void set_uart_protocol_table(const char *const *entries, size_t count) { uart_protocol_table_ = {entries, count}; }
+  void set_can_protocol_table(const char *const *entries, size_t count) { can_protocol_table_ = {entries, count}; }
+  void set_lcd_buzzer_trigger_table(const char *const *entries, size_t count) {
+    lcd_buzzer_trigger_table_ = {entries, count};
   }
 
   void assemble(const uint8_t *data, uint16_t length);
@@ -428,6 +467,10 @@ class JkBmsBle :
   sensor::Sensor *charge_status_time_elapsed_sensor_{nullptr};
   sensor::Sensor *detail_log_entry_count_sensor_{nullptr};
   sensor::Sensor *battery_type_id_sensor_{nullptr};
+  sensor::Sensor *uart1_protocols_enabled_bitmask_sensor_{nullptr};
+  sensor::Sensor *uart2_protocols_enabled_bitmask_sensor_{nullptr};
+  sensor::Sensor *uart3_protocols_enabled_bitmask_sensor_{nullptr};
+  sensor::Sensor *can_protocols_enabled_bitmask_sensor_{nullptr};
 
   switch_::Switch *charging_switch_{nullptr};
   switch_::Switch *discharging_switch_{nullptr};
@@ -443,6 +486,18 @@ class JkBmsBle :
   switch_::Switch *emergency_button_trigger_switch_{nullptr};
   switch_::Switch *dry_contact_alarm_intermittent_switch_{nullptr};
   switch_::Switch *discharge_overcurrent_protection_2_switch_{nullptr};
+
+  select::Select *uart1_protocol_select_{nullptr};
+  select::Select *uart2_protocol_select_{nullptr};
+  select::Select *uart3_protocol_select_{nullptr};
+  select::Select *can_protocol_select_{nullptr};
+  select::Select *lcd_buzzer_trigger_select_{nullptr};
+  select::Select *dry1_trigger_select_{nullptr};
+  select::Select *dry2_trigger_select_{nullptr};
+
+  LookupTable uart_protocol_table_;
+  LookupTable can_protocol_table_;
+  LookupTable lcd_buzzer_trigger_table_;
 
   text_sensor::TextSensor *errors_bitmask_hex_text_sensor_{nullptr};
   text_sensor::TextSensor *errors_text_sensor_{nullptr};
@@ -472,6 +527,7 @@ class JkBmsBle :
   void decode_jk04_settings_(const std::vector<uint8_t> &data);
   void publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state);
   void publish_state_(number::Number *number, float value);
+  void publish_state_(select::Select *obj, const std::string &state);
   void publish_state_(sensor::Sensor *sensor, float value);
   void publish_state_(switch_::Switch *obj, const bool &state);
   void publish_state_(text_sensor::TextSensor *text_sensor, const std::string &state);

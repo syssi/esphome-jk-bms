@@ -36,6 +36,7 @@ from components.jk_bms_ble import (  # noqa: E402
     switch as ble_switch,  # noqa: E402
     text_sensor as ble_text_sensor,
 )
+import components.jk_bms_ble.select as ble_select  # noqa: E402
 import components.jk_bms_display as hub_display  # noqa: E402
 from components.jk_bms_display import (  # noqa: E402
     binary_sensor as display_binary_sensor,
@@ -118,7 +119,7 @@ class TestJkBmsBleSensorLists:
         assert "balancer_status_bitmask" in ble_sensor.SENSOR_DEFS
         assert "detail_log_entry_count" in ble_sensor.SENSOR_DEFS
         assert "battery_type_id" in ble_sensor.SENSOR_DEFS
-        assert len(ble_sensor.SENSOR_DEFS) == 27
+        assert len(ble_sensor.SENSOR_DEFS) == 31
 
 
 class TestJkBmsBleBinarySensorConstants:
@@ -138,6 +139,33 @@ class TestJkBmsBleBinarySensorConstants:
             ble_binary_sensor.CONF_ONLINE_STATUS in ble_binary_sensor.BINARY_SENSOR_DEFS
         )
         assert len(ble_binary_sensor.BINARY_SENSOR_DEFS) == 7
+
+
+class TestJkBmsBleSelectConstants:
+    def test_selects_count(self):
+        assert len(ble_select.SELECTS) == 7
+
+    def test_selects_keys(self):
+        assert "uart1_protocol" in ble_select.SELECTS
+        assert "uart2_protocol" in ble_select.SELECTS
+        assert "uart3_protocol" in ble_select.SELECTS
+        assert "can_protocol" in ble_select.SELECTS
+        assert "lcd_buzzer_trigger" in ble_select.SELECTS
+        assert "dry1_trigger" in ble_select.SELECTS
+        assert "dry2_trigger" in ble_select.SELECTS
+
+    def test_selects_registers_are_unique(self):
+        registers = [v[0] for v in ble_select.SELECTS.values()]
+        assert len(registers) == len(set(registers))
+
+    def test_selects_registers(self):
+        assert ble_select.SELECTS["uart1_protocol"][0] == 0xA5
+        assert ble_select.SELECTS["uart2_protocol"][0] == 0xA8
+        assert ble_select.SELECTS["uart3_protocol"][0] == 0xB6
+        assert ble_select.SELECTS["can_protocol"][0] == 0xA6
+        assert ble_select.SELECTS["lcd_buzzer_trigger"][0] == 0xA9
+        assert ble_select.SELECTS["dry1_trigger"][0] == 0xAA
+        assert ble_select.SELECTS["dry2_trigger"][0] == 0xAB
 
 
 class TestJkBmsBleSwitchConstants:
