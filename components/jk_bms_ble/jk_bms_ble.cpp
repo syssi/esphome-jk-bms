@@ -1426,12 +1426,12 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
     //    bit7: Disable PCL module                  128
     //    bit8: Timed stored data                   256
     //    bit9: Charging float mode                 512
-    //    bit10: Reserved                          1024
-    //    bit11: Reserved                          2048
-    //    bit12: Reserved                          4096
-    //    bit13: Reserved                          8192
-    //    bit14: Reserved                         16384
-    //    bit15: Reserved                         32768
+    //    bit10: Button trigger emergency           1024
+    //    bit11: DRY ARM intermittent              2048
+    //    bit12: Discharge OCP II                  4096
+    //    bit13: Discharge OCP III                 8192
+    //    bit14: GPS locked charging              16384
+    //    bit15: GPS locked discharging           32768
     ESP_LOGI(TAG, "  Heating switch: %s", ONOFF(check_bit_(data[282], 1)));
     this->publish_state_(this->heating_switch_, check_bit_(data[282], 1));
     this->publish_state_(this->disable_temperature_sensors_switch_, check_bit_(data[282], 2));
@@ -1446,6 +1446,9 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
     this->publish_state_(this->emergency_button_trigger_switch_, check_bit_(data[283], 4));
     this->publish_state_(this->dry_contact_alarm_intermittent_switch_, check_bit_(data[283], 8));
     this->publish_state_(this->discharge_overcurrent_protection_2_switch_, check_bit_(data[283], 16));
+    this->publish_state_(this->discharge_overcurrent_protection_3_switch_, check_bit_(data[283], 32));
+    this->publish_state_(this->gps_locked_charging_switch_, check_bit_(data[283], 64));
+    this->publish_state_(this->gps_locked_discharging_switch_, check_bit_(data[283], 128));
 
     // 284   1   0x00                   Heating start temperature
     this->publish_state_(this->heating_start_temperature_number_, (float) ((int8_t) data[284]));

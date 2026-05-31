@@ -378,6 +378,12 @@ switch:
       name: "dry contact alarm intermittent"
     discharge_overcurrent_protection_2:
       name: "discharge overcurrent protection 2"
+    discharge_overcurrent_protection_3:
+      name: "discharge overcurrent protection 3"
+    gps_locked_charging:
+      name: "gps locked charging"
+    gps_locked_discharging:
+      name: "gps locked discharging"
 
   - platform: ble_client
     ble_client_id: client0
