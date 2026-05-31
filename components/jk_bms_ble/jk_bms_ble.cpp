@@ -1426,7 +1426,7 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
     //    bit7: Disable PCL module                  128
     //    bit8: Timed stored data                   256
     //    bit9: Charging float mode                 512
-    //    bit10: Reserved                          1024
+    //    bit10: Button trigger emergency           1024
     //    bit11: DRY ARM intermittent              2048
     //    bit12: Discharge OCP II                  4096
     //    bit13: Discharge OCP III                 8192
