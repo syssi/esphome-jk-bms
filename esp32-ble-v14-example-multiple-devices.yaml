@@ -929,10 +929,10 @@ text_sensor:
       name: "errors"
       device_id: device0
     errors_bitmask_hex:
-      name: "${bms0} errors bitmask hex"
+      name: "errors bitmask hex"
       device_id: device0
     balancer_status:
-      name: "${bms0} balancer status"
+      name: "balancer status"
       device_id: device0
     total_runtime_formatted:
       name: "total runtime formatted"
@@ -950,10 +950,10 @@ text_sensor:
       name: "errors"
       device_id: device1
     errors_bitmask_hex:
-      name: "${bms1} errors bitmask hex"
+      name: "errors bitmask hex"
       device_id: device1
     balancer_status:
-      name: "${bms1} balancer status"
+      name: "balancer status"
       device_id: device1
     total_runtime_formatted:
       name: "total runtime formatted"
