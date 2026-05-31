@@ -11,11 +11,14 @@ from ..const import (
     CONF_DISABLE_PCL_MODULE,
     CONF_DISABLE_TEMPERATURE_SENSORS,
     CONF_DISCHARGE_OVERCURRENT_PROTECTION_2,
+    CONF_DISCHARGE_OVERCURRENT_PROTECTION_3,
     CONF_DISCHARGING,
     CONF_DISPLAY_ALWAYS_ON,
     CONF_DRY_CONTACT_ALARM_INTERMITTENT,
     CONF_EMERGENCY,
     CONF_EMERGENCY_BUTTON_TRIGGER,
+    CONF_GPS_LOCKED_CHARGING,
+    CONF_GPS_LOCKED_DISCHARGING,
     CONF_HEATING,
     CONF_SMART_SLEEP,
     CONF_TIMED_STORED_DATA,
@@ -39,6 +42,9 @@ ICON_DISPLAY_ALWAYS_ON = "mdi:television"
 ICON_EMERGENCY_BUTTON_TRIGGER = "mdi:button-pointer"
 ICON_DRY_CONTACT_ALARM_INTERMITTENT = "mdi:leak"
 ICON_DISCHARGE_OVERCURRENT_PROTECTION_2 = "mdi:current-dc"
+ICON_DISCHARGE_OVERCURRENT_PROTECTION_3 = "mdi:current-dc"
+ICON_GPS_LOCKED_CHARGING = "mdi:battery-lock"
+ICON_GPS_LOCKED_DISCHARGING = "mdi:battery-lock-open"
 
 SWITCHES = {
     # JK04, JK02_24S, JK02_32S
@@ -56,6 +62,9 @@ SWITCHES = {
     CONF_EMERGENCY_BUTTON_TRIGGER: [0x00, 0x00, 0x31],
     CONF_DRY_CONTACT_ALARM_INTERMITTENT: [0x00, 0x00, 0x32],
     CONF_DISCHARGE_OVERCURRENT_PROTECTION_2: [0x00, 0x00, 0x33],
+    CONF_DISCHARGE_OVERCURRENT_PROTECTION_3: [0x00, 0x00, 0x34],
+    CONF_GPS_LOCKED_CHARGING: [0x00, 0x00, 0x35],
+    CONF_GPS_LOCKED_DISCHARGING: [0x00, 0x00, 0x36],
 }
 
 JkSwitch = jk_bms_ble_ns.class_("JkSwitch", switch.Switch, cg.Component)
@@ -127,6 +136,21 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
         cv.Optional(CONF_DISCHARGE_OVERCURRENT_PROTECTION_2): switch.switch_schema(
             JkSwitch,
             icon=ICON_DISCHARGE_OVERCURRENT_PROTECTION_2,
+            entity_category=ENTITY_CATEGORY_CONFIG,
+        ),
+        cv.Optional(CONF_DISCHARGE_OVERCURRENT_PROTECTION_3): switch.switch_schema(
+            JkSwitch,
+            icon=ICON_DISCHARGE_OVERCURRENT_PROTECTION_3,
+            entity_category=ENTITY_CATEGORY_CONFIG,
+        ),
+        cv.Optional(CONF_GPS_LOCKED_CHARGING): switch.switch_schema(
+            JkSwitch,
+            icon=ICON_GPS_LOCKED_CHARGING,
+            entity_category=ENTITY_CATEGORY_CONFIG,
+        ),
+        cv.Optional(CONF_GPS_LOCKED_DISCHARGING): switch.switch_schema(
+            JkSwitch,
+            icon=ICON_GPS_LOCKED_DISCHARGING,
             entity_category=ENTITY_CATEGORY_CONFIG,
         ),
     }

@@ -348,6 +348,15 @@ class JkBmsBle :
   void set_discharge_overcurrent_protection_2_switch(switch_::Switch *discharge_overcurrent_protection_2_switch) {
     discharge_overcurrent_protection_2_switch_ = discharge_overcurrent_protection_2_switch;
   }
+  void set_discharge_overcurrent_protection_3_switch(switch_::Switch *discharge_overcurrent_protection_3_switch) {
+    discharge_overcurrent_protection_3_switch_ = discharge_overcurrent_protection_3_switch;
+  }
+  void set_gps_locked_charging_switch(switch_::Switch *gps_locked_charging_switch) {
+    gps_locked_charging_switch_ = gps_locked_charging_switch;
+  }
+  void set_gps_locked_discharging_switch(switch_::Switch *gps_locked_discharging_switch) {
+    gps_locked_discharging_switch_ = gps_locked_discharging_switch;
+  }
   void set_uart1_protocol_select(select::Select *uart1_protocol_select) {
     uart1_protocol_select_ = uart1_protocol_select;
   }
@@ -486,6 +495,9 @@ class JkBmsBle :
   switch_::Switch *emergency_button_trigger_switch_{nullptr};
   switch_::Switch *dry_contact_alarm_intermittent_switch_{nullptr};
   switch_::Switch *discharge_overcurrent_protection_2_switch_{nullptr};
+  switch_::Switch *discharge_overcurrent_protection_3_switch_{nullptr};
+  switch_::Switch *gps_locked_charging_switch_{nullptr};
+  switch_::Switch *gps_locked_discharging_switch_{nullptr};
 
   select::Select *uart1_protocol_select_{nullptr};
   select::Select *uart2_protocol_select_{nullptr};
