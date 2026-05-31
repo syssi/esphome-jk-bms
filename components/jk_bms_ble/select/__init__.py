@@ -8,6 +8,7 @@ from ..const import (
     CONF_DRY1_TRIGGER,
     CONF_DRY2_TRIGGER,
     CONF_LCD_BUZZER_TRIGGER,
+    CONF_LOAD_CONFIG_PRESET,
     CONF_UART1_PROTOCOL,
     CONF_UART2_PROTOCOL,
     CONF_UART3_PROTOCOL,
@@ -123,7 +124,15 @@ SELECTS = {
     ),
 }
 
+# JK02_32S: each chemistry loads via a dedicated register with data_len=0
+LOAD_CONFIG_PRESET_OPTIONS = {
+    "Li-Ion": 0x68,
+    "LiFePO4": 0x69,
+    "LTO": 0x6A,
+}
+
 JkSelect = jk_bms_ble_ns.class_("JkSelect", select.Select, cg.Component)
+JkPresetSelect = jk_bms_ble_ns.class_("JkPresetSelect", select.Select, cg.Component)
 
 CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
     {
@@ -148,6 +157,9 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
         cv.Optional(CONF_DRY2_TRIGGER): select.select_schema(JkSelect).extend(
             cv.COMPONENT_SCHEMA
         ),
+        cv.Optional(CONF_LOAD_CONFIG_PRESET): select.select_schema(
+            JkPresetSelect
+        ).extend(cv.COMPONENT_SCHEMA),
     }
 )
 
@@ -179,3 +191,11 @@ async def to_code(config):
                 )
             )
         cg.add(getattr(hub, table_setter)(cg.RawExpression(arr_name), len(options)))
+
+    if CONF_LOAD_CONFIG_PRESET in config:
+        conf = config[CONF_LOAD_CONFIG_PRESET]
+        var = await select.new_select(conf, options=list(LOAD_CONFIG_PRESET_OPTIONS))
+        await cg.register_component(var, conf)
+        cg.add(var.set_parent(hub))
+        for opt, reg in LOAD_CONFIG_PRESET_OPTIONS.items():
+            cg.add(var.add_option_register(opt, reg))

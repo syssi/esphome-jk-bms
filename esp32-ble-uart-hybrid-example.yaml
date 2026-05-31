@@ -214,6 +214,11 @@ switch:
     name: "enable bluetooth connection"
     id: ble_client_switch0
 
+select:
+  - platform: jk_bms_ble
+    load_config_preset:
+      name: "load config preset"
+
 text_sensor:
   - platform: jk_bms
     jk_bms_id: bms0

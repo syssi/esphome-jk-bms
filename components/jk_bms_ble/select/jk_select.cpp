@@ -20,4 +20,17 @@ void JkSelect::control(const std::string &value) {
   }
 }
 
+void JkPresetSelect::dump_config() { LOG_SELECT("", "JkBmsBle Preset Select", this); }
+
+void JkPresetSelect::control(const std::string &value) {
+  for (const auto &[opt, reg] : this->option_registers_) {
+    if (opt == value) {
+      if (this->parent_->write_register(reg, 0x00000000, 0x00))
+        this->publish_state(value);
+      return;
+    }
+  }
+  ESP_LOGW(TAG, "Unknown preset: %s", value.c_str());
+}
+
 }  // namespace esphome::jk_bms_ble
