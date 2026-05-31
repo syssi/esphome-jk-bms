@@ -30,7 +30,7 @@ esp32:
     type: esp-idf
     advanced:
       # might need additional stack size for such many entities.
-      loop_task_stack_size: 32768 # tested: 16384 # 8192 is the default
+      loop_task_stack_size: 32768  # tested: 16384 # 8192 is the default
 
 esphome:
   name: ${name}
