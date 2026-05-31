@@ -1534,6 +1534,15 @@ switch:
     discharge_overcurrent_protection_2:
       name: "discharge overcurrent protection 2"
       device_id: device0
+    discharge_overcurrent_protection_3:
+      name: "discharge overcurrent protection 3"
+      device_id: device0
+    gps_locked_charging:
+      name: "gps locked charging"
+      device_id: device0
+    gps_locked_discharging:
+      name: "gps locked discharging"
+      device_id: device0
 
   - platform: jk_bms_ble
     jk_bms_ble_id: bms1
@@ -1579,6 +1588,15 @@ switch:
     discharge_overcurrent_protection_2:
       name: "discharge overcurrent protection 2"
       device_id: device1
+    discharge_overcurrent_protection_3:
+      name: "discharge overcurrent protection 3"
+      device_id: device1
+    gps_locked_charging:
+      name: "gps locked charging"
+      device_id: device1
+    gps_locked_discharging:
+      name: "gps locked discharging"
+      device_id: device1
 
   - platform: jk_bms_ble
     jk_bms_ble_id: bms2
@@ -1623,6 +1641,15 @@ switch:
       device_id: device2
     discharge_overcurrent_protection_2:
       name: "discharge overcurrent protection 2"
+      device_id: device2
+    discharge_overcurrent_protection_3:
+      name: "discharge overcurrent protection 3"
+      device_id: device2
+    gps_locked_charging:
+      name: "gps locked charging"
+      device_id: device2
+    gps_locked_discharging:
+      name: "gps locked discharging"
       device_id: device2
 
 
