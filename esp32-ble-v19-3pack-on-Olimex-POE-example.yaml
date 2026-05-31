@@ -1,28 +1,28 @@
-# Description:
-# This example file is based on some other good examples from this project and provides a nearly complete configuration for
-# a setup of 3 JK-19 BMS systems with additional entities added to represent values for the full stack.
-# Overall state of charge, combined current and power, ...
-# It is recognizes as 4 Devices (JK-Battery and JK-BMS[0..2])
+# Example configuration for 3 JK-BMS v19 systems (JK02_32S protocol) connected via BLE,
+# with additional derived entities representing the combined battery stack.
 #
-# 3 Batteries via BLE with all those entities is driving the ESP32 to it's limits. Having LAN instead of WIFI for the ESP is recommended.
+# It implements 4 ESPHome devices: one per BMS (JK-BMS[0..2]) and one virtual device (JK-Battery)
+# exposing aggregate values such as overall state of charge, combined current and power.
+#
+# Monitoring 3 BMS units via BLE produces a high entity count that pushes the ESP32 to its limits.
+# Using Ethernet instead of Wi-Fi is recommended.
 
 substitutions:
   name: olimex-esp32-poe
   friendly_name: olimex-esp32-poe-JK-BMS
   external_components_source: github://syssi/esphome-jk-bms@main
-  bms0_mac_address: A4:C1:38:00:35:0E
-  bms0: JK-BMS0
-  bms1_mac_address: A4:C1:38:01:B2:C3
-  bms1: JK-BMS1
-  bms2_mac_address: A4:C1:38:02:7E:90
-  bms2: JK-BMS2
 
-  # Please use "JK02_24S" if you own a old JK-BMS < hardware version 11.0 (hardware version >= 6.0 and < 11.0)
-  # Please use "JK02_32S" if you own a new JK-BMS >= hardware version 11.0 (f.e. JK-B2A8S20P hw 11.XW, sw 11.26)
-  # Please use "JK04" if you have some old JK-BMS <= hardware version 3.0 (f.e. JK-B2A16S hw 3.0, sw. 3.3.0)
+  bms0_mac_address: A4:C1:38:00:35:0E
   bms0_protocol_version: JK02_32S
+  bms0: JK-BMS0
+
+  bms1_mac_address: A4:C1:38:01:B2:C3
   bms1_protocol_version: JK02_32S
+  bms1: JK-BMS1
+
+  bms2_mac_address: A4:C1:38:02:7E:90
   bms2_protocol_version: JK02_32S
+  bms2: JK-BMS2
 
 esp32:
   board: esp32-poe-iso
@@ -71,8 +71,6 @@ network:
   enable_high_performance: true
 
 api:
-  encryption:
-    key: BKb06kTH1yt5KQJy6v/IEvdeNi1CG2SDdPYspQeWZeE=  # change this key using the key generator: https://esphome.io/components/api/
 
 logger:
   level: INFO
