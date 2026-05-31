@@ -288,6 +288,9 @@ class JkBmsBle :
   void set_uart2_protocols_enabled_bitmask_sensor(sensor::Sensor *uart2_protocols_enabled_bitmask_sensor) {
     uart2_protocols_enabled_bitmask_sensor_ = uart2_protocols_enabled_bitmask_sensor;
   }
+  void set_uart3_protocols_enabled_bitmask_sensor(sensor::Sensor *uart3_protocols_enabled_bitmask_sensor) {
+    uart3_protocols_enabled_bitmask_sensor_ = uart3_protocols_enabled_bitmask_sensor;
+  }
   void set_can_protocols_enabled_bitmask_sensor(sensor::Sensor *can_protocols_enabled_bitmask_sensor) {
     can_protocols_enabled_bitmask_sensor_ = can_protocols_enabled_bitmask_sensor;
   }
@@ -466,6 +469,7 @@ class JkBmsBle :
   sensor::Sensor *battery_type_id_sensor_{nullptr};
   sensor::Sensor *uart1_protocols_enabled_bitmask_sensor_{nullptr};
   sensor::Sensor *uart2_protocols_enabled_bitmask_sensor_{nullptr};
+  sensor::Sensor *uart3_protocols_enabled_bitmask_sensor_{nullptr};
   sensor::Sensor *can_protocols_enabled_bitmask_sensor_{nullptr};
 
   switch_::Switch *charging_switch_{nullptr};

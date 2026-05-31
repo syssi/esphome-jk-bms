@@ -1851,7 +1851,9 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
   // 270  0x00                  UART3 Protocol number
   if (const char *name = uart_protocol_table_.get(data[270]))
     this->publish_state_(this->uart3_protocol_select_, name);
-  // 271  7    0x00 0x00 0x00 0x00 0x00 0x00 0x00   UART3 Protocol enable
+  // 271  4    0x00 0x00 0x00 0x00   UART3 Protocol enable (lower 32 of 56 bits)
+  this->publish_state_(this->uart3_protocols_enabled_bitmask_sensor_, (float) jk_get_32bit(271));
+  // 275  3    0x00 0x00 0x00       UART3 Protocol enable (upper 24 bits, reserved)
   // 278  0x00  Re-Bulk SOC  %
   ESP_LOGI(TAG, "  Re-Bulk SOC: %d %%", data[278]);
   this->publish_state_(this->re_bulk_soc_number_, (float) data[278]);

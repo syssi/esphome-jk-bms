@@ -61,6 +61,7 @@ CONF_BATTERY_TYPE_ID = "battery_type_id"
 CONF_BALANCER_STATUS_BITMASK = "balancer_status_bitmask"
 CONF_UART1_PROTOCOLS_ENABLED_BITMASK = "uart1_protocols_enabled_bitmask"
 CONF_UART2_PROTOCOLS_ENABLED_BITMASK = "uart2_protocols_enabled_bitmask"
+CONF_UART3_PROTOCOLS_ENABLED_BITMASK = "uart3_protocols_enabled_bitmask"
 CONF_CAN_PROTOCOLS_ENABLED_BITMASK = "can_protocols_enabled_bitmask"
 
 UNIT_AMPERE_HOURS = "Ah"
@@ -299,6 +300,13 @@ SENSOR_DEFS = {
         "entity_category": ENTITY_CATEGORY_DIAGNOSTIC,
     },
     CONF_UART2_PROTOCOLS_ENABLED_BITMASK: {
+        "unit_of_measurement": UNIT_EMPTY,
+        "icon": ICON_EMPTY,
+        "accuracy_decimals": 0,
+        "device_class": DEVICE_CLASS_EMPTY,
+        "entity_category": ENTITY_CATEGORY_DIAGNOSTIC,
+    },
+    CONF_UART3_PROTOCOLS_ENABLED_BITMASK: {
         "unit_of_measurement": UNIT_EMPTY,
         "icon": ICON_EMPTY,
         "accuracy_decimals": 0,

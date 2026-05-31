@@ -344,6 +344,8 @@ sensor:
       name: "uart1 protocols enabled bitmask"
     uart2_protocols_enabled_bitmask:
       name: "uart2 protocols enabled bitmask"
+    uart3_protocols_enabled_bitmask:
+      name: "uart3 protocols enabled bitmask"
     can_protocols_enabled_bitmask:
       name: "can protocols enabled bitmask"
 switch:
