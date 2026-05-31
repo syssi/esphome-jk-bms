@@ -157,9 +157,9 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
         cv.Optional(CONF_DRY2_TRIGGER): select.select_schema(JkSelect).extend(
             cv.COMPONENT_SCHEMA
         ),
-        cv.Optional(CONF_LOAD_CONFIG_PRESET): select.select_schema(JkPresetSelect).extend(
-            cv.COMPONENT_SCHEMA
-        ),
+        cv.Optional(CONF_LOAD_CONFIG_PRESET): select.select_schema(
+            JkPresetSelect
+        ).extend(cv.COMPONENT_SCHEMA),
     }
 )
 
