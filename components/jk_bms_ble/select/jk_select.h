@@ -24,12 +24,15 @@ class JkSelect : public select::Select, public Component {
 };
 
 // Select where each option triggers a write to a distinct register with data_len=0.
+// State is pinned to "" on setup and never updated: the BMS provides no read-back
+// confirmation, so the empty placeholder stays selected across page reloads.
 class JkPresetSelect : public select::Select, public Component {
  public:
   void set_parent(JkBmsBle *parent) { this->parent_ = parent; }
   void add_option_register(const std::string &option, uint8_t holding_register) {
     this->option_registers_.emplace_back(option, holding_register);
   }
+  void setup() override { this->publish_state(""); }
   void dump_config() override;
 
  protected:

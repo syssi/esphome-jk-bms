@@ -25,8 +25,7 @@ void JkPresetSelect::dump_config() { LOG_SELECT("", "JkBmsBle Preset Select", th
 void JkPresetSelect::control(const std::string &value) {
   for (const auto &[opt, reg] : this->option_registers_) {
     if (opt == value) {
-      if (this->parent_->write_register(reg, 0x00000000, 0x00))
-        this->publish_state(value);
+      this->parent_->write_register(reg, 0x00000000, 0x00);
       return;
     }
   }

@@ -194,7 +194,9 @@ async def to_code(config):
 
     if CONF_LOAD_CONFIG_PRESET in config:
         conf = config[CONF_LOAD_CONFIG_PRESET]
-        var = await select.new_select(conf, options=list(LOAD_CONFIG_PRESET_OPTIONS))
+        var = await select.new_select(
+            conf, options=[""] + list(LOAD_CONFIG_PRESET_OPTIONS)
+        )
         await cg.register_component(var, conf)
         cg.add(var.set_parent(hub))
         for opt, reg in LOAD_CONFIG_PRESET_OPTIONS.items():
