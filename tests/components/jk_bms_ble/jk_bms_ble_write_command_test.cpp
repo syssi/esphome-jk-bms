@@ -9,11 +9,17 @@ namespace esphome::jk_bms_ble::testing {
 //   DRY ARM Intermittent ON: AA 55 90 EB 32 04 01 00 00 00 55 63 42 44 71 55 0B BA 97 11
 //   Discharge OCP 2     OFF: AA 55 90 EB 33 04 00 00 00 00 E6 68 67 FE 71 5B 50 76 55 4B
 //
+// Additional captures recorded from a JK02_32S BMS (2026-05-31):
+//
+//   Discharge OCP 2     OFF: AA 55 90 EB 33 04 00 00 00 00 A7 F9 96 FC 1E E0 66 2C 0E 81
+//   GPS Locked Charging  ON: AA 55 90 EB 35 04 01 00 00 00 B4 B4 59 CF CE 23 3D 27 DF 78
+//   GPS Locked Discharging ON:AA 55 90 EB 36 04 01 00 00 00 B5 C4 8C DD 6C 11 32 3D E2 65
+//
 // Note: bytes 10–18 in the captures are stale BLE-TX-buffer data from the capturing
 // client and are not part of the JK protocol payload.  build_frame() zero-initialises
-// those bytes, so the CRC in the captures (C9 / 11 / 4B) differs from what
-// build_frame() produces (B0 / B1 / B1).  Register (byte 4), length (byte 5), and
-// value (bytes 6–9) match exactly.
+// those bytes, so the CRC in the captures (C9 / 11 / 4B / 81 / 78 / 65) differs from
+// what build_frame() produces (B0 / B1 / B1 / B1 / B4 / B5).  Register (byte 4),
+// length (byte 5), and value (bytes 6–9) match exactly.
 
 // ── Header / trailer ─────────────────────────────────────────────────────────
 
@@ -118,7 +124,7 @@ TEST(JkBmsWriteCommandTest, DryContactAlarmIntermittentFullFrameOn) {
 // ── Discharge Overcurrent Protection 2 (register 0x33) ───────────────────────
 
 TEST(JkBmsWriteCommandTest, DischargeOvercurrentProtection2Off) {
-  // Captured: AA 55 90 EB 33 04 00 00 00 00 ...
+  // Captured: AA 55 90 EB 33 04 00 00 00 00 ...  (two independent captures)
   auto f = JkBmsBle::build_frame(0x33, 0x00000000, 0x04);
 
   EXPECT_EQ(f[4], 0x33);  // register
@@ -149,16 +155,127 @@ TEST(JkBmsWriteCommandTest, DischargeOvercurrentProtection2FullFrameOff) {
   EXPECT_EQ(JkBmsBle::build_frame(0x33, 0x00000000, 0x04), expected);
 }
 
+// ── Discharge Overcurrent Protection 3 (register 0x34) ───────────────────────
+
+TEST(JkBmsWriteCommandTest, DischargeOvercurrentProtection3Off) {
+  auto f = JkBmsBle::build_frame(0x34, 0x00000000, 0x04);
+
+  EXPECT_EQ(f[4], 0x34);  // register
+  EXPECT_EQ(f[5], 0x04);  // length
+  EXPECT_EQ(f[6], 0x00);  // value: OFF
+  EXPECT_EQ(f[7], 0x00);
+  EXPECT_EQ(f[8], 0x00);
+  EXPECT_EQ(f[9], 0x00);
+  EXPECT_EQ(f[19], 0xB2);
+}
+
+TEST(JkBmsWriteCommandTest, DischargeOvercurrentProtection3On) {
+  auto f = JkBmsBle::build_frame(0x34, 0x00000001, 0x04);
+
+  EXPECT_EQ(f[4], 0x34);
+  EXPECT_EQ(f[6], 0x01);  // value: ON
+  EXPECT_EQ(f[19], 0xB3);
+}
+
+TEST(JkBmsWriteCommandTest, DischargeOvercurrentProtection3FullFrameOn) {
+  // clang-format off
+  const std::array<uint8_t, 20> expected = {
+      0xAA, 0x55, 0x90, 0xEB, 0x34, 0x04, 0x01, 0x00,
+      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+      0x00, 0x00, 0x00, 0xB3,
+  };
+  // clang-format on
+  EXPECT_EQ(JkBmsBle::build_frame(0x34, 0x00000001, 0x04), expected);
+}
+
+// ── GPS Locked Charging (register 0x35) ──────────────────────────────────────
+
+TEST(JkBmsWriteCommandTest, GpsLockedChargingOn) {
+  // Captured: AA 55 90 EB 35 04 01 00 00 00 B4 B4 59 CF CE 23 3D 27 DF 78
+  auto f = JkBmsBle::build_frame(0x35, 0x00000001, 0x04);
+
+  EXPECT_EQ(f[4], 0x35);  // register
+  EXPECT_EQ(f[5], 0x04);  // length
+  EXPECT_EQ(f[6], 0x01);  // value: ON
+  EXPECT_EQ(f[7], 0x00);
+  EXPECT_EQ(f[8], 0x00);
+  EXPECT_EQ(f[9], 0x00);
+  EXPECT_EQ(f[19], 0xB4);
+}
+
+TEST(JkBmsWriteCommandTest, GpsLockedChargingOff) {
+  auto f = JkBmsBle::build_frame(0x35, 0x00000000, 0x04);
+
+  EXPECT_EQ(f[4], 0x35);
+  EXPECT_EQ(f[6], 0x00);  // value: OFF
+  EXPECT_EQ(f[19], 0xB3);
+}
+
+TEST(JkBmsWriteCommandTest, GpsLockedChargingFullFrameOn) {
+  // Captured register/length/value match (bytes 10–18 differ, see file header):
+  //   AA 55 90 EB 35 04 01 00 00 00 B4 B4 59 CF CE 23 3D 27 DF 78
+  // clang-format off
+  const std::array<uint8_t, 20> expected = {
+      0xAA, 0x55, 0x90, 0xEB, 0x35, 0x04, 0x01, 0x00,
+      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+      0x00, 0x00, 0x00, 0xB4,
+  };
+  // clang-format on
+  EXPECT_EQ(JkBmsBle::build_frame(0x35, 0x00000001, 0x04), expected);
+}
+
+// ── GPS Locked Discharging (register 0x36) ───────────────────────────────────
+
+TEST(JkBmsWriteCommandTest, GpsLockedDischargingOn) {
+  // Captured: AA 55 90 EB 36 04 01 00 00 00 B5 C4 8C DD 6C 11 32 3D E2 65
+  auto f = JkBmsBle::build_frame(0x36, 0x00000001, 0x04);
+
+  EXPECT_EQ(f[4], 0x36);  // register
+  EXPECT_EQ(f[5], 0x04);  // length
+  EXPECT_EQ(f[6], 0x01);  // value: ON
+  EXPECT_EQ(f[7], 0x00);
+  EXPECT_EQ(f[8], 0x00);
+  EXPECT_EQ(f[9], 0x00);
+  EXPECT_EQ(f[19], 0xB5);
+}
+
+TEST(JkBmsWriteCommandTest, GpsLockedDischargingOff) {
+  auto f = JkBmsBle::build_frame(0x36, 0x00000000, 0x04);
+
+  EXPECT_EQ(f[4], 0x36);
+  EXPECT_EQ(f[6], 0x00);  // value: OFF
+  EXPECT_EQ(f[19], 0xB4);
+}
+
+TEST(JkBmsWriteCommandTest, GpsLockedDischargingFullFrameOn) {
+  // Captured register/length/value match (bytes 10–18 differ, see file header):
+  //   AA 55 90 EB 36 04 01 00 00 00 B5 C4 8C DD 6C 11 32 3D E2 65
+  // clang-format off
+  const std::array<uint8_t, 20> expected = {
+      0xAA, 0x55, 0x90, 0xEB, 0x36, 0x04, 0x01, 0x00,
+      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+      0x00, 0x00, 0x00, 0xB5,
+  };
+  // clang-format on
+  EXPECT_EQ(JkBmsBle::build_frame(0x36, 0x00000001, 0x04), expected);
+}
+
 // ── Register uniqueness ───────────────────────────────────────────────────────
 
 TEST(JkBmsWriteCommandTest, RegistersAreDistinct) {
   auto f31 = JkBmsBle::build_frame(0x31, 0x00000001, 0x04);
   auto f32 = JkBmsBle::build_frame(0x32, 0x00000001, 0x04);
   auto f33 = JkBmsBle::build_frame(0x33, 0x00000001, 0x04);
+  auto f34 = JkBmsBle::build_frame(0x34, 0x00000001, 0x04);
+  auto f35 = JkBmsBle::build_frame(0x35, 0x00000001, 0x04);
+  auto f36 = JkBmsBle::build_frame(0x36, 0x00000001, 0x04);
 
   EXPECT_NE(f31, f32);
   EXPECT_NE(f31, f33);
   EXPECT_NE(f32, f33);
+  EXPECT_NE(f33, f34);
+  EXPECT_NE(f34, f35);
+  EXPECT_NE(f35, f36);
 }
 
 }  // namespace esphome::jk_bms_ble::testing
