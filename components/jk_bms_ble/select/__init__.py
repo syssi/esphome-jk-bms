@@ -124,11 +124,12 @@ SELECTS = {
     ),
 }
 
-LOAD_CONFIG_PRESET_OPTIONS = [
-    ("Li-Ion", [0xAA, 0x55, 0x90, 0xEB, 0x68, 0x00, 0x76, 0x55, 0xC2, 0x22, 0x63, 0x4F, 0x02, 0xCE, 0xA8, 0xD8, 0xA7, 0x0A, 0x45, 0x89]),
-    ("LiFePO4", [0xAA, 0x55, 0x90, 0xEB, 0x69, 0x00, 0x5A, 0xD0, 0x53, 0x35, 0x21, 0xC9, 0x8A, 0x63, 0xEC, 0x6D, 0xB2, 0xEE, 0xBC, 0x21]),
-    ("LTO", [0xAA, 0x55, 0x90, 0xEB, 0x6A, 0x00, 0x6A, 0x43, 0x1A, 0x4D, 0x85, 0x5F, 0x3E, 0xDB, 0x6A, 0xF8, 0x73, 0xD1, 0x61, 0xFC]),
-]
+# JK02_32S: each chemistry loads via a dedicated register with data_len=0
+LOAD_CONFIG_PRESET_OPTIONS = {
+    "Li-Ion": 0x68,
+    "LiFePO4": 0x69,
+    "LTO": 0x6A,
+}
 
 JkSelect = jk_bms_ble_ns.class_("JkSelect", select.Select, cg.Component)
 JkPresetSelect = jk_bms_ble_ns.class_("JkPresetSelect", select.Select, cg.Component)
@@ -193,9 +194,8 @@ async def to_code(config):
 
     if CONF_LOAD_CONFIG_PRESET in config:
         conf = config[CONF_LOAD_CONFIG_PRESET]
-        var = await select.new_select(conf, options=[opt for opt, _ in LOAD_CONFIG_PRESET_OPTIONS])
+        var = await select.new_select(conf, options=list(LOAD_CONFIG_PRESET_OPTIONS))
         await cg.register_component(var, conf)
         cg.add(var.set_parent(hub))
-        for opt, frame in LOAD_CONFIG_PRESET_OPTIONS:
-            frame_bytes = ", ".join(f"0x{b:02X}" for b in frame)
-            cg.add(var.add_option_frame(opt, cg.RawExpression(f"std::array<uint8_t, 20>{{{frame_bytes}}}")))
+        for opt, reg in LOAD_CONFIG_PRESET_OPTIONS.items():
+            cg.add(var.add_option_register(opt, reg))

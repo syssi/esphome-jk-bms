@@ -385,7 +385,6 @@ class JkBmsBle :
   static uint32_t encode_jk04_payload(float value, uint8_t len, float factor);
 #ifdef USE_ESP32
   bool write_register(uint8_t address, uint32_t value, uint8_t length);
-  bool write_raw_frame(const std::array<uint8_t, 20> &frame);
 #endif
 
   struct Cell {

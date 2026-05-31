@@ -171,14 +171,18 @@ class TestJkBmsBleSelectConstants:
 class TestJkBmsBleLoadConfigPresetConstants:
     def test_load_config_preset_options(self):
         assert len(ble_select.LOAD_CONFIG_PRESET_OPTIONS) == 3
-        names = [opt for opt, _ in ble_select.LOAD_CONFIG_PRESET_OPTIONS]
-        assert "Li-Ion" in names
-        assert "LiFePO4" in names
-        assert "LTO" in names
+        assert "Li-Ion" in ble_select.LOAD_CONFIG_PRESET_OPTIONS
+        assert "LiFePO4" in ble_select.LOAD_CONFIG_PRESET_OPTIONS
+        assert "LTO" in ble_select.LOAD_CONFIG_PRESET_OPTIONS
 
-    def test_load_config_preset_frames_are_20_bytes(self):
-        for _, frame in ble_select.LOAD_CONFIG_PRESET_OPTIONS:
-            assert len(frame) == 20
+    def test_load_config_preset_registers(self):
+        assert ble_select.LOAD_CONFIG_PRESET_OPTIONS["Li-Ion"] == 0x68
+        assert ble_select.LOAD_CONFIG_PRESET_OPTIONS["LiFePO4"] == 0x69
+        assert ble_select.LOAD_CONFIG_PRESET_OPTIONS["LTO"] == 0x6A
+
+    def test_load_config_preset_registers_are_unique(self):
+        registers = list(ble_select.LOAD_CONFIG_PRESET_OPTIONS.values())
+        assert len(registers) == len(set(registers))
 
 
 class TestJkBmsBleSwitchConstants:
