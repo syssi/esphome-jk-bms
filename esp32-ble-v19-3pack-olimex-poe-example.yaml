@@ -1677,6 +1677,9 @@ select:
     dry2_trigger:
       name: "dry2 trigger"
       device_id: device0
+    load_config_preset:
+      name: "load config preset"
+      device_id: device0
 
   - platform: jk_bms_ble
     jk_bms_ble_id: bms1
@@ -1701,6 +1704,9 @@ select:
     dry2_trigger:
       name: "dry2 trigger"
       device_id: device1
+    load_config_preset:
+      name: "load config preset"
+      device_id: device1
 
   - platform: jk_bms_ble
     jk_bms_ble_id: bms2
@@ -1724,6 +1730,9 @@ select:
       device_id: device2
     dry2_trigger:
       name: "dry2 trigger"
+      device_id: device2
+    load_config_preset:
+      name: "load config preset"
       device_id: device2
 
 text_sensor:

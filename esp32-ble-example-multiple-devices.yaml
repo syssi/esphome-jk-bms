@@ -244,6 +244,18 @@ switch:
     id: ble_client_switch1
     device_id: device1
 
+select:
+  - platform: jk_bms_ble
+    jk_bms_ble_id: bms0
+    load_config_preset:
+      name: "load config preset"
+      device_id: device0
+  - platform: jk_bms_ble
+    jk_bms_ble_id: bms1
+    load_config_preset:
+      name: "load config preset"
+      device_id: device1
+
 text_sensor:
   - platform: jk_bms_ble
     jk_bms_ble_id: bms0

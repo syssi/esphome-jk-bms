@@ -406,6 +406,8 @@ select:
       name: "dry1 trigger"
     dry2_trigger:
       name: "dry2 trigger"
+    load_config_preset:
+      name: "load config preset"
 
 text_sensor:
   - platform: jk_bms_ble
