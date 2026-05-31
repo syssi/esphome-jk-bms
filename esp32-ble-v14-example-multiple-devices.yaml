@@ -129,6 +129,15 @@ button:
     retrieve_logbook:
       name: "retrieve logbook"
       device_id: device0
+    shutdown:
+      name: "shutdown"
+      device_id: device0
+    restart:
+      name: "restart"
+      device_id: device0
+    factory_reset:
+      name: "factory reset"
+      device_id: device0
 
   - platform: jk_bms_ble
     jk_bms_ble_id: bms1
@@ -140,6 +149,15 @@ button:
       device_id: device1
     retrieve_logbook:
       name: "retrieve logbook"
+      device_id: device1
+    shutdown:
+      name: "shutdown"
+      device_id: device1
+    restart:
+      name: "restart"
+      device_id: device1
+    factory_reset:
+      name: "factory reset"
       device_id: device1
 
 number:

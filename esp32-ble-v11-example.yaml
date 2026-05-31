@@ -86,6 +86,12 @@ button:
       name: "retrieve device info"
     retrieve_logbook:
       name: "retrieve logbook"
+    shutdown:
+      name: "shutdown"
+    restart:
+      name: "restart"
+    factory_reset:
+      name: "factory reset"
 
 number:
   - platform: jk_bms_ble
