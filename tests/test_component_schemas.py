@@ -170,7 +170,7 @@ class TestJkBmsBleSelectConstants:
 
 class TestJkBmsBleSwitchConstants:
     def test_switches_dict(self):
-        assert len(ble_switch.SWITCHES) == 14
+        assert len(ble_switch.SWITCHES) == 17
 
 
 class TestJkBmsBleButtonConstants:
