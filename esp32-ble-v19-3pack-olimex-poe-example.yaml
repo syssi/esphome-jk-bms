@@ -120,6 +120,15 @@ binary_sensor:
     discharging:
       name: "discharging"
       device_id: device0
+    heating:
+      name: "heating"
+      device_id: device0
+    dry_contact_1:
+      name: "dry contact 1"
+      device_id: device0
+    dry_contact_2:
+      name: "dry contact 2"
+      device_id: device0
     online_status:
       name: "online status"
       device_id: device0
@@ -135,6 +144,15 @@ binary_sensor:
     discharging:
       name: "discharging"
       device_id: device1
+    heating:
+      name: "heating"
+      device_id: device1
+    dry_contact_1:
+      name: "dry contact 1"
+      device_id: device1
+    dry_contact_2:
+      name: "dry contact 2"
+      device_id: device1
     online_status:
       name: "online status"
       device_id: device1
@@ -149,6 +167,15 @@ binary_sensor:
       device_id: device2
     discharging:
       name: "discharging"
+      device_id: device2
+    heating:
+      name: "heating"
+      device_id: device2
+    dry_contact_1:
+      name: "dry contact 1"
+      device_id: device2
+    dry_contact_2:
+      name: "dry contact 2"
       device_id: device2
     online_status:
       name: "online status"
@@ -163,6 +190,9 @@ button:
     retrieve_device_info:
       name: "retrieve device info"
       device_id: device0
+    retrieve_logbook:
+      name: "retrieve logbook"
+      device_id: device0
 
   - platform: jk_bms_ble
     jk_bms_ble_id: bms1
@@ -172,6 +202,9 @@ button:
     retrieve_device_info:
       name: "retrieve device info"
       device_id: device1
+    retrieve_logbook:
+      name: "retrieve logbook"
+      device_id: device1
 
   - platform: jk_bms_ble
     jk_bms_ble_id: bms2
@@ -180,6 +213,9 @@ button:
       device_id: device2
     retrieve_device_info:
       name: "retrieve device info"
+      device_id: device2
+    retrieve_logbook:
+      name: "retrieve logbook"
       device_id: device2
 
 number:
@@ -270,6 +306,45 @@ number:
     mosfet_overtemperature_protection_recovery:
       name: "mosfet overtemperature protection recovery"
       device_id: device0
+    cell_soc0_voltage:
+      name: "cell soc0 voltage"
+      device_id: device0
+    cell_soc100_voltage:
+      name: "cell soc100 voltage"
+      device_id: device0
+    cell_request_charge_voltage:
+      name: "cell request charge voltage"
+      device_id: device0
+    cell_request_float_voltage:
+      name: "cell request float voltage"
+      device_id: device0
+    cell_request_charge_voltage_time:
+      name: "cell request charge voltage time"
+      device_id: device0
+    cell_request_float_voltage_time:
+      name: "cell request float voltage time"
+      device_id: device0
+    re_bulk_soc:
+      name: "re bulk soc"
+      device_id: device0
+    discharge_undertemperature_protection:
+      name: "discharge undertemperature protection"
+      device_id: device0
+    discharge_undertemperature_protection_recovery:
+      name: "discharge undertemperature protection recovery"
+      device_id: device0
+    discharge_precharge_time:
+      name: "discharge precharge time"
+      device_id: device0
+    heating_start_temperature:
+      name: "heating start temperature"
+      device_id: device0
+    heating_stop_temperature:
+      name: "heating stop temperature"
+      device_id: device0
+    smart_sleep_voltage:
+      name: "smart sleep voltage"
+      device_id: device0
 
   - platform: jk_bms_ble
     jk_bms_ble_id: bms1
@@ -358,11 +433,50 @@ number:
     mosfet_overtemperature_protection_recovery:
       name: "mosfet overtemperature protection recovery"
       device_id: device1
+    cell_soc0_voltage:
+      name: "cell soc0 voltage"
+      device_id: device1
+    cell_soc100_voltage:
+      name: "cell soc100 voltage"
+      device_id: device1
+    cell_request_charge_voltage:
+      name: "cell request charge voltage"
+      device_id: device1
+    cell_request_float_voltage:
+      name: "cell request float voltage"
+      device_id: device1
+    cell_request_charge_voltage_time:
+      name: "cell request charge voltage time"
+      device_id: device1
+    cell_request_float_voltage_time:
+      name: "cell request float voltage time"
+      device_id: device1
+    re_bulk_soc:
+      name: "re bulk soc"
+      device_id: device1
+    discharge_undertemperature_protection:
+      name: "discharge undertemperature protection"
+      device_id: device1
+    discharge_undertemperature_protection_recovery:
+      name: "discharge undertemperature protection recovery"
+      device_id: device1
+    discharge_precharge_time:
+      name: "discharge precharge time"
+      device_id: device1
+    heating_start_temperature:
+      name: "heating start temperature"
+      device_id: device1
+    heating_stop_temperature:
+      name: "heating stop temperature"
+      device_id: device1
+    smart_sleep_voltage:
+      name: "smart sleep voltage"
+      device_id: device1
 
   - platform: jk_bms_ble
     jk_bms_ble_id: bms2
     balance_trigger_voltage:
-      name: "$[bms2} balance trigger voltage"
+      name: "balance trigger voltage"
       device_id: device2
     cell_count:
       name: "cell count"
@@ -445,6 +559,45 @@ number:
       device_id: device2
     mosfet_overtemperature_protection_recovery:
       name: "mosfet overtemperature protection recovery"
+      device_id: device2
+    cell_soc0_voltage:
+      name: "cell soc0 voltage"
+      device_id: device2
+    cell_soc100_voltage:
+      name: "cell soc100 voltage"
+      device_id: device2
+    cell_request_charge_voltage:
+      name: "cell request charge voltage"
+      device_id: device2
+    cell_request_float_voltage:
+      name: "cell request float voltage"
+      device_id: device2
+    cell_request_charge_voltage_time:
+      name: "cell request charge voltage time"
+      device_id: device2
+    cell_request_float_voltage_time:
+      name: "cell request float voltage time"
+      device_id: device2
+    re_bulk_soc:
+      name: "re bulk soc"
+      device_id: device2
+    discharge_undertemperature_protection:
+      name: "discharge undertemperature protection"
+      device_id: device2
+    discharge_undertemperature_protection_recovery:
+      name: "discharge undertemperature protection recovery"
+      device_id: device2
+    discharge_precharge_time:
+      name: "discharge precharge time"
+      device_id: device2
+    heating_start_temperature:
+      name: "heating start temperature"
+      device_id: device2
+    heating_stop_temperature:
+      name: "heating stop temperature"
+      device_id: device2
+    smart_sleep_voltage:
+      name: "smart sleep voltage"
       device_id: device2
 
 sensor:
@@ -874,6 +1027,39 @@ sensor:
     mosfet_temperature:
       name: "mosfet temperature"
       device_id: device0
+    temperature_sensor_5:
+      name: "temperature sensor 5"
+      device_id: device0
+    state_of_health:
+      name: "state of health"
+      device_id: device0
+    battery_type_id:
+      name: "battery type id"
+      device_id: device0
+    charge_status_id:
+      name: "charge status id"
+      device_id: device0
+    charge_status_time_elapsed:
+      name: "charge status time elapsed"
+      device_id: device0
+    emergency_time_countdown:
+      name: "emergency time countdown"
+      device_id: device0
+    detail_log_entry_count:
+      name: "detail log entry count"
+      device_id: device0
+    uart1_protocols_enabled_bitmask:
+      name: "uart1 protocols enabled bitmask"
+      device_id: device0
+    uart2_protocols_enabled_bitmask:
+      name: "uart2 protocols enabled bitmask"
+      device_id: device0
+    uart3_protocols_enabled_bitmask:
+      name: "uart3 protocols enabled bitmask"
+      device_id: device0
+    can_protocols_enabled_bitmask:
+      name: "can protocols enabled bitmask"
+      device_id: device0
 
 
   - platform: jk_bms_ble
@@ -1055,6 +1241,39 @@ sensor:
     mosfet_temperature:
       name: "mosfet temperature"
       device_id: device1
+    temperature_sensor_5:
+      name: "temperature sensor 5"
+      device_id: device1
+    state_of_health:
+      name: "state of health"
+      device_id: device1
+    battery_type_id:
+      name: "battery type id"
+      device_id: device1
+    charge_status_id:
+      name: "charge status id"
+      device_id: device1
+    charge_status_time_elapsed:
+      name: "charge status time elapsed"
+      device_id: device1
+    emergency_time_countdown:
+      name: "emergency time countdown"
+      device_id: device1
+    detail_log_entry_count:
+      name: "detail log entry count"
+      device_id: device1
+    uart1_protocols_enabled_bitmask:
+      name: "uart1 protocols enabled bitmask"
+      device_id: device1
+    uart2_protocols_enabled_bitmask:
+      name: "uart2 protocols enabled bitmask"
+      device_id: device1
+    uart3_protocols_enabled_bitmask:
+      name: "uart3 protocols enabled bitmask"
+      device_id: device1
+    can_protocols_enabled_bitmask:
+      name: "can protocols enabled bitmask"
+      device_id: device1
 
   - platform: jk_bms_ble
     jk_bms_ble_id: bms2
@@ -1235,6 +1454,39 @@ sensor:
     mosfet_temperature:
       name: "mosfet temperature"
       device_id: device2
+    temperature_sensor_5:
+      name: "temperature sensor 5"
+      device_id: device2
+    state_of_health:
+      name: "state of health"
+      device_id: device2
+    battery_type_id:
+      name: "battery type id"
+      device_id: device2
+    charge_status_id:
+      name: "charge status id"
+      device_id: device2
+    charge_status_time_elapsed:
+      name: "charge status time elapsed"
+      device_id: device2
+    emergency_time_countdown:
+      name: "emergency time countdown"
+      device_id: device2
+    detail_log_entry_count:
+      name: "detail log entry count"
+      device_id: device2
+    uart1_protocols_enabled_bitmask:
+      name: "uart1 protocols enabled bitmask"
+      device_id: device2
+    uart2_protocols_enabled_bitmask:
+      name: "uart2 protocols enabled bitmask"
+      device_id: device2
+    uart3_protocols_enabled_bitmask:
+      name: "uart3 protocols enabled bitmask"
+      device_id: device2
+    can_protocols_enabled_bitmask:
+      name: "can protocols enabled bitmask"
+      device_id: device2
 
 
 switch:
@@ -1249,6 +1501,39 @@ switch:
     balancer:
       name: "balancer"
       device_id: device0
+    heating:
+      name: "heating"
+      device_id: device0
+    charging_float_mode:
+      name: "charging float mode"
+      device_id: device0
+    emergency:
+      name: "emergency"
+      device_id: device0
+    disable_temperature_sensors:
+      name: "disable temperature sensors"
+      device_id: device0
+    display_always_on:
+      name: "display always on"
+      device_id: device0
+    smart_sleep:
+      name: "smart sleep"
+      device_id: device0
+    timed_stored_data:
+      name: "timed stored data"
+      device_id: device0
+    disable_pcl_module:
+      name: "disable pcl module"
+      device_id: device0
+    emergency_button_trigger:
+      name: "emergency button trigger"
+      device_id: device0
+    dry_contact_alarm_intermittent:
+      name: "dry contact alarm intermittent"
+      device_id: device0
+    discharge_overcurrent_protection_2:
+      name: "discharge overcurrent protection 2"
+      device_id: device0
 
   - platform: jk_bms_ble
     jk_bms_ble_id: bms1
@@ -1260,6 +1545,39 @@ switch:
       device_id: device1
     balancer:
       name: "balancer"
+      device_id: device1
+    heating:
+      name: "heating"
+      device_id: device1
+    charging_float_mode:
+      name: "charging float mode"
+      device_id: device1
+    emergency:
+      name: "emergency"
+      device_id: device1
+    disable_temperature_sensors:
+      name: "disable temperature sensors"
+      device_id: device1
+    display_always_on:
+      name: "display always on"
+      device_id: device1
+    smart_sleep:
+      name: "smart sleep"
+      device_id: device1
+    timed_stored_data:
+      name: "timed stored data"
+      device_id: device1
+    disable_pcl_module:
+      name: "disable pcl module"
+      device_id: device1
+    emergency_button_trigger:
+      name: "emergency button trigger"
+      device_id: device1
+    dry_contact_alarm_intermittent:
+      name: "dry contact alarm intermittent"
+      device_id: device1
+    discharge_overcurrent_protection_2:
+      name: "discharge overcurrent protection 2"
       device_id: device1
 
   - platform: jk_bms_ble
@@ -1273,7 +1591,113 @@ switch:
     balancer:
       name: "balancer"
       device_id: device2
+    heating:
+      name: "heating"
+      device_id: device2
+    charging_float_mode:
+      name: "charging float mode"
+      device_id: device2
+    emergency:
+      name: "emergency"
+      device_id: device2
+    disable_temperature_sensors:
+      name: "disable temperature sensors"
+      device_id: device2
+    display_always_on:
+      name: "display always on"
+      device_id: device2
+    smart_sleep:
+      name: "smart sleep"
+      device_id: device2
+    timed_stored_data:
+      name: "timed stored data"
+      device_id: device2
+    disable_pcl_module:
+      name: "disable pcl module"
+      device_id: device2
+    emergency_button_trigger:
+      name: "emergency button trigger"
+      device_id: device2
+    dry_contact_alarm_intermittent:
+      name: "dry contact alarm intermittent"
+      device_id: device2
+    discharge_overcurrent_protection_2:
+      name: "discharge overcurrent protection 2"
+      device_id: device2
 
+
+select:
+  - platform: jk_bms_ble
+    jk_bms_ble_id: bms0
+    uart1_protocol:
+      name: "uart1 protocol"
+      device_id: device0
+    uart2_protocol:
+      name: "uart2 protocol"
+      device_id: device0
+    uart3_protocol:
+      name: "uart3 protocol"
+      device_id: device0
+    can_protocol:
+      name: "can protocol"
+      device_id: device0
+    lcd_buzzer_trigger:
+      name: "lcd buzzer trigger"
+      device_id: device0
+    dry1_trigger:
+      name: "dry1 trigger"
+      device_id: device0
+    dry2_trigger:
+      name: "dry2 trigger"
+      device_id: device0
+
+  - platform: jk_bms_ble
+    jk_bms_ble_id: bms1
+    uart1_protocol:
+      name: "uart1 protocol"
+      device_id: device1
+    uart2_protocol:
+      name: "uart2 protocol"
+      device_id: device1
+    uart3_protocol:
+      name: "uart3 protocol"
+      device_id: device1
+    can_protocol:
+      name: "can protocol"
+      device_id: device1
+    lcd_buzzer_trigger:
+      name: "lcd buzzer trigger"
+      device_id: device1
+    dry1_trigger:
+      name: "dry1 trigger"
+      device_id: device1
+    dry2_trigger:
+      name: "dry2 trigger"
+      device_id: device1
+
+  - platform: jk_bms_ble
+    jk_bms_ble_id: bms2
+    uart1_protocol:
+      name: "uart1 protocol"
+      device_id: device2
+    uart2_protocol:
+      name: "uart2 protocol"
+      device_id: device2
+    uart3_protocol:
+      name: "uart3 protocol"
+      device_id: device2
+    can_protocol:
+      name: "can protocol"
+      device_id: device2
+    lcd_buzzer_trigger:
+      name: "lcd buzzer trigger"
+      device_id: device2
+    dry1_trigger:
+      name: "dry1 trigger"
+      device_id: device2
+    dry2_trigger:
+      name: "dry2 trigger"
+      device_id: device2
 
 text_sensor:
   - platform: jk_bms_ble
@@ -1281,6 +1705,15 @@ text_sensor:
     errors:
       name: "errors"
       device_id: device0
+    balancer_status:
+      name: "balancer status"
+      device_id: device0
+    charge_status:
+      name: "charge status"
+      device_id: device0
+    battery_type:
+      name: "battery type"
+      device_id: device0
     errors_bitmask_hex:
       name: "errors bitmask hex"
       device_id: device0
@@ -1299,6 +1732,15 @@ text_sensor:
     errors:
       name: "errors"
       device_id: device1
+    balancer_status:
+      name: "balancer status"
+      device_id: device1
+    charge_status:
+      name: "charge status"
+      device_id: device1
+    battery_type:
+      name: "battery type"
+      device_id: device1
     errors_bitmask_hex:
       name: "errors bitmask hex"
       device_id: device1
@@ -1316,6 +1758,15 @@ text_sensor:
     jk_bms_ble_id: bms2
     errors:
       name: "errors"
+      device_id: device2
+    balancer_status:
+      name: "balancer status"
+      device_id: device2
+    charge_status:
+      name: "charge status"
+      device_id: device2
+    battery_type:
+      name: "battery type"
       device_id: device2
     errors_bitmask_hex:
       name: "errors bitmask hex"
