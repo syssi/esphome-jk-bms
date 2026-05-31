@@ -207,8 +207,8 @@ number:
     cell_voltage_undervoltage_recovery:
       name: "${bms0} cell voltage undervoltage recovery"
       device_id: device0
-    balance_starting_voltage:
-      name: "${bms0} balance starting voltage"
+    balancing_start_voltage:
+      name: "${bms0} balancing start voltage"
       device_id: device0
     voltage_calibration:
       name: "${bms0} voltage calibration"
@@ -264,11 +264,11 @@ number:
     charge_undertemperature_protection_recovery:
       name: "${bms0} charge undertemperature protection recovery"
       device_id: device0
-    power_tube_overtemperature_protection:
-      name: "${bms0} power tube overtemperature protection"
+    mosfet_overtemperature_protection:
+      name: "${bms0} mosfet overtemperature protection"
       device_id: device0
-    power_tube_overtemperature_protection_recovery:
-      name: "${bms0} power tube overtemperature protection recovery"
+    mosfet_overtemperature_protection_recovery:
+      name: "${bms0} mosfet overtemperature protection recovery"
       device_id: device0
 
   - platform: jk_bms_ble
@@ -295,8 +295,8 @@ number:
     cell_voltage_undervoltage_recovery:
       name: "${bms1} cell voltage undervoltage recovery"
       device_id: device1
-    balance_starting_voltage:
-      name: "${bms1} balance starting voltage"
+    balancing_start_voltage:
+      name: "${bms1} balancing start voltage"
       device_id: device1
     voltage_calibration:
       name: "${bms1} voltage calibration"
@@ -352,11 +352,11 @@ number:
     charge_undertemperature_protection_recovery:
       name: "${bms1} charge undertemperature protection recovery"
       device_id: device1
-    power_tube_overtemperature_protection:
-      name: "${bms1} power tube overtemperature protection"
+    mosfet_overtemperature_protection:
+      name: "${bms1} mosfet overtemperature protection"
       device_id: device1
-    power_tube_overtemperature_protection_recovery:
-      name: "${bms1} power tube overtemperature protection recovery"
+    mosfet_overtemperature_protection_recovery:
+      name: "${bms1} mosfet overtemperature protection recovery"
       device_id: device1
 
   - platform: jk_bms_ble
@@ -383,8 +383,8 @@ number:
     cell_voltage_undervoltage_recovery:
       name: "${bms2} cell voltage undervoltage recovery"
       device_id: device2
-    balance_starting_voltage:
-      name: "${bms2} balance starting voltage"
+    balancing_start_voltage:
+      name: "${bms2} balancing start voltage"
       device_id: device2
     voltage_calibration:
       name: "${bms2} voltage calibration"
@@ -440,11 +440,11 @@ number:
     charge_undertemperature_protection_recovery:
       name: "${bms2} charge undertemperature protection recovery"
       device_id: device2
-    power_tube_overtemperature_protection:
-      name: "${bms2} power tube overtemperature protection"
+    mosfet_overtemperature_protection:
+      name: "${bms2} mosfet overtemperature protection"
       device_id: device2
-    power_tube_overtemperature_protection_recovery:
-      name: "${bms2} power tube overtemperature protection recovery"
+    mosfet_overtemperature_protection_recovery:
+      name: "${bms2} mosfet overtemperature protection recovery"
       device_id: device2
 
 sensor:
@@ -846,8 +846,8 @@ sensor:
     temperature_sensor_4:
       name: "${bms0} temperature sensor 4"
       device_id: device0
-    balancing:
-      name: "${bms0} balancing"
+    balancer_status_bitmask:
+      name: "${bms0} balancer status bitmask"
       device_id: device0
     state_of_charge:
       name: "${bms0} state of charge"
@@ -856,8 +856,8 @@ sensor:
       name: "${bms0} capacity remaining"
       id: bms0_capacity_remaining
       device_id: device0
-    total_battery_capacity_setting:
-      name: "${bms0} total battery capacity setting"
+    full_charge_capacity:
+      name: "${bms0} full charge capacity"
       device_id: device0
     charging_cycles:
       name: "${bms0} charging cycles"
@@ -871,11 +871,8 @@ sensor:
     balancing_current:
       name: "${bms0} balancing current"
       device_id: device0
-    errors_bitmask:
-      name: "${bms0} errors bitmask"
-      device_id: device0
-    power_tube_temperature:
-      name: "${bms0} power tube temperature"
+    mosfet_temperature:
+      name: "${bms0} mosfet temperature"
       device_id: device0
 
 
@@ -1030,8 +1027,8 @@ sensor:
     temperature_sensor_4:
       name: "${bms1} temperature sensor 4"
       device_id: device1
-    balancing:
-      name: "${bms1} balancing"
+    balancer_status_bitmask:
+      name: "${bms1} balancer status bitmask"
       device_id: device1
     state_of_charge:
       name: "${bms1} state of charge"
@@ -1040,8 +1037,8 @@ sensor:
       name: "${bms1} capacity remaining"
       id: bms1_capacity_remaining
       device_id: device1
-    total_battery_capacity_setting:
-      name: "${bms1} total battery capacity setting"
+    full_charge_capacity:
+      name: "${bms1} full charge capacity"
       device_id: device1
     charging_cycles:
       name: "${bms1} charging cycles"
@@ -1055,11 +1052,8 @@ sensor:
     balancing_current:
       name: "${bms1} balancing current"
       device_id: device1
-    errors_bitmask:
-      name: "${bms1} errors bitmask"
-      device_id: device1
-    power_tube_temperature:
-      name: "${bms1} power tube temperature"
+    mosfet_temperature:
+      name: "${bms1} mosfet temperature"
       device_id: device1
 
   - platform: jk_bms_ble
@@ -1213,8 +1207,8 @@ sensor:
     temperature_sensor_4:
       name: "${bms2} temperature sensor 4"
       device_id: device2
-    balancing:
-      name: "${bms2} balancing"
+    balancer_status_bitmask:
+      name: "${bms2} balancer status bitmask"
       device_id: device2
     state_of_charge:
       name: "${bms2} state of charge"
@@ -1223,8 +1217,8 @@ sensor:
       name: "${bms2} capacity remaining"
       id: bms2_capacity_remaining
       device_id: device2
-    total_battery_capacity_setting:
-      name: "${bms2} total battery capacity setting"
+    full_charge_capacity:
+      name: "${bms2} full charge capacity"
       device_id: device2
     charging_cycles:
       name: "${bms2} charging cycles"
@@ -1238,11 +1232,8 @@ sensor:
     balancing_current:
       name: "${bms2} balancing current"
       device_id: device2
-    errors_bitmask:
-      name: "${bms2} errors bitmask"
-      device_id: device2
-    power_tube_temperature:
-      name: "${bms2} power tube temperature"
+    mosfet_temperature:
+      name: "${bms2} mosfet temperature"
       device_id: device2
 
 
@@ -1290,6 +1281,9 @@ text_sensor:
     errors:
       name: "${bms0} errors"
       device_id: device0
+    errors_bitmask_hex:
+      name: "${bms0} errors bitmask hex"
+      device_id: device0
     total_runtime_formatted:
       name: "${bms0} total runtime formatted"
       device_id: device0
@@ -1305,6 +1299,9 @@ text_sensor:
     errors:
       name: "${bms1} errors"
       device_id: device1
+    errors_bitmask_hex:
+      name: "${bms1} errors bitmask hex"
+      device_id: device1
     total_runtime_formatted:
       name: "${bms1} total runtime formatted"
       device_id: device1
@@ -1319,6 +1316,9 @@ text_sensor:
     jk_bms_ble_id: bms2
     errors:
       name: "${bms2} errors"
+      device_id: device2
+    errors_bitmask_hex:
+      name: "${bms2} errors bitmask hex"
       device_id: device2
     total_runtime_formatted:
       name: "${bms2} total runtime formatted"
