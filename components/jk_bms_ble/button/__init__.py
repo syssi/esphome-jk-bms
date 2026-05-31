@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 from esphome.components import button
 import esphome.config_validation as cv
-from esphome.const import ENTITY_CATEGORY_CONFIG
+from esphome.const import CONF_FACTORY_RESET, CONF_RESTART, ENTITY_CATEGORY_CONFIG
 
 from .. import CONF_JK_BMS_BLE_ID, JK_BMS_BLE_COMPONENT_SCHEMA, jk_bms_ble_ns
 
@@ -13,8 +13,6 @@ CONF_RETRIEVE_SETTINGS = "retrieve_settings"
 CONF_RETRIEVE_DEVICE_INFO = "retrieve_device_info"
 CONF_RETRIEVE_LOGBOOK = "retrieve_logbook"
 CONF_SHUTDOWN = "shutdown"
-CONF_RESTART = "restart"
-CONF_FACTORY_RESET = "factory_reset"
 
 ICON_RETRIEVE_SETTINGS = "mdi:cog"
 ICON_RETRIEVE_DEVICE_INFO = "mdi:information-variant"
