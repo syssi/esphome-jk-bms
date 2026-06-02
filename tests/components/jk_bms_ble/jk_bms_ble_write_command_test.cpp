@@ -384,6 +384,67 @@ TEST(JkBmsWriteCommandTest, SmartSleepDelay23hFullFrame) {
   EXPECT_EQ(JkBmsBle::build_frame(0x39, 0x00000017, 0x01), expected);
 }
 
+// ── Emergency Duration (register 0xB5, 1-byte write) ─────────────────────────
+//
+// Captures recorded from a JK02_32S BMS:
+//
+//   Emergency 31 min: AA.55.90.EB.B5.01.1F.B5.C4.8C.DD.6C.11.32.3D.E2.B4.B4.59.C0
+//   Emergency 32 min: AA.55.90.EB.B5.01.20.CF.CE.23.3D.27.DF.A7.F9.96.FC.1E.E0.83
+//   Emergency 33 min: AA.55.90.EB.B5.01.21.66.2C.0E.7B.8C.CA.30.42.8F.BC.9F.7B.99
+//
+// Length byte is 0x01 (1-byte payload).  Bytes 7–18 are stale BLE-TX-buffer
+// data; build_frame() zero-initialises them — only register (byte 4), length
+// (byte 5), and value (byte 6) match the captures exactly.
+//
+// CRC = sum8(bytes[0..18]) = (AA+55+90+EB+B5+01+value) & 0xFF
+//                           = (0x330 + value) & 0xFF
+
+TEST(JkBmsWriteCommandTest, EmergencyDuration31min) {
+  // Captured: AA 55 90 EB B5 01 1F ...
+  auto f = JkBmsBle::build_frame(0xB5, 0x0000001F, 0x01);
+
+  EXPECT_EQ(f[4], 0xB5);  // register
+  EXPECT_EQ(f[5], 0x01);  // length: 1 byte
+  EXPECT_EQ(f[6], 0x1F);  // value: 31 minutes
+  EXPECT_EQ(f[7], 0x00);
+  EXPECT_EQ(f[8], 0x00);
+  EXPECT_EQ(f[9], 0x00);
+  EXPECT_EQ(f[19], 0x4F);  // CRC = (AA+55+90+EB+B5+01+1F) & FF
+}
+
+TEST(JkBmsWriteCommandTest, EmergencyDuration32min) {
+  // Captured: AA 55 90 EB B5 01 20 ...
+  auto f = JkBmsBle::build_frame(0xB5, 0x00000020, 0x01);
+
+  EXPECT_EQ(f[4], 0xB5);
+  EXPECT_EQ(f[5], 0x01);
+  EXPECT_EQ(f[6], 0x20);  // value: 32 minutes
+  EXPECT_EQ(f[19], 0x50);
+}
+
+TEST(JkBmsWriteCommandTest, EmergencyDuration33min) {
+  // Captured: AA 55 90 EB B5 01 21 ...
+  auto f = JkBmsBle::build_frame(0xB5, 0x00000021, 0x01);
+
+  EXPECT_EQ(f[4], 0xB5);
+  EXPECT_EQ(f[5], 0x01);
+  EXPECT_EQ(f[6], 0x21);  // value: 33 minutes
+  EXPECT_EQ(f[19], 0x51);
+}
+
+TEST(JkBmsWriteCommandTest, EmergencyDuration31minFullFrame) {
+  // Captured register/length/value match (bytes 7–18 differ, see file header):
+  //   AA 55 90 EB B5 01 1F B5 C4 8C DD 6C 11 32 3D E2 B4 B4 59 C0
+  // clang-format off
+  const std::array<uint8_t, 20> expected = {
+      0xAA, 0x55, 0x90, 0xEB, 0xB5, 0x01, 0x1F, 0x00,
+      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+      0x00, 0x00, 0x00, 0x4F,
+  };
+  // clang-format on
+  EXPECT_EQ(JkBmsBle::build_frame(0xB5, 0x0000001F, 0x01), expected);
+}
+
 // ── Register uniqueness ───────────────────────────────────────────────────────
 
 TEST(JkBmsWriteCommandTest, RegistersAreDistinct) {
