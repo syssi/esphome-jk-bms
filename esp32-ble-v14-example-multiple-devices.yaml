@@ -207,6 +207,8 @@ number:
       device_id: device0
     smart_sleep_voltage:
       name: "smart sleep voltage"
+    smart_sleep_delay:
+      name: "smart sleep delay"
       device_id: device0
     cell_soc100_voltage:
       name: "cell soc100 voltage"
@@ -322,6 +324,8 @@ number:
       device_id: device1
     smart_sleep_voltage:
       name: "smart sleep voltage"
+    smart_sleep_delay:
+      name: "smart sleep delay"
       device_id: device1
     cell_soc100_voltage:
       name: "cell soc100 voltage"
@@ -619,6 +623,9 @@ sensor:
     emergency_time_countdown:
       name: "emergency time countdown"
       device_id: device0
+    smart_sleep_countdown:
+      name: "smart sleep countdown"
+      device_id: device0
     detail_log_entry_count:
       name: "detail log entry count"
       device_id: device0
@@ -850,6 +857,9 @@ sensor:
       device_id: device1
     emergency_time_countdown:
       name: "emergency time countdown"
+      device_id: device1
+    smart_sleep_countdown:
+      name: "smart sleep countdown"
       device_id: device1
     detail_log_entry_count:
       name: "detail log entry count"

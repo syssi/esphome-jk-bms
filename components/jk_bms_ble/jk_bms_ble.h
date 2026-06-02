@@ -172,6 +172,9 @@ class JkBmsBle :
   void set_heating_stop_temperature_number(number::Number *heating_stop_temperature_number) {
     heating_stop_temperature_number_ = heating_stop_temperature_number;
   }
+  void set_smart_sleep_delay_number(number::Number *smart_sleep_delay_number) {
+    smart_sleep_delay_number_ = smart_sleep_delay_number;
+  }
   void set_re_bulk_soc_number(number::Number *re_bulk_soc_number) { re_bulk_soc_number_ = re_bulk_soc_number; }
 
   void set_balancing_binary_sensor(binary_sensor::BinarySensor *balancing_binary_sensor) {
@@ -266,6 +269,9 @@ class JkBmsBle :
   }
   void set_emergency_time_countdown_sensor(sensor::Sensor *emergency_time_countdown_sensor) {
     emergency_time_countdown_sensor_ = emergency_time_countdown_sensor;
+  }
+  void set_smart_sleep_countdown_sensor(sensor::Sensor *smart_sleep_countdown_sensor) {
+    smart_sleep_countdown_sensor_ = smart_sleep_countdown_sensor;
   }
   void set_heating_current_sensor(sensor::Sensor *heating_current_sensor) {
     heating_current_sensor_ = heating_current_sensor;
@@ -453,6 +459,7 @@ class JkBmsBle :
   number::Number *discharge_precharge_time_number_{nullptr};
   number::Number *heating_start_temperature_number_{nullptr};
   number::Number *heating_stop_temperature_number_{nullptr};
+  number::Number *smart_sleep_delay_number_{nullptr};
   number::Number *re_bulk_soc_number_{nullptr};
 
   sensor::Sensor *balancer_status_bitmask_sensor_{nullptr};
@@ -477,6 +484,7 @@ class JkBmsBle :
   sensor::Sensor *total_runtime_sensor_{nullptr};
   sensor::Sensor *balancing_current_sensor_{nullptr};
   sensor::Sensor *emergency_time_countdown_sensor_{nullptr};
+  sensor::Sensor *smart_sleep_countdown_sensor_{nullptr};
   sensor::Sensor *heating_current_sensor_{nullptr};
   sensor::Sensor *charge_status_id_sensor_{nullptr};
   sensor::Sensor *charge_status_time_elapsed_sensor_{nullptr};

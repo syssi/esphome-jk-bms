@@ -130,6 +130,8 @@ number:
       name: "max discharge current"
     smart_sleep_voltage:
       name: "smart sleep voltage"
+    smart_sleep_delay:
+      name: "smart sleep delay"
     cell_soc100_voltage:
       name: "cell soc100 voltage"
     cell_soc0_voltage:
@@ -332,6 +334,8 @@ sensor:
       name: "balancing current"
     emergency_time_countdown:
       name: "emergency time countdown"
+    smart_sleep_countdown:
+      name: "smart sleep countdown"
     charge_status_id:
       name: "charge status id"
     charge_status_time_elapsed:
