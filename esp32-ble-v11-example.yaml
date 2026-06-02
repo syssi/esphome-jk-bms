@@ -128,6 +128,8 @@ number:
       name: "smart sleep voltage"
     smart_sleep_delay:
       name: "smart sleep delay"
+    emergency_duration:
+      name: "emergency duration"
     cell_soc100_voltage:
       name: "cell soc100 voltage"
     cell_soc0_voltage:

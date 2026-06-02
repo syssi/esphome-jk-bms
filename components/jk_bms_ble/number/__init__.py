@@ -195,9 +195,11 @@ CONF_DISCHARGE_PRECHARGE_TIME = "discharge_precharge_time"
 CONF_HEATING_START_TEMPERATURE = "heating_start_temperature"
 CONF_HEATING_STOP_TEMPERATURE = "heating_stop_temperature"
 CONF_SMART_SLEEP_DELAY = "smart_sleep_delay"
+CONF_EMERGENCY_DURATION = "emergency_duration"
 
 UNIT_AMPERE_HOUR = "Ah"
 UNIT_HOURS = "h"
+UNIT_MINUTES = "min"
 UNIT_SECONDS = "s"
 UNIT_MICROSECONDS = "μs"
 
@@ -266,6 +268,7 @@ NUMBERS = {
     CONF_HEATING_START_TEMPERATURE: [0x00, 0x00, 0x37, 1.0, 1, 0],
     CONF_HEATING_STOP_TEMPERATURE: [0x00, 0x00, 0x38, 1.0, 1, 0],
     CONF_SMART_SLEEP_DELAY: [0x00, 0x00, 0x39, 1.0, 1, 0],
+    CONF_EMERGENCY_DURATION: [0x00, 0x00, 0xB5, 1.0, 1, 0],
 }
 
 JkNumber = jk_bms_ble_ns.class_("JkNumber", number.Number, cg.Component)
@@ -694,6 +697,16 @@ _NUMBER_CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
                 cv.Optional(CONF_STEP, default=1.0): cv.float_,
                 cv.Optional(
                     CONF_UNIT_OF_MEASUREMENT, default=UNIT_HOURS
+                ): cv.string_strict,
+            }
+        ),
+        cv.Optional(CONF_EMERGENCY_DURATION): JK_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=1): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=255): cv.float_,
+                cv.Optional(CONF_STEP, default=1.0): cv.float_,
+                cv.Optional(
+                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_MINUTES
                 ): cv.string_strict,
             }
         ),
