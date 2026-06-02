@@ -412,6 +412,8 @@ select:
       name: "dry1 trigger"
     dry2_trigger:
       name: "dry2 trigger"
+    multiplexed_port_mode:
+      name: "protocol mode"
     load_config_preset:
       name: "load config preset"
 

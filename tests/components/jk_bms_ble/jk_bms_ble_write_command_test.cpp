@@ -260,9 +260,77 @@ TEST(JkBmsWriteCommandTest, GpsLockedDischargingFullFrameOn) {
   EXPECT_EQ(JkBmsBle::build_frame(0x36, 0x00000001, 0x04), expected);
 }
 
+// ── Protocol Mode / CAN vs RS485 (register 0x2A) ─────────────────────────────
+//
+// Captures recorded from a JK02_32S BMS (issue #283):
+//
+//   Protocol Mode CAN:   aa:55:90:eb:2a:04:00:00:00:00:11:9d:1b:c4:c1:a5:85:91:a9:5a
+//   Protocol Mode RS485: aa:55:90:eb:2a:04:01:00:00:00:c2:a9:65:de:02:7f:42:c3:c3:a0
+//
+// Length byte is 0x04 (uint32 payload).  Bytes 10–18 are stale BLE-TX-buffer data;
+// build_frame() zero-initialises them, so the CRC here (A8/A9) differs from the
+// captured CRC (5A/A0).  Register (byte 4), length (byte 5), and value (bytes 6–9)
+// match the captures exactly.
+//
+// CRC = sum8(bytes[0..18]) = (AA+55+90+EB+2A+04+value) & 0xFF
+//                           = (0x2A8 + value) & 0xFF → 0xA8 (CAN) / 0xA9 (RS485)
+
+TEST(JkBmsWriteCommandTest, MultiplexedPortModeCan) {
+  // Captured: aa 55 90 eb 2a 04 00 00 00 00 ...
+  auto f = JkBmsBle::build_frame(0x2A, 0x00000000, 0x04);
+
+  EXPECT_EQ(f[4], 0x2A);  // register
+  EXPECT_EQ(f[5], 0x04);  // length
+  EXPECT_EQ(f[6], 0x00);  // value: CAN (index 0, little-endian)
+  EXPECT_EQ(f[7], 0x00);
+  EXPECT_EQ(f[8], 0x00);
+  EXPECT_EQ(f[9], 0x00);
+  EXPECT_EQ(f[19], 0xA8);  // CRC = (AA+55+90+EB+2A+04) & FF
+}
+
+TEST(JkBmsWriteCommandTest, MultiplexedPortModeRs485) {
+  // Captured: aa 55 90 eb 2a 04 01 00 00 00 ...
+  auto f = JkBmsBle::build_frame(0x2A, 0x00000001, 0x04);
+
+  EXPECT_EQ(f[4], 0x2A);  // register
+  EXPECT_EQ(f[5], 0x04);  // length
+  EXPECT_EQ(f[6], 0x01);  // value: RS485 (index 1)
+  EXPECT_EQ(f[7], 0x00);
+  EXPECT_EQ(f[8], 0x00);
+  EXPECT_EQ(f[9], 0x00);
+  EXPECT_EQ(f[19], 0xA9);
+}
+
+TEST(JkBmsWriteCommandTest, ProtocolModeCanFullFrame) {
+  // Captured register/length/value match (bytes 10–18 differ, see file header):
+  //   aa 55 90 eb 2a 04 00 00 00 00 11 9d 1b c4 c1 a5 85 91 a9 5a
+  // clang-format off
+  const std::array<uint8_t, 20> expected = {
+      0xAA, 0x55, 0x90, 0xEB, 0x2A, 0x04, 0x00, 0x00,
+      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+      0x00, 0x00, 0x00, 0xA8,
+  };
+  // clang-format on
+  EXPECT_EQ(JkBmsBle::build_frame(0x2A, 0x00000000, 0x04), expected);
+}
+
+TEST(JkBmsWriteCommandTest, MultiplexedPortModeRs485FullFrame) {
+  // Captured register/length/value match (bytes 10–18 differ, see file header):
+  //   aa 55 90 eb 2a 04 01 00 00 00 c2 a9 65 de 02 7f 42 c3 c3 a0
+  // clang-format off
+  const std::array<uint8_t, 20> expected = {
+      0xAA, 0x55, 0x90, 0xEB, 0x2A, 0x04, 0x01, 0x00,
+      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+      0x00, 0x00, 0x00, 0xA9,
+  };
+  // clang-format on
+  EXPECT_EQ(JkBmsBle::build_frame(0x2A, 0x00000001, 0x04), expected);
+}
+
 // ── Register uniqueness ───────────────────────────────────────────────────────
 
 TEST(JkBmsWriteCommandTest, RegistersAreDistinct) {
+  auto f2a = JkBmsBle::build_frame(0x2A, 0x00000001, 0x04);
   auto f31 = JkBmsBle::build_frame(0x31, 0x00000001, 0x04);
   auto f32 = JkBmsBle::build_frame(0x32, 0x00000001, 0x04);
   auto f33 = JkBmsBle::build_frame(0x33, 0x00000001, 0x04);
@@ -270,6 +338,8 @@ TEST(JkBmsWriteCommandTest, RegistersAreDistinct) {
   auto f35 = JkBmsBle::build_frame(0x35, 0x00000001, 0x04);
   auto f36 = JkBmsBle::build_frame(0x36, 0x00000001, 0x04);
 
+  EXPECT_NE(f2a, f31);
+  EXPECT_NE(f2a, f32);
   EXPECT_NE(f31, f32);
   EXPECT_NE(f31, f33);
   EXPECT_NE(f32, f33);
