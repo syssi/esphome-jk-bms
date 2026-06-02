@@ -207,6 +207,7 @@ number:
       device_id: device0
     smart_sleep_voltage:
       name: "smart sleep voltage"
+      device_id: device0
     smart_sleep_delay:
       name: "smart sleep delay"
       device_id: device0
@@ -324,6 +325,7 @@ number:
       device_id: device1
     smart_sleep_voltage:
       name: "smart sleep voltage"
+      device_id: device1
     smart_sleep_delay:
       name: "smart sleep delay"
       device_id: device1
