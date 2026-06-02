@@ -12,6 +12,7 @@ from esphome.const import (
     UNIT_AMPERE,
     UNIT_CELSIUS,
     UNIT_EMPTY,
+    UNIT_MILLISECOND,
     UNIT_SECOND,
     UNIT_VOLT,
 )
@@ -23,8 +24,6 @@ from .. import (
 )
 
 UNIT_MICROSECOND = "µs"
-UNIT_MILLISECOND = "ms"
-
 DEPENDENCIES = ["heltec_balancer_ble"]
 
 CODEOWNERS = ["@syssi"]

@@ -13,7 +13,9 @@ from esphome.const import (
     UNIT_CELSIUS,
     UNIT_EMPTY,
     UNIT_HOUR,
+    UNIT_MINUTE,
     UNIT_PERCENT,
+    UNIT_SECOND,
     UNIT_VOLT,
 )
 
@@ -198,9 +200,6 @@ CONF_SMART_SLEEP_DELAY = "smart_sleep_delay"
 CONF_EMERGENCY_DURATION = "emergency_duration"
 
 UNIT_AMPERE_HOUR = "Ah"
-UNIT_HOURS = "h"
-UNIT_MINUTES = "min"
-UNIT_SECONDS = "s"
 UNIT_MICROSECONDS = "μs"
 
 NUMBERS = {
@@ -486,7 +485,7 @@ _NUMBER_CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
                 cv.Optional(CONF_MAX_VALUE, default=600): cv.float_,
                 cv.Optional(CONF_STEP, default=1.0): cv.float_,
                 cv.Optional(
-                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_SECONDS
+                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_SECOND
                 ): cv.string_strict,
             }
         ),
@@ -498,7 +497,7 @@ _NUMBER_CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
                 cv.Optional(CONF_MAX_VALUE, default=600): cv.float_,
                 cv.Optional(CONF_STEP, default=1.0): cv.float_,
                 cv.Optional(
-                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_SECONDS
+                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_SECOND
                 ): cv.string_strict,
             }
         ),
@@ -510,7 +509,7 @@ _NUMBER_CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
                 cv.Optional(CONF_MAX_VALUE, default=600): cv.float_,
                 cv.Optional(CONF_STEP, default=1.0): cv.float_,
                 cv.Optional(
-                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_SECONDS
+                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_SECOND
                 ): cv.string_strict,
             }
         ),
@@ -522,7 +521,7 @@ _NUMBER_CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
                 cv.Optional(CONF_MAX_VALUE, default=600): cv.float_,
                 cv.Optional(CONF_STEP, default=1.0): cv.float_,
                 cv.Optional(
-                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_SECONDS
+                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_SECOND
                 ): cv.string_strict,
             }
         ),
@@ -544,7 +543,7 @@ _NUMBER_CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
                 cv.Optional(CONF_MAX_VALUE, default=600): cv.float_,
                 cv.Optional(CONF_STEP, default=1.0): cv.float_,
                 cv.Optional(
-                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_SECONDS
+                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_SECOND
                 ): cv.string_strict,
             }
         ),
@@ -666,7 +665,7 @@ _NUMBER_CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
                 cv.Optional(CONF_MAX_VALUE, default=255.0): cv.float_,
                 cv.Optional(CONF_STEP, default=1.0): cv.float_,
                 cv.Optional(
-                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_SECONDS
+                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_SECOND
                 ): cv.string_strict,
             }
         ),
@@ -696,7 +695,7 @@ _NUMBER_CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
                 cv.Optional(CONF_MAX_VALUE, default=100): cv.float_,
                 cv.Optional(CONF_STEP, default=1.0): cv.float_,
                 cv.Optional(
-                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_HOURS
+                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_HOUR
                 ): cv.string_strict,
             }
         ),
@@ -706,7 +705,7 @@ _NUMBER_CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
                 cv.Optional(CONF_MAX_VALUE, default=255): cv.float_,
                 cv.Optional(CONF_STEP, default=1.0): cv.float_,
                 cv.Optional(
-                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_MINUTES
+                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_MINUTE
                 ): cv.string_strict,
             }
         ),

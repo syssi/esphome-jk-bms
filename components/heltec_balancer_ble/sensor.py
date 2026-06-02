@@ -16,7 +16,9 @@ from esphome.const import (
     UNIT_AMPERE,
     UNIT_CELSIUS,
     UNIT_EMPTY,
+    UNIT_OHM,
     UNIT_PERCENT,
+    UNIT_SECOND,
     UNIT_VOLT,
 )
 
@@ -49,9 +51,6 @@ CONF_CELL_POLARITY_ERROR_BITMASK = "cell_polarity_error_bitmask"
 CONF_CELL_EXCESSIVE_LINE_RESISTANCE_BITMASK = "cell_excessive_line_resistance_bitmask"
 
 UNIT_AMPERE_HOURS = "Ah"
-UNIT_OHM = "Ω"
-UNIT_SECONDS = "s"
-
 ICON_CURRENT_DC = "mdi:current-dc"
 ICON_CELL_RESISTANCE = "mdi:omega"
 
@@ -181,7 +180,7 @@ SENSOR_DEFS = {
         "state_class": STATE_CLASS_MEASUREMENT,
     },
     CONF_TOTAL_RUNTIME: {
-        "unit_of_measurement": UNIT_SECONDS,
+        "unit_of_measurement": UNIT_SECOND,
         "icon": ICON_TIMELAPSE,
         "accuracy_decimals": 0,
         "device_class": DEVICE_CLASS_EMPTY,

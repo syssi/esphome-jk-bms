@@ -19,7 +19,9 @@ from esphome.const import (
     UNIT_AMPERE,
     UNIT_CELSIUS,
     UNIT_EMPTY,
+    UNIT_OHM,
     UNIT_PERCENT,
+    UNIT_SECOND,
     UNIT_VOLT,
     UNIT_WATT,
 )
@@ -66,9 +68,6 @@ CONF_UART3_PROTOCOLS_ENABLED_BITMASK = "uart3_protocols_enabled_bitmask"
 CONF_CAN_PROTOCOLS_ENABLED_BITMASK = "can_protocols_enabled_bitmask"
 
 UNIT_AMPERE_HOURS = "Ah"
-UNIT_OHM = "Ω"
-UNIT_SECONDS = "s"
-
 ICON_CURRENT_DC = "mdi:current-dc"
 ICON_CAPACITY = "mdi:battery-medium"
 ICON_MIN_VOLTAGE_CELL = "mdi:battery-minus-outline"
@@ -241,7 +240,7 @@ SENSOR_DEFS = {
         "state_class": STATE_CLASS_TOTAL_INCREASING,
     },
     CONF_TOTAL_RUNTIME: {
-        "unit_of_measurement": UNIT_SECONDS,
+        "unit_of_measurement": UNIT_SECOND,
         "icon": ICON_TIMELAPSE,
         "accuracy_decimals": 0,
         "device_class": DEVICE_CLASS_EMPTY,
@@ -255,13 +254,13 @@ SENSOR_DEFS = {
         "state_class": STATE_CLASS_MEASUREMENT,
     },
     CONF_EMERGENCY_TIME_COUNTDOWN: {
-        "unit_of_measurement": UNIT_SECONDS,
+        "unit_of_measurement": UNIT_SECOND,
         "icon": ICON_TIMELAPSE,
         "accuracy_decimals": 0,
         "device_class": DEVICE_CLASS_EMPTY,
     },
     CONF_SMART_SLEEP_COUNTDOWN: {
-        "unit_of_measurement": UNIT_SECONDS,
+        "unit_of_measurement": UNIT_SECOND,
         "icon": ICON_TIMELAPSE,
         "accuracy_decimals": 0,
         "device_class": DEVICE_CLASS_EMPTY,
@@ -280,7 +279,7 @@ SENSOR_DEFS = {
         "device_class": DEVICE_CLASS_EMPTY,
     },
     CONF_CHARGE_STATUS_TIME_ELAPSED: {
-        "unit_of_measurement": UNIT_SECONDS,
+        "unit_of_measurement": UNIT_SECOND,
         "icon": ICON_CHARGE_STATUS_TIME_ELAPSED,
         "accuracy_decimals": 0,
         "device_class": DEVICE_CLASS_EMPTY,
