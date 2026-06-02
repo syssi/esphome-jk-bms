@@ -49,8 +49,6 @@ ICON_CELL_COUNT_DETECTED = "mdi:car-battery"
 ICON_ERRORS_BITMASK = "mdi:alert-circle-outline"
 ICON_BALANCER_STATUS = "mdi:seesaw"
 
-UNIT_SECONDS = "s"
-UNIT_HOURS = "h"
 UNIT_AMPERE_HOURS = "Ah"
 
 CELLS = [f"cell_voltage_{i}" for i in range(1, 25)]

@@ -11,6 +11,7 @@ from esphome.const import (
     ICON_EMPTY,
     UNIT_EMPTY,
     UNIT_MILLIAMP,
+    UNIT_MILLIVOLT,
 )
 
 from .. import CONF_JK_BALANCER_ID, JK_BALANCER_COMPONENT_SCHEMA, jk_balancer_ns
@@ -18,8 +19,6 @@ from .. import CONF_JK_BALANCER_ID, JK_BALANCER_COMPONENT_SCHEMA, jk_balancer_ns
 DEPENDENCIES = ["jk_balancer"]
 
 CODEOWNERS = ["@syssi"]
-
-UNIT_MILLIVOLT = "mV"
 
 CONF_CELL_COUNT = "cell_count"
 CONF_BALANCE_TRIGGER_VOLTAGE = "balance_trigger_voltage"
