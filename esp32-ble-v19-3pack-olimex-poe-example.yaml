@@ -372,6 +372,9 @@ number:
     smart_sleep_voltage:
       name: "smart sleep voltage"
       device_id: device0
+    smart_sleep_delay:
+      name: "smart sleep delay"
+      device_id: device0
 
   - platform: jk_bms_ble
     jk_bms_ble_id: bms1
@@ -499,6 +502,9 @@ number:
     smart_sleep_voltage:
       name: "smart sleep voltage"
       device_id: device1
+    smart_sleep_delay:
+      name: "smart sleep delay"
+      device_id: device1
 
   - platform: jk_bms_ble
     jk_bms_ble_id: bms2
@@ -625,6 +631,9 @@ number:
       device_id: device2
     smart_sleep_voltage:
       name: "smart sleep voltage"
+      device_id: device2
+    smart_sleep_delay:
+      name: "smart sleep delay"
       device_id: device2
 
 sensor:
@@ -1072,6 +1081,9 @@ sensor:
     emergency_time_countdown:
       name: "emergency time countdown"
       device_id: device0
+    smart_sleep_countdown:
+      name: "smart sleep countdown"
+      device_id: device0
     detail_log_entry_count:
       name: "detail log entry count"
       device_id: device0
@@ -1286,6 +1298,9 @@ sensor:
     emergency_time_countdown:
       name: "emergency time countdown"
       device_id: device1
+    smart_sleep_countdown:
+      name: "smart sleep countdown"
+      device_id: device1
     detail_log_entry_count:
       name: "detail log entry count"
       device_id: device1
@@ -1498,6 +1513,9 @@ sensor:
       device_id: device2
     emergency_time_countdown:
       name: "emergency time countdown"
+      device_id: device2
+    smart_sleep_countdown:
+      name: "smart sleep countdown"
       device_id: device2
     detail_log_entry_count:
       name: "detail log entry count"

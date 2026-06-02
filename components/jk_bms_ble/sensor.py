@@ -53,6 +53,7 @@ CONF_TOTAL_CHARGING_CYCLE_CAPACITY = "total_charging_cycle_capacity"
 CONF_TOTAL_RUNTIME = "total_runtime"
 CONF_BALANCING_CURRENT = "balancing_current"
 CONF_EMERGENCY_TIME_COUNTDOWN = "emergency_time_countdown"
+CONF_SMART_SLEEP_COUNTDOWN = "smart_sleep_countdown"
 CONF_HEATING_CURRENT = "heating_current"
 CONF_CHARGE_STATUS_ID = "charge_status_id"
 CONF_CHARGE_STATUS_TIME_ELAPSED = "charge_status_time_elapsed"
@@ -254,6 +255,12 @@ SENSOR_DEFS = {
         "state_class": STATE_CLASS_MEASUREMENT,
     },
     CONF_EMERGENCY_TIME_COUNTDOWN: {
+        "unit_of_measurement": UNIT_SECONDS,
+        "icon": ICON_TIMELAPSE,
+        "accuracy_decimals": 0,
+        "device_class": DEVICE_CLASS_EMPTY,
+    },
+    CONF_SMART_SLEEP_COUNTDOWN: {
         "unit_of_measurement": UNIT_SECONDS,
         "icon": ICON_TIMELAPSE,
         "accuracy_decimals": 0,

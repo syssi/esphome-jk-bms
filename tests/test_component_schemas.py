@@ -119,7 +119,7 @@ class TestJkBmsBleSensorLists:
         assert "balancer_status_bitmask" in ble_sensor.SENSOR_DEFS
         assert "detail_log_entry_count" in ble_sensor.SENSOR_DEFS
         assert "battery_type_id" in ble_sensor.SENSOR_DEFS
-        assert len(ble_sensor.SENSOR_DEFS) == 31
+        assert len(ble_sensor.SENSOR_DEFS) == 32
 
 
 class TestJkBmsBleBinarySensorConstants:

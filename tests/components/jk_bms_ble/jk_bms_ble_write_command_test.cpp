@@ -301,7 +301,7 @@ TEST(JkBmsWriteCommandTest, MultiplexedPortModeRs485) {
   EXPECT_EQ(f[19], 0xA9);
 }
 
-TEST(JkBmsWriteCommandTest, ProtocolModeCanFullFrame) {
+TEST(JkBmsWriteCommandTest, MultiplexedPortModeCanFullFrame) {
   // Captured register/length/value match (bytes 10–18 differ, see file header):
   //   aa 55 90 eb 2a 04 00 00 00 00 11 9d 1b c4 c1 a5 85 91 a9 5a
   // clang-format off
@@ -325,6 +325,63 @@ TEST(JkBmsWriteCommandTest, MultiplexedPortModeRs485FullFrame) {
   };
   // clang-format on
   EXPECT_EQ(JkBmsBle::build_frame(0x2A, 0x00000001, 0x04), expected);
+}
+
+// ── Smart Sleep Delay (register 0x39, 1-byte write) ──────────────────────────
+//
+// Capture recorded from a JK02_32S BMS (issue #421), value = 23 hours:
+//
+//   AA.55.90.EB.39.01.17.BB.2E.15.63.0E.3C.DC.A4.3A.7A.06.20.D0
+//
+// Length byte is 0x01 (1-byte payload).  Bytes 7–18 are stale BLE-TX-buffer
+// data; build_frame() zero-initialises them — only register (byte 4), length
+// (byte 5), and value (byte 6) match the capture exactly.
+//
+// CRC = sum8(bytes[0..18]) = (AA+55+90+EB+39+01+value) & 0xFF
+//                           = (0x274 + value) & 0xFF → 0xCB (23 h)
+
+TEST(JkBmsWriteCommandTest, SmartSleepDelay23h) {
+  // Captured: AA 55 90 EB 39 01 17 ...
+  auto f = JkBmsBle::build_frame(0x39, 0x00000017, 0x01);
+
+  EXPECT_EQ(f[4], 0x39);  // register
+  EXPECT_EQ(f[5], 0x01);  // length: 1 byte
+  EXPECT_EQ(f[6], 0x17);  // value: 23 hours
+  EXPECT_EQ(f[7], 0x00);
+  EXPECT_EQ(f[8], 0x00);
+  EXPECT_EQ(f[9], 0x00);
+  EXPECT_EQ(f[19], 0xCB);  // CRC = (AA+55+90+EB+39+01+17) & FF
+}
+
+TEST(JkBmsWriteCommandTest, SmartSleepDelay1h) {
+  auto f = JkBmsBle::build_frame(0x39, 0x00000001, 0x01);
+
+  EXPECT_EQ(f[4], 0x39);
+  EXPECT_EQ(f[5], 0x01);
+  EXPECT_EQ(f[6], 0x01);  // value: 1 hour (minimum)
+  EXPECT_EQ(f[19], 0xB5);
+}
+
+TEST(JkBmsWriteCommandTest, SmartSleepDelay100h) {
+  auto f = JkBmsBle::build_frame(0x39, 0x00000064, 0x01);
+
+  EXPECT_EQ(f[4], 0x39);
+  EXPECT_EQ(f[5], 0x01);
+  EXPECT_EQ(f[6], 0x64);  // value: 100 hours (maximum)
+  EXPECT_EQ(f[19], 0x18);
+}
+
+TEST(JkBmsWriteCommandTest, SmartSleepDelay23hFullFrame) {
+  // Captured register/length/value match (bytes 7–18 differ, see file header):
+  //   AA 55 90 EB 39 01 17 BB 2E 15 63 0E 3C DC A4 3A 7A 06 20 D0
+  // clang-format off
+  const std::array<uint8_t, 20> expected = {
+      0xAA, 0x55, 0x90, 0xEB, 0x39, 0x01, 0x17, 0x00,
+      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+      0x00, 0x00, 0x00, 0xCB,
+  };
+  // clang-format on
+  EXPECT_EQ(JkBmsBle::build_frame(0x39, 0x00000017, 0x01), expected);
 }
 
 // ── Register uniqueness ───────────────────────────────────────────────────────
