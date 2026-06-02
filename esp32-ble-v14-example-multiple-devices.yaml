@@ -943,11 +943,17 @@ switch:
 select:
   - platform: jk_bms_ble
     jk_bms_ble_id: bms0
+    multiplexed_port_mode:
+      name: "multiplexed port mode"
+      device_id: device0
     load_config_preset:
       name: "load config preset"
       device_id: device0
   - platform: jk_bms_ble
     jk_bms_ble_id: bms1
+    multiplexed_port_mode:
+      name: "multiplexed port mode"
+      device_id: device1
     load_config_preset:
       name: "load config preset"
       device_id: device1
