@@ -944,7 +944,6 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   ESP_LOGD(TAG, "Temperature sensor 3: %.1f °C", (float) jk_get_16bit(222 + offset) * 0.1f);
   ESP_LOGD(TAG, "Temperature sensor 4: %.1f °C", (float) jk_get_16bit(224 + offset) * 0.1f);
   ESP_LOGD(TAG, "Temperature sensor 5: %.1f °C", (float) jk_get_16bit(226 + offset) * 0.1f);
-  ESP_LOGD(TAG, "Time enter sleep: %lu s", (unsigned long) jk_get_32bit(238 + offset));
   this->publish_state_(this->smart_sleep_countdown_sensor_, (float) jk_get_32bit(238 + offset));
   ESP_LOGD(TAG, "PCL Module State: %s", ONOFF((bool) data[242 + offset]));
 
@@ -1458,7 +1457,6 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
     this->publish_state_(this->heating_stop_temperature_number_, (float) ((int8_t) data[285]));
 
     // 286   1   0x00                   Smart sleep delay
-    ESP_LOGI(TAG, "  Smart sleep delay: %d h", data[286]);
     this->publish_state_(this->smart_sleep_delay_number_, (float) data[286]);
     // 287   1   0x00
     ESP_LOGI(TAG, "  Data field enable control 0: %d", data[287]);
