@@ -143,7 +143,7 @@ class TestJkBmsBleBinarySensorConstants:
 
 class TestJkBmsBleSelectConstants:
     def test_selects_count(self):
-        assert len(ble_select.SELECTS) == 7
+        assert len(ble_select.SELECTS) == 8
 
     def test_selects_keys(self):
         assert "uart1_protocol" in ble_select.SELECTS
@@ -153,6 +153,7 @@ class TestJkBmsBleSelectConstants:
         assert "lcd_buzzer_trigger" in ble_select.SELECTS
         assert "dry1_trigger" in ble_select.SELECTS
         assert "dry2_trigger" in ble_select.SELECTS
+        assert "multiplexed_port_mode" in ble_select.SELECTS
 
     def test_selects_registers_are_unique(self):
         registers = [v[0] for v in ble_select.SELECTS.values()]
@@ -166,6 +167,13 @@ class TestJkBmsBleSelectConstants:
         assert ble_select.SELECTS["lcd_buzzer_trigger"][0] == 0xA9
         assert ble_select.SELECTS["dry1_trigger"][0] == 0xAA
         assert ble_select.SELECTS["dry2_trigger"][0] == 0xAB
+        assert ble_select.SELECTS["multiplexed_port_mode"][0] == 0x2A
+
+    def test_multiplexed_port_mode_data_len(self):
+        assert ble_select.SELECTS["multiplexed_port_mode"][4] == 0x04
+
+    def test_multiplexed_port_mode_options(self):
+        assert ble_select.MULTIPLEXED_PORT_MODE_OPTIONS == ["CAN", "RS485"]
 
 
 class TestJkBmsBleLoadConfigPresetConstants:

@@ -372,10 +372,16 @@ class JkBmsBle :
   }
   void set_dry1_trigger_select(select::Select *dry1_trigger_select) { dry1_trigger_select_ = dry1_trigger_select; }
   void set_dry2_trigger_select(select::Select *dry2_trigger_select) { dry2_trigger_select_ = dry2_trigger_select; }
+  void set_multiplexed_port_mode_select(select::Select *multiplexed_port_mode_select) {
+    multiplexed_port_mode_select_ = multiplexed_port_mode_select;
+  }
   void set_uart_protocol_table(const char *const *entries, size_t count) { uart_protocol_table_ = {entries, count}; }
   void set_can_protocol_table(const char *const *entries, size_t count) { can_protocol_table_ = {entries, count}; }
   void set_lcd_buzzer_trigger_table(const char *const *entries, size_t count) {
     lcd_buzzer_trigger_table_ = {entries, count};
+  }
+  void set_multiplexed_port_mode_table(const char *const *entries, size_t count) {
+    multiplexed_port_mode_table_ = {entries, count};
   }
 
   void assemble(const uint8_t *data, uint16_t length);
@@ -506,10 +512,12 @@ class JkBmsBle :
   select::Select *lcd_buzzer_trigger_select_{nullptr};
   select::Select *dry1_trigger_select_{nullptr};
   select::Select *dry2_trigger_select_{nullptr};
+  select::Select *multiplexed_port_mode_select_{nullptr};
 
   LookupTable uart_protocol_table_;
   LookupTable can_protocol_table_;
   LookupTable lcd_buzzer_trigger_table_;
+  LookupTable multiplexed_port_mode_table_;
 
   text_sensor::TextSensor *errors_bitmask_hex_text_sensor_{nullptr};
   text_sensor::TextSensor *errors_text_sensor_{nullptr};

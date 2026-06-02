@@ -372,6 +372,8 @@ switch:
 
 select:
   - platform: jk_bms_ble
+    multiplexed_port_mode:
+      name: "multiplexed port mode"
     load_config_preset:
       name: "load config preset"
 
