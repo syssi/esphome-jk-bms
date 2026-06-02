@@ -15,7 +15,7 @@ void JkSelect::control(const std::string &value) {
     return;
   }
   uint32_t index = (uint32_t) (it - options.begin());
-  if (this->parent_->write_register(this->holding_register_, index, 0x02)) {
+  if (this->parent_->write_register(this->holding_register_, index, this->data_len_)) {
     this->publish_state(value);
   }
 }

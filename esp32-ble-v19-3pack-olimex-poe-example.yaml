@@ -1704,6 +1704,9 @@ select:
     dry2_trigger:
       name: "dry2 trigger"
       device_id: device0
+    multiplexed_port_mode:
+      name: "protocol mode"
+      device_id: device0
     load_config_preset:
       name: "load config preset"
       device_id: device0
@@ -1731,6 +1734,9 @@ select:
     dry2_trigger:
       name: "dry2 trigger"
       device_id: device1
+    multiplexed_port_mode:
+      name: "protocol mode"
+      device_id: device1
     load_config_preset:
       name: "load config preset"
       device_id: device1
@@ -1757,6 +1763,9 @@ select:
       device_id: device2
     dry2_trigger:
       name: "dry2 trigger"
+      device_id: device2
+    multiplexed_port_mode:
+      name: "protocol mode"
       device_id: device2
     load_config_preset:
       name: "load config preset"

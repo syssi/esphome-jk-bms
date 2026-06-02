@@ -9,6 +9,7 @@ from ..const import (
     CONF_DRY2_TRIGGER,
     CONF_LCD_BUZZER_TRIGGER,
     CONF_LOAD_CONFIG_PRESET,
+    CONF_MULTIPLEXED_PORT_MODE,
     CONF_UART1_PROTOCOL,
     CONF_UART2_PROTOCOL,
     CONF_UART3_PROTOCOL,
@@ -77,12 +78,19 @@ LCD_BUZZER_TRIGGER_OPTIONS = [
     "MOSFET Abnormal",
 ]
 
-# Maps config key → (register, options, table setter, constexpr array name).
+# JK02_32S: index 0 = CAN, index 1 = RS485 (register 0x2A, 4-byte write)
+MULTIPLEXED_PORT_MODE_OPTIONS = [
+    "CAN",
+    "RS485",
+]
+
+# Maps config key → (register, options, table setter, constexpr array name, data_len).
 # Entries sharing the same arr_name also share the same LookupTable in C++;
 # emitted_arrays in to_code() ensures the constexpr array is defined only once.
 _UART_ARR = "JK_BMS_BLE_UART_PROTOCOL_OPTS_"
 _CAN_ARR = "JK_BMS_BLE_CAN_PROTOCOL_OPTS_"
 _LCD_ARR = "JK_BMS_BLE_LCD_BUZZER_TRIGGER_OPTS_"
+_MULTIPLEXED_PORT_MODE_ARR = "JK_BMS_BLE_MULTIPLEXED_PORT_MODE_OPTS_"
 
 SELECTS = {
     CONF_UART1_PROTOCOL: (
@@ -90,37 +98,56 @@ SELECTS = {
         UART_PROTOCOL_OPTIONS,
         "set_uart_protocol_table",
         _UART_ARR,
+        0x02,
     ),
     CONF_UART2_PROTOCOL: (
         0xA8,
         UART_PROTOCOL_OPTIONS,
         "set_uart_protocol_table",
         _UART_ARR,
+        0x02,
     ),
     CONF_UART3_PROTOCOL: (
         0xB6,
         UART_PROTOCOL_OPTIONS,
         "set_uart_protocol_table",
         _UART_ARR,
+        0x02,
     ),
-    CONF_CAN_PROTOCOL: (0xA6, CAN_PROTOCOL_OPTIONS, "set_can_protocol_table", _CAN_ARR),
+    CONF_CAN_PROTOCOL: (
+        0xA6,
+        CAN_PROTOCOL_OPTIONS,
+        "set_can_protocol_table",
+        _CAN_ARR,
+        0x02,
+    ),
     CONF_LCD_BUZZER_TRIGGER: (
         0xA9,
         LCD_BUZZER_TRIGGER_OPTIONS,
         "set_lcd_buzzer_trigger_table",
         _LCD_ARR,
+        0x02,
     ),
     CONF_DRY1_TRIGGER: (
         0xAA,
         LCD_BUZZER_TRIGGER_OPTIONS,
         "set_lcd_buzzer_trigger_table",
         _LCD_ARR,
+        0x02,
     ),
     CONF_DRY2_TRIGGER: (
         0xAB,
         LCD_BUZZER_TRIGGER_OPTIONS,
         "set_lcd_buzzer_trigger_table",
         _LCD_ARR,
+        0x02,
+    ),
+    CONF_MULTIPLEXED_PORT_MODE: (
+        0x2A,
+        MULTIPLEXED_PORT_MODE_OPTIONS,
+        "set_multiplexed_port_mode_table",
+        _MULTIPLEXED_PORT_MODE_ARR,
+        0x04,
     ),
 }
 
@@ -157,6 +184,9 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
         cv.Optional(CONF_DRY2_TRIGGER): select.select_schema(JkSelect).extend(
             cv.COMPONENT_SCHEMA
         ),
+        cv.Optional(CONF_MULTIPLEXED_PORT_MODE): select.select_schema(JkSelect).extend(
+            cv.COMPONENT_SCHEMA
+        ),
         cv.Optional(CONF_LOAD_CONFIG_PRESET): select.select_schema(
             JkPresetSelect
         ).extend(cv.COMPONENT_SCHEMA),
@@ -167,7 +197,7 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
 async def to_code(config):
     hub = await cg.get_variable(config[CONF_JK_BMS_BLE_ID])
     emitted_arrays = set()
-    for key, (address, options, table_setter, arr_name) in SELECTS.items():
+    for key, (address, options, table_setter, arr_name, data_len) in SELECTS.items():
         if key not in config:
             continue
         conf = config[key]
@@ -176,6 +206,7 @@ async def to_code(config):
         cg.add(getattr(hub, f"set_{key}_select")(var))
         cg.add(var.set_parent(hub))
         cg.add(var.set_holding_register(address))
+        cg.add(var.set_data_len(data_len))
 
         # Emit a static constexpr lookup table in flash and hand a pointer to the hub.
         # This keeps the option strings as the single source of truth in Python while
