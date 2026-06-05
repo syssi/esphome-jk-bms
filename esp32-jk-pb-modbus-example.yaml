@@ -917,7 +917,7 @@ sensor:
   # 0x1200    0    UINT16*32    64   R    CellVol0..CellVol31    mV
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "Maximum Cell Voltage"
+    name: "max cell voltage"
     address: 0x1200
     register_type: holding
     register_count: 32
@@ -936,7 +936,7 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "Minimum Cell Voltage"
+    name: "min cell voltage"
     address: 0x1200
     register_type: holding
     register_count: 32
@@ -956,7 +956,7 @@ sensor:
   # 0x1248   72    UINT8/UINT8 2  R    MaxVolCellNbr / MinVolCellNbr
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "Maximum Voltage Cell"
+    name: "max voltage cell"
     address: 0x1200
     register_type: holding
     register_count: 32
@@ -978,7 +978,7 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "Minimum Voltage Cell"
+    name: "min voltage cell"
     address: 0x1200
     register_type: holding
     register_count: 32
@@ -1002,7 +1002,7 @@ sensor:
   # 0x1244   68    UINT16    2    R    CellVolAverage    mV
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "Average Cell Voltage"
+    name: "average cell voltage"
     address: 0x1244
     register_type: holding
     value_type: U_WORD
@@ -1018,7 +1018,7 @@ sensor:
   # 0x1246   70    UINT16    2    R    CellVoltageDifferenceMax    mV
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "Delta Cell Voltage"
+    name: "delta cell voltage"
     address: 0x1246
     register_type: holding
     value_type: U_WORD
