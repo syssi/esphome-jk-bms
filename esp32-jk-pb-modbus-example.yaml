@@ -914,6 +914,45 @@ sensor:
     filters:
       - multiply: 0.001
 
+  # 0x1200    0    UINT16*32    64   R    CellVol0..CellVol31    mV
+  - platform: modbus_controller
+    modbus_controller_id: bms0
+    name: "maximum cell voltage"
+    address: 0x1200
+    register_type: holding
+    register_count: 32
+    response_size: 64
+    unit_of_measurement: "V"
+    device_class: voltage
+    state_class: measurement
+    accuracy_decimals: 3
+    lambda: |-
+      uint16_t max_voltage = 0;
+      for (int i = 0; i < 32; i++) {
+        uint16_t cell_voltage = (data[i*2] << 8) | data[i*2+1];
+        if (cell_voltage > max_voltage) max_voltage = cell_voltage;
+      }
+      return max_voltage * 0.001f;
+
+  - platform: modbus_controller
+    modbus_controller_id: bms0
+    name: "minimum cell voltage"
+    address: 0x1200
+    register_type: holding
+    register_count: 32
+    response_size: 64
+    unit_of_measurement: "V"
+    device_class: voltage
+    state_class: measurement
+    accuracy_decimals: 3
+    lambda: |-
+      uint16_t min_voltage = 0xFFFF;
+      for (int i = 0; i < 32; i++) {
+        uint16_t cell_voltage = (data[i*2] << 8) | data[i*2+1];
+        if (cell_voltage > 500 && cell_voltage < min_voltage) min_voltage = cell_voltage;
+      }
+      return min_voltage * 0.001f;
+
   # 0x1240   64    UINT32    4    R    CellStatus    (each bit indicates a attached cell)
   # 0x1244   68    UINT16    2    R    CellVolAverage    mV
   # 0x1246   70    UINT16    2    R    CellVoltageDifferenceMax    mV
@@ -932,36 +971,49 @@ sensor:
     filters:
       - multiply: 0.001
 
-  # 0x1248   72    UINT8/UINT8 2  R    MaxVolCellNbr / MinVolCellNbr
   - platform: modbus_controller
     modbus_controller_id: bms0
     name: "max voltage cell number"
-    address: 0x1248
+    address: 0x1200
     register_type: holding
-    value_type: U_WORD
-    register_count: 44
-    response_size: 44
+    register_count: 32
+    response_size: 64
     unit_of_measurement: ""
     state_class: measurement
     accuracy_decimals: 0
-    bitmask: 0xFF00
-    filters:
-      - offset: 1.0
+    lambda: |-
+      uint16_t max_voltage = 0;
+      int max_cell = 0;
+      for (int i = 0; i < 32; i++) {
+        uint16_t cell_voltage = (data[i*2] << 8) | data[i*2+1];
+        if (cell_voltage > max_voltage) {
+          max_voltage = cell_voltage;
+          max_cell = i + 1;
+        }
+      }
+      return (float) max_cell;
 
   - platform: modbus_controller
     modbus_controller_id: bms0
     name: "min voltage cell number"
-    address: 0x1248
+    address: 0x1200
     register_type: holding
-    value_type: U_WORD
-    register_count: 2
-    response_size: 2
+    register_count: 32
+    response_size: 64
     unit_of_measurement: ""
     state_class: measurement
     accuracy_decimals: 0
-    bitmask: 0x00FF
-    filters:
-      - offset: 1.0
+    lambda: |-
+      uint16_t min_voltage = 0xFFFF;
+      int min_cell = 0;
+      for (int i = 0; i < 32; i++) {
+        uint16_t cell_voltage = (data[i*2] << 8) | data[i*2+1];
+        if (cell_voltage > 500 && cell_voltage < min_voltage) {
+          min_voltage = cell_voltage;
+          min_cell = i + 1;
+        }
+      }
+      return (float) min_cell;
 
 
   # Comment out following part if you don't want monitor wire resistance
