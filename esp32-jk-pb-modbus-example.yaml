@@ -966,7 +966,7 @@ sensor:
     accuracy_decimals: 0
     lambda: |-
       uint16_t max_voltage = 0;
-      int max_cell = 0;
+      uint8_t max_cell = 0;
       for (int i = 0; i < 32; i++) {
         uint16_t cell_voltage = (data[i*2] << 8) | data[i*2+1];
         if (cell_voltage > max_voltage) {
@@ -988,7 +988,7 @@ sensor:
     accuracy_decimals: 0
     lambda: |-
       uint16_t min_voltage = 0xFFFF;
-      int min_cell = 0;
+      uint8_t min_cell = 0;
       for (int i = 0; i < 32; i++) {
         uint16_t cell_voltage = (data[i*2] << 8) | data[i*2+1];
         if (cell_voltage > 500 && cell_voltage < min_voltage) {
