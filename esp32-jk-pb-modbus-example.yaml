@@ -1449,7 +1449,7 @@ sensor:
   # 0x12A8   168    INT32    2    R    SOCCapRemain    mAH
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "capacity remaining derived"
+    name: "capacity remaining"
     address: 0x12A8
     register_type: holding
     value_type: U_DWORD
@@ -1465,7 +1465,7 @@ sensor:
   # 0x12AC   172   UINT32    4    R    SOCFullChargeCap    mAH
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "actual battery capacity"
+    name: "full charge capacity"
     address: 0x12AC
     register_type: holding
     value_type: U_DWORD
