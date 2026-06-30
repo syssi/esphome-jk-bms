@@ -1,5 +1,5 @@
 [tool.pylint.MAIN]
-py-version = "3.11"
+py-version = "3.12"
 persistent = false
 
 [tool.pylint.REPORTS]
@@ -42,7 +42,7 @@ expected-line-ending-format = "LF"
 
 [tool.ruff]
 required-version = ">=0.5.5"
-target-version = "py311"
+target-version = "py312"
 
 [tool.ruff.lint]
 select = [
