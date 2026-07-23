@@ -1,0 +1,282 @@
+#include <gtest/gtest.h>
+#include "common.h"
+#include "frames_ek-24s10eb.h"
+
+namespace esphome::heltec_balancer_ble::testing {
+using namespace ek10eb;
+
+// ── Cell voltages ─────────────────────────────────────────────────────────────
+
+TEST(Ek24S10EbCellInfoTest, CellVoltage1) {
+  TestableHeltecBalancerBle bms;
+  sensor::Sensor cell1;
+  bms.set_cell_voltage_sensor(0, &cell1);
+
+  bms.decode_cell_info_(CELL_INFO_FRAME);
+
+  EXPECT_NEAR(cell1.state, 3.2896f, 0.001f);
+}
+
+TEST(Ek24S10EbCellInfoTest, InactiveCellsPublishZero) {
+  TestableHeltecBalancerBle bms;
+  sensor::Sensor cell17;
+  bms.set_cell_voltage_sensor(16, &cell17);  // index 16 — beyond active 16
+
+  bms.decode_cell_info_(CELL_INFO_FRAME);
+
+  EXPECT_FLOAT_EQ(cell17.state, 0.0f);
+}
+
+// ── Total voltage ─────────────────────────────────────────────────────────────
+
+TEST(Ek24S10EbCellInfoTest, TotalVoltage) {
+  TestableHeltecBalancerBle bms;
+  sensor::Sensor total;
+  bms.set_total_voltage_sensor(&total);
+
+  bms.decode_cell_info_(CELL_INFO_FRAME);
+
+  EXPECT_NEAR(total.state, 52.638f, 0.01f);
+}
+
+// ── Operation status: stopped, not balancing ──────────────────────────────────
+
+TEST(Ek24S10EbCellInfoTest, OperationStatus) {
+  TestableHeltecBalancerBle bms;
+  binary_sensor::BinarySensor balancing;
+  text_sensor::TextSensor op_status;
+  bms.set_balancing_binary_sensor(&balancing);
+  bms.set_operation_status_text_sensor(&op_status);
+
+  bms.decode_cell_info_(CELL_INFO_FRAME);
+
+  EXPECT_FALSE(balancing.state);
+  EXPECT_EQ(op_status.state, "Low battery voltage - balancing stopped");
+}
+
+// ── Balancing current ─────────────────────────────────────────────────────────
+
+TEST(Ek24S10EbCellInfoTest, BalancingCurrent) {
+  TestableHeltecBalancerBle bms;
+  sensor::Sensor current;
+  bms.set_balancing_current_sensor(&current);
+
+  bms.decode_cell_info_(CELL_INFO_FRAME);
+
+  EXPECT_FLOAT_EQ(current.state, 0.0f);
+}
+
+// ── Temperatures ──────────────────────────────────────────────────────────────
+
+TEST(Ek24S10EbCellInfoTest, Temperatures) {
+  TestableHeltecBalancerBle bms;
+  sensor::Sensor temp1, temp2;
+  bms.set_temperature_sensor_1_sensor(&temp1);
+  bms.set_temperature_sensor_2_sensor(&temp2);
+
+  bms.decode_cell_info_(CELL_INFO_FRAME);
+
+  EXPECT_NEAR(temp1.state, 16.07f, 0.01f);
+  EXPECT_NEAR(temp2.state, 16.07f, 0.01f);
+}
+
+// ── Cell resistance ───────────────────────────────────────────────────────────
+
+TEST(Ek24S10EbCellInfoTest, CellResistance1) {
+  TestableHeltecBalancerBle bms;
+  sensor::Sensor r1;
+  bms.set_cell_resistance_sensor(0, &r1);
+
+  bms.decode_cell_info_(CELL_INFO_FRAME);
+
+  EXPECT_NEAR(r1.state, 0.08328f, 0.0001f);
+}
+
+// ── Min/max cell voltage and cell index ──────────────────────────────────────
+
+TEST(Ek24S10EbCellInfoTest, MinMaxCellVoltage) {
+  TestableHeltecBalancerBle bms;
+  sensor::Sensor min_v, max_v, min_cell, max_cell;
+  bms.set_min_cell_voltage_sensor(&min_v);
+  bms.set_max_cell_voltage_sensor(&max_v);
+  bms.set_min_voltage_cell_sensor(&min_cell);
+  bms.set_max_voltage_cell_sensor(&max_cell);
+
+  bms.decode_cell_info_(CELL_INFO_FRAME);
+
+  EXPECT_NEAR(min_v.state, 3.2896f, 0.0001f);
+  EXPECT_NEAR(max_v.state, 3.2902f, 0.0001f);
+  EXPECT_FLOAT_EQ(min_cell.state, 1.0f);
+  EXPECT_FLOAT_EQ(max_cell.state, 4.0f);
+}
+
+// ── Delta and average cell voltage ────────────────────────────────────────────
+
+TEST(Ek24S10EbCellInfoTest, DeltaAndAverageCellVoltage) {
+  TestableHeltecBalancerBle bms;
+  sensor::Sensor delta, avg;
+  bms.set_delta_cell_voltage_sensor(&delta);
+  bms.set_average_cell_voltage_sensor(&avg);
+
+  bms.decode_cell_info_(CELL_INFO_FRAME);
+
+  EXPECT_NEAR(delta.state, 0.0006f, 0.0001f);
+  EXPECT_NEAR(avg.state, 3.2899f, 0.0001f);
+}
+
+// ── Protection bitmasks (all zero — no fault in capture) ─────────────────────
+
+TEST(Ek24S10EbCellInfoTest, ProtectionBitmasks) {
+  TestableHeltecBalancerBle bms;
+  sensor::Sensor det_failed, overvoltage, undervoltage, polarity, excess_resistance;
+  bms.set_cell_detection_failed_bitmask_sensor(&det_failed);
+  bms.set_cell_overvoltage_bitmask_sensor(&overvoltage);
+  bms.set_cell_undervoltage_bitmask_sensor(&undervoltage);
+  bms.set_cell_polarity_error_bitmask_sensor(&polarity);
+  bms.set_cell_excessive_line_resistance_bitmask_sensor(&excess_resistance);
+
+  bms.decode_cell_info_(CELL_INFO_FRAME);
+
+  EXPECT_FLOAT_EQ(det_failed.state, 0.0f);
+  EXPECT_FLOAT_EQ(overvoltage.state, 0.0f);
+  EXPECT_FLOAT_EQ(undervoltage.state, 0.0f);
+  EXPECT_FLOAT_EQ(polarity.state, 0.0f);
+  EXPECT_FLOAT_EQ(excess_resistance.state, 0.0f);
+}
+
+// ── Error status (all clear — no fault in capture) ────────────────────────────
+
+TEST(Ek24S10EbCellInfoTest, ErrorStatus) {
+  TestableHeltecBalancerBle bms;
+  binary_sensor::BinarySensor sys_overheat, chg_fault, dsg_fault;
+  bms.set_error_system_overheating_binary_sensor(&sys_overheat);
+  bms.set_error_charging_binary_sensor(&chg_fault);
+  bms.set_error_discharging_binary_sensor(&dsg_fault);
+
+  bms.decode_cell_info_(CELL_INFO_FRAME);
+
+  EXPECT_FALSE(sys_overheat.state);
+  EXPECT_FALSE(chg_fault.state);
+  EXPECT_FALSE(dsg_fault.state);
+}
+
+TEST(Ek24S10EbCellInfoTest, NullSensorsDoNotCrash) {
+  TestableHeltecBalancerBle bms;
+  bms.decode_cell_info_(CELL_INFO_FRAME);
+}
+
+// ── Device info frame (HW-2.0.0 / ZL-2.0.2) ──────────────────────────────────
+
+TEST(Ek24S10EbDeviceInfoTest, TotalRuntime) {
+  TestableHeltecBalancerBle bms;
+  sensor::Sensor runtime;
+  bms.set_total_runtime_sensor(&runtime);
+
+  bms.decode_device_info_(DEVICE_INFO_FRAME);
+
+  EXPECT_FLOAT_EQ(runtime.state, 1827398.0f);
+}
+
+TEST(Ek24S10EbDeviceInfoTest, TotalRuntimeFormatted) {
+  TestableHeltecBalancerBle bms;
+  text_sensor::TextSensor formatted;
+  bms.set_total_runtime_formatted_text_sensor(&formatted);
+
+  bms.decode_device_info_(DEVICE_INFO_FRAME);
+
+  EXPECT_EQ(formatted.state, "21d 3h");
+}
+
+TEST(Ek24S10EbDeviceInfoTest, DispatchedViaFrameType) {
+  TestableHeltecBalancerBle bms;
+  sensor::Sensor runtime;
+  bms.set_total_runtime_sensor(&runtime);
+
+  bms.decode_(DEVICE_INFO_FRAME);
+
+  EXPECT_FLOAT_EQ(runtime.state, 1827398.0f);
+}
+
+TEST(Ek24S10EbDeviceInfoTest, NullSensorsDoNotCrash) {
+  TestableHeltecBalancerBle bms;
+  bms.decode_device_info_(DEVICE_INFO_FRAME);
+}
+
+// ── Settings frame (legacy, 100 bytes) ───────────────────────────────────────
+
+TEST(Ek24S10EbSettingsTest, CellCount) {
+  TestableHeltecBalancerBle bms;
+  TestNumber cell_count;
+  bms.set_cell_count_number(&cell_count);
+
+  bms.decode_settings_(SETTINGS_FRAME);
+
+  EXPECT_FLOAT_EQ(cell_count.state, 16.0f);
+}
+
+TEST(Ek24S10EbSettingsTest, BalancerSwitch) {
+  TestableHeltecBalancerBle bms;
+  TestSwitch balancer;
+  bms.set_balancer_switch(&balancer);
+
+  bms.decode_settings_(SETTINGS_FRAME);
+
+  EXPECT_TRUE(balancer.state);
+}
+
+TEST(Ek24S10EbSettingsTest, BuzzerModeText) {
+  TestableHeltecBalancerBle bms;
+  text_sensor::TextSensor buzzer;
+  bms.set_buzzer_mode_text_sensor(&buzzer);
+
+  bms.decode_settings_(SETTINGS_FRAME);
+
+  EXPECT_EQ(buzzer.state, "Beep once");
+}
+
+TEST(Ek24S10EbSettingsTest, BatteryTypeText) {
+  TestableHeltecBalancerBle bms;
+  text_sensor::TextSensor btype;
+  bms.set_battery_type_text_sensor(&btype);
+
+  bms.decode_settings_(SETTINGS_FRAME);
+
+  EXPECT_EQ(btype.state, "LFP");
+}
+
+TEST(Ek24S10EbSettingsTest, VoltageNumbers) {
+  TestableHeltecBalancerBle bms;
+  TestNumber trig, max_cur, sleep, start, stop_diff, cap;
+  bms.set_balance_trigger_voltage_number(&trig);
+  bms.set_max_balance_current_number(&max_cur);
+  bms.set_balance_sleep_voltage_number(&sleep);
+  bms.set_balance_start_voltage_number(&start);
+  bms.set_balance_stop_diff_voltage_number(&stop_diff);
+  bms.set_nominal_battery_capacity_number(&cap);
+
+  bms.decode_settings_(SETTINGS_FRAME);
+
+  EXPECT_NEAR(trig.state, 0.02f, 0.001f);
+  EXPECT_NEAR(max_cur.state, 8.0f, 0.001f);
+  EXPECT_NEAR(sleep.state, 3.35f, 0.001f);
+  EXPECT_NEAR(start.state, 3.42f, 0.001f);
+  EXPECT_NEAR(stop_diff.state, 0.003f, 0.001f);
+  EXPECT_FLOAT_EQ(cap.state, 280.0f);
+}
+
+TEST(Ek24S10EbSettingsTest, DispatchedViaFrameType) {
+  TestableHeltecBalancerBle bms;
+  TestNumber cell_count;
+  bms.set_cell_count_number(&cell_count);
+
+  bms.decode_(SETTINGS_FRAME);
+
+  EXPECT_FLOAT_EQ(cell_count.state, 16.0f);
+}
+
+TEST(Ek24S10EbSettingsTest, NullSensorsDoNotCrash) {
+  TestableHeltecBalancerBle bms;
+  bms.decode_settings_(SETTINGS_FRAME);
+}
+
+}  // namespace esphome::heltec_balancer_ble::testing
