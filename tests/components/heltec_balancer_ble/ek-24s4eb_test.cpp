@@ -80,6 +80,86 @@ TEST(EkCellInfoTest, Temperatures) {
   EXPECT_NEAR(temp2.state, 25.71f, 0.01f);
 }
 
+// ── Cell resistance ───────────────────────────────────────────────────────────
+
+TEST(EkCellInfoTest, CellResistance1) {
+  TestableHeltecBalancerBle bms;
+  sensor::Sensor r1;
+  bms.set_cell_resistance_sensor(0, &r1);
+
+  bms.decode_cell_info_(CELL_INFO_FRAME);
+
+  EXPECT_NEAR(r1.state, 0.19487f, 0.0001f);
+}
+
+// ── Min/max cell voltage and cell index ──────────────────────────────────────
+
+TEST(EkCellInfoTest, MinMaxCellVoltage) {
+  TestableHeltecBalancerBle bms;
+  sensor::Sensor min_v, max_v, min_cell, max_cell;
+  bms.set_min_cell_voltage_sensor(&min_v);
+  bms.set_max_cell_voltage_sensor(&max_v);
+  bms.set_min_voltage_cell_sensor(&min_cell);
+  bms.set_max_voltage_cell_sensor(&max_cell);
+
+  bms.decode_cell_info_(CELL_INFO_FRAME);
+
+  EXPECT_NEAR(min_v.state, 3.3253f, 0.0001f);
+  EXPECT_NEAR(max_v.state, 3.3265f, 0.0001f);
+  EXPECT_FLOAT_EQ(min_cell.state, 1.0f);
+  EXPECT_FLOAT_EQ(max_cell.state, 4.0f);
+}
+
+// ── Delta and average cell voltage ────────────────────────────────────────────
+
+TEST(EkCellInfoTest, DeltaAndAverageCellVoltage) {
+  TestableHeltecBalancerBle bms;
+  sensor::Sensor delta, avg;
+  bms.set_delta_cell_voltage_sensor(&delta);
+  bms.set_average_cell_voltage_sensor(&avg);
+
+  bms.decode_cell_info_(CELL_INFO_FRAME);
+
+  EXPECT_NEAR(delta.state, 0.0012f, 0.0001f);
+  EXPECT_NEAR(avg.state, 3.3261f, 0.0001f);
+}
+
+// ── Protection bitmasks (cells 18-24 unpopulated — flagged as detection failed) ─
+
+TEST(EkCellInfoTest, ProtectionBitmasks) {
+  TestableHeltecBalancerBle bms;
+  sensor::Sensor det_failed, overvoltage, undervoltage, polarity, excess_resistance;
+  bms.set_cell_detection_failed_bitmask_sensor(&det_failed);
+  bms.set_cell_overvoltage_bitmask_sensor(&overvoltage);
+  bms.set_cell_undervoltage_bitmask_sensor(&undervoltage);
+  bms.set_cell_polarity_error_bitmask_sensor(&polarity);
+  bms.set_cell_excessive_line_resistance_bitmask_sensor(&excess_resistance);
+
+  bms.decode_cell_info_(CELL_INFO_FRAME);
+
+  EXPECT_FLOAT_EQ(det_failed.state, 16646144.0f);
+  EXPECT_FLOAT_EQ(overvoltage.state, 0.0f);
+  EXPECT_FLOAT_EQ(undervoltage.state, 0.0f);
+  EXPECT_FLOAT_EQ(polarity.state, 0.0f);
+  EXPECT_FLOAT_EQ(excess_resistance.state, 0.0f);
+}
+
+// ── Error status (all clear — no fault in capture) ────────────────────────────
+
+TEST(EkCellInfoTest, ErrorStatus) {
+  TestableHeltecBalancerBle bms;
+  binary_sensor::BinarySensor sys_overheat, chg_fault, dsg_fault;
+  bms.set_error_system_overheating_binary_sensor(&sys_overheat);
+  bms.set_error_charging_binary_sensor(&chg_fault);
+  bms.set_error_discharging_binary_sensor(&dsg_fault);
+
+  bms.decode_cell_info_(CELL_INFO_FRAME);
+
+  EXPECT_FALSE(sys_overheat.state);
+  EXPECT_FALSE(chg_fault.state);
+  EXPECT_FALSE(dsg_fault.state);
+}
+
 // ── Null sensors do not crash ─────────────────────────────────────────────────
 
 TEST(EkCellInfoTest, NullSensorsDoNotCrash) {
@@ -107,6 +187,16 @@ TEST(EkDeviceInfoTest, TotalRuntimeFormatted) {
   bms.decode_device_info_(DEVICE_INFO_FRAME);
 
   EXPECT_EQ(formatted.state, "1d 11h");
+}
+
+TEST(EkDeviceInfoTest, DispatchedViaFrameType) {
+  TestableHeltecBalancerBle bms;
+  sensor::Sensor runtime;
+  bms.set_total_runtime_sensor(&runtime);
+
+  bms.decode_(DEVICE_INFO_FRAME);
+
+  EXPECT_FLOAT_EQ(runtime.state, 127854.0f);
 }
 
 TEST(EkDeviceInfoTest, NullSensorsDoNotCrash) {
