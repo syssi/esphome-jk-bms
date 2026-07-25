@@ -392,10 +392,6 @@ void HeltecBalancerBle::assemble(const uint8_t *data, uint16_t length) {
   if (this->frame_buffer_.size() < FRAME_HEADER_SIZE)
     return;
 
-  // Rely on the frame's own declared length (offset 6/7) instead of scanning for a trailing
-  // END_OF_FRAME byte: with a small BLE MTU a frame is split into many fragments, and any of
-  // them can end on a data byte that happens to equal 0xFF, which used to trigger a premature
-  // CRC check against a still-incomplete buffer (https://github.com/syssi/esphome-jk-bms/issues/1031).
   const uint16_t frame_size = (uint16_t(this->frame_buffer_[7]) << 8) | uint16_t(this->frame_buffer_[6]);
   if (frame_size < MIN_RESPONSE_SIZE || frame_size > MAX_RESPONSE_SIZE) {
     ESP_LOGW(TAG, "Frame dropped because of invalid length");
