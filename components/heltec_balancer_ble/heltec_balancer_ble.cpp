@@ -89,11 +89,6 @@ uint8_t crc(const uint8_t data[], const uint16_t len) {
   return crc;
 }
 
-// Every response frame declares its own total size (header + payload + CRC + EOF) at offset 6/7.
-uint16_t declared_frame_size(const std::vector<uint8_t> &buffer) {
-  return (uint16_t(buffer[7]) << 8) | uint16_t(buffer[6]);
-}
-
 void HeltecBalancerBle::dump_config() {  // NOLINT(google-readability-function-size,readability-function-size)
   ESP_LOGCONFIG(TAG, "HeltecBalancerBle");
   LOG_BINARY_SENSOR("", "Balancing", this->balancing_binary_sensor_);
@@ -397,11 +392,11 @@ void HeltecBalancerBle::assemble(const uint8_t *data, uint16_t length) {
   if (this->frame_buffer_.size() < FRAME_HEADER_SIZE)
     return;
 
-  // Rely on the frame's own declared length instead of scanning for a trailing END_OF_FRAME
-  // byte: with a small BLE MTU a frame is split into many fragments, and any of them can end
-  // on a data byte that happens to equal 0xFF, which used to trigger a premature CRC check
-  // against a still-incomplete buffer (https://github.com/syssi/esphome-jk-bms/issues/1031).
-  const uint16_t frame_size = declared_frame_size(this->frame_buffer_);
+  // Rely on the frame's own declared length (offset 6/7) instead of scanning for a trailing
+  // END_OF_FRAME byte: with a small BLE MTU a frame is split into many fragments, and any of
+  // them can end on a data byte that happens to equal 0xFF, which used to trigger a premature
+  // CRC check against a still-incomplete buffer (https://github.com/syssi/esphome-jk-bms/issues/1031).
+  const uint16_t frame_size = (uint16_t(this->frame_buffer_[7]) << 8) | uint16_t(this->frame_buffer_[6]);
   if (frame_size < MIN_RESPONSE_SIZE || frame_size > MAX_RESPONSE_SIZE) {
     ESP_LOGW(TAG, "Frame dropped because of invalid length");
     this->frame_buffer_.clear();
