@@ -40,6 +40,7 @@ static const uint16_t MAX_RESPONSE_SIZE = 300;  // Cell info frame
 
 // Preamble(2) + device address(1) + function(1) + command(2) + length(2)
 static const uint8_t FRAME_HEADER_SIZE = 8;
+static const uint8_t FRAME_LENGTH_OFFSET = 6;
 
 static const uint8_t OPERATION_STATUS_SIZE = 13;
 static constexpr const char *const OPERATION_STATUS[OPERATION_STATUS_SIZE] = {
@@ -377,11 +378,6 @@ void HeltecBalancerBle::update() {}
 
 // TODO: There is no need to assemble frames if the MTU can be increased to > MAX_RESPONSE_SIZE
 void HeltecBalancerBle::assemble(const uint8_t *data, uint16_t length) {
-  if (this->frame_buffer_.size() > MAX_RESPONSE_SIZE) {
-    ESP_LOGW(TAG, "Frame dropped because of invalid length");
-    this->frame_buffer_.clear();
-  }
-
   // Flush buffer on every preamble
   if (length >= 2 && data[0] == SOF_RESPONSE_BYTE1 && data[1] == SOF_RESPONSE_BYTE2) {
     this->frame_buffer_.clear();
@@ -392,7 +388,8 @@ void HeltecBalancerBle::assemble(const uint8_t *data, uint16_t length) {
   if (this->frame_buffer_.size() < FRAME_HEADER_SIZE)
     return;
 
-  const uint16_t frame_size = (uint16_t(this->frame_buffer_[7]) << 8) | uint16_t(this->frame_buffer_[6]);
+  const uint16_t frame_size = (uint16_t(this->frame_buffer_[FRAME_LENGTH_OFFSET + 1]) << 8) |
+                              uint16_t(this->frame_buffer_[FRAME_LENGTH_OFFSET]);
   if (frame_size < MIN_RESPONSE_SIZE || frame_size > MAX_RESPONSE_SIZE) {
     ESP_LOGW(TAG, "Frame dropped because of invalid length");
     this->frame_buffer_.clear();
@@ -417,10 +414,10 @@ void HeltecBalancerBle::assemble(const uint8_t *data, uint16_t length) {
     return;
   }
 
-  std::vector<uint8_t> frame(this->frame_buffer_.begin(), this->frame_buffer_.begin() + frame_size);
+  const std::vector<uint8_t> frame(this->frame_buffer_.begin(), this->frame_buffer_.begin() + frame_size);
+  this->frame_buffer_.erase(this->frame_buffer_.begin(), this->frame_buffer_.begin() + frame_size);
 
   this->decode_(frame);
-  this->frame_buffer_.clear();
 }
 
 void HeltecBalancerBle::decode_(const std::vector<uint8_t> &data) {

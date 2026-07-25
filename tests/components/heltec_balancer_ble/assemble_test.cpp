@@ -120,6 +120,78 @@ TEST(AssembleTest, OddSizedFragmentsReassembleCellInfo) {
   EXPECT_NEAR(total.state, 53.22f, 0.01f);
 }
 
+// ── Invalid length field ──────────────────────────────────────────────────────
+
+TEST(AssembleTest, LengthFieldBelowMinimumIsDropped) {
+  TestableHeltecBalancerBle bms;
+  sensor::Sensor total;
+  bms.set_total_voltage_sensor(&total);
+
+  std::vector<uint8_t> broken = ek::CELL_INFO_FRAME;
+  broken[6] = 0x05;
+  broken[7] = 0x00;
+
+  bms.assemble(broken.data(), broken.size());
+  EXPECT_TRUE(std::isnan(total.state));
+
+  bms.assemble(ek::CELL_INFO_FRAME.data(), ek::CELL_INFO_FRAME.size());
+  EXPECT_NEAR(total.state, 53.22f, 0.01f);
+}
+
+TEST(AssembleTest, LengthFieldAboveMaximumIsDropped) {
+  TestableHeltecBalancerBle bms;
+  sensor::Sensor total;
+  bms.set_total_voltage_sensor(&total);
+
+  std::vector<uint8_t> broken = ek::CELL_INFO_FRAME;
+  broken[6] = 0x00;
+  broken[7] = 0x04;
+
+  bms.assemble(broken.data(), broken.size());
+  EXPECT_TRUE(std::isnan(total.state));
+
+  bms.assemble(ek::CELL_INFO_FRAME.data(), ek::CELL_INFO_FRAME.size());
+  EXPECT_NEAR(total.state, 53.22f, 0.01f);
+}
+
+// ── Missing end of frame marker ───────────────────────────────────────────────
+
+TEST(AssembleTest, MissingEndOfFrameMarkerIsDropped) {
+  TestableHeltecBalancerBle bms;
+  sensor::Sensor total;
+  bms.set_total_voltage_sensor(&total);
+
+  std::vector<uint8_t> broken = ek::CELL_INFO_FRAME;
+  broken.back() = 0x00;
+
+  bms.assemble(broken.data(), broken.size());
+  EXPECT_TRUE(std::isnan(total.state));
+
+  bms.assemble(ek::CELL_INFO_FRAME.data(), ek::CELL_INFO_FRAME.size());
+  EXPECT_NEAR(total.state, 53.22f, 0.01f);
+}
+
+// ── Trailing bytes of the next frame are retained ─────────────────────────────
+
+TEST(AssembleTest, FragmentSpanningTwoFramesDecodesBoth) {
+  TestableHeltecBalancerBle bms;
+  sensor::Sensor runtime, total;
+  bms.set_total_runtime_sensor(&runtime);
+  bms.set_total_voltage_sensor(&total);
+
+  std::vector<uint8_t> stream = ek::DEVICE_INFO_FRAME;
+  stream.insert(stream.end(), ek::CELL_INFO_FRAME.begin(), ek::CELL_INFO_FRAME.end());
+
+  const size_t mtu_payload = 64;
+  for (size_t offset = 0; offset < stream.size(); offset += mtu_payload) {
+    size_t chunk = std::min(mtu_payload, stream.size() - offset);
+    bms.assemble(&stream[offset], chunk);
+  }
+
+  EXPECT_FLOAT_EQ(runtime.state, 127854.0f);
+  EXPECT_NEAR(total.state, 53.22f, 0.01f);
+}
+
 // ── Resync after a lost frame ─────────────────────────────────────────────────
 
 TEST(AssembleTest, FreshPreambleResyncsAfterAbandonedFrame) {
