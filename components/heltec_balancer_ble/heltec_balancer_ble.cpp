@@ -38,6 +38,9 @@ static const uint8_t END_OF_FRAME = 0xFF;
 static const uint16_t MIN_RESPONSE_SIZE = 20;   // Write acknowledge frame
 static const uint16_t MAX_RESPONSE_SIZE = 300;  // Cell info frame
 
+// Preamble(2) + device address(1) + function(1) + command(2) + length(2)
+static const uint8_t FRAME_HEADER_SIZE = 8;
+
 static const uint8_t OPERATION_STATUS_SIZE = 13;
 static constexpr const char *const OPERATION_STATUS[OPERATION_STATUS_SIZE] = {
     "Unknown",                                   // 0x00
@@ -84,6 +87,11 @@ uint8_t crc(const uint8_t data[], const uint16_t len) {
     crc = crc + data[i];
   }
   return crc;
+}
+
+// Every response frame declares its own total size (header + payload + CRC + EOF) at offset 6/7.
+uint16_t declared_frame_size(const std::vector<uint8_t> &buffer) {
+  return (uint16_t(buffer[7]) << 8) | uint16_t(buffer[6]);
 }
 
 void HeltecBalancerBle::dump_config() {  // NOLINT(google-readability-function-size,readability-function-size)
@@ -386,23 +394,42 @@ void HeltecBalancerBle::assemble(const uint8_t *data, uint16_t length) {
 
   this->frame_buffer_.insert(this->frame_buffer_.end(), data, data + length);
 
-  if (this->frame_buffer_.size() >= MIN_RESPONSE_SIZE && this->frame_buffer_.back() == END_OF_FRAME) {
-    const uint8_t *raw = &this->frame_buffer_[0];
-    const uint16_t frame_size = this->frame_buffer_.size();
+  if (this->frame_buffer_.size() < FRAME_HEADER_SIZE)
+    return;
 
-    uint8_t computed_crc = crc(raw, frame_size - 2);
-    uint8_t remote_crc = raw[frame_size - 2];
-    if (computed_crc != remote_crc) {
-      ESP_LOGW(TAG, "CRC check failed! 0x%02X != 0x%02X", computed_crc, remote_crc);
-      this->frame_buffer_.clear();
-      return;
-    }
-
-    std::vector<uint8_t> data(this->frame_buffer_.begin(), this->frame_buffer_.end());
-
-    this->decode_(data);
+  // Rely on the frame's own declared length instead of scanning for a trailing END_OF_FRAME
+  // byte: with a small BLE MTU a frame is split into many fragments, and any of them can end
+  // on a data byte that happens to equal 0xFF, which used to trigger a premature CRC check
+  // against a still-incomplete buffer (https://github.com/syssi/esphome-jk-bms/issues/1031).
+  const uint16_t frame_size = declared_frame_size(this->frame_buffer_);
+  if (frame_size < MIN_RESPONSE_SIZE || frame_size > MAX_RESPONSE_SIZE) {
+    ESP_LOGW(TAG, "Frame dropped because of invalid length");
     this->frame_buffer_.clear();
+    return;
   }
+
+  if (this->frame_buffer_.size() < frame_size)
+    return;  // Wait for the remaining fragments
+
+  const uint8_t *raw = &this->frame_buffer_[0];
+  if (raw[frame_size - 1] != END_OF_FRAME) {
+    ESP_LOGW(TAG, "Frame dropped because of missing end of frame marker");
+    this->frame_buffer_.clear();
+    return;
+  }
+
+  uint8_t computed_crc = crc(raw, frame_size - 2);
+  uint8_t remote_crc = raw[frame_size - 2];
+  if (computed_crc != remote_crc) {
+    ESP_LOGW(TAG, "CRC check failed! 0x%02X != 0x%02X", computed_crc, remote_crc);
+    this->frame_buffer_.clear();
+    return;
+  }
+
+  std::vector<uint8_t> frame(this->frame_buffer_.begin(), this->frame_buffer_.begin() + frame_size);
+
+  this->decode_(frame);
+  this->frame_buffer_.clear();
 }
 
 void HeltecBalancerBle::decode_(const std::vector<uint8_t> &data) {
