@@ -1,0 +1,3 @@
+jk_bms_old_ble:
+  id: test_bms
+  update_interval: 20s

@@ -456,7 +456,7 @@ jobs:
       - name: Run C++ unit tests
         run: |
           . venv/bin/activate
-          script/cpp_unit_test.py jk_bms jk_bms_ble jk_bms_display jk_balancer heltec_balancer_ble jk_balancer_modbus jk_modbus
+          script/cpp_unit_test.py jk_bms jk_bms_ble jk_bms_old_ble jk_bms_display jk_balancer heltec_balancer_ble jk_balancer_modbus jk_modbus
         env:
           PLATFORMIO_LIBDEPS_DIR: ~/.platformio/libdeps
           ASAN_OPTIONS: detect_leaks=0
@@ -575,6 +575,13 @@ jobs:
           esphome -s external_components_source components -s name jk-bms-jk04 compile esp32-ble-jk04-example-faker.yaml
           esphome -s external_components_source components -s name jk-bms-jk02-24s compile esp32-ble-example-faker.yaml
           esphome -s external_components_source components -s name jk-bms-jk02-32s compile esp32-ble-v19-example-faker.yaml
+        env:
+          PLATFORMIO_LIBDEPS_DIR: ~/.platformio/libdeps
+
+      - name: Compile esp32 (jk_bms_old_ble) example configurations
+        run: |
+          . venv/bin/activate
+          esphome -s external_components_source components compile esp32-ble-old-example-faker.yaml
         env:
           PLATFORMIO_LIBDEPS_DIR: ~/.platformio/libdeps
 

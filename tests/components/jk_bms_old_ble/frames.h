@@ -1,0 +1,28 @@
+#pragma once
+
+// Real capture from a JK-B2A24S20P (HW 8.X, SW 8.1.2H), firmware <6.0 using the legacy
+// "protocol v4" register-0x03 basic info response.
+// Source: https://github.com/syssi/esphome-jk-bms/issues/13
+//
+// TX -> DD A5 03 00 FF FD 77
+// RX <- DD 03 00 1B 17 00 00 00 02 D0 03 E8 00 00 20 78 00 00 00 00 00 00 10 48 03 0F 02 0B 76 0B 82 FB FF 77
+//
+// total: 58.88 V  current: 0.00 A  remaining: 7.20 Ah  nominal: 10.00 Ah  cycles: 0
+// SoC: 72 %  charge MOSFET: on  discharge MOSFET: on  cells: 15  NTCs: 2
+// T1: 20.25 °C  T2: 21.45 °C
+
+namespace esphome::jk_bms_old_ble::testing {
+
+static const std::vector<uint8_t> BASIC_INFO_JK_OLD = {
+    0xDD, 0x03, 0x00, 0x1B, 0x17, 0x00, 0x00, 0x00, 0x02, 0xD0, 0x03, 0xE8, 0x00, 0x00, 0x20, 0x78, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x48, 0x03, 0x0F, 0x02, 0x0B, 0x76, 0x0B, 0x82, 0xFB, 0xFF, 0x77,
+};
+
+// Same frame with both MOSFETs reported off (FET status byte 0x00) and the discharge MOSFET
+// bit only, to exercise the charging/discharging binary sensor decoding independently.
+static const std::vector<uint8_t> BASIC_INFO_JK_OLD_DISCHARGING_ONLY = {
+    0xDD, 0x03, 0x00, 0x1B, 0x17, 0x00, 0x00, 0x00, 0x02, 0xD0, 0x03, 0xE8, 0x00, 0x00, 0x20, 0x78, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x48, 0x02, 0x0F, 0x02, 0x0B, 0x76, 0x0B, 0x82, 0xFC, 0x00, 0x77,
+};
+
+}  // namespace esphome::jk_bms_old_ble::testing

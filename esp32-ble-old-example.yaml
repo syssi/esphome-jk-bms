@@ -1,0 +1,104 @@
+substitutions:
+  name: jk-bms-old
+  device_description: "Monitor a JK-BMS with legacy protocol (firmware < 6.0) via bluetooth"
+  external_components_source: github://syssi/esphome-jk-bms@main
+
+esphome:
+  name: ${name}
+  friendly_name: ${name}
+  comment: ${device_description}
+  project:
+    name: "syssi.esphome-jk-bms"
+    version: 3.0.0
+
+esp32:
+  board: wemos_d1_mini32
+  framework:
+    type: esp-idf
+
+external_components:
+  - source: ${external_components_source}
+    refresh: 0s
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  min_auth_mode: WPA2
+
+ota:
+  platform: esphome
+  on_begin:
+    then:
+      - switch.turn_off: ble_client_switch0
+      - logger.log: "BLE connection suspended for OTA update"
+
+logger:
+  level: DEBUG
+  logs:
+    esp32_ble_tracker: INFO
+    esp32_ble_client: INFO
+
+# If you don't use Home Assistant please remove this `api` section and uncomment the `mqtt` component!
+api:
+
+# mqtt:
+#   broker: !secret mqtt_host
+#   username: !secret mqtt_username
+#   password: !secret mqtt_password
+#   id: mqtt_client
+
+esp32_ble_tracker:
+  scan_parameters:
+    active: false
+
+ble_client:
+  - mac_address: !secret bms0_mac_address
+    id: client0
+
+jk_bms_old_ble:
+  - ble_client_id: client0
+    throttle: 5s
+    id: bms0
+
+binary_sensor:
+  - platform: jk_bms_old_ble
+    charging:
+      name: "charging"
+    discharging:
+      name: "discharging"
+    online_status:
+      name: "online status"
+
+sensor:
+  - platform: jk_bms_old_ble
+    jk_bms_old_ble_id: bms0
+    total_voltage:
+      name: "total voltage"
+    current:
+      name: "current"
+    power:
+      name: "power"
+    charging_power:
+      name: "charging power"
+    discharging_power:
+      name: "discharging power"
+    state_of_charge:
+      name: "state of charge"
+    capacity_remaining:
+      name: "capacity remaining"
+    full_charge_capacity:
+      name: "full charge capacity"
+    charging_cycles:
+      name: "charging cycles"
+    cell_count:
+      name: "cell count"
+    temperature_sensor_1:
+      name: "temperature sensor 1"
+    temperature_sensor_2:
+      name: "temperature sensor 2"
+
+switch:
+  - platform: ble_client
+    ble_client_id: client0
+    name: "enable bluetooth connection"
+    id: ble_client_switch0
