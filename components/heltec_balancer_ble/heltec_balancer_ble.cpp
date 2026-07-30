@@ -1107,7 +1107,7 @@ void HeltecBalancerBle::decode_device_info_(const std::vector<uint8_t> &data) {
   // 8    16   0x47 0x57 0x2D 0x32 0x34 0x53 0x34 0x45 0x42 0x00 0x00 0x00 0x00 0x00 0x00 0x00    Model    GW-24S4EB
   auto device_model_begin = data.begin() + 8;
   this->publish_state_(this->device_model_text_sensor_,
-                        std::string(device_model_begin, std::find(device_model_begin, device_model_begin + 16, '\0')));
+                       std::string(device_model_begin, std::find(device_model_begin, device_model_begin + 16, '\0')));
   // 24    8   0x48 0x57 0x2D 0x32 0x2E 0x38 0x2E 0x30    Hardware version           HW-2.8.0
   auto hardware_version_begin = data.begin() + 24;
   this->publish_state_(
