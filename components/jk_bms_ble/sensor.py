@@ -53,6 +53,7 @@ CONF_FULL_CHARGE_CAPACITY = "full_charge_capacity"
 CONF_CHARGING_CYCLES = "charging_cycles"
 CONF_TOTAL_CHARGING_CYCLE_CAPACITY = "total_charging_cycle_capacity"
 CONF_TOTAL_RUNTIME = "total_runtime"
+CONF_POWER_ON_COUNT = "power_on_count"
 CONF_BALANCING_CURRENT = "balancing_current"
 CONF_EMERGENCY_TIME_COUNTDOWN = "emergency_time_countdown"
 CONF_SMART_SLEEP_COUNTDOWN = "smart_sleep_countdown"
@@ -74,6 +75,7 @@ ICON_MIN_VOLTAGE_CELL = "mdi:battery-minus-outline"
 ICON_MAX_VOLTAGE_CELL = "mdi:battery-plus-outline"
 ICON_CAPACITY_REMAINING = "mdi:battery-50"
 ICON_CHARGING_CYCLES = "mdi:battery-sync"
+ICON_POWER_ON_COUNT = "mdi:power-cycle"
 ICON_CELL_RESISTANCE = "mdi:omega"
 ICON_BALANCER = "mdi:seesaw"
 ICON_CHARGE_STATUS_ID = "mdi:battery-clock"
@@ -245,6 +247,14 @@ SENSOR_DEFS = {
         "accuracy_decimals": 0,
         "device_class": DEVICE_CLASS_EMPTY,
         "state_class": STATE_CLASS_TOTAL_INCREASING,
+    },
+    CONF_POWER_ON_COUNT: {
+        "unit_of_measurement": UNIT_EMPTY,
+        "icon": ICON_POWER_ON_COUNT,
+        "accuracy_decimals": 0,
+        "device_class": DEVICE_CLASS_EMPTY,
+        "state_class": STATE_CLASS_TOTAL_INCREASING,
+        "entity_category": ENTITY_CATEGORY_DIAGNOSTIC,
     },
     CONF_BALANCING_CURRENT: {
         "unit_of_measurement": UNIT_AMPERE,

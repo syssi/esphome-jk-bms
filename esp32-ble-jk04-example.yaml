@@ -187,6 +187,8 @@ sensor:
       name: "total voltage"
     total_runtime:
       name: "total runtime"
+    power_on_count:
+      name: "power on count"
     balancing_current:
       name: "balancing current"
     balancer_status_bitmask:

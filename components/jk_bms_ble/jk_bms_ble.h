@@ -267,6 +267,9 @@ class JkBmsBle :
     total_charging_cycle_capacity_sensor_ = total_charging_cycle_capacity_sensor;
   }
   void set_total_runtime_sensor(sensor::Sensor *total_runtime_sensor) { total_runtime_sensor_ = total_runtime_sensor; }
+  void set_power_on_count_sensor(sensor::Sensor *power_on_count_sensor) {
+    power_on_count_sensor_ = power_on_count_sensor;
+  }
   void set_balancing_current_sensor(sensor::Sensor *balancing_current_sensor) {
     balancing_current_sensor_ = balancing_current_sensor;
   }
@@ -495,6 +498,7 @@ class JkBmsBle :
   sensor::Sensor *charging_cycles_sensor_{nullptr};
   sensor::Sensor *total_charging_cycle_capacity_sensor_{nullptr};
   sensor::Sensor *total_runtime_sensor_{nullptr};
+  sensor::Sensor *power_on_count_sensor_{nullptr};
   sensor::Sensor *balancing_current_sensor_{nullptr};
   sensor::Sensor *emergency_time_countdown_sensor_{nullptr};
   sensor::Sensor *smart_sleep_countdown_sensor_{nullptr};

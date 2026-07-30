@@ -432,6 +432,7 @@ void JkBmsBle::dump_config() {  // NOLINT(google-readability-function-size,reada
   LOG_SENSOR("", "Charging Cycles", this->charging_cycles_sensor_);
   LOG_SENSOR("", "Total Charging Cycle Capacity", this->total_charging_cycle_capacity_sensor_);
   LOG_SENSOR("", "Total Runtime", this->total_runtime_sensor_);
+  LOG_SENSOR("", "Power On Count", this->power_on_count_sensor_);
   LOG_SENSOR("", "Heating Current", this->heating_current_sensor_);
   LOG_SENSOR("", "Balancing Current", this->balancing_current_sensor_);
   LOG_SENSOR("", "Emergency Time Countdown", this->emergency_time_countdown_sensor_);
@@ -1710,8 +1711,8 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
   // 38    4   0x54 0xE6 0x01 0x00
   ESP_LOGI(TAG, "  Uptime: %lu s", (unsigned long) jk_get_32bit(38));
 
-  // 42    4   0x9C 0x00 0x00 0x00
-  ESP_LOGI(TAG, "  Power on count: %lu", (unsigned long) jk_get_32bit(42));
+  // 42    4   0x9C 0x00 0x00 0x00    Power on count
+  this->publish_state_(this->power_on_count_sensor_, (float) jk_get_32bit(42));
 
   // 46   16   0x4A 0x4B 0x5F 0x50 0x42 0x32 0x41 0x31 0x36 0x53 0x31 0x35 0x50 0x00 0x00 0x00
   ESP_LOGI(TAG, "  Device name: %s", std::string(data.begin() + 46, data.begin() + 46 + 16).c_str());

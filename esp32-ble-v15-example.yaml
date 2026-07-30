@@ -336,6 +336,8 @@ sensor:
       name: "total charging cycle capacity"
     total_runtime:
       name: "total runtime"
+    power_on_count:
+      name: "power on count"
     balancing_current:
       name: "balancing current"
     emergency_time_countdown:

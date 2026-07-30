@@ -20,6 +20,14 @@ TEST(JkBmsV11DeviceInfoTest, SoftwareVersion) {
   EXPECT_EQ(sw.state, "14.20");
 }
 
+TEST(JkBmsV11DeviceInfoTest, PowerOnCount) {
+  TestableJkBmsBle bms;
+  sensor::Sensor power_on_count;
+  bms.set_power_on_count_sensor(&power_on_count);
+  bms.decode_device_info_(DEVICE_INFO_JK02_32S_V11);
+  EXPECT_EQ(power_on_count.state, 148.0f);
+}
+
 TEST(JkBmsV11CellInfoTest, CellVoltages) {
   TestableJkBmsBle bms;
   bms.set_protocol_version(PROTOCOL_VERSION_JK02_32S);

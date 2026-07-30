@@ -39,6 +39,14 @@ TEST(JkBmsJk04DeviceInfoTest, ManufacturingDateAndSerialNumberAreEmpty) {
   EXPECT_EQ(serial_number.state, "");
 }
 
+TEST(JkBmsJk04DeviceInfoTest, PowerOnCount) {
+  TestableJkBmsBle bms;
+  sensor::Sensor power_on_count;
+  bms.set_power_on_count_sensor(&power_on_count);
+  bms.decode_device_info_(DEVICE_INFO_JK04);
+  EXPECT_EQ(power_on_count.state, 19.0f);
+}
+
 TEST(JkBmsJk04CellInfoTest, CellVoltages) {
   TestableJkBmsBle bms;
   bms.set_protocol_version(PROTOCOL_VERSION_JK04);

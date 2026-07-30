@@ -55,6 +55,16 @@ TEST(JkBmsBleDeviceInfoTest, SerialNumber) {
   EXPECT_EQ(serial_number.state, "2041803028");
 }
 
+TEST(JkBmsBleDeviceInfoTest, PowerOnCount) {
+  TestableJkBmsBle bms;
+  sensor::Sensor power_on_count;
+  bms.set_power_on_count_sensor(&power_on_count);
+
+  bms.decode_device_info_(DEVICE_INFO_JK02_24S_V10);
+
+  EXPECT_EQ(power_on_count.state, 1.0f);
+}
+
 TEST(JkBmsBleDeviceInfoTest, NullSensorsDoNotCrash) {
   TestableJkBmsBle bms;
   bms.decode_device_info_(DEVICE_INFO_JK02_24S_V10);
