@@ -280,7 +280,14 @@ class TestHeltecBalancerBleSensorLists:
     def test_text_sensors_list(self):
         assert heltec_text_sensor.CONF_ERRORS in heltec_text_sensor.TEXT_SENSORS
         assert heltec_text_sensor.CONF_BATTERY_TYPE in heltec_text_sensor.TEXT_SENSORS
-        assert len(heltec_text_sensor.TEXT_SENSORS) == 5
+        assert heltec_text_sensor.CONF_DEVICE_MODEL in heltec_text_sensor.TEXT_SENSORS
+        assert heltec_text_sensor.CONF_HARDWARE_VERSION in heltec_text_sensor.TEXT_SENSORS
+        assert heltec_text_sensor.CONF_SOFTWARE_VERSION in heltec_text_sensor.TEXT_SENSORS
+        assert heltec_text_sensor.CONF_PROTOCOL_VERSION in heltec_text_sensor.TEXT_SENSORS
+        assert (
+            heltec_text_sensor.CONF_MANUFACTURING_DATE in heltec_text_sensor.TEXT_SENSORS
+        )
+        assert len(heltec_text_sensor.TEXT_SENSORS) == 10
 
     def test_buttons_dict(self):
         assert heltec_button.CONF_RETRIEVE_SETTINGS in heltec_button.BUTTONS

@@ -174,6 +174,11 @@ void HeltecBalancerBle::dump_config() {  // NOLINT(google-readability-function-s
   LOG_TEXT_SENSOR("", "Total Runtime Formatted", this->total_runtime_formatted_text_sensor_);
   LOG_TEXT_SENSOR("", "Buzzer Mode", this->buzzer_mode_text_sensor_);
   LOG_TEXT_SENSOR("", "Battery Type", this->battery_type_text_sensor_);
+  LOG_TEXT_SENSOR("", "Device Model", this->device_model_text_sensor_);
+  LOG_TEXT_SENSOR("", "Hardware Version", this->hardware_version_text_sensor_);
+  LOG_TEXT_SENSOR("", "Software Version", this->software_version_text_sensor_);
+  LOG_TEXT_SENSOR("", "Protocol Version", this->protocol_version_text_sensor_);
+  LOG_TEXT_SENSOR("", "Manufacturing Date", this->manufacturing_date_text_sensor_);
 }
 
 std::array<uint8_t, 20> HeltecBalancerBle::build_command_frame_(uint8_t function, uint8_t command,
@@ -1100,15 +1105,29 @@ void HeltecBalancerBle::decode_device_info_(const std::vector<uint8_t> &data) {
   // 4     2   0x01 0x00              Command (device info)
   // 6     2   0x64 0x00              Length (100 bytes)
   // 8    16   0x47 0x57 0x2D 0x32 0x34 0x53 0x34 0x45 0x42 0x00 0x00 0x00 0x00 0x00 0x00 0x00    Model    GW-24S4EB
-  ESP_LOGI(TAG, "  Model: %s", std::string(data.begin() + 8, data.begin() + 8 + 16).c_str());
+  auto device_model_begin = data.begin() + 8;
+  this->publish_state_(this->device_model_text_sensor_,
+                        std::string(device_model_begin, std::find(device_model_begin, device_model_begin + 16, '\0')));
   // 24    8   0x48 0x57 0x2D 0x32 0x2E 0x38 0x2E 0x30    Hardware version           HW-2.8.0
-  ESP_LOGI(TAG, "  Hardware version: %s", std::string(data.begin() + 24, data.begin() + 24 + 8).c_str());
+  auto hardware_version_begin = data.begin() + 24;
+  this->publish_state_(
+      this->hardware_version_text_sensor_,
+      std::string(hardware_version_begin, std::find(hardware_version_begin, hardware_version_begin + 8, '\0')));
   // 32    8   0x5A 0x48 0x2D 0x31 0x2E 0x32 0x2E 0x33    Software version           ZH-1.2.3
-  ESP_LOGI(TAG, "  Software version: %s", std::string(data.begin() + 32, data.begin() + 32 + 8).c_str());
+  auto software_version_begin = data.begin() + 32;
+  this->publish_state_(
+      this->software_version_text_sensor_,
+      std::string(software_version_begin, std::find(software_version_begin, software_version_begin + 8, '\0')));
   // 40    8   0x56 0x31 0x2E 0x30 0x2E 0x30 0x00 0x00    Protocol version           V1.0.0
-  ESP_LOGI(TAG, "  Protocol version: %s", std::string(data.begin() + 40, data.begin() + 40 + 8).c_str());
+  auto protocol_version_begin = data.begin() + 40;
+  this->publish_state_(
+      this->protocol_version_text_sensor_,
+      std::string(protocol_version_begin, std::find(protocol_version_begin, protocol_version_begin + 8, '\0')));
   // 48    8   0x32 0x30 0x32 0x32 0x30 0x35 0x33 0x31    Production date            20220531
-  ESP_LOGI(TAG, "  Manufacturing date: %s", std::string(data.begin() + 48, data.begin() + 48 + 8).c_str());
+  auto manufacturing_date_begin = data.begin() + 48;
+  this->publish_state_(
+      this->manufacturing_date_text_sensor_,
+      std::string(manufacturing_date_begin, std::find(manufacturing_date_begin, manufacturing_date_begin + 8, '\0')));
   // 56    4   0x05 0x00 0x00 0x00    Power on count                                 5
   ESP_LOGI(TAG, "  Power on count: %d", heltec_get_16bit(56));
   // 60    4   0x01 0x91 0x0A 0x00    Total runtime                                  7D

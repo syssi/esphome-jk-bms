@@ -601,6 +601,21 @@ text_sensor:
     battery_type:
       name: "battery type"
       device_id: device0
+    device_model:
+      name: "device model"
+      device_id: device0
+    hardware_version:
+      name: "hardware version"
+      device_id: device0
+    software_version:
+      name: "software version"
+      device_id: device0
+    protocol_version:
+      name: "protocol version"
+      device_id: device0
+    manufacturing_date:
+      name: "manufacturing date"
+      device_id: device0
 
   - platform: heltec_balancer_ble
     heltec_balancer_ble_id: balancer1
@@ -618,6 +633,21 @@ text_sensor:
       device_id: device1
     battery_type:
       name: "battery type"
+      device_id: device1
+    device_model:
+      name: "device model"
+      device_id: device1
+    hardware_version:
+      name: "hardware version"
+      device_id: device1
+    software_version:
+      name: "software version"
+      device_id: device1
+    protocol_version:
+      name: "protocol version"
+      device_id: device1
+    manufacturing_date:
+      name: "manufacturing date"
       device_id: device1
 
 interval:

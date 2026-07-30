@@ -318,6 +318,16 @@ text_sensor:
       name: "buzzer mode"
     battery_type:
       name: "battery type"
+    device_model:
+      name: "device model"
+    hardware_version:
+      name: "hardware version"
+    software_version:
+      name: "software version"
+    protocol_version:
+      name: "protocol version"
+    manufacturing_date:
+      name: "manufacturing date"
 
 interval:
   - interval: 30min

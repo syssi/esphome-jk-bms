@@ -248,6 +248,21 @@ class HeltecBalancerBle :
   void set_battery_type_text_sensor(text_sensor::TextSensor *battery_type_text_sensor) {
     battery_type_text_sensor_ = battery_type_text_sensor;
   }
+  void set_device_model_text_sensor(text_sensor::TextSensor *device_model_text_sensor) {
+    device_model_text_sensor_ = device_model_text_sensor;
+  }
+  void set_hardware_version_text_sensor(text_sensor::TextSensor *hardware_version_text_sensor) {
+    hardware_version_text_sensor_ = hardware_version_text_sensor;
+  }
+  void set_software_version_text_sensor(text_sensor::TextSensor *software_version_text_sensor) {
+    software_version_text_sensor_ = software_version_text_sensor;
+  }
+  void set_protocol_version_text_sensor(text_sensor::TextSensor *protocol_version_text_sensor) {
+    protocol_version_text_sensor_ = protocol_version_text_sensor;
+  }
+  void set_manufacturing_date_text_sensor(text_sensor::TextSensor *manufacturing_date_text_sensor) {
+    manufacturing_date_text_sensor_ = manufacturing_date_text_sensor;
+  }
 
   void set_buzzer_mode_select(select::Select *buzzer_mode_select) { buzzer_mode_select_ = buzzer_mode_select; }
   void set_battery_type_select(select::Select *battery_type_select) { battery_type_select_ = battery_type_select; }
@@ -336,6 +351,11 @@ class HeltecBalancerBle :
   text_sensor::TextSensor *total_runtime_formatted_text_sensor_{nullptr};
   text_sensor::TextSensor *buzzer_mode_text_sensor_{nullptr};
   text_sensor::TextSensor *battery_type_text_sensor_{nullptr};
+  text_sensor::TextSensor *device_model_text_sensor_{nullptr};
+  text_sensor::TextSensor *hardware_version_text_sensor_{nullptr};
+  text_sensor::TextSensor *software_version_text_sensor_{nullptr};
+  text_sensor::TextSensor *protocol_version_text_sensor_{nullptr};
+  text_sensor::TextSensor *manufacturing_date_text_sensor_{nullptr};
 
   std::vector<uint8_t> frame_buffer_;
   InitState init_state_{InitState::NEED_DEVICE_INFO};

@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 from esphome.components import text_sensor
 import esphome.config_validation as cv
-from esphome.const import ENTITY_CATEGORY_DIAGNOSTIC, ICON_TIMELAPSE
+from esphome.const import ENTITY_CATEGORY_DIAGNOSTIC, ICON_EMPTY, ICON_TIMELAPSE
 
 from . import CONF_HELTEC_BALANCER_BLE_ID, HELTEC_BALANCER_BLE_COMPONENT_SCHEMA
 
@@ -14,9 +14,16 @@ CONF_OPERATION_STATUS = "operation_status"
 CONF_TOTAL_RUNTIME_FORMATTED = "total_runtime_formatted"
 CONF_BUZZER_MODE = "buzzer_mode"
 CONF_BATTERY_TYPE = "battery_type"
+CONF_DEVICE_MODEL = "device_model"
+CONF_HARDWARE_VERSION = "hardware_version"
+CONF_SOFTWARE_VERSION = "software_version"
+CONF_PROTOCOL_VERSION = "protocol_version"
+CONF_MANUFACTURING_DATE = "manufacturing_date"
 
 ICON_ERRORS = "mdi:alert-circle-outline"
 ICON_OPERATION_STATUS = "mdi:heart-pulse"
+ICON_DEVICE_MODEL = "mdi:chip"
+ICON_MANUFACTURING_DATE = "mdi:calendar"
 
 TEXT_SENSORS = [
     CONF_ERRORS,
@@ -24,6 +31,11 @@ TEXT_SENSORS = [
     CONF_TOTAL_RUNTIME_FORMATTED,
     CONF_BUZZER_MODE,
     CONF_BATTERY_TYPE,
+    CONF_DEVICE_MODEL,
+    CONF_HARDWARE_VERSION,
+    CONF_SOFTWARE_VERSION,
+    CONF_PROTOCOL_VERSION,
+    CONF_MANUFACTURING_DATE,
 ]
 
 CONFIG_SCHEMA = HELTEC_BALANCER_BLE_COMPONENT_SCHEMA.extend(
@@ -43,6 +55,26 @@ CONFIG_SCHEMA = HELTEC_BALANCER_BLE_COMPONENT_SCHEMA.extend(
         ),
         cv.Optional(CONF_BATTERY_TYPE): text_sensor.text_sensor_schema(
             icon=ICON_OPERATION_STATUS,
+            entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
+        ),
+        cv.Optional(CONF_DEVICE_MODEL): text_sensor.text_sensor_schema(
+            icon=ICON_DEVICE_MODEL,
+            entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
+        ),
+        cv.Optional(CONF_HARDWARE_VERSION): text_sensor.text_sensor_schema(
+            icon=ICON_EMPTY,
+            entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
+        ),
+        cv.Optional(CONF_SOFTWARE_VERSION): text_sensor.text_sensor_schema(
+            icon=ICON_EMPTY,
+            entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
+        ),
+        cv.Optional(CONF_PROTOCOL_VERSION): text_sensor.text_sensor_schema(
+            icon=ICON_EMPTY,
+            entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
+        ),
+        cv.Optional(CONF_MANUFACTURING_DATE): text_sensor.text_sensor_schema(
+            icon=ICON_MANUFACTURING_DATE,
             entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
         ),
     }

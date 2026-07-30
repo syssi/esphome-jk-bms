@@ -183,6 +183,56 @@ TEST(GwDeviceInfoTest, TotalRuntimeFormatted) {
   EXPECT_EQ(formatted.state, "47d ");
 }
 
+TEST(GwDeviceInfoTest, DeviceModel) {
+  TestableHeltecBalancerBle bms;
+  text_sensor::TextSensor device_model;
+  bms.set_device_model_text_sensor(&device_model);
+
+  bms.decode_device_info_(DEVICE_INFO_FRAME);
+
+  EXPECT_EQ(device_model.state, "GW-24S4EB");
+}
+
+TEST(GwDeviceInfoTest, HardwareVersion) {
+  TestableHeltecBalancerBle bms;
+  text_sensor::TextSensor hardware_version;
+  bms.set_hardware_version_text_sensor(&hardware_version);
+
+  bms.decode_device_info_(DEVICE_INFO_FRAME);
+
+  EXPECT_EQ(hardware_version.state, "HW-2.8.0");
+}
+
+TEST(GwDeviceInfoTest, SoftwareVersion) {
+  TestableHeltecBalancerBle bms;
+  text_sensor::TextSensor software_version;
+  bms.set_software_version_text_sensor(&software_version);
+
+  bms.decode_device_info_(DEVICE_INFO_FRAME);
+
+  EXPECT_EQ(software_version.state, "SW-1.1.0");
+}
+
+TEST(GwDeviceInfoTest, ProtocolVersion) {
+  TestableHeltecBalancerBle bms;
+  text_sensor::TextSensor protocol_version;
+  bms.set_protocol_version_text_sensor(&protocol_version);
+
+  bms.decode_device_info_(DEVICE_INFO_FRAME);
+
+  EXPECT_EQ(protocol_version.state, "V1.0.0");
+}
+
+TEST(GwDeviceInfoTest, ManufacturingDate) {
+  TestableHeltecBalancerBle bms;
+  text_sensor::TextSensor manufacturing_date;
+  bms.set_manufacturing_date_text_sensor(&manufacturing_date);
+
+  bms.decode_device_info_(DEVICE_INFO_FRAME);
+
+  EXPECT_EQ(manufacturing_date.state, "20210915");
+}
+
 TEST(GwDeviceInfoTest, DispatchedViaFrameType) {
   TestableHeltecBalancerBle bms;
   sensor::Sensor runtime;
