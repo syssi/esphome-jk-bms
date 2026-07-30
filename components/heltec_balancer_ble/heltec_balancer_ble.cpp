@@ -157,6 +157,7 @@ void HeltecBalancerBle::dump_config() {  // NOLINT(google-readability-function-s
   LOG_SENSOR("", "Capacity Remaining", this->capacity_remaining_sensor_);
   LOG_SENSOR("", "State of Charge", this->state_of_charge_sensor_);
   LOG_SENSOR("", "Total Runtime", this->total_runtime_sensor_);
+  LOG_SENSOR("", "Power On Count", this->power_on_count_sensor_);
   LOG_SENSOR("", "Balancing Current", this->balancing_current_sensor_);
   LOG_SENSOR("", "Errors Bitmask", this->errors_bitmask_sensor_);
   LOG_SENSOR("", "Cell Detection Failed Bitmask", this->cell_detection_failed_bitmask_sensor_);
@@ -1104,39 +1105,46 @@ void HeltecBalancerBle::decode_device_info_(const std::vector<uint8_t> &data) {
   // 3     1   0x01                   Function (read)
   // 4     2   0x01 0x00              Command (device info)
   // 6     2   0x64 0x00              Length (100 bytes)
+
   // 8    16   0x47 0x57 0x2D 0x32 0x34 0x53 0x34 0x45 0x42 0x00 0x00 0x00 0x00 0x00 0x00 0x00    Model    GW-24S4EB
   auto device_model_begin = data.begin() + 8;
   this->publish_state_(this->device_model_text_sensor_,
                        std::string(device_model_begin, std::find(device_model_begin, device_model_begin + 16, '\0')));
+
   // 24    8   0x48 0x57 0x2D 0x32 0x2E 0x38 0x2E 0x30    Hardware version           HW-2.8.0
   auto hardware_version_begin = data.begin() + 24;
   this->publish_state_(
       this->hardware_version_text_sensor_,
       std::string(hardware_version_begin, std::find(hardware_version_begin, hardware_version_begin + 8, '\0')));
+
   // 32    8   0x5A 0x48 0x2D 0x31 0x2E 0x32 0x2E 0x33    Software version           ZH-1.2.3
   auto software_version_begin = data.begin() + 32;
   this->publish_state_(
       this->software_version_text_sensor_,
       std::string(software_version_begin, std::find(software_version_begin, software_version_begin + 8, '\0')));
+
   // 40    8   0x56 0x31 0x2E 0x30 0x2E 0x30 0x00 0x00    Protocol version           V1.0.0
   auto protocol_version_begin = data.begin() + 40;
   this->publish_state_(
       this->protocol_version_text_sensor_,
       std::string(protocol_version_begin, std::find(protocol_version_begin, protocol_version_begin + 8, '\0')));
+
   // 48    8   0x32 0x30 0x32 0x32 0x30 0x35 0x33 0x31    Production date            20220531
   auto manufacturing_date_begin = data.begin() + 48;
   this->publish_state_(
       this->manufacturing_date_text_sensor_,
       std::string(manufacturing_date_begin, std::find(manufacturing_date_begin, manufacturing_date_begin + 8, '\0')));
+
   // 56    4   0x05 0x00 0x00 0x00    Power on count                                 5
-  ESP_LOGI(TAG, "  Power on count: %d", heltec_get_16bit(56));
+  this->publish_state_(this->power_on_count_sensor_, (float) heltec_get_16bit(56));
+
   // 60    4   0x01 0x91 0x0A 0x00    Total runtime                                  7D
+  //                                  (0x0A9101 = 692481 / 3600 = 192.35h = 8.01d)
   ESP_LOGI(TAG, "  Total runtime: %s (%lus)", format_total_runtime_(heltec_get_32bit(60)).c_str(),
            (unsigned long) heltec_get_32bit(60));
   this->publish_state_(this->total_runtime_sensor_, (float) heltec_get_32bit(60));
   this->publish_state_(this->total_runtime_formatted_text_sensor_, format_total_runtime_(heltec_get_32bit(60)));
 
-  //                                  (0x0A9101 = 692481 / 3600 = 192.35h = 8.01d)
   // 64   34   0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
   //           0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
   // 98    1   0xAB                    CRC
@@ -1177,6 +1185,7 @@ void HeltecBalancerBle::publish_device_unavailable_() {
   this->publish_state_(capacity_remaining_sensor_, NAN);
   this->publish_state_(state_of_charge_sensor_, NAN);
   this->publish_state_(total_runtime_sensor_, NAN);
+  this->publish_state_(power_on_count_sensor_, NAN);
   this->publish_state_(balancing_current_sensor_, NAN);
   this->publish_state_(errors_bitmask_sensor_, NAN);
   this->publish_state_(cell_detection_failed_bitmask_sensor_, NAN);

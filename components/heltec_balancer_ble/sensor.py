@@ -42,6 +42,7 @@ CONF_NOMINAL_CAPACITY = "nominal_capacity"
 CONF_CAPACITY_REMAINING = "capacity_remaining"
 CONF_STATE_OF_CHARGE = "state_of_charge"
 CONF_TOTAL_RUNTIME = "total_runtime"
+CONF_POWER_ON_COUNT = "power_on_count"
 CONF_BALANCING_CURRENT = "balancing_current"
 CONF_ERRORS_BITMASK = "errors_bitmask"
 CONF_CELL_DETECTION_FAILED_BITMASK = "cell_detection_failed_bitmask"
@@ -53,6 +54,7 @@ CONF_CELL_EXCESSIVE_LINE_RESISTANCE_BITMASK = "cell_excessive_line_resistance_bi
 UNIT_AMPERE_HOURS = "Ah"
 ICON_CURRENT_DC = "mdi:current-dc"
 ICON_CELL_RESISTANCE = "mdi:omega"
+ICON_POWER_ON_COUNT = "mdi:power-cycle"
 
 CELL_VOLTAGES = [f"cell_voltage_{i}" for i in range(1, 25)]
 CELL_RESISTANCES = [f"cell_resistance_{i}" for i in range(1, 25)]
@@ -182,6 +184,13 @@ SENSOR_DEFS = {
     CONF_TOTAL_RUNTIME: {
         "unit_of_measurement": UNIT_SECOND,
         "icon": ICON_TIMELAPSE,
+        "accuracy_decimals": 0,
+        "device_class": DEVICE_CLASS_EMPTY,
+        "state_class": STATE_CLASS_TOTAL_INCREASING,
+    },
+    CONF_POWER_ON_COUNT: {
+        "unit_of_measurement": UNIT_EMPTY,
+        "icon": ICON_POWER_ON_COUNT,
         "accuracy_decimals": 0,
         "device_class": DEVICE_CLASS_EMPTY,
         "state_class": STATE_CLASS_TOTAL_INCREASING,

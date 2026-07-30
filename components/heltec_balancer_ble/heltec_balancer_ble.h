@@ -212,6 +212,9 @@ class HeltecBalancerBle :
     state_of_charge_sensor_ = state_of_charge_sensor;
   }
   void set_total_runtime_sensor(sensor::Sensor *total_runtime_sensor) { total_runtime_sensor_ = total_runtime_sensor; }
+  void set_power_on_count_sensor(sensor::Sensor *power_on_count_sensor) {
+    power_on_count_sensor_ = power_on_count_sensor;
+  }
   void set_balancing_current_sensor(sensor::Sensor *balancing_current_sensor) {
     balancing_current_sensor_ = balancing_current_sensor;
   }
@@ -334,6 +337,7 @@ class HeltecBalancerBle :
   sensor::Sensor *capacity_remaining_sensor_{nullptr};
   sensor::Sensor *state_of_charge_sensor_{nullptr};
   sensor::Sensor *total_runtime_sensor_{nullptr};
+  sensor::Sensor *power_on_count_sensor_{nullptr};
   sensor::Sensor *balancing_current_sensor_{nullptr};
   sensor::Sensor *errors_bitmask_sensor_{nullptr};
   sensor::Sensor *cell_detection_failed_bitmask_sensor_{nullptr};

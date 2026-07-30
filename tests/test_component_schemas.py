@@ -265,7 +265,9 @@ class TestJkBalancerSensorLists:
 
 class TestHeltecBalancerBleSensorLists:
     def test_sensor_defs_completeness(self):
-        assert len(heltec_sensor.SENSOR_DEFS) == 23
+        assert heltec_sensor.CONF_TOTAL_RUNTIME in heltec_sensor.SENSOR_DEFS
+        assert heltec_sensor.CONF_POWER_ON_COUNT in heltec_sensor.SENSOR_DEFS
+        assert len(heltec_sensor.SENSOR_DEFS) == 24
 
     def test_binary_sensor_defs_dict(self):
         assert (
@@ -282,11 +284,18 @@ class TestHeltecBalancerBleSensorLists:
         assert heltec_text_sensor.CONF_ERRORS in heltec_text_sensor.TEXT_SENSORS
         assert heltec_text_sensor.CONF_BATTERY_TYPE in heltec_text_sensor.TEXT_SENSORS
         assert heltec_text_sensor.CONF_DEVICE_MODEL in heltec_text_sensor.TEXT_SENSORS
-        assert heltec_text_sensor.CONF_HARDWARE_VERSION in heltec_text_sensor.TEXT_SENSORS
-        assert heltec_text_sensor.CONF_SOFTWARE_VERSION in heltec_text_sensor.TEXT_SENSORS
-        assert heltec_text_sensor.CONF_PROTOCOL_VERSION in heltec_text_sensor.TEXT_SENSORS
         assert (
-            heltec_text_sensor.CONF_MANUFACTURING_DATE in heltec_text_sensor.TEXT_SENSORS
+            heltec_text_sensor.CONF_HARDWARE_VERSION in heltec_text_sensor.TEXT_SENSORS
+        )
+        assert (
+            heltec_text_sensor.CONF_SOFTWARE_VERSION in heltec_text_sensor.TEXT_SENSORS
+        )
+        assert (
+            heltec_text_sensor.CONF_PROTOCOL_VERSION in heltec_text_sensor.TEXT_SENSORS
+        )
+        assert (
+            heltec_text_sensor.CONF_MANUFACTURING_DATE
+            in heltec_text_sensor.TEXT_SENSORS
         )
         assert len(heltec_text_sensor.TEXT_SENSORS) == 10
 

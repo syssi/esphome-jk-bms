@@ -277,6 +277,8 @@ sensor:
       name: "state of charge"
     total_runtime:
       name: "total runtime"
+    power_on_count:
+      name: "power on count"
     balancing_current:
       name: "balancing current"
     cell_detection_failed_bitmask:

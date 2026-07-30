@@ -179,6 +179,16 @@ TEST(EkDeviceInfoTest, TotalRuntime) {
   EXPECT_FLOAT_EQ(runtime.state, 127854.0f);
 }
 
+TEST(EkDeviceInfoTest, PowerOnCount) {
+  TestableHeltecBalancerBle bms;
+  sensor::Sensor power_on_count;
+  bms.set_power_on_count_sensor(&power_on_count);
+
+  bms.decode_device_info_(DEVICE_INFO_FRAME);
+
+  EXPECT_FLOAT_EQ(power_on_count.state, 6.0f);
+}
+
 TEST(EkDeviceInfoTest, TotalRuntimeFormatted) {
   TestableHeltecBalancerBle bms;
   text_sensor::TextSensor formatted;

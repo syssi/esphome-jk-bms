@@ -173,6 +173,16 @@ TEST(GwDeviceInfoTest, TotalRuntime) {
   EXPECT_FLOAT_EQ(runtime.state, 4064370.0f);
 }
 
+TEST(GwDeviceInfoTest, PowerOnCount) {
+  TestableHeltecBalancerBle bms;
+  sensor::Sensor power_on_count;
+  bms.set_power_on_count_sensor(&power_on_count);
+
+  bms.decode_device_info_(DEVICE_INFO_FRAME);
+
+  EXPECT_FLOAT_EQ(power_on_count.state, 33.0f);
+}
+
 TEST(GwDeviceInfoTest, TotalRuntimeFormatted) {
   TestableHeltecBalancerBle bms;
   text_sensor::TextSensor formatted;

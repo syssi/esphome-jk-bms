@@ -338,6 +338,9 @@ sensor:
     total_runtime:
       name: "total runtime"
       device_id: device0
+    power_on_count:
+      name: "power on count"
+      device_id: device0
     balancing_current:
       name: "balancing current"
       device_id: device0
@@ -535,6 +538,9 @@ sensor:
       device_id: device1
     total_runtime:
       name: "total runtime"
+      device_id: device1
+    power_on_count:
+      name: "power on count"
       device_id: device1
     balancing_current:
       name: "balancing current"
