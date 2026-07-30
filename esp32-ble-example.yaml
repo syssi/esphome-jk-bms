@@ -325,3 +325,9 @@ text_sensor:
       name: "software version"
     hardware_version:
       name: "hardware version"
+    device_model:
+      name: "device model"
+    manufacturing_date:
+      name: "manufacturing date"
+    serial_number:
+      name: "serial number"

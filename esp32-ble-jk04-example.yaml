@@ -228,3 +228,5 @@ text_sensor:
       name: "software version"
     hardware_version:
       name: "hardware version"
+    device_model:
+      name: "device model"

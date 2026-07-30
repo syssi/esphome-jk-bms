@@ -997,6 +997,15 @@ text_sensor:
     hardware_version:
       name: "hardware version"
       device_id: device0
+    device_model:
+      name: "device model"
+      device_id: device0
+    manufacturing_date:
+      name: "manufacturing date"
+      device_id: device0
+    serial_number:
+      name: "serial number"
+      device_id: device0
 
   - platform: jk_bms_ble
     jk_bms_ble_id: bms1
@@ -1017,4 +1026,13 @@ text_sensor:
       device_id: device1
     hardware_version:
       name: "hardware version"
+      device_id: device1
+    device_model:
+      name: "device model"
+      device_id: device1
+    manufacturing_date:
+      name: "manufacturing date"
+      device_id: device1
+    serial_number:
+      name: "serial number"
       device_id: device1

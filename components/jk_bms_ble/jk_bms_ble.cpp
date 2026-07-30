@@ -447,6 +447,9 @@ void JkBmsBle::dump_config() {  // NOLINT(google-readability-function-size,reada
   LOG_TEXT_SENSOR("", "Software Version", this->software_version_text_sensor_);
   LOG_TEXT_SENSOR("", "Hardware Version", this->hardware_version_text_sensor_);
   LOG_TEXT_SENSOR("", "Battery Type", this->battery_type_text_sensor_);
+  LOG_TEXT_SENSOR("", "Device Model", this->device_model_text_sensor_);
+  LOG_TEXT_SENSOR("", "Manufacturing Date", this->manufacturing_date_text_sensor_);
+  LOG_TEXT_SENSOR("", "Serial Number", this->serial_number_text_sensor_);
 }
 
 #ifdef USE_ESP32
@@ -1687,8 +1690,10 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
   // 0     4   0x55 0xAA 0xEB 0x90    Header
   // 4     1   0x03                   Frame type
   // 5     1   0xC9                   Frame counter
-  // 6    16   0x4A 0x4B 0x5F 0x50 0x42 0x32 0x41 0x31 0x36 0x53 0x31 0x35 0x50 0x00 0x00 0x00
-  ESP_LOGI(TAG, "  Vendor ID: %s", std::string(data.begin() + 6, data.begin() + 6 + 16).c_str());
+  // 6    16   0x4A 0x4B 0x5F 0x50 0x42 0x32 0x41 0x31 0x36 0x53 0x31 0x35 0x50 0x00 0x00 0x00    Vendor ID / model
+  auto device_model_begin = data.begin() + 6;
+  this->publish_state_(this->device_model_text_sensor_,
+                       std::string(device_model_begin, std::find(device_model_begin, device_model_begin + 16, '\0')));
 
   // 22    8   0x31 0x34 0x2E 0x58 0x41 0x00 0x00 0x00    Hardware version
   auto hardware_version_begin = data.begin() + 22;
@@ -1714,12 +1719,17 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
   // 62   16   0x31 0x32 0x33 0x34 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
   ESP_LOGI(TAG, "  Device passcode: %s", std::string(data.begin() + 62, data.begin() + 62 + 16).c_str());
 
-  // 78    8   0x32 0x33 0x31 0x31 0x31 0x38 0x00 0x00
-  ESP_LOGI(TAG, "  Manufacturing date: 20%.2s-%.2s-%.2s", (const char *) &data[78], (const char *) &data[80],
-           (const char *) &data[82]);
+  // 78    6   0x32 0x33 0x31 0x31 0x31 0x38    Manufacturing date (YYMMDD), empty on JK04
+  auto manufacturing_date_begin = data.begin() + 78;
+  this->publish_state_(
+      this->manufacturing_date_text_sensor_,
+      data[78] == '\0' ? "" : "20" + std::string(manufacturing_date_begin, manufacturing_date_begin + 6));
 
-  // 86    8   0x33 0x30 0x39 0x32 0x35 0x37 0x32 0x31 0x33 0x34 0x00
-  ESP_LOGI(TAG, "  Serial number: %s", std::string(data.begin() + 86, data.begin() + 86 + 11).c_str());
+  // 86    8   0x33 0x30 0x39 0x32 0x35 0x37 0x32 0x31 0x33 0x34 0x00    Serial number
+  auto serial_number_begin = data.begin() + 86;
+  this->publish_state_(
+      this->serial_number_text_sensor_,
+      std::string(serial_number_begin, std::find(serial_number_begin, serial_number_begin + 11, '\0')));
 
   // 97    5   0x30 0x30 0x30 0x30 0x00
   ESP_LOGI(TAG, "  Passcode: %s", std::string(data.begin() + 97, data.begin() + 97 + 5).c_str());

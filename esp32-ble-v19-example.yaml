@@ -441,3 +441,9 @@ text_sensor:
       name: "hardware version"
     battery_type:
       name: "battery type"
+    device_model:
+      name: "device model"
+    manufacturing_date:
+      name: "manufacturing date"
+    serial_number:
+      name: "serial number"

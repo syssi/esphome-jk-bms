@@ -25,6 +25,36 @@ TEST(JkBmsBleDeviceInfoTest, SoftwareVersion) {
   EXPECT_EQ(sw.state, "10.07");
 }
 
+TEST(JkBmsBleDeviceInfoTest, DeviceModel) {
+  TestableJkBmsBle bms;
+  text_sensor::TextSensor device_model;
+  bms.set_device_model_text_sensor(&device_model);
+
+  bms.decode_device_info_(DEVICE_INFO_JK02_24S_V10);
+
+  EXPECT_EQ(device_model.state, "JK-B2A24S20P");
+}
+
+TEST(JkBmsBleDeviceInfoTest, ManufacturingDate) {
+  TestableJkBmsBle bms;
+  text_sensor::TextSensor manufacturing_date;
+  bms.set_manufacturing_date_text_sensor(&manufacturing_date);
+
+  bms.decode_device_info_(DEVICE_INFO_JK02_24S_V10);
+
+  EXPECT_EQ(manufacturing_date.state, "20220511");
+}
+
+TEST(JkBmsBleDeviceInfoTest, SerialNumber) {
+  TestableJkBmsBle bms;
+  text_sensor::TextSensor serial_number;
+  bms.set_serial_number_text_sensor(&serial_number);
+
+  bms.decode_device_info_(DEVICE_INFO_JK02_24S_V10);
+
+  EXPECT_EQ(serial_number.state, "2041803028");
+}
+
 TEST(JkBmsBleDeviceInfoTest, NullSensorsDoNotCrash) {
   TestableJkBmsBle bms;
   bms.decode_device_info_(DEVICE_INFO_JK02_24S_V10);

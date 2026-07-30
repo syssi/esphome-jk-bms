@@ -326,6 +326,15 @@ class JkBmsBle :
   void set_battery_type_text_sensor(text_sensor::TextSensor *battery_type_text_sensor) {
     battery_type_text_sensor_ = battery_type_text_sensor;
   }
+  void set_device_model_text_sensor(text_sensor::TextSensor *device_model_text_sensor) {
+    device_model_text_sensor_ = device_model_text_sensor;
+  }
+  void set_manufacturing_date_text_sensor(text_sensor::TextSensor *manufacturing_date_text_sensor) {
+    manufacturing_date_text_sensor_ = manufacturing_date_text_sensor;
+  }
+  void set_serial_number_text_sensor(text_sensor::TextSensor *serial_number_text_sensor) {
+    serial_number_text_sensor_ = serial_number_text_sensor;
+  }
 
   void set_charging_switch(switch_::Switch *charging_switch) { charging_switch_ = charging_switch; }
   void set_discharging_switch(switch_::Switch *discharging_switch) { discharging_switch_ = discharging_switch; }
@@ -539,6 +548,9 @@ class JkBmsBle :
   text_sensor::TextSensor *software_version_text_sensor_{nullptr};
   text_sensor::TextSensor *hardware_version_text_sensor_{nullptr};
   text_sensor::TextSensor *battery_type_text_sensor_{nullptr};
+  text_sensor::TextSensor *device_model_text_sensor_{nullptr};
+  text_sensor::TextSensor *manufacturing_date_text_sensor_{nullptr};
+  text_sensor::TextSensor *serial_number_text_sensor_{nullptr};
 
   std::vector<uint8_t> frame_buffer_;
   bool status_notification_received_ = false;

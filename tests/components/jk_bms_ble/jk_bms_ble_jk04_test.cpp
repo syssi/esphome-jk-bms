@@ -20,6 +20,25 @@ TEST(JkBmsJk04DeviceInfoTest, SoftwareVersion) {
   EXPECT_EQ(sw.state, "3.3.0");
 }
 
+TEST(JkBmsJk04DeviceInfoTest, DeviceModel) {
+  TestableJkBmsBle bms;
+  text_sensor::TextSensor device_model;
+  bms.set_device_model_text_sensor(&device_model);
+  bms.decode_device_info_(DEVICE_INFO_JK04);
+  EXPECT_EQ(device_model.state, "JK-B2A16S");
+}
+
+TEST(JkBmsJk04DeviceInfoTest, ManufacturingDateAndSerialNumberAreEmpty) {
+  TestableJkBmsBle bms;
+  text_sensor::TextSensor manufacturing_date;
+  text_sensor::TextSensor serial_number;
+  bms.set_manufacturing_date_text_sensor(&manufacturing_date);
+  bms.set_serial_number_text_sensor(&serial_number);
+  bms.decode_device_info_(DEVICE_INFO_JK04);
+  EXPECT_EQ(manufacturing_date.state, "");
+  EXPECT_EQ(serial_number.state, "");
+}
+
 TEST(JkBmsJk04CellInfoTest, CellVoltages) {
   TestableJkBmsBle bms;
   bms.set_protocol_version(PROTOCOL_VERSION_JK04);

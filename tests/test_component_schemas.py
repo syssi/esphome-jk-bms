@@ -224,7 +224,10 @@ class TestJkBleTextSensorConstants:
         assert ble_text_sensor.CONF_BALANCER_STATUS in ble_text_sensor.TEXT_SENSORS
         assert ble_text_sensor.CONF_CHARGE_STATUS in ble_text_sensor.TEXT_SENSORS
         assert ble_text_sensor.CONF_BATTERY_TYPE in ble_text_sensor.TEXT_SENSORS
-        assert len(ble_text_sensor.TEXT_SENSORS) == 8
+        assert ble_text_sensor.CONF_DEVICE_MODEL in ble_text_sensor.TEXT_SENSORS
+        assert ble_text_sensor.CONF_MANUFACTURING_DATE in ble_text_sensor.TEXT_SENSORS
+        assert ble_text_sensor.CONF_SERIAL_NUMBER in ble_text_sensor.TEXT_SENSORS
+        assert len(ble_text_sensor.TEXT_SENSORS) == 11
 
 
 class TestJkBmsDisplaySensorLists:
