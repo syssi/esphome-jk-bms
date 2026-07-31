@@ -437,6 +437,61 @@ class TestJkBalancerErrorOverrides:
         )
 
 
+class TestHeltecBalancerBleErrorOverrides:
+    def test_default_errors_cover_all_8_bits(self):
+        assert len(hub_heltec.DEFAULT_ERRORS) == 8
+
+    def test_default_errors_are_immutable(self):
+        # to_code() patches a copy per hub; a mutable default would let one hub's
+        # error_overrides leak into the next one.
+        assert isinstance(hub_heltec.DEFAULT_ERRORS, tuple)
+
+    def test_default_errors_labels(self):
+        assert hub_heltec.DEFAULT_ERRORS[0] == "Battery detection failed"
+        assert hub_heltec.DEFAULT_ERRORS[4] == "Excessive line resistance"
+        assert hub_heltec.DEFAULT_ERRORS[7] == "Discharge fault"
+
+    def test_no_default_label_is_empty(self):
+        # Unlike the other components every bit maps to a decoded condition.
+        assert all(hub_heltec.DEFAULT_ERRORS)
+
+    @staticmethod
+    def _validate(overrides):
+        config = hub_heltec.CONFIG_SCHEMA(
+            {"ble_client_id": "client0", "error_overrides": overrides}
+        )
+        return config["error_overrides"]
+
+    def test_schema_accepts_bit_index_as_string(self):
+        # ESPHome's YAML loader turns every mapping key into a string.
+        assert self._validate({"1": "Cell overvoltage"}) == {1: "Cell overvoltage"}
+
+    def test_schema_accepts_boundary_bits(self):
+        assert self._validate({"0": "a", "7": "b"}) == {0: "a", 7: "b"}
+
+    def test_schema_accepts_empty_label(self):
+        assert self._validate({"1": ""}) == {1: ""}
+
+    def test_schema_rejects_out_of_range_bit(self):
+        with pytest.raises(vol.Invalid, match="Error bit 8 is out of range"):
+            self._validate({"8": "Nope"})
+        with pytest.raises(vol.Invalid, match="Error bit -1 is out of range"):
+            self._validate({"-1": "Nope"})
+
+    def test_schema_rejects_non_numeric_bit(self):
+        with pytest.raises(vol.Invalid, match="'abc' is not a valid error bit"):
+            self._validate({"abc": "Nope"})
+
+    def test_schema_rejects_non_string_label(self):
+        with pytest.raises(vol.Invalid, match="Must be string"):
+            self._validate({"1": 42})
+
+    def test_error_overrides_is_optional(self):
+        config = hub_heltec.CONFIG_SCHEMA({"ble_client_id": "client0"})
+
+        assert hub_heltec.CONF_ERROR_OVERRIDES not in config
+
+
 class TestHeltecBalancerBleSensorLists:
     def test_sensor_defs_completeness(self):
         assert heltec_sensor.CONF_TOTAL_RUNTIME in heltec_sensor.SENSOR_DEFS

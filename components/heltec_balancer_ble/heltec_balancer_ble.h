@@ -22,6 +22,12 @@ namespace esphome::heltec_balancer_ble {
 namespace espbt = esphome::esp32_ble_tracker;
 #endif
 
+struct LookupTable {
+  const char *const *entries{nullptr};
+  size_t count{0};
+  const char *get(uint8_t index) const { return (entries != nullptr && index < count) ? entries[index] : nullptr; }
+};
+
 enum ProtocolVersion {
   PROTOCOL_VERSION_V1,
   PROTOCOL_VERSION_V2,
@@ -163,6 +169,7 @@ class HeltecBalancerBle :
   }
 
   void set_protocol_version(ProtocolVersion protocol_version) { protocol_version_ = protocol_version; }
+  void set_errors_table(const char *const *entries, size_t count) { errors_table_ = {entries, count}; }
   ProtocolVersion get_protocol_version() { return protocol_version_; }
   void set_throttle(uint32_t throttle) { this->throttle_ = throttle; }
   void set_min_cell_voltage_sensor(sensor::Sensor *min_cell_voltage_sensor) {
@@ -364,6 +371,8 @@ class HeltecBalancerBle :
   std::vector<uint8_t> frame_buffer_;
   InitState init_state_{InitState::NEED_DEVICE_INFO};
   ProtocolVersion protocol_version_{PROTOCOL_VERSION_V1};
+  LookupTable errors_table_;
+
   uint8_t no_response_count_{0};
   uint16_t char_handle_{0};
   uint32_t connection_time_{0};
@@ -389,7 +398,8 @@ class HeltecBalancerBle :
   void publish_device_unavailable_();
   void reset_online_status_tracker_();
   void track_online_status_();
-  std::string error_bits_to_string_(uint16_t bitmask);
+  std::string error_bits_to_string_(uint8_t bitmask, const LookupTable &errors, uint8_t bits);
+  void publish_errors_(uint8_t bitmask);
 
   std::string format_total_runtime_(const uint32_t value) {
     int seconds = (int) value;

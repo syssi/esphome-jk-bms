@@ -76,11 +76,20 @@ static constexpr const char *const BATTERY_TYPES[BATTERY_TYPES_SIZE] = {
     "PbAc",     // 0x04
 };
 
-static const uint8_t CELL_ERRORS_SIZE = 8;
-static constexpr const char *const CELL_ERRORS[CELL_ERRORS_SIZE] = {
-    "Battery detection failed",  "Overvoltage",        "Undervoltage",   "Polarity error",
-    "Excessive line resistance", "System overheating", "Charging fault", "Discharge fault",
-};
+// Aggregates the five per-cell error bitmasks and the three fault bytes into one bit per
+// error condition. The bit order matches DEFAULT_ERRORS in heltec_balancer_ble/__init__.py.
+static uint8_t collect_error_bits(uint32_t detection_failed, uint32_t overvoltage, uint32_t undervoltage,
+                                  uint32_t polarity_error, uint32_t excessive_line_resistance,
+                                  uint8_t system_overheating, uint8_t charging_fault, uint8_t discharge_fault) {
+  return uint8_t((detection_failed != 0) << 0) |           //
+         uint8_t((overvoltage != 0) << 1) |                //
+         uint8_t((undervoltage != 0) << 2) |               //
+         uint8_t((polarity_error != 0) << 3) |             //
+         uint8_t((excessive_line_resistance != 0) << 4) |  //
+         uint8_t((system_overheating != 0) << 5) |         //
+         uint8_t((charging_fault != 0) << 6) |             //
+         uint8_t((discharge_fault != 0) << 7);
+}
 
 uint8_t crc(const uint8_t data[], const uint16_t len) {
   uint8_t crc = 0;
@@ -679,6 +688,11 @@ void HeltecBalancerBle::decode_cell_info_(const std::vector<uint8_t> &data) {
   //                                              0x00: Off
   //                                              0x01: On
   this->publish_state_(this->error_discharging_binary_sensor_, (bool) data[246]);
+
+  this->publish_errors_(collect_error_bits(heltec_get_24bit(229), heltec_get_24bit(232), heltec_get_24bit(235),
+                                           heltec_get_24bit(238), heltec_get_24bit(241), data[244], data[245],
+                                           data[246]));
+
   // 247   1   0x00                             Unknown
   //                                              Bit0: Read failed
   //                                              Bit1: Write failed
@@ -780,6 +794,11 @@ void HeltecBalancerBle::decode_cell_info_v2_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->error_charging_binary_sensor_, (bool) data[282]);
   // 283   1   Discharge fault (+37 from v1 offset 246)
   this->publish_state_(this->error_discharging_binary_sensor_, (bool) data[283]);
+
+  this->publish_errors_(collect_error_bits(heltec_get_24bit(266), heltec_get_24bit(269), heltec_get_24bit(272),
+                                           heltec_get_24bit(275), heltec_get_24bit(278), data[281], data[282],
+                                           data[283]));
+
   // 284   1   Unknown
   // 285   6   Reserved
   // 291   4   Uptime (+37 from v1 offset 254)
@@ -1159,6 +1178,33 @@ void HeltecBalancerBle::track_online_status_() {
     this->publish_device_unavailable_();
     this->no_response_count_++;
   }
+}
+
+std::string HeltecBalancerBle::error_bits_to_string_(const uint8_t mask, const LookupTable &errors,
+                                                     const uint8_t bits) {
+  std::string errors_list;
+
+  for (uint8_t i = 0; i < bits; i++) {
+    if ((mask & (1UL << i)) == 0)
+      continue;
+
+    // Bits without a label (suppressed via `error_overrides`) and bits beyond the
+    // configured table are reported by the raw bitmask sensor only.
+    const char *label = errors.get(i);
+    if (label == nullptr || label[0] == '\0')
+      continue;
+
+    if (!errors_list.empty())
+      errors_list.append(";");
+    errors_list.append(label);
+  }
+
+  return errors_list;
+}
+
+void HeltecBalancerBle::publish_errors_(const uint8_t bitmask) {
+  this->publish_state_(this->errors_bitmask_sensor_, (float) bitmask);
+  this->publish_state_(this->errors_text_sensor_, this->error_bits_to_string_(bitmask, this->errors_table_, 8));
 }
 
 void HeltecBalancerBle::reset_online_status_tracker_() {

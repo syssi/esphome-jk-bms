@@ -1,3 +1,8 @@
 heltec_balancer_ble:
   id: test_balancer
   update_interval: 20s
+  # Override the label of one or more error bits (bit 0-7).
+  # An empty label suppresses the bit entirely.
+  #
+  # error_overrides:
+  #   1: "Cell overvoltage"

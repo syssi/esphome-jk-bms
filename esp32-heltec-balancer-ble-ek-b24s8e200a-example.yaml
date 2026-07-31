@@ -58,6 +58,11 @@ heltec_balancer_ble:
   - ble_client_id: client0
     throttle: 5s
     id: balancer0
+    # Override the label of one or more error bits (bit 0-7).
+    # An empty label suppresses the bit entirely.
+    #
+    # error_overrides:
+    #   1: "Cell overvoltage"
 
 binary_sensor:
   - platform: heltec_balancer_ble
