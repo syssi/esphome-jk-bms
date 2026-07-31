@@ -74,6 +74,11 @@ jk_bms:
   - id: bms0
     jk_modbus_id: modbus0
     update_interval: 5s
+    # Override the label of one or more error bits (bit 0-15).
+    # An empty label suppresses the bit entirely.
+    #
+    # error_overrides:
+    #   0: "Low SoC"
   - id: bms1
     jk_modbus_id: modbus1
     update_interval: 5s

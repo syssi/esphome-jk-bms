@@ -102,6 +102,57 @@ class TestJkBmsSwitchConstants:
         assert len(switch.SWITCHES) == 3
 
 
+class TestJkBmsErrorOverrides:
+    def test_default_errors_cover_all_16_bits(self):
+        assert len(hub.DEFAULT_ERRORS) == 16
+
+    def test_default_errors_are_immutable(self):
+        # to_code() patches a copy per hub; a mutable default would let one hub's
+        # error_overrides leak into the next one.
+        assert isinstance(hub.DEFAULT_ERRORS, tuple)
+
+    def test_default_errors_labels(self):
+        assert hub.DEFAULT_ERRORS[0] == "Low capacity"
+        assert hub.DEFAULT_ERRORS[10] == "Cell overvoltage"
+        assert hub.DEFAULT_ERRORS[13] == "309_A protection"
+
+    def test_reserved_bits_are_empty(self):
+        for bit in (14, 15):
+            assert hub.DEFAULT_ERRORS[bit] == ""
+
+    @staticmethod
+    def _validate(overrides):
+        config = hub.CONFIG_SCHEMA({"error_overrides": overrides})
+        return config["error_overrides"]
+
+    def test_schema_accepts_bit_index_as_string(self):
+        # ESPHome's YAML loader turns every mapping key into a string.
+        assert self._validate({"0": "Low SoC"}) == {0: "Low SoC"}
+
+    def test_schema_accepts_boundary_bits(self):
+        assert self._validate({"0": "a", "15": "b"}) == {0: "a", 15: "b"}
+
+    def test_schema_accepts_empty_label(self):
+        assert self._validate({"0": ""}) == {0: ""}
+
+    def test_schema_rejects_out_of_range_bit(self):
+        with pytest.raises(vol.Invalid, match="Error bit 16 is out of range"):
+            self._validate({"16": "Nope"})
+        with pytest.raises(vol.Invalid, match="Error bit -1 is out of range"):
+            self._validate({"-1": "Nope"})
+
+    def test_schema_rejects_non_numeric_bit(self):
+        with pytest.raises(vol.Invalid, match="'abc' is not a valid error bit"):
+            self._validate({"abc": "Nope"})
+
+    def test_schema_rejects_non_string_label(self):
+        with pytest.raises(vol.Invalid, match="Must be string"):
+            self._validate({"0": 42})
+
+    def test_error_overrides_is_optional(self):
+        assert hub.CONF_ERROR_OVERRIDES not in hub.CONFIG_SCHEMA({})
+
+
 class TestJkBmsBleSensorLists:
     def test_cells_count(self):
         assert len(ble_sensor.CELL_VOLTAGES) == 32

@@ -11,24 +11,6 @@ static const uint8_t MAX_NO_RESPONSE_COUNT = 5;
 static const uint8_t FUNCTION_READ_ALL = 0x06;
 static const uint8_t FUNCTION_WRITE_REGISTER = 0x02;
 
-static const uint8_t ERRORS_SIZE = 14;
-static constexpr const char *const ERRORS[ERRORS_SIZE] = {
-    "Low capacity",                 // Byte 0.0, warning
-    "MOSFET overtemperature",       // Byte 0.1, alarm
-    "Charge overvoltage",           // Byte 0.2, alarm
-    "Discharge undervoltage",       // Byte 0.3, alarm
-    "Battery overtemperature",      // Byte 0.4, alarm
-    "Charge overcurrent",           // Byte 0.5, alarm
-    "Discharge overcurrent",        // Byte 0.6, alarm
-    "Cell pressure difference",     // Byte 0.7, alarm
-    "Battery box overtemperature",  // Byte 1.0, alarm
-    "Battery undertemperature",     // Byte 1.1, alarm
-    "Cell overvoltage",             // Byte 1.2, alarm
-    "Cell undervoltage",            // Byte 1.3, alarm
-    "309_A protection",             // Byte 1.4, alarm
-    "309_A protection",             // Byte 1.5, alarm
-};
-
 static const uint8_t OPERATION_MODES_SIZE = 4;
 static constexpr const char *const OPERATION_MODES[OPERATION_MODES_SIZE] = {
     "Charging enabled",     // 0x00
@@ -205,7 +187,8 @@ void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
   // 0x0003 = 00000000 00000011: Low capacity alarm AND MOSFET overtemperature alarm
   uint16_t raw_errors_bitmask = jk_get_16bit(offset + 6 + 3 * 8);
   this->publish_state_(this->errors_bitmask_sensor_, (float) raw_errors_bitmask);
-  this->publish_state_(this->errors_text_sensor_, this->error_bits_to_string_(raw_errors_bitmask));
+  this->publish_state_(this->errors_text_sensor_,
+                       this->error_bits_to_string_(raw_errors_bitmask, this->errors_table_, 16));
 
   // 0x8C 0x00 0x07: Battery status information                  0000 0000 0000 0111
   // Bit 0: Charging enabled        1 (on), 0 (off)
@@ -511,21 +494,22 @@ void JkBms::publish_state_(text_sensor::TextSensor *text_sensor, const std::stri
   text_sensor->publish_state(state);
 }
 
-std::string JkBms::error_bits_to_string_(const uint16_t mask) {
-  bool first = true;
+std::string JkBms::error_bits_to_string_(const uint16_t mask, const LookupTable &errors, const uint8_t bits) {
   std::string errors_list;
 
-  if (mask) {
-    for (int i = 0; i < ERRORS_SIZE; i++) {
-      if (mask & (1 << i)) {
-        if (first) {
-          first = false;
-        } else {
-          errors_list.append(";");
-        }
-        errors_list.append(ERRORS[i]);
-      }
-    }
+  for (uint8_t i = 0; i < bits; i++) {
+    if ((mask & (1UL << i)) == 0)
+      continue;
+
+    // Bits without a label (reserved or suppressed via `error_overrides`) and bits beyond
+    // the configured table are reported by the raw bitmask sensor only.
+    const char *label = errors.get(i);
+    if (label == nullptr || label[0] == '\0')
+      continue;
+
+    if (!errors_list.empty())
+      errors_list.append(";");
+    errors_list.append(label);
   }
 
   return errors_list;
