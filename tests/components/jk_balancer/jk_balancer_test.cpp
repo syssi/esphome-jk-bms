@@ -55,6 +55,7 @@ TEST(JkBalancerStatusTest, Errors) {
   TestableJkBalancer bms;
   sensor::Sensor bitmask;
   text_sensor::TextSensor errors_text;
+  bms.set_errors_table(DEFAULT_ERRORS, std::size(DEFAULT_ERRORS));
   bms.set_errors_bitmask_sensor(&bitmask);
   bms.set_errors_text_sensor(&errors_text);
 

@@ -13,13 +13,6 @@ static const uint8_t FUNCTION_SET_CELL_COUNT = 0xF0;
 static const uint8_t FUNCTION_SET_TRIGGER_VOLTAGE = 0xF2;
 static const uint8_t FUNCTION_SET_MAX_BALANCE_CURRENT = 0xF4;
 
-static const uint8_t ERRORS_SIZE = 3;
-static constexpr const char *const ERRORS[ERRORS_SIZE] = {
-    "Wrong cell count",
-    "Resistance too high",
-    "Overvoltage",
-};
-
 void JkBalancer::on_jk_balancer_modbus_data(const uint8_t &function, const std::vector<uint8_t> &data) {
   this->reset_online_status_tracker_();
 
@@ -84,7 +77,8 @@ void JkBalancer::on_status_data_(const std::vector<uint8_t> &data) {
   // 12    1   0x01                   Alarm Status
   uint8_t raw_errors_bitmask = data[12];
   this->publish_state_(this->errors_bitmask_sensor_, (float) raw_errors_bitmask);
-  this->publish_state_(this->errors_text_sensor_, this->error_bits_to_string_(raw_errors_bitmask));
+  this->publish_state_(this->errors_text_sensor_,
+                       this->error_bits_to_string_(raw_errors_bitmask, this->errors_table_, 8));
 
   // 13    2   0x00 0x03              Maximum Voltage Difference      0.001f        V         3 * 0.001 = 0.003V
   // this->publish_state_(this->delta_cell_voltage_sensor_, jk_get_16bit(13) * 0.001f);
@@ -235,21 +229,22 @@ void JkBalancer::publish_state_(text_sensor::TextSensor *text_sensor, const std:
   text_sensor->publish_state(state);
 }
 
-std::string JkBalancer::error_bits_to_string_(const uint8_t mask) {
-  bool first = true;
+std::string JkBalancer::error_bits_to_string_(const uint8_t mask, const LookupTable &errors, const uint8_t bits) {
   std::string errors_list;
 
-  if (mask) {
-    for (int i = 0; i < ERRORS_SIZE; i++) {
-      if (mask & (1 << i)) {
-        if (first) {
-          first = false;
-        } else {
-          errors_list.append(";");
-        }
-        errors_list.append(ERRORS[i]);
-      }
-    }
+  for (uint8_t i = 0; i < bits; i++) {
+    if ((mask & (1UL << i)) == 0)
+      continue;
+
+    // Bits without a label (reserved or suppressed via `error_overrides`) and bits beyond
+    // the configured table are reported by the raw bitmask sensor only.
+    const char *label = errors.get(i);
+    if (label == nullptr || label[0] == '\0')
+      continue;
+
+    if (!errors_list.empty())
+      errors_list.append(";");
+    errors_list.append(label);
   }
 
   return errors_list;

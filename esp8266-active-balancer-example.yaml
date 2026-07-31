@@ -59,6 +59,11 @@ jk_balancer:
     jk_balancer_modbus_id: modbus0
     address: 0x01
     update_interval: 5s
+    # Override the label of one or more error bits (bit 0-7).
+    # An empty label suppresses the bit entirely.
+    #
+    # error_overrides:
+    #   0: "Cell count mismatch"
 
 binary_sensor:
   - platform: jk_balancer

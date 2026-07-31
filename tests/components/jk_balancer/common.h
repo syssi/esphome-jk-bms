@@ -1,5 +1,6 @@
 #pragma once
 #include <cstdint>
+#include <iterator>
 #include <vector>
 #include "esphome/components/jk_balancer/jk_balancer.h"
 
@@ -8,6 +9,19 @@ namespace esphome::jk_balancer::testing {
 class TestableJkBalancer : public JkBalancer {
  public:
   void update() override {}  // avoids calling send() with null parent_
+};
+
+// Mirrors DEFAULT_ERRORS in jk_balancer/__init__.py, which to_code() emits as a
+// static constexpr array and hands to the hub via set_errors_table().
+static constexpr const char *const DEFAULT_ERRORS[] = {
+    "Wrong cell count",     // bit 0
+    "Resistance too high",  // bit 1
+    "Overvoltage",          // bit 2
+    "",                     // bit 3 (reserved)
+    "",                     // bit 4 (reserved)
+    "",                     // bit 5 (reserved)
+    "",                     // bit 6 (reserved)
+    "",                     // bit 7 (reserved)
 };
 
 // Traffic from tests/esp8266-fake-active-balancer.yaml

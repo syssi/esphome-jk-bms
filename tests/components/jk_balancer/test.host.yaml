@@ -10,3 +10,8 @@ jk_balancer:
   id: test_bms
   jk_balancer_modbus_id: modbus_bus
   update_interval: 5s
+  # Override the label of one or more error bits (bit 0-7).
+  # An empty label suppresses the bit entirely.
+  #
+  # error_overrides:
+  #   0: "Cell count mismatch"

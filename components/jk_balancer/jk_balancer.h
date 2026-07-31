@@ -10,8 +10,16 @@
 
 namespace esphome::jk_balancer {
 
+struct LookupTable {
+  const char *const *entries{nullptr};
+  size_t count{0};
+  const char *get(uint8_t index) const { return (entries != nullptr && index < count) ? entries[index] : nullptr; }
+};
+
 class JkBalancer : public PollingComponent, public jk_balancer_modbus::JkBalancerModbusDevice {
  public:
+  void set_errors_table(const char *const *entries, size_t count) { errors_table_ = {entries, count}; }
+
   void set_balancing_binary_sensor(binary_sensor::BinarySensor *balancing_binary_sensor) {
     balancing_binary_sensor_ = balancing_binary_sensor;
   }
@@ -104,6 +112,8 @@ class JkBalancer : public PollingComponent, public jk_balancer_modbus::JkBalance
     sensor::Sensor *cell_voltage_sensor_{nullptr};
   } cells_[24];
 
+  LookupTable errors_table_;
+
   uint8_t no_response_count_{0};
 
   void on_status_data_(const std::vector<uint8_t> &data);
@@ -116,7 +126,7 @@ class JkBalancer : public PollingComponent, public jk_balancer_modbus::JkBalance
   void reset_online_status_tracker_();
   void track_online_status_();
 
-  std::string error_bits_to_string_(uint8_t bitmask);
+  std::string error_bits_to_string_(uint8_t bitmask, const LookupTable &errors, uint8_t bits);
 
   bool check_bit_(uint16_t mask, uint16_t flag) { return (mask & flag) == flag; }
 };
