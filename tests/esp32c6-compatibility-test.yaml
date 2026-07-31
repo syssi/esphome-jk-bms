@@ -72,8 +72,8 @@ jk_bms_ble:
     # Override the label of one or more error bits (bit 0-31, JK02 only).
     # An empty label suppresses the bit entirely.
     #
-    # error_overrides:
-    #   4: "Cell overvoltage"
+    error_overrides:
+      4: "Cell overvoltage"
 
 # jk_bms_display
 jk_bms_display:
