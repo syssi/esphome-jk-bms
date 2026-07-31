@@ -41,40 +41,42 @@ CONF_JK_BMS_BLE_ID = "jk_bms_ble_id"
 CONF_PROTOCOL_VERSION = "protocol_version"
 CONF_ERROR_OVERRIDES = "error_overrides"
 
+# fmt: off
 DEFAULT_ERRORS_JK02 = (
-    "Wire resistance",  # bit 0
-    "MOSFET overtemperature",  # bit 1
+    "Wire resistance",                      # bit 0
+    "MOSFET overtemperature",               # bit 1
     "Cell count is not equal to settings",  # bit 2
-    "",  # bit 3 (Previously: "Current sensor anomaly")
-    "Battery is fully charged",  # bit 4
-    "Battery pack overvoltage",  # bit 5
-    "Charge overcurrent",  # bit 6
-    "Charge short circuit",  # bit 7
-    "Charge overtemperature",  # bit 8
-    "Charge undertemperature",  # bit 9
-    "Coprocessor communication error",  # bit 10
-    "Cell undervoltage",  # bit 11
-    "Battery pack undervoltage",  # bit 12
-    "Discharge overcurrent",  # bit 13
-    "Discharge short circuit",  # bit 14
-    "Discharge overtemperature",  # bit 15
-    "Charging MOSFET abnormal",  # bit 16
-    "Discharging MOSFET abnormal",  # bit 17
-    "GPS disconnected",  # bit 18
-    "Modify password in time",  # bit 19
-    "Discharge on failed",  # bit 20
-    "Battery overtemperature",  # bit 21
-    "Temperature sensor anomaly",  # bit 22
-    "PL module anomaly",  # bit 23
-    "SCP release failed",  # bit 24
-    "Discharge OCP II",  # bit 25
-    "Discharge OCP III",  # bit 26
-    "Discharge undertemperature alarm",  # bit 27
-    "GPS remote lock",  # bit 28
-    "",  # bit 29
-    "",  # bit 30
-    "",  # bit 31
+    "",                                     # bit 3 (Previously: "Current sensor anomaly")
+    "Battery is fully charged",             # bit 4
+    "Battery pack overvoltage",             # bit 5
+    "Charge overcurrent",                   # bit 6
+    "Charge short circuit",                 # bit 7
+    "Charge overtemperature",               # bit 8
+    "Charge undertemperature",              # bit 9
+    "Coprocessor communication error",      # bit 10
+    "Cell undervoltage",                    # bit 11
+    "Battery pack undervoltage",            # bit 12
+    "Discharge overcurrent",                # bit 13
+    "Discharge short circuit",              # bit 14
+    "Discharge overtemperature",            # bit 15
+    "Charging MOSFET abnormal",             # bit 16
+    "Discharging MOSFET abnormal",          # bit 17
+    "GPS disconnected",                     # bit 18
+    "Modify password in time",              # bit 19
+    "Discharge on failed",                  # bit 20
+    "Battery overtemperature",              # bit 21
+    "Temperature sensor anomaly",           # bit 22
+    "PL module anomaly",                    # bit 23
+    "SCP release failed",                   # bit 24
+    "Discharge OCP II",                     # bit 25
+    "Discharge OCP III",                    # bit 26
+    "Discharge undertemperature alarm",     # bit 27
+    "GPS remote lock",                      # bit 28
+    "",                                     # bit 29
+    "",                                     # bit 30
+    "",                                     # bit 31
 )
+# fmt: on
 MAX_ERROR_BIT = len(DEFAULT_ERRORS_JK02) - 1
 
 
