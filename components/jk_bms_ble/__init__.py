@@ -41,11 +41,6 @@ CONF_JK_BMS_BLE_ID = "jk_bms_ble_id"
 CONF_PROTOCOL_VERSION = "protocol_version"
 CONF_ERROR_OVERRIDES = "error_overrides"
 
-# Single source of truth for the JK02 error bitmask labels (bits 0-31).
-# The manufacturer has changed the meaning of some bits across firmware
-# generations (e.g. bit 4 used to mean "Cell Overvoltage", newer firmware
-# reports "Battery is fully charged" there instead) - `error_overrides` lets
-# a user override individual entries without patching the component.
 DEFAULT_ERRORS_JK02 = [
     "Wire resistance",  # bit 0
     "MOSFET overtemperature",  # bit 1
@@ -143,10 +138,6 @@ async def to_code(config):
 
     errors_jk02 = apply_error_overrides(config.get(CONF_ERROR_OVERRIDES, {}))
 
-    # Emit a static constexpr lookup table in flash and hand a pointer to the hub.
-    # This keeps the error labels (and any error_overrides) as the single source of
-    # truth in Python - jk_bms_ble.cpp holds no error-label data of its own. The
-    # docs/protocol-design-ble.md bit layout table mirrors DEFAULT_ERRORS_JK02.
     arr_name = f"{config[CONF_ID]}_ERRORS_JK02"
     entries = ", ".join(str(cg.safe_exp(label)) for label in errors_jk02)
     cg.add_global(
