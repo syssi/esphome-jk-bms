@@ -69,6 +69,12 @@ jk_bms_ble:
     protocol_version: JK02_32S
     throttle: 5s
     id: bms1
+    # Override the label of one or more error bits (bit 0-31, JK02 only). JK
+    # reassigned some bits across firmware generations: bit 4 used to mean
+    # "Cell overvoltage" while newer firmware reports "Battery is fully charged"
+    # there. An empty label suppresses the bit entirely.
+    # error_overrides:
+    #   4: Cell overvoltage
 
 # jk_bms_display
 jk_bms_display:

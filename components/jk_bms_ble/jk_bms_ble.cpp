@@ -818,7 +818,7 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
     uint32_t raw_errors_bitmask = jk_get_32bit(134 + offset);
     this->publish_state_(this->errors_bitmask_hex_text_sensor_, this->to_hex_string_(raw_errors_bitmask));
     this->publish_state_(this->errors_text_sensor_,
-                         this->error_bits_to_string_(raw_errors_bitmask, this->errors_jk02_table_.entries, 32));
+                         this->error_bits_to_string_(raw_errors_bitmask, this->errors_jk02_table_, 32));
   } else {
     this->publish_state_(this->mosfet_temperature_sensor_, (float) ((int16_t) jk_get_16bit(134 + offset)) * 0.1f);
   }
@@ -829,7 +829,7 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
     uint32_t raw_errors_bitmask = jk_get_16bit(136 + offset);
     this->publish_state_(this->errors_bitmask_hex_text_sensor_, this->to_hex_string_(raw_errors_bitmask));
     this->publish_state_(this->errors_text_sensor_,
-                         this->error_bits_to_string_(raw_errors_bitmask, this->errors_jk02_table_.entries, 16));
+                         this->error_bits_to_string_(raw_errors_bitmask, this->errors_jk02_table_, 16));
   }
 
   // 138   2   0x00 0x00              Balance current      0.001         A
@@ -1963,19 +1963,22 @@ std::string JkBmsBle::to_hex_string_(const uint32_t mask) {
   return std::string(buf);
 }
 
-std::string JkBmsBle::error_bits_to_string_(const uint32_t mask, const char *const *errors, const uint8_t errors_size) {
-  bool first = true;
+std::string JkBmsBle::error_bits_to_string_(const uint32_t mask, const LookupTable &errors, const uint8_t bits) {
   std::string errors_list;
 
-  if (mask) {
-    for (int i = 0; i < errors_size; i++) {
-      if ((mask & (1 << i)) && errors[i][0] != '\0') {
-        if (!first)
-          errors_list.append(";");
-        first = false;
-        errors_list.append(errors[i]);
-      }
-    }
+  for (uint8_t i = 0; i < bits; i++) {
+    if ((mask & (1UL << i)) == 0)
+      continue;
+
+    // Bits without a label (unused or suppressed via `error_overrides`) and bits beyond
+    // the configured table are reported by the raw bitmask sensor only.
+    const char *label = errors.get(i);
+    if (label == nullptr || label[0] == '\0')
+      continue;
+
+    if (!errors_list.empty())
+      errors_list.append(";");
+    errors_list.append(label);
   }
 
   return errors_list;

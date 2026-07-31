@@ -585,7 +585,7 @@ class JkBmsBle :
   void reset_online_status_tracker_();
   void track_online_status_();
   std::string to_hex_string_(uint32_t mask);
-  std::string error_bits_to_string_(uint32_t bitmask, const char *const *errors, uint8_t errors_size);
+  std::string error_bits_to_string_(uint32_t bitmask, const LookupTable &errors, uint8_t bits);
   std::string charge_status_id_to_string_(uint8_t status);
   std::string battery_type_id_to_string_(uint8_t code);
 

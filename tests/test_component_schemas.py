@@ -5,6 +5,9 @@ import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
+import pytest  # noqa: E402
+import voluptuous as vol  # noqa: E402
+
 import components.heltec_balancer_ble as hub_heltec  # noqa: E402
 from components.heltec_balancer_ble import (  # noqa: E402
     binary_sensor as heltec_binary_sensor,
@@ -121,6 +124,62 @@ class TestJkBmsBleSensorLists:
         assert "battery_type_id" in ble_sensor.SENSOR_DEFS
         assert ble_sensor.CONF_POWER_ON_COUNT in ble_sensor.SENSOR_DEFS
         assert len(ble_sensor.SENSOR_DEFS) == 33
+
+
+class TestJkBmsBleErrorOverrides:
+    def test_default_errors_cover_all_32_bits(self):
+        assert len(hub_ble.DEFAULT_ERRORS_JK02) == 32
+
+    def test_default_errors_labels(self):
+        assert hub_ble.DEFAULT_ERRORS_JK02[0] == "Wire resistance"
+        assert hub_ble.DEFAULT_ERRORS_JK02[4] == "Battery is fully charged"
+        assert hub_ble.DEFAULT_ERRORS_JK02[28] == "GPS remote lock"
+
+    def test_unused_bits_are_empty(self):
+        for bit in (3, 29, 30, 31):
+            assert hub_ble.DEFAULT_ERRORS_JK02[bit] == ""
+
+    def test_schema_accepts_bit_index_as_string(self):
+        # ESPHome's YAML loader turns every mapping key into a string.
+        assert hub_ble.ERROR_OVERRIDES_SCHEMA({"4": "Cell overvoltage"}) == {
+            4: "Cell overvoltage"
+        }
+
+    def test_schema_accepts_boundary_bits(self):
+        assert hub_ble.ERROR_OVERRIDES_SCHEMA({"0": "a", "31": "b"}) == {
+            0: "a",
+            31: "b",
+        }
+
+    def test_schema_accepts_empty_label(self):
+        assert hub_ble.ERROR_OVERRIDES_SCHEMA({"4": ""}) == {4: ""}
+
+    def test_schema_rejects_out_of_range_bit(self):
+        with pytest.raises(vol.Invalid):
+            hub_ble.ERROR_OVERRIDES_SCHEMA({"32": "Nope"})
+        with pytest.raises(vol.Invalid):
+            hub_ble.ERROR_OVERRIDES_SCHEMA({"-1": "Nope"})
+
+    def test_schema_rejects_non_string_label(self):
+        with pytest.raises(vol.Invalid):
+            hub_ble.ERROR_OVERRIDES_SCHEMA({"4": 42})
+
+    def test_apply_overrides_replaces_only_the_given_bits(self):
+        errors = hub_ble.apply_error_overrides({4: "Cell overvoltage", 29: "Reserved"})
+
+        assert errors[4] == "Cell overvoltage"
+        assert errors[29] == "Reserved"
+        assert errors[0] == hub_ble.DEFAULT_ERRORS_JK02[0]
+        assert errors[5] == hub_ble.DEFAULT_ERRORS_JK02[5]
+        assert len(errors) == 32
+
+    def test_apply_overrides_without_overrides_returns_defaults(self):
+        assert hub_ble.apply_error_overrides({}) == hub_ble.DEFAULT_ERRORS_JK02
+
+    def test_apply_overrides_does_not_mutate_defaults(self):
+        hub_ble.apply_error_overrides({0: "Patched"})
+
+        assert hub_ble.DEFAULT_ERRORS_JK02[0] == "Wire resistance"
 
 
 class TestJkBmsBleBinarySensorConstants:

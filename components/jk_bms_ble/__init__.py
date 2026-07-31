@@ -81,6 +81,21 @@ DEFAULT_ERRORS_JK02 = [
     "",  # bit 31
 ]
 
+# Maps a bit position to the label replacing the DEFAULT_ERRORS_JK02 entry. An empty
+# label suppresses the bit, so it shows up in the raw bitmask sensor only.
+ERROR_OVERRIDES_SCHEMA = cv.Schema(
+    {cv.int_range(0, len(DEFAULT_ERRORS_JK02) - 1): cv.string_strict}
+)
+
+
+def apply_error_overrides(overrides):
+    """Return the JK02 error labels with the given {bit: label} overrides applied."""
+    errors = DEFAULT_ERRORS_JK02.copy()
+    for bit, label in overrides.items():
+        errors[bit] = label
+    return errors
+
+
 jk_bms_ble_ns = cg.esphome_ns.namespace("jk_bms_ble")
 JkBmsBle = jk_bms_ble_ns.class_(
     "JkBmsBle", ble_client.BLEClientNode, cg.PollingComponent
@@ -110,9 +125,7 @@ CONFIG_SCHEMA = cv.All(
             cv.Optional(
                 CONF_THROTTLE, default="2s"
             ): cv.positive_time_period_milliseconds,
-            cv.Optional(CONF_ERROR_OVERRIDES): cv.Schema(
-                {cv.int_range(0, len(DEFAULT_ERRORS_JK02) - 1): cv.string_strict}
-            ),
+            cv.Optional(CONF_ERROR_OVERRIDES): ERROR_OVERRIDES_SCHEMA,
         }
     )
     .extend(ble_client.BLE_CLIENT_SCHEMA)
@@ -128,13 +141,12 @@ async def to_code(config):
     cg.add(var.set_throttle(config[CONF_THROTTLE]))
     cg.add(var.set_protocol_version(config[CONF_PROTOCOL_VERSION]))
 
-    errors_jk02 = DEFAULT_ERRORS_JK02.copy()
-    for bit, label in config.get(CONF_ERROR_OVERRIDES, {}).items():
-        errors_jk02[bit] = label
+    errors_jk02 = apply_error_overrides(config.get(CONF_ERROR_OVERRIDES, {}))
 
     # Emit a static constexpr lookup table in flash and hand a pointer to the hub.
-    # This keeps the error labels (and any error_overrides) as the single source
-    # of truth in Python - jk_bms_ble.cpp holds no error-label data of its own.
+    # This keeps the error labels (and any error_overrides) as the single source of
+    # truth in Python - jk_bms_ble.cpp holds no error-label data of its own. The
+    # docs/protocol-design-ble.md bit layout table mirrors DEFAULT_ERRORS_JK02.
     arr_name = f"{config[CONF_ID]}_ERRORS_JK02"
     entries = ", ".join(str(cg.safe_exp(label)) for label in errors_jk02)
     cg.add_global(

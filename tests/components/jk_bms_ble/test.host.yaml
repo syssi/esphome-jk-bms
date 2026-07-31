@@ -1,3 +1,9 @@
 jk_bms_ble:
   id: test_bms
   update_interval: 20s
+  # Override the label of one or more error bits (bit 0-31, JK02 only). JK
+  # reassigned some bits across firmware generations: bit 4 used to mean
+  # "Cell overvoltage" while newer firmware reports "Battery is fully charged"
+  # there. An empty label suppresses the bit entirely.
+  # error_overrides:
+  #   4: Cell overvoltage
