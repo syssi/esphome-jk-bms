@@ -130,6 +130,11 @@ class TestJkBmsBleErrorOverrides:
     def test_default_errors_cover_all_32_bits(self):
         assert len(hub_ble.DEFAULT_ERRORS_JK02) == 32
 
+    def test_default_errors_are_immutable(self):
+        # to_code() patches a copy per hub; a mutable default would let one hub's
+        # error_overrides leak into the next one.
+        assert isinstance(hub_ble.DEFAULT_ERRORS_JK02, tuple)
+
     def test_default_errors_labels(self):
         assert hub_ble.DEFAULT_ERRORS_JK02[0] == "Wire resistance"
         assert hub_ble.DEFAULT_ERRORS_JK02[4] == "Battery is fully charged"
@@ -139,47 +144,43 @@ class TestJkBmsBleErrorOverrides:
         for bit in (3, 29, 30, 31):
             assert hub_ble.DEFAULT_ERRORS_JK02[bit] == ""
 
+    @staticmethod
+    def _validate(overrides):
+        config = hub_ble.CONFIG_SCHEMA(
+            {
+                "protocol_version": "JK02_32S",
+                "ble_client_id": "client0",
+                "error_overrides": overrides,
+            }
+        )
+        return config["error_overrides"]
+
     def test_schema_accepts_bit_index_as_string(self):
         # ESPHome's YAML loader turns every mapping key into a string.
-        assert hub_ble.ERROR_OVERRIDES_SCHEMA({"4": "Cell overvoltage"}) == {
-            4: "Cell overvoltage"
-        }
+        assert self._validate({"4": "Cell overvoltage"}) == {4: "Cell overvoltage"}
 
     def test_schema_accepts_boundary_bits(self):
-        assert hub_ble.ERROR_OVERRIDES_SCHEMA({"0": "a", "31": "b"}) == {
-            0: "a",
-            31: "b",
-        }
+        assert self._validate({"0": "a", "31": "b"}) == {0: "a", 31: "b"}
 
     def test_schema_accepts_empty_label(self):
-        assert hub_ble.ERROR_OVERRIDES_SCHEMA({"4": ""}) == {4: ""}
+        assert self._validate({"4": ""}) == {4: ""}
 
     def test_schema_rejects_out_of_range_bit(self):
         with pytest.raises(vol.Invalid):
-            hub_ble.ERROR_OVERRIDES_SCHEMA({"32": "Nope"})
+            self._validate({"32": "Nope"})
         with pytest.raises(vol.Invalid):
-            hub_ble.ERROR_OVERRIDES_SCHEMA({"-1": "Nope"})
+            self._validate({"-1": "Nope"})
 
     def test_schema_rejects_non_string_label(self):
         with pytest.raises(vol.Invalid):
-            hub_ble.ERROR_OVERRIDES_SCHEMA({"4": 42})
+            self._validate({"4": 42})
 
-    def test_apply_overrides_replaces_only_the_given_bits(self):
-        errors = hub_ble.apply_error_overrides({4: "Cell overvoltage", 29: "Reserved"})
+    def test_error_overrides_is_optional(self):
+        config = hub_ble.CONFIG_SCHEMA(
+            {"protocol_version": "JK02_32S", "ble_client_id": "client0"}
+        )
 
-        assert errors[4] == "Cell overvoltage"
-        assert errors[29] == "Reserved"
-        assert errors[0] == hub_ble.DEFAULT_ERRORS_JK02[0]
-        assert errors[5] == hub_ble.DEFAULT_ERRORS_JK02[5]
-        assert len(errors) == 32
-
-    def test_apply_overrides_without_overrides_returns_defaults(self):
-        assert hub_ble.apply_error_overrides({}) == hub_ble.DEFAULT_ERRORS_JK02
-
-    def test_apply_overrides_does_not_mutate_defaults(self):
-        hub_ble.apply_error_overrides({0: "Patched"})
-
-        assert hub_ble.DEFAULT_ERRORS_JK02[0] == "Wire resistance"
+        assert hub_ble.CONF_ERROR_OVERRIDES not in config
 
 
 class TestJkBmsBleBinarySensorConstants:

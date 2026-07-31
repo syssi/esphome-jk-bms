@@ -41,7 +41,7 @@ CONF_JK_BMS_BLE_ID = "jk_bms_ble_id"
 CONF_PROTOCOL_VERSION = "protocol_version"
 CONF_ERROR_OVERRIDES = "error_overrides"
 
-DEFAULT_ERRORS_JK02 = [
+DEFAULT_ERRORS_JK02 = (
     "Wire resistance",  # bit 0
     "MOSFET overtemperature",  # bit 1
     "Cell count is not equal to settings",  # bit 2
@@ -74,22 +74,7 @@ DEFAULT_ERRORS_JK02 = [
     "",  # bit 29
     "",  # bit 30
     "",  # bit 31
-]
-
-# Maps a bit position to the label replacing the DEFAULT_ERRORS_JK02 entry. An empty
-# label suppresses the bit, so it shows up in the raw bitmask sensor only.
-ERROR_OVERRIDES_SCHEMA = cv.Schema(
-    {cv.int_range(0, len(DEFAULT_ERRORS_JK02) - 1): cv.string_strict}
 )
-
-
-def apply_error_overrides(overrides):
-    """Return the JK02 error labels with the given {bit: label} overrides applied."""
-    errors = DEFAULT_ERRORS_JK02.copy()
-    for bit, label in overrides.items():
-        errors[bit] = label
-    return errors
-
 
 jk_bms_ble_ns = cg.esphome_ns.namespace("jk_bms_ble")
 JkBmsBle = jk_bms_ble_ns.class_(
@@ -120,7 +105,9 @@ CONFIG_SCHEMA = cv.All(
             cv.Optional(
                 CONF_THROTTLE, default="2s"
             ): cv.positive_time_period_milliseconds,
-            cv.Optional(CONF_ERROR_OVERRIDES): ERROR_OVERRIDES_SCHEMA,
+            cv.Optional(CONF_ERROR_OVERRIDES): cv.Schema(
+                {cv.int_range(0, len(DEFAULT_ERRORS_JK02) - 1): cv.string_strict}
+            ),
         }
     )
     .extend(ble_client.BLE_CLIENT_SCHEMA)
@@ -136,7 +123,9 @@ async def to_code(config):
     cg.add(var.set_throttle(config[CONF_THROTTLE]))
     cg.add(var.set_protocol_version(config[CONF_PROTOCOL_VERSION]))
 
-    errors_jk02 = apply_error_overrides(config.get(CONF_ERROR_OVERRIDES, {}))
+    errors_jk02 = list(DEFAULT_ERRORS_JK02)
+    for bit, label in config.get(CONF_ERROR_OVERRIDES, {}).items():
+        errors_jk02[bit] = label
 
     arr_name = f"{config[CONF_ID]}_ERRORS_JK02"
     entries = ", ".join(str(cg.safe_exp(label)) for label in errors_jk02)
