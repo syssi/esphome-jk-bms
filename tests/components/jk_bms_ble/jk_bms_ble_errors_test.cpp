@@ -128,7 +128,7 @@ TEST(JkBmsBleErrorsTest, OverriddenLabelIsUsedInsteadOfDefault) {
   EXPECT_EQ(text, "Cell overvoltage");
 }
 
-TEST(JkBmsBleErrorsTest, Jk02_24SUsesSameTableWith16BitMask) {
+TEST(JkBmsBleErrorsTest, Protocol24SUsesSameTableWith16BitMask) {
   TestableJkBmsBle bms;  // default protocol version is JK02_24S
   bms.set_errors_jk02_table(DEFAULT_ERRORS, std::size(DEFAULT_ERRORS));
   text_sensor::TextSensor hex, text;
