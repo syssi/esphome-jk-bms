@@ -75,6 +75,32 @@ DEFAULT_ERRORS_JK02 = (
     "",  # bit 30
     "",  # bit 31
 )
+MAX_ERROR_BIT = len(DEFAULT_ERRORS_JK02) - 1
+
+
+def error_overrides(value):
+    # A plain {cv.int_range(...): cv.string_strict} schema rejects an out of range
+    # bit with voluptuous' "extra keys not allowed", which tells the user nothing.
+    value = cv.Schema({cv.string: cv.string_strict})(value)
+
+    overrides = {}
+    for key, label in value.items():
+        try:
+            bit = cv.int_(key)
+        except cv.Invalid:
+            raise cv.Invalid(
+                f"'{key}' is not a valid error bit, expected a number between 0 and {MAX_ERROR_BIT}",
+                path=[key],
+            ) from None
+        if not 0 <= bit <= MAX_ERROR_BIT:
+            raise cv.Invalid(
+                f"Error bit {bit} is out of range, must be between 0 and {MAX_ERROR_BIT}",
+                path=[key],
+            )
+        overrides[bit] = label
+
+    return overrides
+
 
 jk_bms_ble_ns = cg.esphome_ns.namespace("jk_bms_ble")
 JkBmsBle = jk_bms_ble_ns.class_(
@@ -105,9 +131,7 @@ CONFIG_SCHEMA = cv.All(
             cv.Optional(
                 CONF_THROTTLE, default="2s"
             ): cv.positive_time_period_milliseconds,
-            cv.Optional(CONF_ERROR_OVERRIDES): cv.Schema(
-                {cv.int_range(0, len(DEFAULT_ERRORS_JK02) - 1): cv.string_strict}
-            ),
+            cv.Optional(CONF_ERROR_OVERRIDES): error_overrides,
         }
     )
     .extend(ble_client.BLE_CLIENT_SCHEMA)

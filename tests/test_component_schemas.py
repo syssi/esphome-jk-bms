@@ -165,14 +165,21 @@ class TestJkBmsBleErrorOverrides:
     def test_schema_accepts_empty_label(self):
         assert self._validate({"4": ""}) == {4: ""}
 
+    def test_schema_accepts_hex_bit_index(self):
+        assert self._validate({"0x1F": "Reserved"}) == {31: "Reserved"}
+
     def test_schema_rejects_out_of_range_bit(self):
-        with pytest.raises(vol.Invalid):
+        with pytest.raises(vol.Invalid, match="Error bit 32 is out of range"):
             self._validate({"32": "Nope"})
-        with pytest.raises(vol.Invalid):
+        with pytest.raises(vol.Invalid, match="Error bit -1 is out of range"):
             self._validate({"-1": "Nope"})
 
+    def test_schema_rejects_non_numeric_bit(self):
+        with pytest.raises(vol.Invalid, match="'abc' is not a valid error bit"):
+            self._validate({"abc": "Nope"})
+
     def test_schema_rejects_non_string_label(self):
-        with pytest.raises(vol.Invalid):
+        with pytest.raises(vol.Invalid, match="Must be string"):
             self._validate({"4": 42})
 
     def test_error_overrides_is_optional(self):
