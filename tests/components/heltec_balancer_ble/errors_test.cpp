@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <cmath>
 #include <iterator>
 #include <string>
 #include <utility>
@@ -176,6 +177,23 @@ TEST(HeltecBalancerErrorsTest, ProtocolV2UsesSameTable) {
 
   EXPECT_FLOAT_EQ(bitmask.state, 36.0f);  // bit 2 + bit 5
   EXPECT_EQ(text.state, "Undervoltage;System overheating");
+}
+
+// Going offline clears the bitmask and marks the text sensor, like the other
+// components do in their device unavailable path.
+TEST(HeltecBalancerErrorsTest, DeviceUnavailablePublishesOffline) {
+  TestableHeltecBalancerBle bms;
+  bms.set_errors_table(DEFAULT_ERRORS, std::size(DEFAULT_ERRORS));
+
+  sensor::Sensor bitmask;
+  text_sensor::TextSensor text;
+  bms.set_errors_bitmask_sensor(&bitmask);
+  bms.set_errors_text_sensor(&text);
+
+  bms.publish_device_unavailable_();
+
+  EXPECT_TRUE(std::isnan(bitmask.state));
+  EXPECT_EQ(text.state, "Offline");
 }
 
 }  // namespace esphome::heltec_balancer_ble::testing

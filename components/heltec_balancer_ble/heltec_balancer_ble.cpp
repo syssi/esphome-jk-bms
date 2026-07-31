@@ -1215,6 +1215,7 @@ void HeltecBalancerBle::reset_online_status_tracker_() {
 void HeltecBalancerBle::publish_device_unavailable_() {
   this->publish_state_(this->online_status_binary_sensor_, false);
   this->publish_state_(this->operation_status_text_sensor_, "Offline");
+  this->publish_state_(this->errors_text_sensor_, "Offline");
 
   this->publish_state_(min_cell_voltage_sensor_, NAN);
   this->publish_state_(max_cell_voltage_sensor_, NAN);

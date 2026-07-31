@@ -24,6 +24,7 @@ class TestableHeltecBalancerBle : public HeltecBalancerBle {
   using HeltecBalancerBle::decode_device_info_;
   using HeltecBalancerBle::decode_settings_;
   using HeltecBalancerBle::decode_settings_v2_;
+  using HeltecBalancerBle::publish_device_unavailable_;
 };
 
 }  // namespace esphome::heltec_balancer_ble::testing
