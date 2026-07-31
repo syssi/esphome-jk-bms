@@ -39,6 +39,47 @@ def deprecated_renames(renames: dict[str, str]):
 
 CONF_JK_BMS_BLE_ID = "jk_bms_ble_id"
 CONF_PROTOCOL_VERSION = "protocol_version"
+CONF_ERROR_OVERRIDES = "error_overrides"
+
+# Single source of truth for the JK02 error bitmask labels (bits 0-31).
+# The manufacturer has changed the meaning of some bits across firmware
+# generations (e.g. bit 4 used to mean "Cell Overvoltage", newer firmware
+# reports "Battery is fully charged" there instead) - `error_overrides` lets
+# a user override individual entries without patching the component.
+DEFAULT_ERRORS_JK02 = [
+    "Wire resistance",  # bit 0
+    "MOSFET overtemperature",  # bit 1
+    "Cell count is not equal to settings",  # bit 2
+    "",  # bit 3 (Previously: "Current sensor anomaly")
+    "Battery is fully charged",  # bit 4
+    "Battery pack overvoltage",  # bit 5
+    "Charge overcurrent",  # bit 6
+    "Charge short circuit",  # bit 7
+    "Charge overtemperature",  # bit 8
+    "Charge undertemperature",  # bit 9
+    "Coprocessor communication error",  # bit 10
+    "Cell undervoltage",  # bit 11
+    "Battery pack undervoltage",  # bit 12
+    "Discharge overcurrent",  # bit 13
+    "Discharge short circuit",  # bit 14
+    "Discharge overtemperature",  # bit 15
+    "Charging MOSFET abnormal",  # bit 16
+    "Discharging MOSFET abnormal",  # bit 17
+    "GPS disconnected",  # bit 18
+    "Modify password in time",  # bit 19
+    "Discharge on failed",  # bit 20
+    "Battery overtemperature",  # bit 21
+    "Temperature sensor anomaly",  # bit 22
+    "PL module anomaly",  # bit 23
+    "SCP release failed",  # bit 24
+    "Discharge OCP II",  # bit 25
+    "Discharge OCP III",  # bit 26
+    "Discharge undertemperature alarm",  # bit 27
+    "GPS remote lock",  # bit 28
+    "",  # bit 29
+    "",  # bit 30
+    "",  # bit 31
+]
 
 jk_bms_ble_ns = cg.esphome_ns.namespace("jk_bms_ble")
 JkBmsBle = jk_bms_ble_ns.class_(
@@ -69,6 +110,9 @@ CONFIG_SCHEMA = cv.All(
             cv.Optional(
                 CONF_THROTTLE, default="2s"
             ): cv.positive_time_period_milliseconds,
+            cv.Optional(CONF_ERROR_OVERRIDES): cv.Schema(
+                {cv.int_range(0, len(DEFAULT_ERRORS_JK02) - 1): cv.string_strict}
+            ),
         }
     )
     .extend(ble_client.BLE_CLIENT_SCHEMA)
@@ -83,3 +127,19 @@ async def to_code(config):
 
     cg.add(var.set_throttle(config[CONF_THROTTLE]))
     cg.add(var.set_protocol_version(config[CONF_PROTOCOL_VERSION]))
+
+    errors_jk02 = DEFAULT_ERRORS_JK02.copy()
+    for bit, label in config.get(CONF_ERROR_OVERRIDES, {}).items():
+        errors_jk02[bit] = label
+
+    # Emit a static constexpr lookup table in flash and hand a pointer to the hub.
+    # This keeps the error labels (and any error_overrides) as the single source
+    # of truth in Python - jk_bms_ble.cpp holds no error-label data of its own.
+    arr_name = f"{config[CONF_ID]}_ERRORS_JK02"
+    entries = ", ".join(str(cg.safe_exp(label)) for label in errors_jk02)
+    cg.add_global(
+        cg.RawStatement(
+            f"static constexpr const char *const {arr_name}[] = {{{entries}}};"
+        )
+    )
+    cg.add(var.set_errors_jk02_table(cg.RawExpression(arr_name), len(errors_jk02)))

@@ -29,41 +29,6 @@ static const uint8_t COMMAND_LOGBOOK = 0xA1;
 static const uint16_t MIN_RESPONSE_SIZE = 300;
 static const uint16_t MAX_RESPONSE_SIZE = 384 + 16;
 
-static constexpr const char *const ERRORS_JK02[] = {
-    "Wire resistance",                      // bit 0
-    "MOSFET overtemperature",               // bit 1
-    "Cell count is not equal to settings",  // bit 2
-    "",                                     // bit 3 (Previously: "Current sensor anomaly")
-    "Battery is fully charged",             // bit 4
-    "Battery pack overvoltage",             // bit 5
-    "Charge overcurrent",                   // bit 6
-    "Charge short circuit",                 // bit 7
-    "Charge overtemperature",               // bit 8
-    "Charge undertemperature",              // bit 9
-    "Coprocessor communication error",      // bit 10
-    "Cell undervoltage",                    // bit 11
-    "Battery pack undervoltage",            // bit 12
-    "Discharge overcurrent",                // bit 13
-    "Discharge short circuit",              // bit 14
-    "Discharge overtemperature",            // bit 15
-    "Charging MOSFET abnormal",             // bit 16
-    "Discharging MOSFET abnormal",          // bit 17
-    "GPS disconnected",                     // bit 18
-    "Modify password in time",              // bit 19
-    "Discharge on failed",                  // bit 20
-    "Battery overtemperature",              // bit 21
-    "Temperature sensor anomaly",           // bit 22
-    "PL module anomaly",                    // bit 23
-    "SCP release failed",                   // bit 24
-    "Discharge OCP II",                     // bit 25
-    "Discharge OCP III",                    // bit 26
-    "Discharge undertemperature alarm",     // bit 27
-    "GPS remote lock",                      // bit 28
-    "",                                     // bit 29
-    "",                                     // bit 30
-    "",                                     // bit 31
-};
-
 static constexpr const char *const LOGBOOK_CODES[] = {
     "",                                                    // 0x00
     "Boot",                                                // 0x01
@@ -852,7 +817,8 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
     // 166-169: errors bitmask, little-endian 32-bit
     uint32_t raw_errors_bitmask = jk_get_32bit(134 + offset);
     this->publish_state_(this->errors_bitmask_hex_text_sensor_, this->to_hex_string_(raw_errors_bitmask));
-    this->publish_state_(this->errors_text_sensor_, this->error_bits_to_string_(raw_errors_bitmask, ERRORS_JK02, 32));
+    this->publish_state_(this->errors_text_sensor_,
+                         this->error_bits_to_string_(raw_errors_bitmask, this->errors_jk02_table_.entries, 32));
   } else {
     this->publish_state_(this->mosfet_temperature_sensor_, (float) ((int16_t) jk_get_16bit(134 + offset)) * 0.1f);
   }
@@ -862,7 +828,8 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   if (frame_version != FRAME_VERSION_JK02_32S) {
     uint32_t raw_errors_bitmask = jk_get_16bit(136 + offset);
     this->publish_state_(this->errors_bitmask_hex_text_sensor_, this->to_hex_string_(raw_errors_bitmask));
-    this->publish_state_(this->errors_text_sensor_, this->error_bits_to_string_(raw_errors_bitmask, ERRORS_JK02, 16));
+    this->publish_state_(this->errors_text_sensor_,
+                         this->error_bits_to_string_(raw_errors_bitmask, this->errors_jk02_table_.entries, 16));
   }
 
   // 138   2   0x00 0x00              Balance current      0.001         A
