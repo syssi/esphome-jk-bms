@@ -1407,7 +1407,10 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
     this->publish_state_(this->heating_switch_, check_bit_(data[282], 1));
     this->publish_state_(this->disable_temperature_sensors_switch_, check_bit_(data[282], 2));
     ESP_LOGI(TAG, "  GPS Heartbeat: %s", ONOFF(check_bit_(data[282], 4)));
-    ESP_LOGI(TAG, "  Port switch: %s", check_bit_(data[282], 8) ? "RS485" : "CAN");
+    ESP_LOGV(TAG, "  Port switch: %s", check_bit_(data[282], 8) ? "RS485" : "CAN");
+    // The bit value doubles as the option index of the multiplexed_port_mode select (0: CAN, 1: RS485)
+    if (const char *name = multiplexed_port_mode_table_.get(check_bit_(data[282], 8) ? 1 : 0))
+      this->publish_state_(this->multiplexed_port_mode_select_, name);
     this->publish_state_(this->display_always_on_switch_, check_bit_(data[282], 16));
     ESP_LOGI(TAG, "  Special charger: %s", ONOFF(check_bit_(data[282], 32)));
     this->publish_state_(this->smart_sleep_switch_, check_bit_(data[282], 64));

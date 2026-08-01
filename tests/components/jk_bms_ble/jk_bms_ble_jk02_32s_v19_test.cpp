@@ -146,4 +146,55 @@ TEST(JkBmsV19CellInfoTest, BatteryType) {
   EXPECT_EQ(battery_type.state, "LFP");
 }
 
+// ── Settings frame ────────────────────────────────────────────────────────────
+
+// Option order must match MULTIPLEXED_PORT_MODE_OPTIONS in select/__init__.py,
+// because the port switch bit doubles as the option index.
+static constexpr const char *const MULTIPLEXED_PORT_MODE_OPTS[] = {"CAN", "RS485"};
+
+TEST(JkBmsV19SettingsTest, MultiplexedPortModeCan) {
+  TestableJkBmsBle bms;
+  bms.set_protocol_version(PROTOCOL_VERSION_JK02_32S);
+  TestSelect port_mode{"CAN", "RS485"};
+  bms.set_multiplexed_port_mode_select(&port_mode);
+  bms.set_multiplexed_port_mode_table(MULTIPLEXED_PORT_MODE_OPTS, 2);
+  bms.decode_jk02_settings_(SETTINGS_JK02_32S_V19);
+  ASSERT_TRUE(port_mode.has_state());
+  EXPECT_EQ(port_mode.current_option().str(), "CAN");  // byte 282 bit3 clear
+}
+
+TEST(JkBmsV19SettingsTest, MultiplexedPortModeRs485) {
+  // No RS485 capture available: take the captured frame and set the port switch bit.
+  std::vector<uint8_t> data = SETTINGS_JK02_32S_V19;
+  data[282] |= 0x08;
+
+  TestableJkBmsBle bms;
+  bms.set_protocol_version(PROTOCOL_VERSION_JK02_32S);
+  TestSelect port_mode{"CAN", "RS485"};
+  bms.set_multiplexed_port_mode_select(&port_mode);
+  bms.set_multiplexed_port_mode_table(MULTIPLEXED_PORT_MODE_OPTS, 2);
+  bms.decode_jk02_settings_(data);
+  ASSERT_TRUE(port_mode.has_state());
+  EXPECT_EQ(port_mode.current_option().str(), "RS485");
+}
+
+TEST(JkBmsV19SettingsTest, MultiplexedPortModeWithoutTableStaysUnset) {
+  // The lookup table is only installed when the select is configured in YAML.
+  TestableJkBmsBle bms;
+  bms.set_protocol_version(PROTOCOL_VERSION_JK02_32S);
+  TestSelect port_mode{"CAN", "RS485"};
+  bms.set_multiplexed_port_mode_select(&port_mode);
+  bms.decode_jk02_settings_(SETTINGS_JK02_32S_V19);
+  EXPECT_FALSE(port_mode.has_state());
+}
+
+TEST(JkBmsV19SettingsTest, HeatingSwitch) {
+  TestableJkBmsBle bms;
+  bms.set_protocol_version(PROTOCOL_VERSION_JK02_32S);
+  TestSwitch heating;
+  bms.set_heating_switch(&heating);
+  bms.decode_jk02_settings_(SETTINGS_JK02_32S_V19);
+  EXPECT_TRUE(heating.state);  // byte 282 bit0 set
+}
+
 }  // namespace esphome::jk_bms_ble::testing
