@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include "command_queue.h"
 #include "esphome/core/component.h"
 #include "esphome/core/hal.h"
 #include "esphome/components/binary_sensor/binary_sensor.h"
@@ -31,6 +32,14 @@ enum ProtocolVersion {
   PROTOCOL_VERSION_JK02_32S,
 };
 
+// Frame types the BMS sends, found in byte 4 of every assembled frame. A read command is
+// answered by exactly one of these; a settings write is answered by no frame at all
+// (CommandQueue::NO_RESPONSE). See docs/protocol-design-ble.md.
+inline constexpr uint8_t FRAME_TYPE_SETTINGS = 0x01;
+inline constexpr uint8_t FRAME_TYPE_CELL_INFO = 0x02;
+inline constexpr uint8_t FRAME_TYPE_DEVICE_INFO = 0x03;
+inline constexpr uint8_t FRAME_TYPE_LOGBOOK = 0x05;
+
 class JkBmsBle :
 #ifdef USE_ESP32
     public esphome::ble_client::BLEClientNode,
@@ -43,6 +52,9 @@ class JkBmsBle :
 #endif
   void dump_config() override;
   void update() override;
+  // Overrides both Component::loop() and (on ESP32) BLEClientNode::loop(), so it runs twice per
+  // main loop iteration: once from App.loop() and once from BLEClient::loop(). Keep the body idempotent.
+  void loop() override;
   float get_setup_priority() const override { return setup_priority::DATA; }
 
   void set_smart_sleep_voltage_number(number::Number *smart_sleep_voltage_number) {
@@ -411,9 +423,11 @@ class JkBmsBle :
   ProtocolVersion get_protocol_version() { return protocol_version_; }
   static std::array<uint8_t, 20> build_frame(uint8_t address, uint32_t value, uint8_t length);
   static uint32_t encode_jk04_payload(float value, uint8_t len, float factor);
-#ifdef USE_ESP32
+  // Entity-facing entry point: every command a number/switch/select/button sends goes through
+  // here. A settings write additionally schedules the deferred verification read, so the entities
+  // end up publishing the values the BMS actually stored. Returns false if the command was not
+  // queued; the caller then keeps its old state.
   bool write_register(uint8_t address, uint32_t value, uint8_t length);
-#endif
 
   struct Cell {
     sensor::Sensor *cell_voltage_sensor_{nullptr};
@@ -567,6 +581,15 @@ class JkBmsBle :
 #endif
   uint32_t last_cell_info_{0};
   uint32_t throttle_{0};
+
+  // Both live in command_queue.h: the queue serializes commands towards the BMS, the
+  // verification schedules the coalesced settings read that follows every settings write.
+  CommandQueue queue_;
+  SettingsVerification settings_verification_;
+
+  bool queue_command_(uint8_t address, uint32_t value, uint8_t length);
+  // The only place that puts a command on the wire; loop() is its only caller.
+  void send_next_command_();
 
   void decode_(const std::vector<uint8_t> &data);
   void decode_logbook_(const std::vector<uint8_t> &data);
