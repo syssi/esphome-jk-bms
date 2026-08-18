@@ -35,6 +35,7 @@ import components.jk_bms_ble as hub_ble  # noqa: E402
 from components.jk_bms_ble import (  # noqa: E402
     binary_sensor as ble_binary_sensor,
     button as ble_button,  # noqa: E402
+    number as ble_number,
     sensor as ble_sensor,
     switch as ble_switch,  # noqa: E402
     text_sensor as ble_text_sensor,
@@ -315,6 +316,26 @@ class TestJkBmsBleLoadConfigPresetConstants:
 class TestJkBmsBleSwitchConstants:
     def test_switches_dict(self):
         assert len(ble_switch.SWITCHES) == 17
+
+
+class TestJkBmsBleNumberConstants:
+    def test_soc_soh_calibration_registers(self):
+        assert ble_number.NUMBERS[ble_number.CONF_SOC_CALIBRATION] == [
+            0x00,
+            0x00,
+            0x6E,
+            1.0,
+            1,
+            0,
+        ]
+        assert ble_number.NUMBERS[ble_number.CONF_SOH_CALIBRATION] == [
+            0x00,
+            0x00,
+            0x6F,
+            1.0,
+            1,
+            0,
+        ]
 
 
 class TestJkBmsBleButtonConstants:

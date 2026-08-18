@@ -179,6 +179,12 @@ class JkBmsBle :
     emergency_duration_number_ = emergency_duration_number;
   }
   void set_re_bulk_soc_number(number::Number *re_bulk_soc_number) { re_bulk_soc_number_ = re_bulk_soc_number; }
+  void set_soc_calibration_number(number::Number *soc_calibration_number) {
+    soc_calibration_number_ = soc_calibration_number;
+  }
+  void set_soh_calibration_number(number::Number *soh_calibration_number) {
+    soh_calibration_number_ = soh_calibration_number;
+  }
 
   void set_balancing_binary_sensor(binary_sensor::BinarySensor *balancing_binary_sensor) {
     balancing_binary_sensor_ = balancing_binary_sensor;
@@ -478,6 +484,8 @@ class JkBmsBle :
   number::Number *smart_sleep_delay_number_{nullptr};
   number::Number *emergency_duration_number_{nullptr};
   number::Number *re_bulk_soc_number_{nullptr};
+  number::Number *soc_calibration_number_{nullptr};
+  number::Number *soh_calibration_number_{nullptr};
 
   sensor::Sensor *balancer_status_bitmask_sensor_{nullptr};
   sensor::Sensor *min_cell_voltage_sensor_{nullptr};

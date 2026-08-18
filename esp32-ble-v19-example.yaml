@@ -125,6 +125,10 @@ number:
       name: "voltage calibration"
     current_calibration:
       name: "current calibration"
+    soc_calibration:
+      name: "soc calibration"
+    soh_calibration:
+      name: "soh calibration"
     power_off_voltage:
       name: "power off voltage"
     max_balance_current:

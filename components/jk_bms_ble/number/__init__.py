@@ -131,12 +131,15 @@ DEFAULT_STEP = 1
 # 64 04 983a0000  Calibration voltage            15.00 V (15000)
 # 67 04 c8000000  Calibration current              2.0 A (200)
 # 6b 04 01000000  Emergency Mode                 enabled (1)
+# 6e 01 3a        SOC calibration                    58 % (58)
+# 6f 01 5d        SOH calibration                    93 % (93)
 # ...
 # b3 01 14        Requested charge voltage time    2.0 h (20)
 # b4 01 5a        Requested float voltage time     9.0 h (90)
 # b7 01 00        Re-Bulk SOC                        0 % (0)
 
 # https://github.com/syssi/esphome-jk-bms/issues/276#issuecomment-1468145528
+# https://github.com/syssi/esphome-jk-bms/issues/1051
 
 CONF_SMART_SLEEP_VOLTAGE = "smart_sleep_voltage"
 CONF_CELL_VOLTAGE_UNDERVOLTAGE_PROTECTION = "cell_voltage_undervoltage_protection"
@@ -151,6 +154,8 @@ CONF_CELL_REQUEST_FLOAT_VOLTAGE = "cell_request_float_voltage"
 CONF_CELL_REQUEST_CHARGE_VOLTAGE_TIME = "cell_request_charge_voltage_time"
 CONF_CELL_REQUEST_FLOAT_VOLTAGE_TIME = "cell_request_float_voltage_time"
 CONF_RE_BULK_SOC = "re_bulk_soc"
+CONF_SOC_CALIBRATION = "soc_calibration"
+CONF_SOH_CALIBRATION = "soh_calibration"
 
 CONF_CELL_COUNT = "cell_count"
 CONF_TOTAL_BATTERY_CAPACITY = "total_battery_capacity"
@@ -224,6 +229,8 @@ NUMBERS = {
     CONF_CELL_REQUEST_CHARGE_VOLTAGE_TIME: [0x00, 0x00, 0xB3, 10.0, 1, 0],
     CONF_CELL_REQUEST_FLOAT_VOLTAGE_TIME: [0x00, 0x00, 0xB4, 10.0, 1, 0],
     CONF_RE_BULK_SOC: [0x00, 0x00, 0xB7, 1.0, 1, 0],
+    CONF_SOC_CALIBRATION: [0x00, 0x00, 0x6E, 1.0, 1, 0],
+    CONF_SOH_CALIBRATION: [0x00, 0x00, 0x6F, 1.0, 1, 0],
     CONF_CELL_COUNT: [0x1C, 0x1C, 0x1C, 1.0, 4, 2],  # JK04: uint16 (len=2); [1...24]
     CONF_TOTAL_BATTERY_CAPACITY: [0x00, 0x20, 0x20, 1000.0, 4, 0],
     CONF_BALANCING_START_VOLTAGE: [
@@ -392,6 +399,26 @@ _NUMBER_CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=0): cv.float_,
                 cv.Optional(CONF_MAX_VALUE, default=50): cv.float_,
+                cv.Optional(CONF_STEP, default=1.0): cv.float_,
+                cv.Optional(
+                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_PERCENT
+                ): cv.string_strict,
+            }
+        ),
+        cv.Optional(CONF_SOC_CALIBRATION): JK_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=100): cv.float_,
+                cv.Optional(CONF_STEP, default=1.0): cv.float_,
+                cv.Optional(
+                    CONF_UNIT_OF_MEASUREMENT, default=UNIT_PERCENT
+                ): cv.string_strict,
+            }
+        ),
+        cv.Optional(CONF_SOH_CALIBRATION): JK_NUMBER_SCHEMA.extend(
+            {
+                cv.Optional(CONF_MIN_VALUE, default=0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=100): cv.float_,
                 cv.Optional(CONF_STEP, default=1.0): cv.float_,
                 cv.Optional(
                     CONF_UNIT_OF_MEASUREMENT, default=UNIT_PERCENT
