@@ -109,7 +109,8 @@ class CommandQueue {
     Timeout result;
     if (!pending_ || empty() || !deadline_.expired(now))
       return result;
-    if (awaits_response()) {
+    // pending_ and !empty() just held, so this is exactly what awaits_response() would report.
+    if (front().expected_frame != NO_RESPONSE) {
       result.timed_out = true;
       result.address = front().address;
     }
