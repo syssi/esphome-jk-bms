@@ -86,7 +86,7 @@ MULTIPLEXED_PORT_MODE_OPTIONS = [
 
 # Maps config key → (register, options, table setter, constexpr array name, data_len).
 # Entries sharing the same arr_name also share the same LookupTable in C++;
-# emitted_arrays in to_code() ensures the constexpr array is defined only once.
+# _emitted_arrays (module-level) dedups across multiple jk_bms_ble instances too.
 _UART_ARR = "JK_BMS_BLE_UART_PROTOCOL_OPTS_"
 _CAN_ARR = "JK_BMS_BLE_CAN_PROTOCOL_OPTS_"
 _LCD_ARR = "JK_BMS_BLE_LCD_BUZZER_TRIGGER_OPTS_"
@@ -158,6 +158,8 @@ LOAD_CONFIG_PRESET_OPTIONS = {
     "LTO": 0x6A,
 }
 
+_emitted_arrays = set()
+
 JkSelect = jk_bms_ble_ns.class_("JkSelect", select.Select, cg.Component)
 JkPresetSelect = jk_bms_ble_ns.class_("JkPresetSelect", select.Select, cg.Component)
 
@@ -196,7 +198,6 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
 
 async def to_code(config):
     hub = await cg.get_variable(config[CONF_JK_BMS_BLE_ID])
-    emitted_arrays = set()
     for key, (address, options, table_setter, arr_name, data_len) in SELECTS.items():
         if key not in config:
             continue
@@ -213,8 +214,8 @@ async def to_code(config):
         # preserving flash (.rodata) placement on embedded targets.
         # emitted_arrays guards against double-definition when two selects share a table
         # (e.g. uart1_protocol and uart2_protocol both use UART_PROTOCOL_OPTIONS).
-        if arr_name not in emitted_arrays:
-            emitted_arrays.add(arr_name)
+        if arr_name not in _emitted_arrays:
+            _emitted_arrays.add(arr_name)
             entries = ", ".join(f'"{o}"' for o in options)
             cg.add_global(
                 cg.RawStatement(
