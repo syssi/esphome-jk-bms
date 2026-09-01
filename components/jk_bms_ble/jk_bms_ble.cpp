@@ -551,35 +551,34 @@ void JkBmsBle::update() {
   }
 }
 
-void JkBmsBle::send_next_command_() {
-  if (this->queue_.pending() || this->node_state != espbt::ClientState::ESTABLISHED)
+void JkBmsBle::send_next_command_(uint32_t now) {
+  if (this->queue_.pending() || this->node_state != espbt::ClientState::ESTABLISHED || this->queue_.empty())
     return;
 
-  // A rejected write must not stall the queue: drop that command and carry on with the next one.
-  while (!this->queue_.empty()) {
-    auto &cmd = this->queue_.front();
-    auto frame = build_frame(cmd.address, cmd.value, cmd.length);
+  auto &cmd = this->queue_.front();
+  auto frame = build_frame(cmd.address, cmd.value, cmd.length);
 
-    ESP_LOGD(TAG, "Write register: %s", format_hex_pretty(frame.data(), frame.size()).c_str());  // NOLINT
-    auto status =
-        esp_ble_gattc_write_char(this->parent_->get_gattc_if(), this->parent_->get_conn_id(), this->char_handle_,
-                                 frame.size(), frame.data(), ESP_GATT_WRITE_TYPE_NO_RSP, ESP_GATT_AUTH_REQ_NONE);
+  ESP_LOGD(TAG, "Write register: %s", format_hex_pretty(frame.data(), frame.size()).c_str());  // NOLINT
+  auto status =
+      esp_ble_gattc_write_char(this->parent_->get_gattc_if(), this->parent_->get_conn_id(), this->char_handle_,
+                               frame.size(), frame.data(), ESP_GATT_WRITE_TYPE_NO_RSP, ESP_GATT_AUTH_REQ_NONE);
 
-    if (status) {
-      ESP_LOGW(TAG, "[%s] esp_ble_gattc_write_char failed, status=%d", ADDR_STR(this->parent_->address_str()), status);
-      this->queue_.advance();
-      continue;
-    }
-
-    this->queue_.mark_pending(millis());
+  if (status) {
+    // A rejected write must not stall the queue, but retrying every command in a tight loop while
+    // the BLE stack is congested would just hammer it further: drop this one command and let the
+    // next command (if any) wait for the next loop() tick instead.
+    ESP_LOGW(TAG, "[%s] esp_ble_gattc_write_char failed, status=%d", ADDR_STR(this->parent_->address_str()), status);
+    this->queue_.advance();
     return;
   }
+
+  this->queue_.mark_pending(now);
 }
 
 #else
 
 void JkBmsBle::update() {}
-void JkBmsBle::send_next_command_() {}
+void JkBmsBle::send_next_command_(uint32_t now) {}
 
 #endif  // USE_ESP32
 
@@ -617,13 +616,18 @@ bool JkBmsBle::write_register(uint8_t address, uint32_t value, uint8_t length) {
   // The BMS never acknowledges a settings write, so the deferred settings read is the user's only
   // feedback: the entities publish what the BMS actually stored, and a rejected value visibly
   // snaps back. Scheduled here, right where every settings write enters, so the write→verify pair
-  // stays in one place.
+  // stays in one place. This is the only path that schedules a verification — a write-like command
+  // queued directly via queue_command_() instead of through here would silently get none.
   if (!is_read_command(address))
     this->settings_verification_.schedule(millis());
 
   return true;
 }
 
+// Callers must already know the link is up (write_register() checks explicitly; update() and the
+// connection setup call this right after node_state becomes ESTABLISHED) — this only guards
+// against a full queue, not a dead link. send_next_command_() re-checks the link before it
+// actually writes, since that is the one place where staleness would matter.
 bool JkBmsBle::queue_command_(uint8_t address, uint32_t value, uint8_t length) {
   if (!this->queue_.enqueue(address, value, length, expected_response_frame(address))) {
     ESP_LOGW(TAG, "Command queue full, dropping: addr=0x%02X val=0x%08" PRIX32 " len=%u", address, value, length);
@@ -648,7 +652,7 @@ void JkBmsBle::loop() {
     this->queue_command_(COMMAND_REQUEST_SETTINGS, 0x00000000, 0x00);
   }
 
-  this->send_next_command_();
+  this->send_next_command_(now);
 }
 
 std::array<uint8_t, 20> JkBmsBle::build_frame(uint8_t address, uint32_t value, uint8_t length) {
@@ -727,6 +731,10 @@ void JkBmsBle::decode_(const std::vector<uint8_t> &data) {
       }
       break;
     case FRAME_TYPE_CELL_INFO:
+      // Independent of the throttle inside the decoders below: a received cell info frame means
+      // the BMS is streaming, so update() must stop re-queuing COMMAND_CELL_INFO requests even if
+      // this particular frame's publish is throttled away.
+      this->status_notification_received_ = true;
       if (this->protocol_version_ == PROTOCOL_VERSION_JK04) {
         this->decode_jk04_cell_info_(data);
       } else {
@@ -749,11 +757,6 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   auto jk_get_32bit = [&](size_t i) -> uint32_t {
     return (uint32_t(jk_get_16bit(i + 2)) << 16) | (uint32_t(jk_get_16bit(i + 0)) << 0);
   };
-
-  // Independent of the throttle below: a received cell info frame means the BMS is
-  // streaming, so update() must stop re-queuing COMMAND_CELL_INFO requests even if
-  // this particular frame's publish is throttled away.
-  this->status_notification_received_ = true;
 
   const uint32_t now = millis();
   if (now - this->last_cell_info_ < this->throttle_) {
@@ -1056,11 +1059,6 @@ void JkBmsBle::decode_jk04_cell_info_(const std::vector<uint8_t> &data) {
   auto jk_get_32bit = [&](size_t i) -> uint32_t {
     return (uint32_t(jk_get_16bit(i + 2)) << 16) | (uint32_t(jk_get_16bit(i + 0)) << 0);
   };
-
-  // Independent of the throttle below: a received cell info frame means the BMS is
-  // streaming, so update() must stop re-queuing COMMAND_CELL_INFO requests even if
-  // this particular frame's publish is throttled away.
-  this->status_notification_received_ = true;
 
   const uint32_t now = millis();
   if (now - this->last_cell_info_ < this->throttle_) {

@@ -589,7 +589,7 @@ class JkBmsBle :
 
   bool queue_command_(uint8_t address, uint32_t value, uint8_t length);
   // The only place that puts a command on the wire; loop() is its only caller.
-  void send_next_command_();
+  void send_next_command_(uint32_t now);
 
   void decode_(const std::vector<uint8_t> &data);
   void decode_logbook_(const std::vector<uint8_t> &data);
