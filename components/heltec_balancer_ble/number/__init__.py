@@ -68,7 +68,10 @@ CONF_DISCHARGING_OVERTEMPERATURE_RECOVERY = "discharging_overtemperature_recover
 CONF_DISCHARGING_UNDERTEMPERATURE_PROTECTION = "discharging_undertemperature_protection"
 CONF_DISCHARGING_UNDERTEMPERATURE_RECOVERY = "discharging_undertemperature_recovery"
 
-UNIT_AMPERE_HOUR = "Ah"
+try:
+    from esphome.components.const import UNIT_AMPERE_HOUR
+except ImportError:  # ESPHome < 2026.2.0
+    UNIT_AMPERE_HOUR = "Ah"
 
 # V2_NUMBERS: key -> (reg, cmd, type, unit, min, max, step)
 # type: "float" or "int"
