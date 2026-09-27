@@ -204,7 +204,10 @@ CONF_HEATING_STOP_TEMPERATURE = "heating_stop_temperature"
 CONF_SMART_SLEEP_DELAY = "smart_sleep_delay"
 CONF_EMERGENCY_DURATION = "emergency_duration"
 
-UNIT_AMPERE_HOUR = "Ah"
+try:
+    from esphome.components.const import UNIT_AMPERE_HOUR
+except ImportError:  # ESPHome < 2026.2.0
+    UNIT_AMPERE_HOUR = "Ah"
 UNIT_MICROSECONDS = "μs"
 
 NUMBERS = {

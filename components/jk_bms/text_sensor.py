@@ -19,7 +19,10 @@ CONF_ERRORS = "errors"
 CONF_OPERATION_MODE = "operation_mode"
 CONF_DEVICE_TYPE = "device_type"
 CONF_SOFTWARE_VERSION = "software_version"
-CONF_MANUFACTURER = "manufacturer"
+try:
+    from esphome.components.const import CONF_MANUFACTURER
+except ImportError:  # ESPHome < 2026.10.0
+    CONF_MANUFACTURER = "manufacturer"
 CONF_TOTAL_RUNTIME_FORMATTED = "total_runtime_formatted"
 
 ICON_BATTERY_TYPE = "mdi:car-battery"
