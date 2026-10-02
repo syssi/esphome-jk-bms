@@ -22,9 +22,14 @@ static const uint8_t FRAME_VERSION_JK02_32S = 0x03;
 static const uint16_t JK_BMS_SERVICE_UUID = 0xFFE0;
 static const uint16_t JK_BMS_CHARACTERISTIC_UUID = 0xFFE1;
 
-static const uint8_t COMMAND_CELL_INFO = 0x96;
-static const uint8_t COMMAND_DEVICE_INFO = 0x97;
-static const uint8_t COMMAND_LOGBOOK = 0xA1;
+// The read commands. Everything not listed here is a settings register write, which the BMS
+// never acknowledges (see expected_response_frame() below).
+static const uint8_t COMMAND_CELL_INFO = 0x96;    // answered by a settings frame, then the cell info stream (re)starts
+static const uint8_t COMMAND_DEVICE_INFO = 0x97;  // answered by a device info frame
+static const uint8_t COMMAND_LOGBOOK = 0xA1;      // answered by a logbook frame
+// 0x96 is both "start streaming cell info" and the only way to read the settings back. This
+// alias names the second intent at the call sites that care about the settings, not the stream.
+static const uint8_t COMMAND_REQUEST_SETTINGS = COMMAND_CELL_INFO;
 
 static const uint16_t MIN_RESPONSE_SIZE = 300;
 static const uint16_t MAX_RESPONSE_SIZE = 384 + 16;
@@ -440,6 +445,8 @@ void JkBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gat
       this->char_handle_ = 0;
 
       this->frame_buffer_.clear();
+      this->queue_.reset();
+      this->settings_verification_.cancel();
 
       break;
     }
@@ -511,7 +518,7 @@ void JkBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gat
       this->status_notification_received_ = false;
 
       ESP_LOGI(TAG, "Request device info");
-      this->write_register(COMMAND_DEVICE_INFO, 0x00000000, 0x00);
+      this->queue_command_(COMMAND_DEVICE_INFO, 0x00000000, 0x00);
 
       break;
     }
@@ -540,12 +547,16 @@ void JkBmsBle::update() {
 
   if (!this->status_notification_received_) {
     ESP_LOGI(TAG, "Request status notification");
-    this->write_register(COMMAND_CELL_INFO, 0x00000000, 0x00);
+    this->queue_command_(COMMAND_CELL_INFO, 0x00000000, 0x00);
   }
 }
 
-bool JkBmsBle::write_register(uint8_t address, uint32_t value, uint8_t length) {
-  auto frame = build_frame(address, value, length);
+void JkBmsBle::send_next_command_(uint32_t now) {
+  if (this->queue_.pending() || this->node_state != espbt::ClientState::ESTABLISHED || this->queue_.empty())
+    return;
+
+  auto &cmd = this->queue_.front();
+  auto frame = build_frame(cmd.address, cmd.value, cmd.length);
 
   ESP_LOGD(TAG, "Write register: %s", format_hex_pretty(frame.data(), frame.size()).c_str());  // NOLINT
   auto status =
@@ -553,17 +564,96 @@ bool JkBmsBle::write_register(uint8_t address, uint32_t value, uint8_t length) {
                                frame.size(), frame.data(), ESP_GATT_WRITE_TYPE_NO_RSP, ESP_GATT_AUTH_REQ_NONE);
 
   if (status) {
+    // A rejected write must not stall the queue, but retrying every command in a tight loop while
+    // the BLE stack is congested would just hammer it further: drop this one command and let the
+    // next command (if any) wait for the next loop() tick instead.
     ESP_LOGW(TAG, "[%s] esp_ble_gattc_write_char failed, status=%d", ADDR_STR(this->parent_->address_str()), status);
+    this->queue_.advance();
+    return;
   }
 
-  return (status == 0);
+  this->queue_.mark_pending(now);
 }
 
 #else
 
 void JkBmsBle::update() {}
+void JkBmsBle::send_next_command_(uint32_t now) {}
 
 #endif  // USE_ESP32
+
+// The frame the BMS answers a command with, or CommandQueue::NO_RESPONSE for register writes,
+// which are not acknowledged at all. See docs/protocol-design-ble.md.
+static uint8_t expected_response_frame(uint8_t address) {
+  switch (address) {
+    case COMMAND_CELL_INFO:
+      return FRAME_TYPE_SETTINGS;
+    case COMMAND_DEVICE_INFO:
+      return FRAME_TYPE_DEVICE_INFO;
+    case COMMAND_LOGBOOK:
+      return FRAME_TYPE_LOGBOOK;
+    default:
+      return CommandQueue::NO_RESPONSE;
+  }
+}
+
+// True for the commands that read data back; everything else writes a settings register.
+static bool is_read_command(uint8_t address) { return expected_response_frame(address) != CommandQueue::NO_RESPONSE; }
+
+bool JkBmsBle::write_register(uint8_t address, uint32_t value, uint8_t length) {
+#ifdef USE_ESP32
+  // Queuing while the link is down would publish an optimistic entity state now and flush a stale
+  // write on the next reconnect. Reject the command instead so the caller keeps the old state.
+  if (this->node_state != espbt::ClientState::ESTABLISHED) {
+    ESP_LOGW(TAG, "[%s] Not connected, dropping command 0x%02X", ADDR_STR(this->parent_->address_str()), address);
+    return false;
+  }
+#endif
+
+  if (!this->queue_command_(address, value, length))  // loop() picks it up
+    return false;
+
+  // The BMS never acknowledges a settings write, so the deferred settings read is the user's only
+  // feedback: the entities publish what the BMS actually stored, and a rejected value visibly
+  // snaps back. Scheduled here, right where every settings write enters, so the write→verify pair
+  // stays in one place. This is the only path that schedules a verification — a write-like command
+  // queued directly via queue_command_() instead of through here would silently get none.
+  if (!is_read_command(address))
+    this->settings_verification_.schedule(millis());
+
+  return true;
+}
+
+// Callers must already know the link is up (write_register() checks explicitly; update() and the
+// connection setup call this right after node_state becomes ESTABLISHED) — this only guards
+// against a full queue, not a dead link. send_next_command_() re-checks the link before it
+// actually writes, since that is the one place where staleness would matter.
+bool JkBmsBle::queue_command_(uint8_t address, uint32_t value, uint8_t length) {
+  if (!this->queue_.enqueue(address, value, length, expected_response_frame(address))) {
+    ESP_LOGW(TAG, "Command queue full, dropping: addr=0x%02X val=0x%08" PRIX32 " len=%u", address, value, length);
+    return false;
+  }
+  return true;
+}
+
+// Retire the in-flight command when its deadline passed, top the queue up, then send. Everything
+// else in this component only ever enqueues, so the queue can neither stall nor send twice.
+void JkBmsBle::loop() {
+  const uint32_t now = millis();
+
+  const auto retired = this->queue_.tick(now);
+  if (retired.timed_out) {
+    ESP_LOGW(TAG, "No response to command 0x%02X, advancing queue", retired.address);
+  }
+
+  // The verification read waits for an idle queue, so it always follows the last queued write.
+  if (this->queue_.empty() && this->settings_verification_.take_if_due(now)) {
+    ESP_LOGD(TAG, "Requesting settings to verify the last write");
+    this->queue_command_(COMMAND_REQUEST_SETTINGS, 0x00000000, 0x00);
+  }
+
+  this->send_next_command_(now);
+}
 
 std::array<uint8_t, 20> JkBmsBle::build_frame(uint8_t address, uint32_t value, uint8_t length) {
   std::array<uint8_t, 20> frame{};
@@ -628,25 +718,33 @@ void JkBmsBle::decode_(const std::vector<uint8_t> &data) {
   this->reset_online_status_tracker_();
 
   uint8_t frame_type = data[4];
+  // The BMS auto-streams cell info, so an arbitrary frame is not an acknowledgement; the queue
+  // retires the in-flight command only if this is the frame it asked for.
+  this->queue_.on_frame(frame_type);
+
   switch (frame_type) {
-    case 0x01:
+    case FRAME_TYPE_SETTINGS:
       if (this->protocol_version_ == PROTOCOL_VERSION_JK04) {
         this->decode_jk04_settings_(data);
       } else {
         this->decode_jk02_settings_(data);
       }
       break;
-    case 0x02:
+    case FRAME_TYPE_CELL_INFO:
+      // Independent of the throttle inside the decoders below: a received cell info frame means
+      // the BMS is streaming, so update() must stop re-queuing COMMAND_CELL_INFO requests even if
+      // this particular frame's publish is throttled away.
+      this->status_notification_received_ = true;
       if (this->protocol_version_ == PROTOCOL_VERSION_JK04) {
         this->decode_jk04_cell_info_(data);
       } else {
         this->decode_jk02_cell_info_(data);
       }
       break;
-    case 0x03:
+    case FRAME_TYPE_DEVICE_INFO:
       this->decode_device_info_(data);
       break;
-    case 0x05:
+    case FRAME_TYPE_LOGBOOK:
       this->decode_logbook_(data);
       break;
     default:
@@ -954,8 +1052,6 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   }
 
   // 299   1   0xCD                   CRC
-
-  this->status_notification_received_ = true;
 }
 
 void JkBmsBle::decode_jk04_cell_info_(const std::vector<uint8_t> &data) {
@@ -1146,8 +1242,6 @@ void JkBmsBle::decode_jk04_cell_info_(const std::vector<uint8_t> &data) {
   ESP_LOGD(TAG, "Unknown298: 0x%02X", data[298]);
 
   // 299   1   0x13                   Checksm
-
-  status_notification_received_ = true;
 }
 
 void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
