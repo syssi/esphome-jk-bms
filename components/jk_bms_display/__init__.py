@@ -35,6 +35,15 @@ JK_BMS_DISPLAY_COMPONENT_SCHEMA = cv.Schema(
     }
 )
 
+FINAL_VALIDATE_SCHEMA = uart.final_validate_device_schema(
+    "jk_bms_display",
+    baud_rate=2400,
+    data_bits=8,
+    parity="NONE",
+    stop_bits=1,
+    require_rx=True,
+)
+
 
 async def to_code(config):
     var = cg.new_Pvariable(config[CONF_ID])
