@@ -286,8 +286,6 @@ void JkBmsDisplay::dump_config() {
   LOG_SENSOR("", "Max Cell Voltage", this->max_cell_voltage_sensor_);
   LOG_SENSOR("", "Min Voltage Cell", this->min_voltage_cell_sensor_);
   LOG_SENSOR("", "Max Voltage Cell", this->max_voltage_cell_sensor_);
-
-  this->check_uart_settings(2400);
 }
 
 float JkBmsDisplay::get_setup_priority() const {
