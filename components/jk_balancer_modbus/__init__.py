@@ -5,6 +5,7 @@ from esphome.const import CONF_ADDRESS, CONF_ID
 
 DEPENDENCIES = ["uart"]
 CODEOWNERS = ["@syssi"]
+DOMAIN = "jk_balancer_modbus"
 MULTI_CONF = True
 
 jk_balancer_modbus_ns = cg.esphome_ns.namespace("jk_balancer_modbus")

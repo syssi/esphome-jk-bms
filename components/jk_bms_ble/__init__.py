@@ -8,6 +8,7 @@ from esphome.const import CONF_ID, CONF_THROTTLE
 _LOGGER = logging.getLogger(__name__)
 
 CODEOWNERS = ["@syssi", "@txubelaxu"]
+DOMAIN = "jk_bms_ble"
 DEPENDENCIES = ["ble_client"]
 AUTO_LOAD = [
     "binary_sensor",

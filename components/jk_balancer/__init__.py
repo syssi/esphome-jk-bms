@@ -12,6 +12,7 @@ AUTO_LOAD = [
     "text_sensor",
 ]
 CODEOWNERS = ["@syssi"]
+DOMAIN = "jk_balancer"
 MULTI_CONF = True
 
 CONF_JK_BALANCER_ID = "jk_balancer_id"

@@ -7,6 +7,7 @@ from esphome.cpp_helpers import gpio_pin_expression
 
 DEPENDENCIES = ["uart"]
 CODEOWNERS = ["@syssi"]
+DOMAIN = "jk_modbus"
 MULTI_CONF = True
 
 jk_modbus_ns = cg.esphome_ns.namespace("jk_modbus")

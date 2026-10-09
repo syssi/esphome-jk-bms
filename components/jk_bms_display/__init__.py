@@ -4,6 +4,7 @@ import esphome.config_validation as cv
 from esphome.const import CONF_ID
 
 CODEOWNERS = ["@syssi"]
+DOMAIN = "jk_bms_display"
 
 DEPENDENCIES = ["uart"]
 AUTO_LOAD = ["binary_sensor", "sensor"]
