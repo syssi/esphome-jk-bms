@@ -37,7 +37,7 @@ JK_BMS_DISPLAY_COMPONENT_SCHEMA = cv.Schema(
 )
 
 FINAL_VALIDATE_SCHEMA = uart.final_validate_device_schema(
-    "jk_bms_display",
+    DOMAIN,
     baud_rate=2400,
     data_bits=8,
     parity="NONE",
