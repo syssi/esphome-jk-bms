@@ -2,9 +2,14 @@
 #include "esphome/core/log.h"
 #include <cstring>
 
+// Fallback for ESPHome < 2026.10.0
+#ifndef ESPHOME_LOG_TAG
+#define ESPHOME_LOG_TAG(name, tag) static const char *const name = tag
+#endif
+
 namespace esphome::jk_bms_ble {
 
-static const char *const TAG = "jk_bms_ble.number";
+ESPHOME_LOG_TAG(TAG, "jk_bms_ble.number");
 
 void JkNumber::dump_config() { LOG_NUMBER("", "JkBmsBle Number", this); }
 

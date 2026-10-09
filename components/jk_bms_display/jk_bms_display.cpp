@@ -2,9 +2,14 @@
 #include "esphome/core/log.h"
 #include "esphome/core/helpers.h"
 
+// Fallback for ESPHome < 2026.10.0
+#ifndef ESPHOME_LOG_TAG
+#define ESPHOME_LOG_TAG(name, tag) static const char *const name = tag
+#endif
+
 namespace esphome::jk_bms_display {
 
-static const char *const TAG = "jk_bms_display";
+ESPHOME_LOG_TAG(TAG, "jk_bms_display");
 
 static const uint8_t SOF_BYTE1 = 0xA5;
 static const uint8_t SOF_BYTE2 = 0x5A;
