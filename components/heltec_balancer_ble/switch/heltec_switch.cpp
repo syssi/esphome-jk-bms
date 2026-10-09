@@ -2,9 +2,14 @@
 #include "esphome/core/log.h"
 #include "esphome/core/application.h"
 
+// Fallback for ESPHome < 2026.10.0
+#ifndef ESPHOME_LOG_TAG
+#define ESPHOME_LOG_TAG(name, tag) static const char *const name = tag
+#endif
+
 namespace esphome::heltec_balancer_ble {
 
-static const char *const TAG = "heltec_balancer_ble.switch";
+ESPHOME_LOG_TAG(TAG, "heltec_balancer_ble.switch");
 
 static const uint8_t FUNCTION_WRITE = 0x00;
 static const uint8_t COMMAND_WRITE_REGISTER = 0x05;

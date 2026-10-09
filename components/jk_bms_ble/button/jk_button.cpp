@@ -2,9 +2,14 @@
 #include "esphome/core/log.h"
 #include "esphome/core/application.h"
 
+// Fallback for ESPHome < 2026.10.0
+#ifndef ESPHOME_LOG_TAG
+#define ESPHOME_LOG_TAG(name, tag) static const char *const name = tag
+#endif
+
 namespace esphome::jk_bms_ble {
 
-static const char *const TAG = "jk_bms_ble.button";
+ESPHOME_LOG_TAG(TAG, "jk_bms_ble.button");
 
 void JkButton::dump_config() { LOG_BUTTON("", "JkBmsBle Button", this); }
 void JkButton::press_action() {

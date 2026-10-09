@@ -3,9 +3,14 @@
 #include "esphome/core/hal.h"
 #include "esphome/core/helpers.h"
 
+// Fallback for ESPHome < 2026.10.0
+#ifndef ESPHOME_LOG_TAG
+#define ESPHOME_LOG_TAG(name, tag) static const char *const name = tag
+#endif
+
 namespace esphome::jk_balancer_modbus {
 
-static const char *const TAG = "jk_balancer_modbus";
+ESPHOME_LOG_TAG(TAG, "jk_balancer_modbus");
 
 static const uint8_t ADDRESS_READ_ALL = 0xFF;
 
