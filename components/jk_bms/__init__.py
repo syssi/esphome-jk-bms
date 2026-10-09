@@ -9,6 +9,7 @@ _LOGGER = logging.getLogger(__name__)
 
 AUTO_LOAD = ["jk_modbus", "binary_sensor", "sensor", "switch", "text_sensor"]
 CODEOWNERS = ["@syssi"]
+DOMAIN = "jk_bms"
 MULTI_CONF = True
 
 
