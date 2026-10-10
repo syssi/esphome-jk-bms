@@ -11,6 +11,8 @@ namespace esphome::jk_bms {
 
 ESPHOME_LOG_TAG(TAG, "jk_bms");
 
+static constexpr size_t MAX_HEX_DUMP_BYTES = 100;
+
 static const uint8_t MAX_NO_RESPONSE_COUNT = 5;
 
 static const uint8_t FUNCTION_READ_ALL = 0x06;
@@ -48,8 +50,8 @@ void JkBms::on_jk_modbus_data(const uint8_t &function, const std::vector<uint8_t
     return;
   }
 
-  ESP_LOGW(TAG, "Unhandled response (%zu bytes) received: %s", data.size(),
-           format_hex_pretty(&data.front(), data.size()).c_str());  // NOLINT
+  char hex_buf[format_hex_pretty_size(MAX_HEX_DUMP_BYTES)];
+  ESP_LOGW(TAG, "Unhandled response (%zu bytes) received: %s", data.size(), format_hex_pretty_to(hex_buf, data, '.'));
 }
 
 void JkBms::on_status_data_(const std::vector<uint8_t> &data) {
