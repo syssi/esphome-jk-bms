@@ -12,13 +12,15 @@ namespace esphome::jk_balancer_modbus {
 
 ESPHOME_LOG_TAG(TAG, "jk_balancer_modbus");
 
+static constexpr size_t MAX_HEX_DUMP_BYTES = 100;
+
 static const uint8_t ADDRESS_READ_ALL = 0xFF;
 
 void JkBalancerModbus::loop() {
   const uint32_t now = millis();
   if (now - this->last_jk_balancer_modbus_byte_ > this->rx_timeout_) {
-    ESP_LOGVV(TAG, "Buffer cleared due to timeout: %s",
-              format_hex_pretty(&this->rx_buffer_.front(), this->rx_buffer_.size()).c_str());  // NOLINT
+    char hex_buf[format_hex_pretty_size(MAX_HEX_DUMP_BYTES)];
+    ESP_LOGVV(TAG, "Buffer cleared due to timeout: %s", format_hex_pretty_to(hex_buf, this->rx_buffer_, '.'));
     this->rx_buffer_.clear();
     this->last_jk_balancer_modbus_byte_ = now;
   }
@@ -29,8 +31,8 @@ void JkBalancerModbus::loop() {
     if (this->parse_jk_balancer_modbus_byte_(byte)) {
       this->last_jk_balancer_modbus_byte_ = now;
     } else {
-      ESP_LOGVV(TAG, "Buffer cleared due to reset: %s",
-                format_hex_pretty(&this->rx_buffer_.front(), this->rx_buffer_.size()).c_str());  // NOLINT
+      char hex_buf[format_hex_pretty_size(MAX_HEX_DUMP_BYTES)];
+      ESP_LOGVV(TAG, "Buffer cleared due to reset: %s", format_hex_pretty_to(hex_buf, this->rx_buffer_, '.'));
       this->rx_buffer_.clear();
     }
   }
