@@ -1,12 +1,5 @@
 #include "heltec_balancer_ble.h"
 #include "esphome/core/log.h"
-#include "esphome/core/version.h"
-
-#if ESPHOME_VERSION_CODE >= VERSION_CODE(2025, 12, 0)
-#define ADDR_STR(x) x
-#else
-#define ADDR_STR(x) (x).c_str()
-#endif
 
 // Fallback for ESPHome < 2026.10.0
 #ifndef ESPHOME_LOG_TAG
@@ -281,7 +274,7 @@ void HeltecBalancerBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt
       auto *chr = this->parent_->get_characteristic(HELTEC_BALANCER_SERVICE_UUID, HELTEC_BALANCER_CHARACTERISTIC_UUID);
       if (chr == nullptr) {
         ESP_LOGE(TAG, "[%s] No control service found at device, not an Heltec/NEEY balancer..?",
-                 ADDR_STR(this->parent_->address_str()));
+                 this->parent_->address_str());
         break;
       }
 
@@ -342,7 +335,7 @@ void HeltecBalancerBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt
 void HeltecBalancerBle::update() {
   this->track_online_status_();
   if (this->node_state != espbt::ClientState::ESTABLISHED) {
-    ESP_LOGW(TAG, "[%s] Not connected", ADDR_STR(this->parent_->address_str()));
+    ESP_LOGW(TAG, "[%s] Not connected", this->parent_->address_str());
     return;
   }
 
@@ -375,7 +368,7 @@ bool HeltecBalancerBle::send_command(uint8_t function, uint8_t command, uint8_t 
                                frame.size(), frame.data(), ESP_GATT_WRITE_TYPE_NO_RSP, ESP_GATT_AUTH_REQ_NONE);
 
   if (status) {
-    ESP_LOGW(TAG, "[%s] esp_ble_gattc_write_char failed, status=%d", ADDR_STR(this->parent_->address_str()), status);
+    ESP_LOGW(TAG, "[%s] esp_ble_gattc_write_char failed, status=%d", this->parent_->address_str(), status);
   }
 
   return (status == 0);
