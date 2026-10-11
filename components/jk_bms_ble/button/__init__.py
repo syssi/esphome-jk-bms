@@ -1,7 +1,12 @@
 import esphome.codegen as cg
 from esphome.components import button
 import esphome.config_validation as cv
-from esphome.const import CONF_FACTORY_RESET, CONF_RESTART, ENTITY_CATEGORY_CONFIG
+from esphome.const import (
+    CONF_FACTORY_RESET,
+    CONF_RESTART,
+    ENTITY_CATEGORY_CONFIG,
+    ICON_RESTART,
+)
 
 from .. import CONF_JK_BMS_BLE_ID, JK_BMS_BLE_COMPONENT_SCHEMA, jk_bms_ble_ns
 
@@ -18,7 +23,6 @@ ICON_RETRIEVE_SETTINGS = "mdi:cog"
 ICON_RETRIEVE_DEVICE_INFO = "mdi:information-variant"
 ICON_RETRIEVE_LOGBOOK = "mdi:history"
 ICON_SHUTDOWN = "mdi:power"
-ICON_RESTART = "mdi:restart"
 ICON_FACTORY_RESET = "mdi:restore"
 
 BUTTONS = {
