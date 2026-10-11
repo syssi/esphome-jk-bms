@@ -17,7 +17,7 @@ static void log_hex_chunked(const char *tag, const uint8_t *data, size_t size) {
   char buf[format_hex_pretty_size(100)];
   for (size_t i = 0; i < size; i += 100) {
     size_t len = std::min<size_t>(100, size - i);
-    ESP_LOGD(tag, "  %s", format_hex_pretty_to(buf, sizeof(buf), data + i, len, '.'));
+    ESP_LOGVV(tag, "  %s", format_hex_pretty_to(buf, sizeof(buf), data + i, len, '.'));
   }
 }
 
