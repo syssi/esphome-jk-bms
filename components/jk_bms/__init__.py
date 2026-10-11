@@ -89,7 +89,7 @@ JK_BMS_COMPONENT_SCHEMA = cv.Schema(
 )
 
 CONFIG_SCHEMA = cv.All(
-    cv.require_esphome_version(2025, 7, 0),
+    cv.require_esphome_version(2025, 12, 0),
     cv.Schema(
         {
             cv.GenerateID(): cv.declare_id(JkBms),
