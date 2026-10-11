@@ -14,15 +14,13 @@ ESPHOME_LOG_TAG(TAG, "jk_bms_ble");
 
 static constexpr size_t MAX_HEX_DUMP_BYTES = 100;
 
-#if ESPHOME_LOG_LEVEL >= ESPHOME_LOG_LEVEL_VERY_VERBOSE
 static void log_hex_chunked(const char *tag, const uint8_t *data, size_t size) {
   char buf[format_hex_pretty_size(100)];
   for (size_t i = 0; i < size; i += 100) {
     size_t len = std::min<size_t>(100, size - i);
-    ESP_LOGD(tag, "  %s", format_hex_pretty_to(buf, sizeof(buf), data + i, len, '.'));
+    ESP_LOGVV(tag, "  %s", format_hex_pretty_to(buf, sizeof(buf), data + i, len, '.'));
   }
 }
-#endif
 
 static const uint8_t MAX_NO_RESPONSE_COUNT = 10;
 
@@ -686,9 +684,7 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   }
 
   ESP_LOGI(TAG, "Cell info frame (version %d, %zu bytes) received", frame_version, data.size());
-#if ESPHOME_LOG_LEVEL >= ESPHOME_LOG_LEVEL_VERY_VERBOSE
   log_hex_chunked(TAG, data.data(), data.size());
-#endif
 
   // 6 example responses (128+128+44 = 300 bytes per frame)
   //
@@ -984,9 +980,7 @@ void JkBmsBle::decode_jk04_cell_info_(const std::vector<uint8_t> &data) {
   this->last_cell_info_ = now;
 
   ESP_LOGI(TAG, "Cell info frame (JK04, %zu bytes) received", data.size());
-#if ESPHOME_LOG_LEVEL >= ESPHOME_LOG_LEVEL_VERY_VERBOSE
   log_hex_chunked(TAG, data.data(), data.size());
-#endif
 
   // 0x55 0xAA 0xEB 0x90 0x02 0x4B 0xC0 0x61 0x56 0x40 0x1F 0xAA 0x56 0x40 0xFF 0x91 0x56 0x40 0xFF 0x91 0x56 0x40 0x1F
   // 0xAA 0x56 0x40 0xFF 0x91 0x56 0x40 0xFF 0x91 0x56 0x40 0xFF 0x91 0x56 0x40 0x1F 0xAA 0x56 0x40 0xFF 0x91 0x56 0x40
@@ -1171,9 +1165,7 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
   };
 
   ESP_LOGI(TAG, "Settings frame (%zu bytes) received", data.size());
-#if ESPHOME_LOG_LEVEL >= ESPHOME_LOG_LEVEL_VERY_VERBOSE
   log_hex_chunked(TAG, data.data(), data.size());
-#endif
 
   // JK02_24S response example:
   //
@@ -1474,9 +1466,7 @@ void JkBmsBle::decode_jk04_settings_(const std::vector<uint8_t> &data) {
   };
 
   ESP_LOGI(TAG, "Settings frame (JK04, %zu bytes) received", data.size());
-#if ESPHOME_LOG_LEVEL >= ESPHOME_LOG_LEVEL_VERY_VERBOSE
   log_hex_chunked(TAG, data.data(), data.size());
-#endif
 
   // JK04 (JK-B2A16S v3) response example:
   //
@@ -1571,9 +1561,7 @@ void JkBmsBle::decode_logbook_(const std::vector<uint8_t> &data) {
 
   uint32_t log_count = jk_get_32bit(6);
   ESP_LOGI(TAG, "Logbook frame (%zu bytes) received", data.size());
-#if ESPHOME_LOG_LEVEL >= ESPHOME_LOG_LEVEL_VERY_VERBOSE
   log_hex_chunked(TAG, data.data(), data.size());
-#endif
   ESP_LOGI(TAG, "  Log count: %lu", (unsigned long) log_count);
 
   for (uint32_t i = 0; i < log_count && i < 50; i++) {
@@ -1604,9 +1592,7 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
   };
 
   ESP_LOGI(TAG, "Device info frame (%zu bytes) received", data.size());
-#if ESPHOME_LOG_LEVEL >= ESPHOME_LOG_LEVEL_VERY_VERBOSE
   log_hex_chunked(TAG, data.data(), data.size());
-#endif
 
   // JK04 (JK-B2A16S v3) response example:
   //
