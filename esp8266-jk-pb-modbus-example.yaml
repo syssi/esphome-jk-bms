@@ -9,6 +9,7 @@ esphome:
   name: ${name}
   friendly_name: ${name}
   comment: ${device_description}
+  min_version: "2026.9.0"
   project:
     name: "syssi.esphome-jk-bms"
     version: 3.0.0
@@ -63,7 +64,6 @@ modbus_controller:
     modbus_id: modbus0
     setup_priority: -10
     update_interval: 5s
-    command_throttle: 50ms
 
 sensor:
   # 0x128A   138    INT16    2    R    TempMos         0.1 °C
