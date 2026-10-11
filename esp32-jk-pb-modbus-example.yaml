@@ -30,12 +30,12 @@ substitutions:
   flow_control_pin: GPIO12      # Uncomment `flow_control_pin` in modbus section if needed
   device_addr: "1"    # NOTE: On change also update the first byte in `switch` custom_command and write_lambda
   modbus_controller_update_interval: "15s"
-  bms_control_params_skip_updates: "20"   # 20 - update every 20th update cycle
 
 esphome:
   name: ${name}
   friendly_name: ${name}
   comment: ${device_description}
+  min_version: "2026.9.0"
   project:
     name: "syssi.esphome-jk-bms"
     version: 3.0.0
@@ -97,7 +97,6 @@ modbus_controller:
     modbus_id: modbus0
     setup_priority: -10
     update_interval: ${modbus_controller_update_interval}
-    command_throttle: 50ms
 
 # charging, discharging, and balancing binary_sensors made as the template sensors
 # to optimize number of modbus requests
@@ -135,7 +134,6 @@ sensor:
     address: 0x1000
     register_type: holding
     value_type: U_DWORD
-    skip_updates: ${bms_control_params_skip_updates}
     unit_of_measurement: "V"
     device_class: voltage
     state_class: measurement
@@ -150,7 +148,6 @@ sensor:
     address: 0x1004
     register_type: holding
     value_type: U_DWORD
-    skip_updates: ${bms_control_params_skip_updates}
     unit_of_measurement: "V"
     device_class: voltage
     state_class: measurement
@@ -165,7 +162,6 @@ sensor:
     address: 0x1008
     register_type: holding
     value_type: U_DWORD
-    skip_updates: ${bms_control_params_skip_updates}
     unit_of_measurement: "V"
     device_class: voltage
     state_class: measurement
@@ -180,7 +176,6 @@ sensor:
     address: 0x100C
     register_type: holding
     value_type: U_DWORD
-    skip_updates: ${bms_control_params_skip_updates}
     unit_of_measurement: "V"
     device_class: voltage
     state_class: measurement
@@ -195,7 +190,6 @@ sensor:
     address: 0x1010
     register_type: holding
     value_type: U_DWORD
-    skip_updates: ${bms_control_params_skip_updates}
     unit_of_measurement: "V"
     device_class: voltage
     state_class: measurement
@@ -210,7 +204,6 @@ sensor:
     address: 0x1014
     register_type: holding
     value_type: U_DWORD
-    skip_updates: ${bms_control_params_skip_updates}
     unit_of_measurement: "V"
     device_class: voltage
     state_class: measurement
@@ -225,7 +218,6 @@ sensor:
     address: 0x1018
     register_type: holding
     value_type: U_DWORD
-    skip_updates: ${bms_control_params_skip_updates}
     unit_of_measurement: "V"
     device_class: voltage
     state_class: measurement
@@ -240,7 +232,6 @@ sensor:
     address: 0x101C
     register_type: holding
     value_type: U_DWORD
-    skip_updates: ${bms_control_params_skip_updates}
     unit_of_measurement: "V"
     device_class: voltage
     state_class: measurement
@@ -255,7 +246,6 @@ sensor:
     address: 0x1020
     register_type: holding
     value_type: U_DWORD
-    skip_updates: ${bms_control_params_skip_updates}
     unit_of_measurement: "V"
     device_class: voltage
     state_class: measurement
@@ -270,7 +260,6 @@ sensor:
     address: 0x1024
     register_type: holding
     value_type: U_DWORD
-    skip_updates: ${bms_control_params_skip_updates}
     unit_of_measurement: "V"
     device_class: voltage
     state_class: measurement
@@ -285,7 +274,6 @@ sensor:
     address: 0x1028
     register_type: holding
     value_type: U_DWORD
-    skip_updates: ${bms_control_params_skip_updates}
     unit_of_measurement: "V"
     device_class: voltage
     state_class: measurement
@@ -300,7 +288,6 @@ sensor:
     address: 0x102C
     register_type: holding
     value_type: U_DWORD
-    skip_updates: ${bms_control_params_skip_updates}
     unit_of_measurement: "A"
     device_class: current
     state_class: measurement
@@ -315,7 +302,6 @@ sensor:
     address: 0x1030
     register_type: holding
     value_type: U_DWORD
-    skip_updates: ${bms_control_params_skip_updates}
     unit_of_measurement: "S"
     device_class: duration
     state_class: measurement
@@ -328,7 +314,6 @@ sensor:
     address: 0x1034
     register_type: holding
     value_type: U_DWORD
-    skip_updates: ${bms_control_params_skip_updates}
     unit_of_measurement: "S"
     device_class: duration
     state_class: measurement
@@ -341,7 +326,6 @@ sensor:
     address: 0x1038
     register_type: holding
     value_type: U_DWORD
-    skip_updates: ${bms_control_params_skip_updates}
     unit_of_measurement: "A"
     device_class: current
     state_class: measurement
@@ -356,7 +340,6 @@ sensor:
     address: 0x103C
     register_type: holding
     value_type: U_DWORD
-    skip_updates: ${bms_control_params_skip_updates}
     unit_of_measurement: "S"
     device_class: duration
     state_class: measurement
@@ -369,7 +352,6 @@ sensor:
     address: 0x1040
     register_type: holding
     value_type: U_DWORD
-    skip_updates: ${bms_control_params_skip_updates}
     unit_of_measurement: "S"
     device_class: duration
     state_class: measurement
@@ -382,7 +364,6 @@ sensor:
     address: 0x1044
     register_type: holding
     value_type: U_DWORD
-    skip_updates: ${bms_control_params_skip_updates}
     unit_of_measurement: "S"
     device_class: duration
     state_class: measurement
@@ -395,7 +376,6 @@ sensor:
     address: 0x1048
     register_type: holding
     value_type: U_DWORD
-    skip_updates: ${bms_control_params_skip_updates}
     unit_of_measurement: "A"
     device_class: current
     state_class: measurement
@@ -410,7 +390,6 @@ sensor:
     address: 0x104C
     register_type: holding
     value_type: S_DWORD
-    skip_updates: ${bms_control_params_skip_updates}
     unit_of_measurement: "°C"
     device_class: temperature
     state_class: measurement
@@ -425,7 +404,6 @@ sensor:
     address: 0x1050
     register_type: holding
     value_type: S_DWORD
-    skip_updates: ${bms_control_params_skip_updates}
     unit_of_measurement: "°C"
     device_class: temperature
     state_class: measurement
@@ -440,7 +418,6 @@ sensor:
     address: 0x1054
     register_type: holding
     value_type: S_DWORD
-    skip_updates: ${bms_control_params_skip_updates}
     unit_of_measurement: "°C"
     device_class: temperature
     state_class: measurement
@@ -455,7 +432,6 @@ sensor:
     address: 0x1058
     register_type: holding
     value_type: S_DWORD
-    skip_updates: ${bms_control_params_skip_updates}
     unit_of_measurement: "°C"
     device_class: temperature
     state_class: measurement
@@ -470,7 +446,6 @@ sensor:
     address: 0x105C
     register_type: holding
     value_type: S_DWORD
-    skip_updates: ${bms_control_params_skip_updates}
     unit_of_measurement: "°C"
     device_class: temperature
     state_class: measurement
@@ -485,7 +460,6 @@ sensor:
     address: 0x1060
     register_type: holding
     value_type: S_DWORD
-    skip_updates: ${bms_control_params_skip_updates}
     unit_of_measurement: "°C"
     device_class: temperature
     state_class: measurement
@@ -500,7 +474,6 @@ sensor:
     address: 0x1064
     register_type: holding
     value_type: S_DWORD
-    skip_updates: ${bms_control_params_skip_updates}
     unit_of_measurement: "°C"
     device_class: temperature
     state_class: measurement
@@ -515,7 +488,6 @@ sensor:
     address: 0x1068
     register_type: holding
     value_type: S_DWORD
-    skip_updates: ${bms_control_params_skip_updates}
     unit_of_measurement: "°C"
     device_class: temperature
     state_class: measurement
@@ -530,7 +502,6 @@ sensor:
     address: 0x106C
     register_type: holding
     value_type: U_DWORD
-    skip_updates: ${bms_control_params_skip_updates}
     accuracy_decimals: 0
 
   # 0x107C 124 UINT32 4 RW    CapBatCell       mAH
@@ -540,7 +511,6 @@ sensor:
     address: 0x107C
     register_type: holding
     value_type: U_DWORD
-    skip_updates: ${bms_control_params_skip_updates}
     unit_of_measurement: Ah
     device_class: energy_storage
     state_class: measurement
@@ -555,7 +525,6 @@ sensor:
     address: 0x1080
     register_type: holding
     value_type: U_DWORD
-    skip_updates: ${bms_control_params_skip_updates}
     unit_of_measurement: "uS"
     device_class: duration
     state_class: measurement
@@ -568,7 +537,6 @@ sensor:
     address: 0x1084
     register_type: holding
     value_type: U_DWORD
-    skip_updates: ${bms_control_params_skip_updates}
     unit_of_measurement: "V"
     device_class: voltage
     state_class: measurement
@@ -1600,7 +1568,6 @@ sensor:
     address: 0x1504
     register_type: holding
     value_type: U_WORD
-    skip_updates: ${bms_control_params_skip_updates}
     unit_of_measurement: "H"
     device_class: duration
     state_class: measurement
@@ -1614,7 +1581,6 @@ sensor:
     address: 0x1504
     register_type: holding
     value_type: U_WORD
-    skip_updates: ${bms_control_params_skip_updates}
     unit_of_measurement: "H"
     device_class: duration
     state_class: measurement
@@ -1629,7 +1595,6 @@ select:
     icon: "mdi:battery-charging-100"
     address: 0x1070
     value_type: U_DWORD
-    skip_updates: 5
     optionsmap:
       "Off": 0
       "On": 1
@@ -1640,7 +1605,6 @@ select:
     icon: "mdi:power-plug-battery"
     address: 0x1074
     value_type: U_DWORD
-    skip_updates: 5
     optionsmap:
       "Off": 0
       "On": 1
@@ -1651,7 +1615,6 @@ select:
     icon: mdi:scale-balance
     address: 0x1078
     value_type: U_DWORD
-    skip_updates: 5
     optionsmap:
       "Off": 0
       "On": 1
