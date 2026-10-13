@@ -900,6 +900,9 @@ sensor:
 # Measurements:
   - platform: jk_bms_ble
     jk_bms_ble_id: bms0
+    device_address:
+      name: "device address"
+      device_id: device0
     min_cell_voltage:
       name: "min cell voltage"
       device_id: device0
@@ -1120,6 +1123,9 @@ sensor:
 
   - platform: jk_bms_ble
     jk_bms_ble_id: bms1
+    device_address:
+      name: "device address"
+      device_id: device1
     min_cell_voltage:
       name: "min cell voltage"
       device_id: device1
@@ -1339,6 +1345,9 @@ sensor:
 
   - platform: jk_bms_ble
     jk_bms_ble_id: bms2
+    device_address:
+      name: "device address"
+      device_id: device2
     min_cell_voltage:
       name: "min cell voltage"
       device_id: device2
@@ -1848,6 +1857,9 @@ text_sensor:
     serial_number:
       name: "serial number"
       device_id: device0
+    device_name:
+      name: "device name"
+      device_id: device0
 
   - platform: jk_bms_ble
     jk_bms_ble_id: bms1
@@ -1884,6 +1896,9 @@ text_sensor:
     serial_number:
       name: "serial number"
       device_id: device1
+    device_name:
+      name: "device name"
+      device_id: device1
 
   - platform: jk_bms_ble
     jk_bms_ble_id: bms2
@@ -1919,4 +1934,7 @@ text_sensor:
       device_id: device2
     serial_number:
       name: "serial number"
+      device_id: device2
+    device_name:
+      name: "device name"
       device_id: device2
