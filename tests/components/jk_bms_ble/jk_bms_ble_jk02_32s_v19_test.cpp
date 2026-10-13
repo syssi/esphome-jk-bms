@@ -28,6 +28,28 @@ TEST(JkBmsV19DeviceInfoTest, PowerOnCount) {
   EXPECT_EQ(power_on_count.state, 16.0f);
 }
 
+TEST(JkBmsV19DeviceInfoTest, DeviceName) {
+  TestableJkBmsBle bms;
+  text_sensor::TextSensor device_name;
+  bms.set_device_name_text_sensor(&device_name);
+  bms.decode_device_info_(DEVICE_INFO_JK02_32S_V19);
+  EXPECT_EQ(device_name.state, "506177F49000674");
+}
+
+TEST(JkBmsV19DeviceInfoTest, DeviceNameWithoutNullTerminator) {
+  // A name using all 16 bytes has no terminating zero: it must not run into the passcode at offset 62.
+  std::vector<uint8_t> data = DEVICE_INFO_JK02_32S_V19;
+  for (size_t i = 0; i < 16; i++) {
+    data[46 + i] = 'A' + i;
+  }
+
+  TestableJkBmsBle bms;
+  text_sensor::TextSensor device_name;
+  bms.set_device_name_text_sensor(&device_name);
+  bms.decode_device_info_(data);
+  EXPECT_EQ(device_name.state, "ABCDEFGHIJKLMNOP");
+}
+
 TEST(JkBmsV19CellInfoTest, CellVoltages) {
   TestableJkBmsBle bms;
   bms.set_protocol_version(PROTOCOL_VERSION_JK02_32S);
@@ -195,6 +217,28 @@ TEST(JkBmsV19SettingsTest, HeatingSwitch) {
   bms.set_heating_switch(&heating);
   bms.decode_jk02_settings_(SETTINGS_JK02_32S_V19);
   EXPECT_TRUE(heating.state);  // byte 282 bit0 set
+}
+
+TEST(JkBmsV19SettingsTest, DeviceAddress) {
+  TestableJkBmsBle bms;
+  bms.set_protocol_version(PROTOCOL_VERSION_JK02_32S);
+  sensor::Sensor device_address;
+  bms.set_device_address_sensor(&device_address);
+  bms.decode_jk02_settings_(SETTINGS_JK02_32S_V19);
+  EXPECT_EQ(device_address.state, 0.0f);  // byte 270
+}
+
+TEST(JkBmsV19SettingsTest, DeviceAddressNonZero) {
+  // Captured device uses address 0: take the captured frame and set the DIP switch address.
+  std::vector<uint8_t> data = SETTINGS_JK02_32S_V19;
+  data[270] = 0x0F;
+
+  TestableJkBmsBle bms;
+  bms.set_protocol_version(PROTOCOL_VERSION_JK02_32S);
+  sensor::Sensor device_address;
+  bms.set_device_address_sensor(&device_address);
+  bms.decode_jk02_settings_(data);
+  EXPECT_EQ(device_address.state, 15.0f);
 }
 
 }  // namespace esphome::jk_bms_ble::testing

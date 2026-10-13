@@ -28,6 +28,14 @@ TEST(JkBmsV10DeviceInfoTest, PowerOnCount) {
   EXPECT_EQ(power_on_count.state, 1.0f);
 }
 
+TEST(JkBmsV10DeviceInfoTest, DeviceName) {
+  TestableJkBmsBle bms;
+  text_sensor::TextSensor device_name;
+  bms.set_device_name_text_sensor(&device_name);
+  bms.decode_device_info_(DEVICE_INFO_JK02_24S_V10);
+  EXPECT_EQ(device_name.state, "JK-B2A24S20P");
+}
+
 TEST(JkBmsV10CellInfoTest, CellVoltages) {
   TestableJkBmsBle bms;
   sensor::Sensor cells[24];
