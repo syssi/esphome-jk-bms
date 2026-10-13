@@ -5,6 +5,11 @@ from esphome.const import ENTITY_CATEGORY_DIAGNOSTIC, ICON_EMPTY, ICON_TIMELAPSE
 
 from . import CONF_JK_BMS_BLE_ID, JK_BMS_BLE_COMPONENT_SCHEMA, deprecated_renames
 
+try:
+    from esphome.components.const import CONF_SERIAL_NUMBER
+except ImportError:  # ESPHome < 2026.11.0
+    CONF_SERIAL_NUMBER = "serial_number"
+
 DEPENDENCIES = ["jk_bms_ble"]
 
 CODEOWNERS = ["@syssi", "@txubelaxu"]
@@ -20,7 +25,6 @@ CONF_BATTERY_TYPE = "battery_type"
 CONF_DEVICE_MODEL = "device_model"
 CONF_DEVICE_NAME = "device_name"
 CONF_MANUFACTURING_DATE = "manufacturing_date"
-CONF_SERIAL_NUMBER = "serial_number"
 
 ICON_ERRORS = "mdi:alert-circle-outline"
 ICON_BALANCER_STATUS = "mdi:heart-pulse"
