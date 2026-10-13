@@ -175,7 +175,8 @@ class TestJkBmsBleSensorLists:
         assert "detail_log_entry_count" in ble_sensor.SENSOR_DEFS
         assert "battery_type_id" in ble_sensor.SENSOR_DEFS
         assert ble_sensor.CONF_POWER_ON_COUNT in ble_sensor.SENSOR_DEFS
-        assert len(ble_sensor.SENSOR_DEFS) == 33
+        assert ble_sensor.CONF_DEVICE_ADDRESS in ble_sensor.SENSOR_DEFS
+        assert len(ble_sensor.SENSOR_DEFS) == 34
 
 
 class TestJkBmsBleErrorOverrides:
@@ -365,9 +366,10 @@ class TestJkBleTextSensorConstants:
         assert ble_text_sensor.CONF_CHARGE_STATUS in ble_text_sensor.TEXT_SENSORS
         assert ble_text_sensor.CONF_BATTERY_TYPE in ble_text_sensor.TEXT_SENSORS
         assert ble_text_sensor.CONF_DEVICE_MODEL in ble_text_sensor.TEXT_SENSORS
+        assert ble_text_sensor.CONF_DEVICE_NAME in ble_text_sensor.TEXT_SENSORS
         assert ble_text_sensor.CONF_MANUFACTURING_DATE in ble_text_sensor.TEXT_SENSORS
         assert ble_text_sensor.CONF_SERIAL_NUMBER in ble_text_sensor.TEXT_SENSORS
-        assert len(ble_text_sensor.TEXT_SENSORS) == 11
+        assert len(ble_text_sensor.TEXT_SENSORS) == 12
 
 
 class TestJkBmsDisplaySensorLists:
