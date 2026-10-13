@@ -63,6 +63,7 @@ CONF_CHARGE_STATUS_TIME_ELAPSED = "charge_status_time_elapsed"
 CONF_DETAIL_LOG_ENTRY_COUNT = "detail_log_entry_count"
 CONF_BATTERY_TYPE_ID = "battery_type_id"
 CONF_BALANCER_STATUS_BITMASK = "balancer_status_bitmask"
+CONF_DEVICE_ADDRESS = "device_address"
 CONF_UART1_PROTOCOLS_ENABLED_BITMASK = "uart1_protocols_enabled_bitmask"
 CONF_UART2_PROTOCOLS_ENABLED_BITMASK = "uart2_protocols_enabled_bitmask"
 CONF_UART3_PROTOCOLS_ENABLED_BITMASK = "uart3_protocols_enabled_bitmask"
@@ -76,6 +77,7 @@ ICON_MAX_VOLTAGE_CELL = "mdi:battery-plus-outline"
 ICON_CAPACITY_REMAINING = "mdi:battery-50"
 ICON_CHARGING_CYCLES = "mdi:battery-sync"
 ICON_POWER_ON_COUNT = "mdi:power-cycle"
+ICON_DEVICE_ADDRESS = "mdi:identifier"
 ICON_CELL_RESISTANCE = "mdi:omega"
 ICON_BALANCER = "mdi:seesaw"
 ICON_CHARGE_STATUS_ID = "mdi:battery-clock"
@@ -254,6 +256,14 @@ SENSOR_DEFS = {
         "accuracy_decimals": 0,
         "device_class": DEVICE_CLASS_EMPTY,
         "state_class": STATE_CLASS_TOTAL_INCREASING,
+        "entity_category": ENTITY_CATEGORY_DIAGNOSTIC,
+    },
+    CONF_DEVICE_ADDRESS: {
+        "unit_of_measurement": UNIT_EMPTY,
+        "icon": ICON_DEVICE_ADDRESS,
+        "accuracy_decimals": 0,
+        "device_class": DEVICE_CLASS_EMPTY,
+        "state_class": STATE_CLASS_MEASUREMENT,
         "entity_category": ENTITY_CATEGORY_DIAGNOSTIC,
     },
     CONF_BALANCING_CURRENT: {

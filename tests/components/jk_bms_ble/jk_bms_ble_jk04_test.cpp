@@ -47,6 +47,14 @@ TEST(JkBmsJk04DeviceInfoTest, PowerOnCount) {
   EXPECT_EQ(power_on_count.state, 19.0f);
 }
 
+TEST(JkBmsJk04DeviceInfoTest, DeviceName) {
+  TestableJkBmsBle bms;
+  text_sensor::TextSensor device_name;
+  bms.set_device_name_text_sensor(&device_name);
+  bms.decode_device_info_(DEVICE_INFO_JK04);
+  EXPECT_EQ(device_name.state, "BMS");
+}
+
 TEST(JkBmsJk04CellInfoTest, CellVoltages) {
   TestableJkBmsBle bms;
   bms.set_protocol_version(PROTOCOL_VERSION_JK04);

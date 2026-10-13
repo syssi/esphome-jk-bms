@@ -28,6 +28,14 @@ TEST(JkBmsV14DeviceInfoTest, PowerOnCount) {
   EXPECT_EQ(power_on_count.state, 156.0f);
 }
 
+TEST(JkBmsV14DeviceInfoTest, DeviceName) {
+  TestableJkBmsBle bms;
+  text_sensor::TextSensor device_name;
+  bms.set_device_name_text_sensor(&device_name);
+  bms.decode_device_info_(DEVICE_INFO_JK02_32S_V14);
+  EXPECT_EQ(device_name.state, "JK_PB2A16S15P");
+}
+
 TEST(JkBmsV14CellInfoTest, CellVoltages) {
   TestableJkBmsBle bms;
   bms.set_protocol_version(PROTOCOL_VERSION_JK02_32S);

@@ -193,6 +193,8 @@ number:
 sensor:
   - platform: jk_bms_ble
     jk_bms_ble_id: bms0
+    device_address:
+      name: "device address"
     min_cell_voltage:
       name: "min cell voltage"
     max_cell_voltage:
@@ -424,3 +426,5 @@ text_sensor:
       name: "manufacturing date"
     serial_number:
       name: "serial number"
+    device_name:
+      name: "device name"

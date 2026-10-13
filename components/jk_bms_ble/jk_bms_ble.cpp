@@ -413,6 +413,7 @@ void JkBmsBle::dump_config() {  // NOLINT(google-readability-function-size,reada
   LOG_SENSOR("", "Charge Status ID", this->charge_status_id_sensor_);
   LOG_SENSOR("", "Charge Status Time Elapsed", this->charge_status_time_elapsed_sensor_);
   LOG_SENSOR("", "Battery Type ID", this->battery_type_id_sensor_);
+  LOG_SENSOR("", "Device Address", this->device_address_sensor_);
 
   LOG_TEXT_SENSOR("", "Balancer Status", this->balancer_status_text_sensor_);
   LOG_TEXT_SENSOR("", "Total Runtime Formatted", this->total_runtime_formatted_text_sensor_);
@@ -423,6 +424,7 @@ void JkBmsBle::dump_config() {  // NOLINT(google-readability-function-size,reada
   LOG_TEXT_SENSOR("", "Hardware Version", this->hardware_version_text_sensor_);
   LOG_TEXT_SENSOR("", "Battery Type", this->battery_type_text_sensor_);
   LOG_TEXT_SENSOR("", "Device Model", this->device_model_text_sensor_);
+  LOG_TEXT_SENSOR("", "Device Name", this->device_name_text_sensor_);
   LOG_TEXT_SENSOR("", "Manufacturing Date", this->manufacturing_date_text_sensor_);
   LOG_TEXT_SENSOR("", "Serial Number", this->serial_number_text_sensor_);
 }
@@ -1383,7 +1385,7 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
     // 262   4   0x00 0x00 0x00 0x00
     // 266   4   0x00 0x00 0x00 0x00
     // 270   4   0x00 0x00 0x00 0x00
-    ESP_LOGI(TAG, "  Device address: %d", data[270]);
+    this->publish_state_(this->device_address_sensor_, (uint8_t) data[270]);
 
     // 274   4   0x00 0x00 0x00 0x00
     ESP_LOGI(TAG, "  Precharge time: %d s", data[274]);
@@ -1687,7 +1689,9 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->power_on_count_sensor_, (float) jk_get_32bit(42));
 
   // 46   16   0x4A 0x4B 0x5F 0x50 0x42 0x32 0x41 0x31 0x36 0x53 0x31 0x35 0x50 0x00 0x00 0x00
-  ESP_LOGI(TAG, "  Device name: %s", std::string(data.begin() + 46, data.begin() + 46 + 16).c_str());
+  auto device_name_begin = data.begin() + 46;
+  this->publish_state_(this->device_name_text_sensor_,
+                       std::string(device_name_begin, std::find(device_name_begin, device_name_begin + 16, '\0')));
 
   // 62   16   0x31 0x32 0x33 0x34 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
   ESP_LOGI(TAG, "  Device passcode: %s", std::string(data.begin() + 62, data.begin() + 62 + 16).c_str());
