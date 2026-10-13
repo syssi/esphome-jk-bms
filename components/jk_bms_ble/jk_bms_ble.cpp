@@ -1691,9 +1691,8 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
 
   // 46   16   0x4A 0x4B 0x5F 0x50 0x42 0x32 0x41 0x31 0x36 0x53 0x31 0x35 0x50 0x00 0x00 0x00
   auto device_name_begin = data.begin() + 46;
-  this->publish_state_(
-      this->device_name_text_sensor_,
-      std::string(device_name_begin, std::find(device_name_begin, device_name_begin + 16, '\0')));
+  this->publish_state_(this->device_name_text_sensor_,
+                       std::string(device_name_begin, std::find(device_name_begin, device_name_begin + 16, '\0')));
 
   // 62   16   0x31 0x32 0x33 0x34 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
   ESP_LOGI(TAG, "  Device passcode: %s", std::string(data.begin() + 62, data.begin() + 62 + 16).c_str());
