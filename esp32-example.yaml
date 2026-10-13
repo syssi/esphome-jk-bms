@@ -2,6 +2,7 @@ substitutions:
   name: jk-bms
   device_description: "Monitor a JK-BMS using the GPS port (UART-TTL)"
   external_components_source: github://syssi/esphome-jk-bms@main
+  # On this classic ESP32 board, avoid UART0 (GPIO1/GPIO3), shared with USB-UART and logging.
   tx_pin: GPIO16
   rx_pin: GPIO17
 

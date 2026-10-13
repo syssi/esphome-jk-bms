@@ -94,13 +94,18 @@ All JK-BMS models with software version `>=6.0` are using the implemented protoc
 │GND  RX  TX VBAT│
 └────────────────┘
   │   │   │
-  │   │   └─── GPIO17 (`rx_pin`)
-  │   └─────── GPIO16 (`tx_pin`)
+  │   │   └─── ESP32 GPIO17 / ESP8266 GPIO5 (`rx_pin`)
+  │   └─────── ESP32 GPIO16 / ESP8266 GPIO4 (`tx_pin`)
   └─────────── GND
 ```
 
+### UART pin selection
 
-The UART-TTL (labeled as `RS485`) socket of the BMS can be attached to any UART pins of the ESP. A hardware UART should be preferred because of the high baudrate (115200 baud). The connector is called 4 Pin JST with 1.25mm pitch.
+The pin numbers above match the UART-TTL examples. Cross the data lines: BMS TX connects to ESP RX, and BMS RX connects to ESP TX. The connector is a 4-pin JST with 1.25 mm pitch; some JK-BMS units label this socket `RS485`.
+
+The classic ESP32 `wemos_d1_mini32` example uses GPIO16 for TX and GPIO17 for RX. On this board, avoid GPIO1 and GPIO3 for the BMS: they are UART0 pins and are commonly shared with the USB-to-serial adapter and ESPHome's serial logger. A collision can leave the BMS silent or corrupt received data.
+
+The ESP8266 `d1_mini` example uses GPIO4 for TX and GPIO5 for RX, which ESPHome implements with a software UART. At 115200 baud, a software UART may be less reliable than a hardware UART; use a compatible hardware UART arrangement if your board and wiring allow it. This example uses GPIO4/GPIO5 to keep the BMS off UART0's GPIO1/GPIO3 pins. Its `logger: baud_rate: 0` setting disables ESPHome logger output on UART0; that setting is separate from the software UART used for the BMS.
 
 ## Installation
 
