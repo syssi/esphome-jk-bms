@@ -1385,7 +1385,6 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
     // 262   4   0x00 0x00 0x00 0x00
     // 266   4   0x00 0x00 0x00 0x00
     // 270   4   0x00 0x00 0x00 0x00
-    ESP_LOGI(TAG, "  Device address: %d", data[270]);
     this->publish_state_(this->device_address_sensor_, (uint8_t) data[270]);
 
     // 274   4   0x00 0x00 0x00 0x00
