@@ -18,6 +18,7 @@ CONF_SOFTWARE_VERSION = "software_version"
 CONF_HARDWARE_VERSION = "hardware_version"
 CONF_BATTERY_TYPE = "battery_type"
 CONF_DEVICE_MODEL = "device_model"
+CONF_DEVICE_NAME = "device_name"
 CONF_MANUFACTURING_DATE = "manufacturing_date"
 CONF_SERIAL_NUMBER = "serial_number"
 
@@ -26,6 +27,7 @@ ICON_BALANCER_STATUS = "mdi:heart-pulse"
 ICON_CHARGE_STATUS = "mdi:battery-clock"
 ICON_BATTERY_TYPE = "mdi:battery-heart-variant"
 ICON_DEVICE_MODEL = "mdi:chip"
+ICON_DEVICE_ID = "mdi:identifier"
 ICON_MANUFACTURING_DATE = "mdi:calendar"
 ICON_SERIAL_NUMBER = "mdi:identifier"
 
@@ -39,6 +41,7 @@ TEXT_SENSORS = [
     CONF_HARDWARE_VERSION,
     CONF_BATTERY_TYPE,
     CONF_DEVICE_MODEL,
+    CONF_DEVICE_NAME,
     CONF_MANUFACTURING_DATE,
     CONF_SERIAL_NUMBER,
 ]
@@ -81,6 +84,10 @@ CONFIG_SCHEMA = cv.All(
             ),
             cv.Optional(CONF_DEVICE_MODEL): text_sensor.text_sensor_schema(
                 icon=ICON_DEVICE_MODEL,
+                entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
+            ),
+            cv.Optional(CONF_DEVICE_NAME): text_sensor.text_sensor_schema(
+                icon=ICON_DEVICE_ID,
                 entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
             ),
             cv.Optional(CONF_MANUFACTURING_DATE): text_sensor.text_sensor_schema(

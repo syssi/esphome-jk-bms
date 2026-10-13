@@ -300,6 +300,9 @@ class JkBmsBle :
   void set_battery_type_id_sensor(sensor::Sensor *battery_type_id_sensor) {
     battery_type_id_sensor_ = battery_type_id_sensor;
   }
+  void set_device_address_sensor(sensor::Sensor *device_address_sensor) {
+    device_address_sensor_ = device_address_sensor;
+  }
   void set_uart1_protocols_enabled_bitmask_sensor(sensor::Sensor *uart1_protocols_enabled_bitmask_sensor) {
     uart1_protocols_enabled_bitmask_sensor_ = uart1_protocols_enabled_bitmask_sensor;
   }
@@ -337,6 +340,9 @@ class JkBmsBle :
   }
   void set_device_model_text_sensor(text_sensor::TextSensor *device_model_text_sensor) {
     device_model_text_sensor_ = device_model_text_sensor;
+  }
+  void set_device_name_text_sensor(text_sensor::TextSensor *device_name_text_sensor) {
+    device_name_text_sensor_ = device_name_text_sensor;
   }
   void set_manufacturing_date_text_sensor(text_sensor::TextSensor *manufacturing_date_text_sensor) {
     manufacturing_date_text_sensor_ = manufacturing_date_text_sensor;
@@ -516,6 +522,7 @@ class JkBmsBle :
   sensor::Sensor *charge_status_time_elapsed_sensor_{nullptr};
   sensor::Sensor *detail_log_entry_count_sensor_{nullptr};
   sensor::Sensor *battery_type_id_sensor_{nullptr};
+  sensor::Sensor *device_address_sensor_{nullptr};
   sensor::Sensor *uart1_protocols_enabled_bitmask_sensor_{nullptr};
   sensor::Sensor *uart2_protocols_enabled_bitmask_sensor_{nullptr};
   sensor::Sensor *uart3_protocols_enabled_bitmask_sensor_{nullptr};
@@ -563,6 +570,7 @@ class JkBmsBle :
   text_sensor::TextSensor *hardware_version_text_sensor_{nullptr};
   text_sensor::TextSensor *battery_type_text_sensor_{nullptr};
   text_sensor::TextSensor *device_model_text_sensor_{nullptr};
+  text_sensor::TextSensor *device_name_text_sensor_{nullptr};
   text_sensor::TextSensor *manufacturing_date_text_sensor_{nullptr};
   text_sensor::TextSensor *serial_number_text_sensor_{nullptr};
 
