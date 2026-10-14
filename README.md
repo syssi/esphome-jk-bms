@@ -105,7 +105,7 @@ The pin numbers above match the UART-TTL examples. Cross the data lines: BMS TX 
 
 The classic ESP32 `wemos_d1_mini32` example uses GPIO16 for TX and GPIO17 for RX. On this board, avoid GPIO1 and GPIO3 for the BMS: they are UART0 pins and are commonly shared with the USB-to-serial adapter and ESPHome's serial logger. A collision can leave the BMS silent or corrupt received data.
 
-The ESP8266 `d1_mini` example uses GPIO4 for TX and GPIO5 for RX, which ESPHome implements with a software UART. At 115200 baud, a software UART may be less reliable than a hardware UART; use a compatible hardware UART arrangement if your board and wiring allow it. This example uses GPIO4/GPIO5 to keep the BMS off UART0's GPIO1/GPIO3 pins. Its `logger: baud_rate: 0` setting disables ESPHome logger output on UART0; that setting is separate from the software UART used for the BMS.
+The ESP8266 `d1_mini` example uses GPIO4 for TX and GPIO5 for RX, which ESPHome implements with a software UART. At 115200 baud, a software UART may be less reliable than a hardware UART; use a compatible hardware UART arrangement if your board and wiring allow it. This example uses GPIO4/GPIO5 to keep the BMS off UART0's GPIO1/GPIO3 pins. Its `logger: baud_rate: 0` setting keeps UART0 free in case you move the BMS to GPIO1/GPIO3; if you use other pins, you can re-enable the logger.
 
 ## Installation
 

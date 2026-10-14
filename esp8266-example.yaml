@@ -30,7 +30,8 @@ ota:
   platform: esphome
 
 logger:
-  # Disable ESPHome UART logging on UART0; the BMS uses software UART on GPIO4/GPIO5.
+  # Keeps UART0 (GPIO1/GPIO3) free if you move the BMS there; re-enable logging on other pins.
+  # Note: most ESP8266 boards also have a USB-UART chip on UART0, which often blocks the BMS communication.
   baud_rate: 0
   level: DEBUG
 
