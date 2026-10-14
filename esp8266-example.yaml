@@ -2,6 +2,7 @@ substitutions:
   name: jk-bms
   device_description: "Monitor a JK-BMS using the GPS port (UART-TTL)"
   external_components_source: github://syssi/esphome-jk-bms@main
+  # GPIO4/GPIO5 use software UART; at 115200 baud it may be less reliable than hardware UART.
   tx_pin: GPIO4
   rx_pin: GPIO5
 
@@ -29,6 +30,8 @@ ota:
   platform: esphome
 
 logger:
+  # Keeps UART0 (GPIO1/GPIO3) free if you move the BMS there; re-enable logging on other pins.
+  # Note: most ESP8266 boards also have a USB-UART chip on UART0, which often blocks the BMS communication.
   baud_rate: 0
   level: DEBUG
 
