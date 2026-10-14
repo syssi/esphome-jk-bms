@@ -14,6 +14,10 @@ ESPHome component to monitor a Jikong Battery Management System (JK-BMS) via UAR
 
 All JK-BMS models with software version `>=6.0` are using the implemented protocol and should be supported.
 
+The BLE options `JK02_24S` and `JK02_32S` select frame formats, not the battery's
+cell count. Use reports for the same model and hardware revision when choosing
+between them.
+
 * JK-BD4A8S4P, hw 11.xw, sw 11.24, using `JK02_32S` (reported by [@austin202220](https://github.com/syssi/esphome-jk-bms/issues/297))
 * JK-BD6A17S6P, hw 7.2, sw 7.1.0H
 * JK-BD6A17S8P, hw 9.x, sw 9.01G (reported by [@jonadis](https://github.com/syssi/esphome-jk-bms/issues/35#issuecomment-1035312712))
@@ -34,6 +38,8 @@ All JK-BMS models with software version `>=6.0` are using the implemented protoc
 * JK-B1A20S15P, hw 8.x, sw 8.14U (reported by  [@trippfam07](https://github.com/syssi/esphome-jk-bms/issues/31))
 * JK-B1A20S15P, hw 10.xw, sw 10.07 (reported by [@romeox44](https://github.com/syssi/esphome-jk-bms/discussions/125))
 * JK-B1A20S15P, hw 10.xw, sw 10.10, using `JK02_24S` (reported by [@austin202220](https://github.com/syssi/esphome-jk-bms/issues/297#issuecomment-1510685683))
+* JK-B1A20S15P, hw 11A, sw 11.52, using `JK02_32S` (BLE) (reported by [@joyshmitz](https://github.com/joyshmitz) in [#1061](https://github.com/syssi/esphome-jk-bms/issues/1061))
+* JK-B1A20S15P, hw 18H, sw 18.00, using `JK02_32S` (BLE) (reported by [@joyshmitz](https://github.com/joyshmitz) in [#1061](https://github.com/syssi/esphome-jk-bms/issues/1061))
 * JK-B1A20S15P, hw 11.xw, sw 11.26, using UART-TTL (reported by [@Tesla72PL](https://github.com/syssi/esphome-jk-bms/issues/309))
 * JK-B2A24S15P, hw 6.x, sw 6.1.3S (reported by [@miguel300477](https://github.com/syssi/esphome-jk-bms/issues/57))
 * JK-B2A24S15P, hw 8.x, sw 8.21W (reported by [@mariusvaida](https://github.com/syssi/esphome-jk-bms/issues/120))
