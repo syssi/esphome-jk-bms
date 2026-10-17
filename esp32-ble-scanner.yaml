@@ -38,10 +38,12 @@ esp32_ble_tracker:
   on_ble_advertise:
     then:
       - lambda: |-
-          if (x.get_name().rfind("JK-", 0) == 0 || x.get_name().rfind("JK_", 0) == 0) {
+          const std::string name = x.get_name();
+          if (name.rfind("JK-", 0) == 0 || name.rfind("JK_", 0) == 0) {
             ESP_LOGI("ble_adv", "New JK-BMS found");
-            ESP_LOGI("ble_adv", "  Name: %s", x.get_name().c_str());
-            ESP_LOGI("ble_adv", "  MAC address: %s", x.address_str().c_str());
+            ESP_LOGI("ble_adv", "  Name: %s", name.c_str());
+            char addr_buf[MAC_ADDRESS_PRETTY_BUFFER_SIZE];
+            ESP_LOGI("ble_adv", "  MAC address: %s", x.address_str_to(addr_buf));
             ESP_LOGD("ble_adv", "  Advertised service UUIDs:");
             char uuidstr[esphome::esp32_ble::UUID_STR_LEN];
             for (auto uuid : x.get_service_uuids()) {
