@@ -35,6 +35,12 @@ static const uint8_t COMMAND_CELL_INFO = 0x96;
 static const uint8_t COMMAND_DEVICE_INFO = 0x97;
 static const uint8_t COMMAND_LOGBOOK = 0xA1;
 
+// The BMS silently drops a register write that follows the previous one within a few milliseconds.
+static const uint32_t WRITE_SPACING_MS = 100;
+// The BMS never acknowledges a settings write. This long after the last write the settings are read
+// back, so the entities publish what the BMS actually stored.
+static const uint32_t SETTINGS_VERIFICATION_DELAY_MS = 500;
+
 static const uint16_t MIN_RESPONSE_SIZE = 300;
 static const uint16_t MAX_RESPONSE_SIZE = 384 + 16;
 
@@ -451,6 +457,7 @@ void JkBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gat
       this->char_handle_ = 0;
 
       this->frame_buffer_.clear();
+      this->cancel_timeout("verify_settings");
 
       break;
     }
@@ -556,6 +563,47 @@ void JkBmsBle::update() {
 }
 
 bool JkBmsBle::write_register(uint8_t address, uint32_t value, uint8_t length) {
+  if (this->node_state != espbt::ClientState::ESTABLISHED) {
+    ESP_LOGW(TAG, "[%s] Not connected, dropping command 0x%02X", this->parent_->address_str(), address);
+    return false;
+  }
+
+  // Defer the write to the next free slot, WRITE_SPACING_MS after the previously scheduled one
+  const uint32_t now = millis();
+  uint32_t delay = 0;
+  if (this->deferred_writes_ > 0) {
+    // The previous slot is at most a few loop iterations in the past, so the signed difference is safe
+    delay = std::max<int32_t>((int32_t) (this->last_write_slot_ - now), 0) + WRITE_SPACING_MS;
+  } else if (now - this->last_write_slot_ < WRITE_SPACING_MS) {
+    delay = WRITE_SPACING_MS - (now - this->last_write_slot_);
+  }
+  this->last_write_slot_ = now + delay;
+
+  bool sent = true;
+  if (delay == 0) {
+    sent = this->send_frame_(address, value, length);
+  } else {
+    this->deferred_writes_++;
+    this->set_timeout(delay, [this, address, value, length]() {
+      this->deferred_writes_--;
+      if (this->node_state == espbt::ClientState::ESTABLISHED) {
+        this->send_frame_(address, value, length);
+      }
+    });
+  }
+
+  // Every settings write restarts the timer, so a batch of writes results in a single read
+  if (address != COMMAND_CELL_INFO && address != COMMAND_DEVICE_INFO && address != COMMAND_LOGBOOK) {
+    this->set_timeout("verify_settings", delay + SETTINGS_VERIFICATION_DELAY_MS, [this]() {
+      ESP_LOGD(TAG, "Request settings to verify the last write");
+      this->write_register(COMMAND_CELL_INFO, 0x00000000, 0x00);
+    });
+  }
+
+  return sent;
+}
+
+bool JkBmsBle::send_frame_(uint8_t address, uint32_t value, uint8_t length) {
   auto frame = build_frame(address, value, length);
 
   char hex_buf[format_hex_pretty_size(MAX_HEX_DUMP_BYTES)];
@@ -649,6 +697,8 @@ void JkBmsBle::decode_(const std::vector<uint8_t> &data) {
       }
       break;
     case 0x02:
+      // Set before the decoders, which return early if the frame is throttled
+      this->status_notification_received_ = true;
       if (this->protocol_version_ == PROTOCOL_VERSION_JK04) {
         this->decode_jk04_cell_info_(data);
       } else {
@@ -965,8 +1015,6 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   }
 
   // 299   1   0xCD                   CRC
-
-  this->status_notification_received_ = true;
 }
 
 void JkBmsBle::decode_jk04_cell_info_(const std::vector<uint8_t> &data) {
@@ -1156,8 +1204,6 @@ void JkBmsBle::decode_jk04_cell_info_(const std::vector<uint8_t> &data) {
   ESP_LOGD(TAG, "Unknown298: 0x%02X", data[298]);
 
   // 299   1   0x13                   Checksm
-
-  status_notification_received_ = true;
 }
 
 void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
