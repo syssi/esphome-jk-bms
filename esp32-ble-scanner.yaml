@@ -6,7 +6,7 @@ esphome:
   name: ${name}
   friendly_name: ${name}
   comment: ${device_description}
-  min_version: "2026.9.0"
+  min_version: "2026.1.0"
   project:
     name: "syssi.esphome-jk-bms"
     version: 3.0.0
@@ -38,9 +38,10 @@ esp32_ble_tracker:
   on_ble_advertise:
     then:
       - lambda: |-
-          if (x.get_name().starts_with("JK-") || x.get_name().starts_with("JK_")) {
+          const std::string name = x.get_name();
+          if (name.rfind("JK-", 0) == 0 || name.rfind("JK_", 0) == 0) {
             ESP_LOGI("ble_adv", "New JK-BMS found");
-            ESP_LOGI("ble_adv", "  Name: %s", x.get_name().c_str());
+            ESP_LOGI("ble_adv", "  Name: %s", name.c_str());
             char addr_buf[MAC_ADDRESS_PRETTY_BUFFER_SIZE];
             ESP_LOGI("ble_adv", "  MAC address: %s", x.address_str_to(addr_buf));
             ESP_LOGD("ble_adv", "  Advertised service UUIDs:");
