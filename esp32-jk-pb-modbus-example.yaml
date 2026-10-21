@@ -553,6 +553,7 @@ sensor:
     modbus_controller_id: bms0
     name: "cell voltage 1"
     address: 0x1200
+    reuse_previous_range: false
     register_type: holding
     value_type: U_WORD
     unit_of_measurement: "V"
@@ -787,11 +788,13 @@ sensor:
     device_class: voltage
     state_class: measurement
     accuracy_decimals: 3
+    # remember to adjust cells count in the loop
     lambda: |-
       uint16_t max_voltage = 0;
-      for (int i = 0; i < 32; i++) {
+      for (int i = 0; i < 16; i++) {
         uint16_t cell_voltage = (data[i*2] << 8) | data[i*2+1];
-        if (cell_voltage > max_voltage) max_voltage = cell_voltage;
+        if ((cell_voltage > max_voltage) && (cell_voltage < 10000))
+          max_voltage = cell_voltage;
       }
       return max_voltage * 0.001f;
 
@@ -802,16 +805,18 @@ sensor:
     register_type: holding
     value_type: RAW
     response_size: 64
-    reuse_previous_range: false
+    reuse_previous_range: true
     unit_of_measurement: "V"
     device_class: voltage
     state_class: measurement
     accuracy_decimals: 3
+    # remember to adjust cells count in the loop
     lambda: |-
       uint16_t min_voltage = 0xFFFF;
-      for (int i = 0; i < 32; i++) {
+      for (int i = 0; i < 16; i++) {
         uint16_t cell_voltage = (data[i*2] << 8) | data[i*2+1];
-        if (cell_voltage > 500 && cell_voltage < min_voltage) min_voltage = cell_voltage;
+        if ((cell_voltage > 1000) && (cell_voltage < min_voltage))
+          min_voltage = cell_voltage;
       }
       return min_voltage * 0.001f;
 
@@ -823,16 +828,17 @@ sensor:
     register_type: holding
     value_type: RAW
     response_size: 64
-    reuse_previous_range: false
+    reuse_previous_range: true
     unit_of_measurement: ""
     state_class: measurement
     accuracy_decimals: 0
+    # remember to adjust cells count in the loop
     lambda: |-
       uint16_t max_voltage = 0;
       uint8_t max_cell = 0;
-      for (int i = 0; i < 32; i++) {
+      for (uint8_t i = 0; i < 16; i++) {
         uint16_t cell_voltage = (data[i*2] << 8) | data[i*2+1];
-        if (cell_voltage > max_voltage) {
+        if ((cell_voltage > max_voltage) && (cell_voltage < 10000)) {
           max_voltage = cell_voltage;
           max_cell = i + 1;
         }
@@ -846,16 +852,17 @@ sensor:
     register_type: holding
     value_type: RAW
     response_size: 64
-    reuse_previous_range: false
+    reuse_previous_range: true
     unit_of_measurement: ""
     state_class: measurement
     accuracy_decimals: 0
+    # remember to adjust cells count in the loop
     lambda: |-
       uint16_t min_voltage = 0xFFFF;
       uint8_t min_cell = 0;
-      for (int i = 0; i < 32; i++) {
+      for (uint8_t i = 0; i < 16; i++) {
         uint16_t cell_voltage = (data[i*2] << 8) | data[i*2+1];
-        if (cell_voltage > 500 && cell_voltage < min_voltage) {
+        if ((cell_voltage > 1000) && (cell_voltage < min_voltage)) {
           min_voltage = cell_voltage;
           min_cell = i + 1;
         }
@@ -868,6 +875,7 @@ sensor:
     modbus_controller_id: bms0
     name: "average cell voltage"
     address: 0x1244
+    reuse_previous_range: false
     register_type: holding
     value_type: U_WORD
     unit_of_measurement: "V"
