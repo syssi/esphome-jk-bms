@@ -82,7 +82,7 @@ def migrate(path):
     shutil.copy2(path, backup)
     print(f"Backup created: {backup}")
 
-    with open(path) as f:
+    with Path(path).open(encoding="utf-8") as f:
         lines = f.readlines()
 
     has_ble, has_uart = detect_components(lines)
@@ -146,7 +146,7 @@ def migrate(path):
 
         out.append(line)
 
-    with open(path, "w") as f:
+    with Path(path).open("w", encoding="utf-8") as f:
         f.writelines(out)
 
     print(f"\n{changes} key(s) renamed in {path}")

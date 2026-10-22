@@ -1,0 +1,17 @@
+{
+  "problemMatcher": [
+    {
+      "owner": "pylint",
+      "severity": "error",
+      "pattern": [
+        {
+          "regexp": "^(.*):(\\d+): \\[([EFCRW]\\d{4})\\(([a-z0-9-]+)\\), [^\\]]*\\] (.*)$",
+          "file": 1,
+          "line": 2,
+          "code": 3,
+          "message": 5
+        }
+      ]
+    }
+  ]
+}

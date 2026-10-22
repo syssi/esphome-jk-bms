@@ -74,7 +74,7 @@ except ImportError:  # ESPHome < 2026.2.0
     UNIT_AMPERE_HOUR = "Ah"
 
 # V2_NUMBERS: key -> (reg, cmd, type, unit, min, max, step)
-# type: "float" or "int"
+# The type is either "float" or "int"
 V2_NUMBERS = {
     CONF_CELL_OVERVOLTAGE_PROTECTION: (
         0x01,
