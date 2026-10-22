@@ -36,15 +36,20 @@ esphome:
   name: ${name}
   name_add_mac_suffix: false
   friendly_name: ${friendly_name}
+  min_version: "2026.11.0"
   devices:
     - id: device0
       name: "${bms0}"
+      relation: via
     - id: device1
       name: "${bms1}"
+      relation: via
     - id: device2
       name: "${bms2}"
+      relation: via
     - id: battery
       name: JK-Battery
+      relation: child
 
 time:
   - platform: homeassistant
