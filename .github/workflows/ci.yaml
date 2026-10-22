@@ -135,41 +135,15 @@ jobs:
         with:
           python-version: ${{ env.DEFAULT_PYTHON }}
           cache-key: ${{ needs.common.outputs.cache-key }}
-      - name: Run Ruff
+      - name: Run ruff check
+        run: |
+          . venv/bin/activate
+          ruff check --output-format=github esphome tests
+      - name: Run ruff format
+        if: always()
         run: |
           . venv/bin/activate
           ruff format esphome tests
-      - name: Suggested changes
-        run: script/ci-suggest-changes
-        if: always()
-
-  flake8:
-    name: Check flake8
-    runs-on: ubuntu-24.04
-    needs:
-      - bundle
-      - common
-    defaults:
-      run:
-        working-directory: esphome
-    steps:
-      - name: Download prepared repository
-        uses: pyTooling/download-artifact@dc575e4e9df4b6e3580712285f1c90f579bb8712  # v8
-        with:
-          name: bundle
-          path: .
-      - name: Update index to make "git diff-index" happy
-        run: git update-index -q --really-refresh
-
-      - name: Restore Python
-        uses: ./.github/actions/restore-python
-        with:
-          python-version: ${{ env.DEFAULT_PYTHON }}
-          cache-key: ${{ needs.common.outputs.cache-key }}
-      - name: Run flake8
-        run: |
-          . venv/bin/activate
-          flake8 esphome
       - name: Suggested changes
         run: script/ci-suggest-changes
         if: always()
@@ -197,6 +171,8 @@ jobs:
         with:
           python-version: ${{ env.DEFAULT_PYTHON }}
           cache-key: ${{ needs.common.outputs.cache-key }}
+      - name: Register matcher
+        run: echo "::add-matcher::.github/workflows/matchers/pylint.json"
       - name: Run pylint
         run: |
           . venv/bin/activate
@@ -302,7 +278,22 @@ jobs:
       - name: Run clang-format
         run: |
           . venv/bin/activate
-          script/clang-format -i
+          # Only format the sources of this project, not the ESPHome core tree
+          shopt -s nullglob
+          paths=()
+          for dir in ../components/*/; do
+            paths+=("esphome/components/$(basename "$dir")")
+          done
+          for dir in ../tests/components/*/; do
+            paths+=("tests/components/$(basename "$dir")")
+          done
+          if [ ${#paths[@]} -eq 0 ]; then
+            echo "No component directories found"
+            exit 0
+          fi
+          git ls-files -z -- "${paths[@]}" \
+            | grep -zE '\.(c|cpp|h|hpp|tcc)$' \
+            | xargs -0 -r clang-format -i
       - name: Suggested changes
         run: script/ci-suggest-changes
         if: always()
@@ -407,10 +398,12 @@ jobs:
           python-version: ${{ env.DEFAULT_PYTHON }}
           cache-key: ${{ needs.common.outputs.cache-key }}
 
+      - name: Register matcher
+        run: echo "::add-matcher::.github/workflows/matchers/pytest.json"
       - name: Run pytest
         run: |
           . venv/bin/activate
-          pytest tests/ -v
+          pytest -v --tb=native tests/
 
   cpp-unit-tests:
     name: Run C++ unit tests

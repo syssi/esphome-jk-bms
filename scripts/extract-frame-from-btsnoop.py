@@ -1,6 +1,6 @@
 import argparse
 import json
-import os
+import pathlib
 
 
 def extract_btatt_values(json_data):
@@ -37,9 +37,7 @@ def append_values(
             if index_of_value + 1 < len(values):
                 for value_to_append in values[index_of_value + 1 :]:
                     # 55:aa:eb:90 start of the next frame or "aa:55" command response??
-                    if value_to_append.startswith(
-                        start_value
-                    ) or value_to_append.startswith("aa:55"):
+                    if value_to_append.startswith((start_value, "aa:55")):
                         list_of_frame_values.append("".join(current_packet))
                         break
                     current_packet += ":" + value_to_append
@@ -72,12 +70,12 @@ def values_to_vertical_string(data):
 
 
 def load_json_from_file(file_path):
-    with open(file_path) as file:
+    with pathlib.Path(file_path).open(encoding="utf-8") as file:
         return json.load(file)
 
 
 def save_to_file(file_name, data):
-    with open(file_name + ".txt", "w") as file:
+    with pathlib.Path(file_name + ".txt").open("w", encoding="utf-8") as file:
         file.write(data)
         file.close()
 
@@ -99,6 +97,6 @@ btatt_values = extract_btatt_values(json_data)
 appended_values = append_values(btatt_values, frame_type)
 vertival_string = values_to_vertical_string(appended_values)
 
-file_name, file_extension = os.path.splitext(file_path)
+file_name = str(pathlib.Path(file_path).with_suffix(""))
 save_to_file(file_name, vertival_string)
 print("saved to " + file_name + "_output.log")
