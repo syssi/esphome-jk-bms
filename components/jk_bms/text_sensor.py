@@ -10,6 +10,11 @@ from esphome.const import (
 
 from . import CONF_JK_BMS_ID, JK_BMS_COMPONENT_SCHEMA
 
+try:
+    from esphome.components.const import CONF_DEVICE_TYPE
+except ImportError:  # ESPHome < 2026.11.0
+    CONF_DEVICE_TYPE = "device_type"
+
 DEPENDENCIES = ["jk_bms"]
 
 CODEOWNERS = ["@syssi"]
@@ -17,7 +22,6 @@ CODEOWNERS = ["@syssi"]
 CONF_BATTERY_TYPE = "battery_type"
 CONF_ERRORS = "errors"
 CONF_OPERATION_MODE = "operation_mode"
-CONF_DEVICE_TYPE = "device_type"
 CONF_SOFTWARE_VERSION = "software_version"
 try:
     from esphome.components.const import CONF_MANUFACTURER
