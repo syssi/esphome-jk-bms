@@ -1,6 +1,6 @@
 # Note:
 # If you have only 8 cells - comment out "cell voltage 9-16" and "cell 9-16 wire resistance".
-# Also you can comment out "cell 9-16 wire resistance" if you don't need this info.
+# Also you can comment out "cell 1-16 wire resistance" if you don't need this info.
 #
 #
 # Setup: adjust parameters in substitutions section
@@ -804,7 +804,7 @@ sensor:
     register_type: holding
     value_type: RAW
     response_size: 64
-    reuse_previous_range: true
+    reuse_previous_range: false
     unit_of_measurement: "V"
     device_class: voltage
     state_class: measurement
@@ -827,7 +827,7 @@ sensor:
     register_type: holding
     value_type: RAW
     response_size: 64
-    reuse_previous_range: true
+    reuse_previous_range: false
     unit_of_measurement: ""
     state_class: measurement
     accuracy_decimals: 0
@@ -851,7 +851,7 @@ sensor:
     register_type: holding
     value_type: RAW
     response_size: 64
-    reuse_previous_range: true
+    reuse_previous_range: false
     unit_of_measurement: ""
     state_class: measurement
     accuracy_decimals: 0
@@ -1304,7 +1304,7 @@ sensor:
     filters:
       - multiply: 0.001
 
-  # 0x12A6   166 UINT8+UINT8 2    R    BalanStatatus (2:放电; 1:充电 ; 0:关闭) / SOCStateOfcharge %
+  # 0x12A6   166 UINT8+UINT8 2    R    BalanStatus (2:放电; 1:充电 ; 0:关闭) / SOCStateOfcharge %
   - platform: modbus_controller
     modbus_controller_id: bms0
     name: "state of charge"
