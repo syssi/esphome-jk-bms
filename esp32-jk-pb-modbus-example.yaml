@@ -302,7 +302,7 @@ sensor:
     address: 0x1030
     register_type: holding
     value_type: U_DWORD
-    unit_of_measurement: "S"
+    unit_of_measurement: "s"
     device_class: duration
     state_class: measurement
     accuracy_decimals: 0
@@ -314,7 +314,7 @@ sensor:
     address: 0x1034
     register_type: holding
     value_type: U_DWORD
-    unit_of_measurement: "S"
+    unit_of_measurement: "s"
     device_class: duration
     state_class: measurement
     accuracy_decimals: 0
@@ -340,7 +340,7 @@ sensor:
     address: 0x103C
     register_type: holding
     value_type: U_DWORD
-    unit_of_measurement: "S"
+    unit_of_measurement: "s"
     device_class: duration
     state_class: measurement
     accuracy_decimals: 0
@@ -352,7 +352,7 @@ sensor:
     address: 0x1040
     register_type: holding
     value_type: U_DWORD
-    unit_of_measurement: "S"
+    unit_of_measurement: "s"
     device_class: duration
     state_class: measurement
     accuracy_decimals: 0
@@ -364,7 +364,7 @@ sensor:
     address: 0x1044
     register_type: holding
     value_type: U_DWORD
-    unit_of_measurement: "S"
+    unit_of_measurement: "s"
     device_class: duration
     state_class: measurement
     accuracy_decimals: 0
@@ -514,7 +514,7 @@ sensor:
     register_type: holding
     value_type: U_DWORD
     unit_of_measurement: Ah
-    device_class: energy_storage
+    #device_class: energy_storage
     state_class: measurement
     accuracy_decimals: 0
     filters:
@@ -527,7 +527,7 @@ sensor:
     address: 0x1080
     register_type: holding
     value_type: U_DWORD
-    unit_of_measurement: "uS"
+    unit_of_measurement: "µs"
     device_class: duration
     state_class: measurement
     accuracy_decimals: 0
@@ -1327,7 +1327,7 @@ sensor:
     register_type: holding
     value_type: U_DWORD
     state_class: measurement
-    device_class: energy_storage
+    #device_class: energy_storage
     unit_of_measurement: "Ah"
     accuracy_decimals: 0
     filters:
@@ -1341,7 +1341,7 @@ sensor:
     register_type: holding
     value_type: U_DWORD
     state_class: measurement
-    device_class: energy_storage
+    #device_class: energy_storage
     unit_of_measurement: "Ah"
     accuracy_decimals: 0
     filters:
@@ -1392,7 +1392,7 @@ sensor:
     address: 0x12BC
     register_type: holding
     value_type: U_DWORD
-    unit_of_measurement: "S"
+    unit_of_measurement: "s"
     device_class: duration
     state_class: measurement
     accuracy_decimals: 0
@@ -1434,7 +1434,7 @@ sensor:
     address: 0x12C4
     register_type: holding
     value_type: U_WORD
-    unit_of_measurement: "S"
+    unit_of_measurement: "s"
     device_class: duration
     state_class: measurement
     accuracy_decimals: 0
@@ -1446,7 +1446,7 @@ sensor:
     address: 0x12C6
     register_type: holding
     value_type: U_WORD
-    unit_of_measurement: "S"
+    unit_of_measurement: "s"
     device_class: duration
     state_class: measurement
     accuracy_decimals: 0
@@ -1458,7 +1458,7 @@ sensor:
     address: 0x12C8
     register_type: holding
     value_type: U_WORD
-    unit_of_measurement: "S"
+    unit_of_measurement: "s"
     device_class: duration
     state_class: measurement
     accuracy_decimals: 0
@@ -1470,7 +1470,7 @@ sensor:
     address: 0x12CA
     register_type: holding
     value_type: U_WORD
-    unit_of_measurement: "S"
+    unit_of_measurement: "s"
     device_class: duration
     state_class: measurement
     accuracy_decimals: 0
@@ -1482,7 +1482,7 @@ sensor:
     address: 0x12CC
     register_type: holding
     value_type: U_WORD
-    unit_of_measurement: "S"
+    unit_of_measurement: "s"
     device_class: duration
     state_class: measurement
     accuracy_decimals: 0
@@ -1494,7 +1494,7 @@ sensor:
     address: 0x12CE
     register_type: holding
     value_type: U_WORD
-    unit_of_measurement: "S"
+    unit_of_measurement: "s"
     device_class: duration
     state_class: measurement
     accuracy_decimals: 0
@@ -1575,7 +1575,7 @@ sensor:
     address: 0x1504
     register_type: holding
     value_type: U_WORD
-    unit_of_measurement: "H"
+    unit_of_measurement: "h"
     device_class: duration
     state_class: measurement
     bitmask: 0xFF
@@ -1588,7 +1588,7 @@ sensor:
     address: 0x1504
     register_type: holding
     value_type: U_WORD
-    unit_of_measurement: "H"
+    unit_of_measurement: "h"
     device_class: duration
     state_class: measurement
     bitmask: 0xFF00
