@@ -795,6 +795,7 @@ sensor:
         if ((cell_voltage > max_voltage) && (cell_voltage < 10000))
           max_voltage = cell_voltage;
       }
+      if (max_voltage == 0) return NAN;
       return max_voltage * 0.001f;
 
   - platform: modbus_controller
@@ -818,6 +819,7 @@ sensor:
         if ((cell_voltage > 1000) && (cell_voltage < min_voltage))
           min_voltage = cell_voltage;
       }
+      if (min_voltage == 0xFFFF) return NAN;
       return min_voltage * 0.001f;
 
   # 0x1248   72    UINT8/UINT8 2  R    MaxVolCellNbr / MinVolCellNbr
@@ -844,6 +846,7 @@ sensor:
           max_cell = i + 1;
         }
       }
+      if (max_cell == 0) return NAN;
       return (float) max_cell;
 
   - platform: modbus_controller
@@ -869,6 +872,7 @@ sensor:
           min_cell = i + 1;
         }
       }
+      if (min_cell == 0) return NAN;
       return (float) min_cell;
 
   # 0x1240   64    UINT32    4    R    CellStatus    (each bit indicates a attached cell)
