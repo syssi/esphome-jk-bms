@@ -552,7 +552,6 @@ sensor:
     modbus_controller_id: bms0
     name: "cell voltage 1"
     address: 0x1200
-    reuse_previous_range: false
     register_type: holding
     value_type: U_WORD
     unit_of_measurement: "V"
@@ -878,7 +877,6 @@ sensor:
     modbus_controller_id: bms0
     name: "average cell voltage"
     address: 0x1244
-    reuse_previous_range: false
     register_type: holding
     value_type: U_WORD
     unit_of_measurement: "V"
