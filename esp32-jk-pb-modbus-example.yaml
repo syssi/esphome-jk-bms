@@ -1,6 +1,6 @@
 # Note:
 # If you have only 8 cells - comment out "cell voltage 9-16" and "cell 9-16 wire resistance".
-# Also you can comment out "cell 9-16 wire resistance" if you don't need this info.
+# Also you can comment out "cell 1-16 wire resistance" if you don't need this info.
 #
 #
 # Setup: adjust parameters in substitutions section
@@ -786,12 +786,16 @@ sensor:
     device_class: voltage
     state_class: measurement
     accuracy_decimals: 3
+    # remember to adjust cells count in the loop
     lambda: |-
+      if (data.size() < 32) return NAN;
       uint16_t max_voltage = 0;
-      for (int i = 0; i < 32; i++) {
+      for (int i = 0; i < 16; i++) {
         uint16_t cell_voltage = (data[i*2] << 8) | data[i*2+1];
-        if (cell_voltage > max_voltage) max_voltage = cell_voltage;
+        if ((cell_voltage > max_voltage) && (cell_voltage < 10000))
+          max_voltage = cell_voltage;
       }
+      if (max_voltage == 0) return NAN;
       return max_voltage * 0.001f;
 
   - platform: modbus_controller
@@ -806,12 +810,16 @@ sensor:
     device_class: voltage
     state_class: measurement
     accuracy_decimals: 3
+    # remember to adjust cells count in the loop
     lambda: |-
+      if (data.size() < 32) return NAN;
       uint16_t min_voltage = 0xFFFF;
-      for (int i = 0; i < 32; i++) {
+      for (int i = 0; i < 16; i++) {
         uint16_t cell_voltage = (data[i*2] << 8) | data[i*2+1];
-        if (cell_voltage > 500 && cell_voltage < min_voltage) min_voltage = cell_voltage;
+        if ((cell_voltage > 1000) && (cell_voltage < min_voltage))
+          min_voltage = cell_voltage;
       }
+      if (min_voltage == 0xFFFF) return NAN;
       return min_voltage * 0.001f;
 
   # 0x1248   72    UINT8/UINT8 2  R    MaxVolCellNbr / MinVolCellNbr
@@ -826,16 +834,19 @@ sensor:
     unit_of_measurement: ""
     state_class: measurement
     accuracy_decimals: 0
+    # remember to adjust cells count in the loop
     lambda: |-
+      if (data.size() < 32) return NAN;
       uint16_t max_voltage = 0;
       uint8_t max_cell = 0;
-      for (int i = 0; i < 32; i++) {
+      for (uint8_t i = 0; i < 16; i++) {
         uint16_t cell_voltage = (data[i*2] << 8) | data[i*2+1];
-        if (cell_voltage > max_voltage) {
+        if ((cell_voltage > max_voltage) && (cell_voltage < 10000)) {
           max_voltage = cell_voltage;
           max_cell = i + 1;
         }
       }
+      if (max_cell == 0) return NAN;
       return (float) max_cell;
 
   - platform: modbus_controller
@@ -849,16 +860,19 @@ sensor:
     unit_of_measurement: ""
     state_class: measurement
     accuracy_decimals: 0
+    # remember to adjust cells count in the loop
     lambda: |-
+      if (data.size() < 32) return NAN;
       uint16_t min_voltage = 0xFFFF;
       uint8_t min_cell = 0;
-      for (int i = 0; i < 32; i++) {
+      for (uint8_t i = 0; i < 16; i++) {
         uint16_t cell_voltage = (data[i*2] << 8) | data[i*2+1];
-        if (cell_voltage > 500 && cell_voltage < min_voltage) {
+        if ((cell_voltage > 1000) && (cell_voltage < min_voltage)) {
           min_voltage = cell_voltage;
           min_cell = i + 1;
         }
       }
+      if (min_cell == 0) return NAN;
       return (float) min_cell;
 
   # 0x1240   64    UINT32    4    R    CellStatus    (each bit indicates a attached cell)
@@ -1296,7 +1310,7 @@ sensor:
     filters:
       - multiply: 0.001
 
-  # 0x12A6   166 UINT8+UINT8 2    R    BalanStatatus (2:放电; 1:充电 ; 0:关闭) / SOCStateOfcharge %
+  # 0x12A6   166 UINT8+UINT8 2    R    BalanStatus (2:放电; 1:充电 ; 0:关闭) / SOCStateOfcharge %
   - platform: modbus_controller
     modbus_controller_id: bms0
     name: "state of charge"
