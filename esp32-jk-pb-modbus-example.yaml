@@ -513,8 +513,7 @@ sensor:
     address: 0x107C
     register_type: holding
     value_type: U_DWORD
-    unit_of_measurement: Ah
-    #device_class: energy_storage
+    unit_of_measurement: "Ah"
     state_class: measurement
     accuracy_decimals: 0
     filters:
@@ -1327,7 +1326,6 @@ sensor:
     register_type: holding
     value_type: U_DWORD
     state_class: measurement
-    #device_class: energy_storage
     unit_of_measurement: "Ah"
     accuracy_decimals: 0
     filters:
@@ -1341,7 +1339,6 @@ sensor:
     register_type: holding
     value_type: U_DWORD
     state_class: measurement
-    #device_class: energy_storage
     unit_of_measurement: "Ah"
     accuracy_decimals: 0
     filters:
