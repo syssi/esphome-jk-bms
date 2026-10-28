@@ -515,7 +515,7 @@ sensor:
     value_type: U_DWORD
     unit_of_measurement: "Ah"
     state_class: measurement
-    accuracy_decimals: 0
+    accuracy_decimals: 3
     filters:
       - multiply: 0.001
 
@@ -1327,7 +1327,7 @@ sensor:
     value_type: U_DWORD
     state_class: measurement
     unit_of_measurement: "Ah"
-    accuracy_decimals: 0
+    accuracy_decimals: 3
     filters:
       - multiply: 0.001
 
@@ -1340,7 +1340,7 @@ sensor:
     value_type: U_DWORD
     state_class: measurement
     unit_of_measurement: "Ah"
-    accuracy_decimals: 0
+    accuracy_decimals: 3
     filters:
       - multiply: 0.001
 
@@ -1363,7 +1363,7 @@ sensor:
     value_type: U_DWORD
     state_class: measurement
     unit_of_measurement: "Ah"
-    accuracy_decimals: 0
+    accuracy_decimals: 3
     filters:
       - multiply: 0.001
 
