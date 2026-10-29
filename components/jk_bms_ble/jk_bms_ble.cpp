@@ -901,7 +901,7 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   ESP_LOGD(TAG, "Charge short circuit protection release timer: %d", jk_get_16bit(176 + offset));
   ESP_LOGD(TAG, "Undervoltage protection release timer: %d", jk_get_16bit(178 + offset));
   ESP_LOGD(TAG, "Overvoltage protection release timer: %d", jk_get_16bit(180 + offset));
-  ESP_LOGD(TAG, "Temperature sensor absent bitmask: %d", jk_get_16bit(182 + offset));
+  ESP_LOGD(TAG, "Temperature sensor absent bitmask: %d", data[182 + offset]);
   // bit0: Mosfet temperature sensor
   // bit1: Temperature sensor 1
   // bit2: Temperature sensor 2
