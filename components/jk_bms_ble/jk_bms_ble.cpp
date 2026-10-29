@@ -901,7 +901,9 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   ESP_LOGD(TAG, "Charge short circuit protection release timer: %d", jk_get_16bit(176 + offset));
   ESP_LOGD(TAG, "Undervoltage protection release timer: %d", jk_get_16bit(178 + offset));
   ESP_LOGD(TAG, "Overvoltage protection release timer: %d", jk_get_16bit(180 + offset));
-  ESP_LOGD(TAG, "Temperature sensor absent bitmask: %d", data[182 + offset]);
+  ESP_LOGD(TAG, "Temperature sensor presence bitmask: 0x%02X", data[182 + offset]);
+  // Bit set = sensor present (the official docs call it "absent", but real hardware shows the opposite)
+  // Unused inputs report 1 as well, so bit3-5 don't indicate an installed sensor
   // bit0: Mosfet temperature sensor
   // bit1: Temperature sensor 1
   // bit2: Temperature sensor 2

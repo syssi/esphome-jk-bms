@@ -148,7 +148,7 @@ uint8_t crc(const uint8_t data[], const uint16_t len) {
 |          208-209 |      2 | Charge short circuit protection release timer | uint16 | 1 | s | Logged only |
 |          210-211 |      2 | Undervoltage protection release timer | uint16 | 1 | s | Logged only |
 |          212-213 |      2 | Overvoltage protection release timer | uint16 | 1 | s | Logged only |
-|              214 |      1 | Temperature sensor absent bitmask | uint8 | - | - | Logged only; bit0=MOS, bit1-5=Sensors 1-5 |
+|              214 |      1 | Temperature sensor presence bitmask | uint8 | - | - | Logged only; bit set = present; bit0=MOS, bit1-5=Sensors 1-5; unused inputs report 1 |
 |              215 |      1 | Heating status | Raw | - | - | 0=Off, 1=On |
 |          216-217 |      2 | Reserved | - | - | - | - |
 |          218-219 |      2 | Emergency time countdown | uint16 | 1 | s | >0 = Emergency active |
