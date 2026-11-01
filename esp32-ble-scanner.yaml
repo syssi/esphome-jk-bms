@@ -38,17 +38,33 @@ esp32_ble_tracker:
   on_ble_advertise:
     then:
       - lambda: |-
+          static const auto JK_SERVICE_UUID = esp32_ble::ESPBTUUID::from_uint16(0xFFE0);
+          static const auto JK_COMPANY_ID = esp32_ble::ESPBTUUID::from_uint16(0x0B65);
+
+          const auto &service_uuids = x.get_service_uuids();
+          if (std::find(service_uuids.begin(), service_uuids.end(), JK_SERVICE_UUID) == service_uuids.end())
+            return;
+
+          const auto &manufacturer_datas = x.get_manufacturer_datas();
+          if (std::none_of(manufacturer_datas.begin(), manufacturer_datas.end(),
+                           [](const auto &md) { return md.uuid == JK_COMPANY_ID; }))
+            return;
+
           const std::string name = x.get_name();
-          if (name.rfind("JK-", 0) == 0 || name.rfind("JK_", 0) == 0) {
-            ESP_LOGI("ble_adv", "New JK-BMS found");
-            ESP_LOGI("ble_adv", "  Name: %s", name.c_str());
-            char addr_buf[MAC_ADDRESS_PRETTY_BUFFER_SIZE];
-            ESP_LOGI("ble_adv", "  MAC address: %s", x.address_str_to(addr_buf));
-            ESP_LOGD("ble_adv", "  Advertised service UUIDs:");
-            char uuidstr[esphome::esp32_ble::UUID_STR_LEN];
-            for (auto uuid : x.get_service_uuids()) {
-              ESP_LOGD("ble_adv", "    - %s", uuid.to_str(uuidstr));
-            }
+          char addr_buf[MAC_ADDRESS_PRETTY_BUFFER_SIZE];
+          ESP_LOGI("ble_adv", "JK-BMS found");
+          ESP_LOGI("ble_adv", "  Name: %s", name.c_str());
+          ESP_LOGI("ble_adv", "  MAC address: %s", x.address_str_to(addr_buf));
+          ESP_LOGI("ble_adv", "  RSSI: %d dBm", x.get_rssi());
+          char uuidstr[esphome::esp32_ble::UUID_STR_LEN];
+          for (const auto &md : manufacturer_datas) {
+            char hex_buf[format_hex_pretty_size(31)];
+            ESP_LOGI("ble_adv", "  Manufacturer data (%s): %s", md.uuid.to_str(uuidstr),
+                     format_hex_pretty_to(hex_buf, md.data.data(), md.data.size(), '.'));
+          }
+          ESP_LOGD("ble_adv", "  Advertised service UUIDs:");
+          for (const auto &uuid : service_uuids) {
+            ESP_LOGD("ble_adv", "    - %s", uuid.to_str(uuidstr));
           }
 
 text_sensor:
