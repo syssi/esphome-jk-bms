@@ -71,6 +71,7 @@ between them.
 * GW-24S4EB (NEEY 4A Smart Active Balancer 4th generation), hw HW-3.2.0, sw ZH-1.2.4 (reported by [@fabhund](https://github.com/syssi/esphome-jk-bms/issues/310))
 * EK-24S15EB (NEEY 15A Smart Active Balancer), (reported by [@msevestre31](https://github.com/syssi/esphome-jk-bms/issues/487))
 * EK-24S10EB (NEEY 10A Smart Active Balancer), hw HW-1.1.5, sw SW-1.1.1, (reported by [@chipsi](https://github.com/syssi/esphome-jk-bms/discussions/487#discussioncomment-9013069))
+* EK-24S20EB (NEEY/EnerKey 20A Smart Active Balancer), hw HW-1.8.0, sw ZL-1.8.2, (reported by [@DominusPave](https://github.com/syssi/esphome-jk-bms/issues/1092))
 
 ## Requirements
 
