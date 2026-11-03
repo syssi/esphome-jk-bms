@@ -349,7 +349,7 @@ CONFIG_SCHEMA = HELTEC_BALANCER_BLE_COMPONENT_SCHEMA.extend(
         cv.Optional(CONF_MAX_BALANCE_CURRENT): HELTEC_NUMBER_SCHEMA.extend(
             {
                 cv.Optional(CONF_MIN_VALUE, default=1.0): cv.float_,
-                cv.Optional(CONF_MAX_VALUE, default=15.0): cv.float_,
+                cv.Optional(CONF_MAX_VALUE, default=20.0): cv.float_,
                 cv.Optional(CONF_STEP, default=0.001): cv.float_,
                 cv.Optional(
                     CONF_UNIT_OF_MEASUREMENT, default=UNIT_AMPERE
