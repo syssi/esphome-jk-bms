@@ -192,6 +192,8 @@ void JkBalancer::publish_device_unavailable_() {
   this->publish_state_(this->online_status_binary_sensor_, false);
   this->publish_state_(this->errors_text_sensor_, "Offline");
 
+  this->invalidate_binary_sensor_(this->balancing_binary_sensor_);
+
   this->publish_state_(min_cell_voltage_sensor_, NAN);
   this->publish_state_(max_cell_voltage_sensor_, NAN);
   this->publish_state_(min_voltage_cell_sensor_, NAN);
@@ -215,6 +217,13 @@ void JkBalancer::publish_state_(binary_sensor::BinarySensor *binary_sensor, cons
     return;
 
   binary_sensor->publish_state(state);
+}
+
+void JkBalancer::invalidate_binary_sensor_(binary_sensor::BinarySensor *binary_sensor) {
+  if (binary_sensor == nullptr)
+    return;
+
+  binary_sensor->invalidate_state();
 }
 
 void JkBalancer::publish_state_(number::Number *number, float value) {

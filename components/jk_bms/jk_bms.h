@@ -333,6 +333,7 @@ class JkBms : public PollingComponent, public jk_modbus::JkModbusDevice {
 
   void on_status_data_(const std::vector<uint8_t> &data);
   void publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state);
+  void invalidate_binary_sensor_(binary_sensor::BinarySensor *binary_sensor);
   void publish_state_(sensor::Sensor *sensor, float value);
   void publish_state_(switch_::Switch *obj, const bool &state);
   void publish_state_(text_sensor::TextSensor *text_sensor, const std::string &state);
