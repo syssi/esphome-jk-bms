@@ -13,6 +13,7 @@ struct TestSwitch : switch_::Switch {
 class TestableJkBms : public JkBms {
  public:
   void update() override {}
+  using JkBms::publish_device_unavailable_;
 };
 
 // Traffic from esp8266-example-faker.yaml

@@ -330,4 +330,33 @@ TEST(JkBmsBleDispatchTest, Jk04ModeDispatches) {
   bms.decode_(CELL_INFO_JK02_24S_V10);
 }
 
+TEST(JkBmsBlePublishDeviceUnavailableTest, InvalidatesBinarySensors) {
+  TestableJkBmsBle bms;
+  binary_sensor::BinarySensor online, balancing, precharging, charging, discharging, heating, dry_contact_1;
+  binary_sensor::BinarySensor dry_contact_2;
+  bms.set_online_status_binary_sensor(&online);
+  bms.set_balancing_binary_sensor(&balancing);
+  bms.set_precharging_binary_sensor(&precharging);
+  bms.set_charging_binary_sensor(&charging);
+  bms.set_discharging_binary_sensor(&discharging);
+  bms.set_heating_binary_sensor(&heating);
+  bms.set_dry_contact_1_binary_sensor(&dry_contact_1);
+  bms.set_dry_contact_2_binary_sensor(&dry_contact_2);
+  const std::vector<binary_sensor::BinarySensor *> binary_sensors = {
+      &balancing, &precharging, &charging, &discharging, &heating, &dry_contact_1, &dry_contact_2};
+
+  online.publish_state(true);
+  for (auto *binary_sensor : binary_sensors) {
+    binary_sensor->publish_state(true);
+  }
+
+  bms.publish_device_unavailable_();
+
+  EXPECT_TRUE(online.has_state());
+  EXPECT_FALSE(online.state);
+  for (size_t i = 0; i < binary_sensors.size(); i++) {
+    EXPECT_FALSE(binary_sensors[i]->has_state()) << "binary sensor index " << i;
+  }
+}
+
 }  // namespace esphome::jk_bms_ble::testing

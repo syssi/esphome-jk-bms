@@ -253,4 +253,30 @@ TEST(JkBmsFunctionDispatchTest, UnknownFunctionIgnored) {
   bms.on_jk_modbus_data(0xFF, {0x01, 0x02, 0x03});
 }
 
+TEST(JkBmsPublishDeviceUnavailableTest, InvalidatesBinarySensors) {
+  TestableJkBms bms;
+  binary_sensor::BinarySensor online, balancing, balancing_switch, charging, discharging, dedicated_charger_switch;
+  bms.set_online_status_binary_sensor(&online);
+  bms.set_balancing_binary_sensor(&balancing);
+  bms.set_balancing_switch_binary_sensor(&balancing_switch);
+  bms.set_charging_binary_sensor(&charging);
+  bms.set_discharging_binary_sensor(&discharging);
+  bms.set_dedicated_charger_switch_binary_sensor(&dedicated_charger_switch);
+  const std::vector<binary_sensor::BinarySensor *> binary_sensors = {&balancing, &balancing_switch, &charging,
+                                                                     &discharging, &dedicated_charger_switch};
+
+  online.publish_state(true);
+  for (auto *binary_sensor : binary_sensors) {
+    binary_sensor->publish_state(true);
+  }
+
+  bms.publish_device_unavailable_();
+
+  EXPECT_TRUE(online.has_state());
+  EXPECT_FALSE(online.state);
+  for (size_t i = 0; i < binary_sensors.size(); i++) {
+    EXPECT_FALSE(binary_sensors[i]->has_state()) << "binary sensor index " << i;
+  }
+}
+
 }  // namespace esphome::jk_bms::testing

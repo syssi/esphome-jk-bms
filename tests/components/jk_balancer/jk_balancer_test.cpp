@@ -159,4 +159,25 @@ TEST(JkBalancerDispatchTest, UnknownFunctionIgnored) {
   bms.on_jk_balancer_modbus_data(0xAB, {0x01, 0x02, 0x03});
 }
 
+TEST(JkBalancerPublishDeviceUnavailableTest, InvalidatesBinarySensors) {
+  TestableJkBalancer bms;
+  binary_sensor::BinarySensor online, balancing;
+  bms.set_online_status_binary_sensor(&online);
+  bms.set_balancing_binary_sensor(&balancing);
+  const std::vector<binary_sensor::BinarySensor *> binary_sensors = {&balancing};
+
+  online.publish_state(true);
+  for (auto *binary_sensor : binary_sensors) {
+    binary_sensor->publish_state(true);
+  }
+
+  bms.publish_device_unavailable_();
+
+  EXPECT_TRUE(online.has_state());
+  EXPECT_FALSE(online.state);
+  for (size_t i = 0; i < binary_sensors.size(); i++) {
+    EXPECT_FALSE(binary_sensors[i]->has_state()) << "binary sensor index " << i;
+  }
+}
+
 }  // namespace esphome::jk_balancer::testing

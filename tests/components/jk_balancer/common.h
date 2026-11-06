@@ -9,6 +9,7 @@ namespace esphome::jk_balancer::testing {
 class TestableJkBalancer : public JkBalancer {
  public:
   void update() override {}  // avoids calling send() with null parent_
+  using JkBalancer::publish_device_unavailable_;
 };
 
 // Mirrors DEFAULT_ERRORS in jk_balancer/__init__.py, which to_code() emits as a

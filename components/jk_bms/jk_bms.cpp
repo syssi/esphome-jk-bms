@@ -408,6 +408,12 @@ void JkBms::publish_device_unavailable_() {
   this->publish_state_(this->online_status_binary_sensor_, false);
   this->publish_state_(this->errors_text_sensor_, "Offline");
 
+  this->invalidate_binary_sensor_(this->balancing_binary_sensor_);
+  this->invalidate_binary_sensor_(this->balancing_switch_binary_sensor_);
+  this->invalidate_binary_sensor_(this->charging_binary_sensor_);
+  this->invalidate_binary_sensor_(this->discharging_binary_sensor_);
+  this->invalidate_binary_sensor_(this->dedicated_charger_switch_binary_sensor_);
+
   this->publish_state_(min_cell_voltage_sensor_, NAN);
   this->publish_state_(max_cell_voltage_sensor_, NAN);
   this->publish_state_(min_voltage_cell_sensor_, NAN);
@@ -478,6 +484,13 @@ void JkBms::publish_state_(binary_sensor::BinarySensor *binary_sensor, const boo
     return;
 
   binary_sensor->publish_state(state);
+}
+
+void JkBms::invalidate_binary_sensor_(binary_sensor::BinarySensor *binary_sensor) {
+  if (binary_sensor == nullptr)
+    return;
+
+  binary_sensor->invalidate_state();
 }
 
 void JkBms::publish_state_(sensor::Sensor *sensor, float value) {
