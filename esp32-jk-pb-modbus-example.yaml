@@ -1629,13 +1629,27 @@ select:
 
   - platform: modbus_controller
     modbus_controller_id: bms0
-    name: "balancing"
+    name: "balancer"
+    id: select_balancer
     icon: mdi:scale-balance
     address: 0x1078
     value_type: U_DWORD
     optionsmap:
       "Off": 0
       "On": 1
+    # select seems read only, so hide it...
+    internal: true
+
+switch:
+  - platform: template
+    # for compat with JK BMS Card button (and BLE), keep the switch
+    name: "balancer"
+    icon: "mdi:scale-unbalanced"
+    lambda: 'return id(select_balancer).active_index() > 0;'
+    turn_on_action:
+      lambda: 'id(select_balancer).make_call().set_option("On");'
+    turn_off_action:
+      lambda: 'id(select_balancer).make_call().set_option("Off");'
 
 text_sensor:
   - platform: modbus_controller
