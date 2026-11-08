@@ -1662,7 +1662,6 @@ switch:
       lambda: 'id(select_charging).make_call().set_option("Off");'
 
   - platform: template
-    # for compat with JK BMS Card button (and BLE), keep the switch
     name: "discharging"
     icon: mdi:battery-charging-80
     lambda: 'return id(select_discharging).active_index() > 0;'
