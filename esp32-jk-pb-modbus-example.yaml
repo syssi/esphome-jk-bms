@@ -1610,46 +1610,66 @@ select:
   - platform: modbus_controller
     modbus_controller_id: bms0
     name: "charging"
-    icon: "mdi:battery-charging-100"
+    id: select_charging
     address: 0x1070
     value_type: U_DWORD
     optionsmap:
       "Off": 0
       "On": 1
+    internal: true
 
   - platform: modbus_controller
     modbus_controller_id: bms0
     name: "discharging"
-    icon: "mdi:power-plug-battery"
+    id: select_discharging
     address: 0x1074
     value_type: U_DWORD
     optionsmap:
       "Off": 0
       "On": 1
+    internal: true
 
   - platform: modbus_controller
     modbus_controller_id: bms0
     name: "balancer"
     id: select_balancer
-    icon: mdi:scale-balance
     address: 0x1078
     value_type: U_DWORD
     optionsmap:
       "Off": 0
       "On": 1
-    # select seems read only, so hide it...
     internal: true
 
+# for compat with JK BMS Card button (and BLE),
+# keep these switches and hide the select boxes..
 switch:
   - platform: template
-    # for compat with JK BMS Card button (and BLE), keep the switch
     name: "balancer"
-    icon: "mdi:scale-unbalanced"
+    icon: mdi:scale-balance
     lambda: 'return id(select_balancer).active_index() > 0;'
     turn_on_action:
       lambda: 'id(select_balancer).make_call().set_option("On");'
     turn_off_action:
       lambda: 'id(select_balancer).make_call().set_option("Off");'
+
+  - platform: template
+    name: "charging"
+    icon: mdi:power-plug-battery
+    lambda: 'return id(select_charging).active_index() > 0;'
+    turn_on_action:
+      lambda: 'id(select_charging).make_call().set_option("On");'
+    turn_off_action:
+      lambda: 'id(select_charging).make_call().set_option("Off");'
+
+  - platform: template
+    # for compat with JK BMS Card button (and BLE), keep the switch
+    name: "discharging"
+    icon: mdi:battery-charging-80
+    lambda: 'return id(select_discharging).active_index() > 0;'
+    turn_on_action:
+      lambda: 'id(select_discharging).make_call().set_option("On");'
+    turn_off_action:
+      lambda: 'id(select_discharging).make_call().set_option("Off");'
 
 text_sensor:
   - platform: modbus_controller
