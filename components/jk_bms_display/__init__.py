@@ -15,12 +15,6 @@ CONF_JK_BMS_DISPLAY_ID = "jk_bms_display_id"
 jk_bms_display_ns = cg.esphome_ns.namespace("jk_bms_display")
 JkBmsDisplay = jk_bms_display_ns.class_("JkBmsDisplay", cg.Component, uart.UARTDevice)
 
-CONF_JK_BMS_DISPLAY_COMPONENT_SCHEMA = cv.Schema(
-    {
-        cv.GenerateID(CONF_JK_BMS_DISPLAY_ID): cv.use_id(JkBmsDisplay),
-    }
-)
-
 CONFIG_SCHEMA = cv.All(
     cv.require_esphome_version(2026, 1, 0),
     cv.Schema(
