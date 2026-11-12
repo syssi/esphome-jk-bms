@@ -7,12 +7,12 @@ from .. import (
     HELTEC_BALANCER_BLE_COMPONENT_SCHEMA,
     heltec_balancer_ble_ns,
 )
+from ..const import CONF_BUZZER_MODE
 
 DEPENDENCIES = ["heltec_balancer_ble"]
 
 CODEOWNERS = ["@syssi"]
 
-CONF_BUZZER_MODE = "buzzer_mode"
 CONF_BATTERY_TYPE = "battery_type"
 
 BUZZER_MODE_OPTIONS = ["Off", "Beep once", "Beep regular"]

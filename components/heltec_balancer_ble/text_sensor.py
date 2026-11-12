@@ -4,6 +4,7 @@ import esphome.config_validation as cv
 from esphome.const import ENTITY_CATEGORY_DIAGNOSTIC, ICON_EMPTY, ICON_TIMELAPSE
 
 from . import CONF_HELTEC_BALANCER_BLE_ID, HELTEC_BALANCER_BLE_COMPONENT_SCHEMA
+from .const import CONF_BUZZER_MODE
 
 DEPENDENCIES = ["heltec_balancer_ble"]
 
@@ -12,7 +13,6 @@ CODEOWNERS = ["@syssi"]
 CONF_ERRORS = "errors"
 CONF_OPERATION_STATUS = "operation_status"
 CONF_TOTAL_RUNTIME_FORMATTED = "total_runtime_formatted"
-CONF_BUZZER_MODE = "buzzer_mode"
 CONF_BATTERY_TYPE = "battery_type"
 CONF_DEVICE_MODEL = "device_model"
 CONF_HARDWARE_VERSION = "hardware_version"
