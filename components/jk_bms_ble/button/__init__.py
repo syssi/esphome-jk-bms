@@ -3,10 +3,13 @@ from esphome.components import button
 import esphome.config_validation as cv
 from esphome.const import (
     CONF_FACTORY_RESET,
+    CONF_ID,
     CONF_RESTART,
+    CONF_TIME_ID,
     ENTITY_CATEGORY_CONFIG,
     ICON_RESTART,
 )
+import esphome.final_validate as fv
 
 from .. import CONF_JK_BMS_BLE_ID, JK_BMS_BLE_COMPONENT_SCHEMA, jk_bms_ble_ns
 
@@ -19,6 +22,7 @@ CONF_RETRIEVE_DEVICE_INFO = "retrieve_device_info"
 CONF_RETRIEVE_LOGBOOK = "retrieve_logbook"
 CONF_SHUTDOWN = "shutdown"
 CONF_HEATING_TEST = "heating_test"
+CONF_SYNC_TIME = "sync_time"
 
 ICON_RETRIEVE_SETTINGS = "mdi:cog"
 ICON_RETRIEVE_DEVICE_INFO = "mdi:information-variant"
@@ -26,6 +30,7 @@ ICON_RETRIEVE_LOGBOOK = "mdi:history"
 ICON_SHUTDOWN = "mdi:power"
 ICON_FACTORY_RESET = "mdi:restore"
 ICON_HEATING_TEST = "mdi:heat-wave"
+ICON_SYNC_TIME = "mdi:clock-outline"
 
 BUTTONS = {
     # The BMS responds to the 0x96 request with a single settings frame and enables the notification stream
@@ -41,6 +46,7 @@ BUTTONS = {
 }
 
 JkButton = jk_bms_ble_ns.class_("JkButton", button.Button)
+JkSyncTimeButton = jk_bms_ble_ns.class_("JkSyncTimeButton", button.Button)
 
 CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
     {
@@ -76,8 +82,31 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
             icon=ICON_HEATING_TEST,
             entity_category=ENTITY_CATEGORY_CONFIG,
         ),
+        cv.Optional(CONF_SYNC_TIME): button.button_schema(
+            JkSyncTimeButton,
+            icon=ICON_SYNC_TIME,
+            entity_category=ENTITY_CATEGORY_CONFIG,
+        ),
     }
 )
+
+
+def _final_validate(config):
+    if CONF_SYNC_TIME not in config:
+        return config
+
+    hub_id = config[CONF_JK_BMS_BLE_ID]
+    for hub in fv.full_config.get().get("jk_bms_ble", []):
+        if hub[CONF_ID] == hub_id and CONF_TIME_ID not in hub:
+            raise cv.Invalid(
+                f"The '{CONF_SYNC_TIME}' button requires 'time_id' to be set on jk_bms_ble '{hub_id}'",
+                path=[CONF_SYNC_TIME],
+            )
+
+    return config
+
+
+FINAL_VALIDATE_SCHEMA = _final_validate
 
 
 async def to_code(config):
@@ -88,3 +117,8 @@ async def to_code(config):
             var = await button.new_button(conf)
             cg.add(var.set_parent(hub))
             cg.add(var.set_holding_register(address))
+
+    if CONF_SYNC_TIME in config:
+        conf = config[CONF_SYNC_TIME]
+        var = await button.new_button(conf)
+        cg.add(var.set_parent(hub))

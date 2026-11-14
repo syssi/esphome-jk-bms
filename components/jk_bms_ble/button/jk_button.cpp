@@ -7,4 +7,6 @@ void JkButton::press_action() {
   this->parent_->write_register(this->holding_register_, 0x00000000, 0x00);
 }
 
+void JkSyncTimeButton::press_action() { this->parent_->sync_time(); }
+
 }  // namespace esphome::jk_bms_ble

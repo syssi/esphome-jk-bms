@@ -36,6 +36,10 @@ static const uint16_t JK_BMS_CHARACTERISTIC_UUID = 0xFFE1;
 static const uint8_t COMMAND_CELL_INFO = 0x96;
 static const uint8_t COMMAND_DEVICE_INFO = 0x97;
 static const uint8_t COMMAND_LOGBOOK = 0xA1;
+static const uint8_t REGISTER_TIME = 0x6C;
+
+// The BMS clock has no notion of time zones: it counts wall-clock seconds since 2020-01-01 00:00:00.
+static const int64_t JK_TIME_EPOCH = 1577836800LL;
 
 static const uint16_t MIN_RESPONSE_SIZE = 300;
 static const uint16_t MAX_RESPONSE_SIZE = 384 + 16;
@@ -466,6 +470,9 @@ void JkBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gat
     case ESP_GATTC_DISCONNECT_EVT: {
       this->node_state = espbt::ClientState::IDLE;
       this->status_notification_received_ = false;
+#ifdef USE_TIME
+      this->time_synced_ = false;
+#endif
 
       if (this->notify_handle_ != 0) {
         auto status = esp_ble_gattc_unregister_for_notify(this->parent()->get_gattc_if(),
@@ -546,6 +553,9 @@ void JkBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gat
     case ESP_GATTC_REG_FOR_NOTIFY_EVT: {
       this->node_state = espbt::ClientState::ESTABLISHED;
       this->status_notification_received_ = false;
+#ifdef USE_TIME
+      this->time_synced_ = false;
+#endif
 
       ESP_LOGI(TAG, "Request device info");
       this->write_register(COMMAND_DEVICE_INFO, 0x00000000, 0x00);
@@ -579,7 +589,11 @@ void JkBmsBle::update() {
   if (!this->status_notification_received_) {
     ESP_LOGI(TAG, "Request status notification");
     this->write_register(COMMAND_CELL_INFO, 0x00000000, 0x00);
+    return;
   }
+
+  // Retry if the time source wasn't valid yet when the settings frame arrived (e.g. SNTP right after boot)
+  this->sync_time_on_connect_();
 }
 
 bool JkBmsBle::write_register(uint8_t address, uint32_t value, uint8_t length) {
@@ -598,11 +612,53 @@ bool JkBmsBle::write_register(uint8_t address, uint32_t value, uint8_t length) {
   return (status == 0);
 }
 
+bool JkBmsBle::sync_time() {
+#ifdef USE_TIME
+  if (this->protocol_version_ == PROTOCOL_VERSION_JK04) {
+    ESP_LOGW(TAG, "Can't sync time: not supported by JK04 devices");
+    return false;
+  }
+
+  if (this->time_id_ == nullptr) {
+    ESP_LOGW(TAG, "Can't sync time: no time_id configured");
+    return false;
+  }
+
+  ESPTime now = this->time_id_->now();
+  if (!now.is_valid()) {
+    ESP_LOGW(TAG, "Can't sync time: the time source has no valid time yet");
+    return false;
+  }
+
+  ESP_LOGI(TAG, "Syncing BMS time to %04d-%02d-%02d %02d:%02d:%02d", now.year, now.month, now.day_of_month, now.hour,
+           now.minute, now.second);
+  return this->write_register(REGISTER_TIME, encode_time(now.timestamp, ESPTime::timezone_offset()), 0x04);
+#else
+  ESP_LOGW(TAG, "Can't sync time: no time component configured");
+  return false;
+#endif
+}
+
 #else
 
 void JkBmsBle::update() {}
 
 #endif  // USE_ESP32
+
+// The JK app sets the BMS clock once per connection, right after the first settings frame (0x01) was received
+void JkBmsBle::sync_time_on_connect_() {
+#if defined(USE_ESP32) && defined(USE_TIME)
+  if (this->time_id_ == nullptr || this->time_synced_ || this->protocol_version_ == PROTOCOL_VERSION_JK04)
+    return;
+
+  if (!this->time_id_->now().is_valid()) {
+    ESP_LOGD(TAG, "Time sync postponed: the time source has no valid time yet");
+    return;
+  }
+
+  this->time_synced_ = this->sync_time();
+#endif
+}
 
 std::array<uint8_t, 20> JkBmsBle::build_frame(uint8_t address, uint32_t value, uint8_t length) {
   std::array<uint8_t, 20> frame{};
@@ -618,6 +674,15 @@ std::array<uint8_t, 20> JkBmsBle::build_frame(uint8_t address, uint32_t value, u
   frame[9] = value >> 24;
   frame[19] = crc(frame.data(), frame.size() - 1);
   return frame;
+}
+
+uint32_t JkBmsBle::encode_time(time_t utc, int32_t timezone_offset) {
+  int64_t seconds = (int64_t) utc + timezone_offset - JK_TIME_EPOCH;
+  if (seconds < 0)
+    return 0;
+  if (seconds > UINT32_MAX)
+    return UINT32_MAX;
+  return (uint32_t) seconds;
 }
 
 uint32_t JkBmsBle::encode_jk04_payload(float value, uint8_t len, float factor) {
@@ -674,6 +739,7 @@ void JkBmsBle::decode_(const std::vector<uint8_t> &data) {
       } else {
         this->decode_jk02_settings_(data);
       }
+      this->sync_time_on_connect_();
       break;
     case 0x02:
       if (this->protocol_version_ == PROTOCOL_VERSION_JK04) {

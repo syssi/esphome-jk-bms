@@ -1,9 +1,9 @@
 import logging
 
 import esphome.codegen as cg
-from esphome.components import ble_client
+from esphome.components import ble_client, time
 import esphome.config_validation as cv
-from esphome.const import CONF_ID, CONF_THROTTLE
+from esphome.const import CONF_ID, CONF_THROTTLE, CONF_TIME_ID
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -147,6 +147,7 @@ CONFIG_SCHEMA = cv.All(
                 CONF_THROTTLE, default="2s"
             ): cv.positive_time_period_milliseconds,
             cv.Optional(CONF_ERROR_OVERRIDES): error_overrides,
+            cv.Optional(CONF_TIME_ID): cv.use_id(time.RealTimeClock),
         }
     )
     .extend(ble_client.BLE_CLIENT_SCHEMA)
@@ -161,6 +162,9 @@ async def to_code(config):
 
     cg.add(var.set_throttle(config[CONF_THROTTLE]))
     cg.add(var.set_protocol_version(config[CONF_PROTOCOL_VERSION]))
+
+    if CONF_TIME_ID in config:
+        cg.add(var.set_time_id(await cg.get_variable(config[CONF_TIME_ID])))
 
     errors_jk02 = list(DEFAULT_ERRORS_JK02)
     for bit, label in config.get(CONF_ERROR_OVERRIDES, {}).items():
