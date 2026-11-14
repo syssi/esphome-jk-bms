@@ -29,18 +29,18 @@ def append_values(
     if frame_type != 0:
         start_value_with_frame_type += ":" + str(frame_type).zfill(2)
 
-    for index_of_value, value in enumerate(values):
-        if value.startswith(
-            start_value_with_frame_type
-        ):  # 55:aa:eb:90 or 55:aa:eb:90:[01,02,03]
-            current_packet = value
-            if index_of_value + 1 < len(values):
-                for value_to_append in values[index_of_value + 1 :]:
-                    # 55:aa:eb:90 start of the next frame or "aa:55" command response??
-                    if value_to_append.startswith((start_value, "aa:55")):
-                        list_of_frame_values.append("".join(current_packet))
-                        break
-                    current_packet += ":" + value_to_append
+    for value in values:
+        if value.startswith((start_value, "aa:55")):
+            if current_packet is not None:
+                list_of_frame_values.append(current_packet)
+            current_packet = (
+                value if value.startswith(start_value_with_frame_type) else None
+            )
+        elif current_packet is not None:
+            current_packet += ":" + value
+
+    if current_packet is not None:
+        list_of_frame_values.append(current_packet)
 
     return list_of_frame_values
 
@@ -80,23 +80,28 @@ def save_to_file(file_name, data):
         file.close()
 
 
-parser = argparse.ArgumentParser(description="")
-parser.add_argument("file_path", type=str, help="Path to JSON-Datei")
-parser.add_argument(
-    "--frame_type",
-    type=int,
-    default=0,
-    help="Frame Type 0 -> All, 1 -> settingsframe, 2 -> cell info frame, 3 device info frame",
-)
-args = parser.parse_args()
-file_path = args.file_path
-frame_type = args.frame_type
+def main():
+    parser = argparse.ArgumentParser(description="")
+    parser.add_argument("file_path", type=str, help="Path to JSON-Datei")
+    parser.add_argument(
+        "--frame_type",
+        type=int,
+        default=0,
+        help="Frame Type 0 -> All, 1 -> settingsframe, 2 -> cell info frame, 3 device info frame",
+    )
+    args = parser.parse_args()
+    file_path = args.file_path
+    frame_type = args.frame_type
 
-json_data = load_json_from_file(file_path)
-btatt_values = extract_btatt_values(json_data)
-appended_values = append_values(btatt_values, frame_type)
-vertival_string = values_to_vertical_string(appended_values)
+    json_data = load_json_from_file(file_path)
+    btatt_values = extract_btatt_values(json_data)
+    appended_values = append_values(btatt_values, frame_type)
+    vertical_string = values_to_vertical_string(appended_values)
 
-file_name = str(pathlib.Path(file_path).with_suffix(""))
-save_to_file(file_name, vertival_string)
-print("saved to " + file_name + "_output.log")
+    file_name = str(pathlib.Path(file_path).with_suffix(""))
+    save_to_file(file_name, vertical_string)
+    print("saved to " + file_name + ".txt")
+
+
+if __name__ == "__main__":
+    main()
