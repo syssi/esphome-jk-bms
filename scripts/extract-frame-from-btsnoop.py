@@ -29,18 +29,18 @@ def append_values(
     if frame_type != 0:
         start_value_with_frame_type += ":" + str(frame_type).zfill(2)
 
-    for index_of_value, value in enumerate(values):
-        if value.startswith(
-            start_value_with_frame_type
-        ):  # 55:aa:eb:90 or 55:aa:eb:90:[01,02,03]
-            current_packet = value
-            if index_of_value + 1 < len(values):
-                for value_to_append in values[index_of_value + 1 :]:
-                    # 55:aa:eb:90 start of the next frame or "aa:55" command response??
-                    if value_to_append.startswith((start_value, "aa:55")):
-                        list_of_frame_values.append("".join(current_packet))
-                        break
-                    current_packet += ":" + value_to_append
+    for value in values:
+        if value.startswith((start_value, "aa:55")):
+            if current_packet is not None:
+                list_of_frame_values.append(current_packet)
+            current_packet = (
+                value if value.startswith(start_value_with_frame_type) else None
+            )
+        elif current_packet is not None:
+            current_packet += ":" + value
+
+    if current_packet is not None:
+        list_of_frame_values.append(current_packet)
 
     return list_of_frame_values
 
