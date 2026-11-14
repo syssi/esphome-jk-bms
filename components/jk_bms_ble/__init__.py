@@ -27,6 +27,11 @@ def deprecated_renames(renames: dict[str, str]):
         config = config.copy()
         for old, new in renames.items():
             if old in config:
+                if new in config:
+                    raise cv.Invalid(
+                        f"Cannot specify both '{old}' and '{new}'; use only '{new}'.",
+                        path=[old],
+                    )
                 _LOGGER.warning(
                     "'%s' is deprecated, use '%s' instead. Will be removed in a future release.",
                     old,
