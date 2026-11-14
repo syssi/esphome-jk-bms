@@ -1,26 +1,16 @@
 """Frame assembly must not depend on a subsequent frame being captured."""
 
-import ast
+import importlib.util
 from pathlib import Path
 import unittest
 
 SCRIPT = (
     Path(__file__).resolve().parents[1] / "scripts" / "extract-frame-from-btsnoop.py"
 )
-tree = ast.parse(SCRIPT.read_text())
-namespace = {}
-exec(
-    compile(
-        ast.Module(
-            body=[n for n in tree.body if isinstance(n, ast.FunctionDef)],
-            type_ignores=[],
-        ),
-        str(SCRIPT),
-        "exec",
-    ),
-    namespace,
-)
-assemble = namespace["append_values"]
+spec = importlib.util.spec_from_file_location("extract_frame", SCRIPT)
+extract_frame = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(extract_frame)
+assemble = extract_frame.append_values
 
 
 class FrameExtractionTest(unittest.TestCase):

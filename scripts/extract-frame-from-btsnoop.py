@@ -80,23 +80,28 @@ def save_to_file(file_name, data):
         file.close()
 
 
-parser = argparse.ArgumentParser(description="")
-parser.add_argument("file_path", type=str, help="Path to JSON-Datei")
-parser.add_argument(
-    "--frame_type",
-    type=int,
-    default=0,
-    help="Frame Type 0 -> All, 1 -> settingsframe, 2 -> cell info frame, 3 device info frame",
-)
-args = parser.parse_args()
-file_path = args.file_path
-frame_type = args.frame_type
+def main():
+    parser = argparse.ArgumentParser(description="")
+    parser.add_argument("file_path", type=str, help="Path to JSON-Datei")
+    parser.add_argument(
+        "--frame_type",
+        type=int,
+        default=0,
+        help="Frame Type 0 -> All, 1 -> settingsframe, 2 -> cell info frame, 3 device info frame",
+    )
+    args = parser.parse_args()
+    file_path = args.file_path
+    frame_type = args.frame_type
 
-json_data = load_json_from_file(file_path)
-btatt_values = extract_btatt_values(json_data)
-appended_values = append_values(btatt_values, frame_type)
-vertival_string = values_to_vertical_string(appended_values)
+    json_data = load_json_from_file(file_path)
+    btatt_values = extract_btatt_values(json_data)
+    appended_values = append_values(btatt_values, frame_type)
+    vertical_string = values_to_vertical_string(appended_values)
 
-file_name = str(pathlib.Path(file_path).with_suffix(""))
-save_to_file(file_name, vertival_string)
-print("saved to " + file_name + "_output.log")
+    file_name = str(pathlib.Path(file_path).with_suffix(""))
+    save_to_file(file_name, vertical_string)
+    print("saved to " + file_name + ".txt")
+
+
+if __name__ == "__main__":
+    main()
