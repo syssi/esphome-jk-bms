@@ -21,4 +21,15 @@ class JkButton : public button::Button, public Component {
   uint8_t holding_register_;
 };
 
+class JkSyncTimeButton : public button::Button, public Component {
+ public:
+  void set_parent(JkBmsBle *parent) { this->parent_ = parent; };
+  void dump_config() override;
+  float get_setup_priority() const override { return setup_priority::DATA; }
+
+ protected:
+  void press_action() override;
+  JkBmsBle *parent_;
+};
+
 }  // namespace esphome::jk_bms_ble
