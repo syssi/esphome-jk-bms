@@ -87,16 +87,15 @@ def migrate(path):
 
     has_ble, has_uart = detect_components(lines)
     if has_ble and has_uart:
-        sensor_renames = {**UART_SENSOR_RENAMES, **BLE_SENSOR_RENAMES}
         print("Detected component: jk_bms + jk_bms_ble (hybrid)")
     elif has_ble:
-        sensor_renames = BLE_SENSOR_RENAMES
         print("Detected component: jk_bms_ble (Bluetooth)")
     else:
-        sensor_renames = UART_SENSOR_RENAMES
         print("Detected component: jk_bms (UART/RS485)")
 
     section = None
+    entity_indent = None
+    platform = None
     out = []
     changes = 0
 
@@ -106,17 +105,48 @@ def migrate(path):
 
         # top-level section detection (no leading spaces before key:)
         top_match = re.match(r"^([a-z_]+)\s*:", line)
+        if top_match:
+            entity_indent = None
+            platform = None
         if top_match and top_match.group(1) in SECTION_KEYS:
             section = top_match.group(1)
         elif top_match:
             section = None
 
+        entity_match = re.match(r"^(\s*)-\s+[a-z_]+\s*:", line)
+        if entity_match and (entity_indent is None or indent <= entity_indent):
+            entity_indent = indent
+            platform = None
+
+        platform_match = re.match(
+            r"^(\s*)(?:-\s+)?platform\s*:\s*['\"]?([a-z_]+)", line
+        )
+        if (
+            platform_match
+            and entity_indent is not None
+            and indent in (entity_indent, entity_indent + 2)
+        ):
+            platform = platform_match.group(2)
+
+        sensor_renames = (
+            BLE_SENSOR_RENAMES if platform == "jk_bms_ble" else UART_SENSOR_RENAMES
+        )
+
         # key match: leading whitespace + exact key + colon
         key_match = re.match(r"^(\s+)([a-z_]+)(\s*:)", line)
-        if key_match and indent > 0:
+        if (
+            key_match
+            and platform in {"jk_bms", "jk_bms_ble"}
+            and entity_indent is not None
+            and indent == entity_indent + 2
+        ):
             key = key_match.group(2)
 
-            if section == "sensor" and has_ble and key in SENSOR_REMOVED:
+            if (
+                section == "sensor"
+                and platform == "jk_bms_ble"
+                and key in SENSOR_REMOVED
+            ):
                 print(
                     f"  line {lineno}: ACTION REQUIRED: {key} — {SENSOR_REMOVED[key]}"
                 )
