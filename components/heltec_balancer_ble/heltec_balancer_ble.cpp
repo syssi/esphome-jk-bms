@@ -535,11 +535,10 @@ void HeltecBalancerBle::decode_cell_info_(const std::vector<uint8_t> &data) {
   };
 
   const uint32_t now = millis();
-  if (this->cell_info_received_ && now - this->last_cell_info_ < this->throttle_) {
+  if (this->last_cell_info_ != 0 && now - this->last_cell_info_ < this->throttle_) {
     return;
   }
   this->last_cell_info_ = now;
-  this->cell_info_received_ = true;
 
   ESP_LOGI(TAG, "Cell info frame (%zu bytes):", data.size());
   log_hex_chunked(TAG, data.data(), data.size());
@@ -716,11 +715,10 @@ void HeltecBalancerBle::decode_cell_info_v2_(const std::vector<uint8_t> &data) {
   };
 
   const uint32_t now = millis();
-  if (this->cell_info_received_ && now - this->last_cell_info_ < this->throttle_) {
+  if (this->last_cell_info_ != 0 && now - this->last_cell_info_ < this->throttle_) {
     return;
   }
   this->last_cell_info_ = now;
-  this->cell_info_received_ = true;
 
   ESP_LOGI(TAG, "Cell info frame v2 (%zu bytes):", data.size());
   log_hex_chunked(TAG, data.data(), data.size());
@@ -1178,7 +1176,6 @@ void HeltecBalancerBle::reset_online_status_tracker_() {
 }
 
 void HeltecBalancerBle::publish_device_unavailable_() {
-  this->cell_info_received_ = false;
   this->publish_state_(this->online_status_binary_sensor_, false);
   this->publish_state_(this->operation_status_text_sensor_, "Offline");
 
