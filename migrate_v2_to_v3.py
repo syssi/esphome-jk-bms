@@ -121,6 +121,9 @@ def migrate(path):
         platform_match = re.match(
             r"^(\s*)(?:-\s+)?platform\s*:\s*['\"]?([a-z_]+)", line
         )
+        if platform_match and section in SECTION_KEYS and entity_indent is None:
+            entity_indent = indent - 2
+
         if (
             platform_match
             and entity_indent is not None
