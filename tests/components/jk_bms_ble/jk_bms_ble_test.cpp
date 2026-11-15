@@ -1,7 +1,9 @@
 #include <gtest/gtest.h>
 #include <cmath>
+#include <limits>
 #include <memory>
 #include "common.h"
+#include "frames_jk04.h"
 
 namespace esphome::jk_bms_ble::testing {
 
@@ -300,6 +302,48 @@ TEST(JkBmsBleJk02CellInfoTest, DispatchedViaFrameType) {
   bms.decode_(CELL_INFO_JK02_24S_V10);
 
   EXPECT_FLOAT_EQ(soc.state, 85.0f);
+}
+
+// ── Cell info throttling ─────────────────────────────────────────────────────
+
+// A throttle interval longer than any possible uptime would drop every frame if the
+// first one were compared against the zero-initialized timestamp.
+static const uint32_t THROTTLE_FOREVER = std::numeric_limits<uint32_t>::max();
+
+TEST(JkBmsBleThrottleTest, FirstJk02CellInfoIsNotThrottled) {
+  TestableJkBmsBle bms;
+  sensor::Sensor total;
+  bms.set_total_voltage_sensor(&total);
+  bms.set_throttle(THROTTLE_FOREVER);
+
+  bms.decode_jk02_cell_info_(CELL_INFO_JK02_24S_V10);
+
+  EXPECT_NEAR(total.state, 78.735f, 0.001f);
+}
+
+TEST(JkBmsBleThrottleTest, FirstJk04CellInfoIsNotThrottled) {
+  TestableJkBmsBle bms;
+  bms.set_protocol_version(PROTOCOL_VERSION_JK04);
+  sensor::Sensor total;
+  bms.set_total_voltage_sensor(&total);
+  bms.set_throttle(THROTTLE_FOREVER);
+
+  bms.decode_jk04_cell_info_(CELL_INFO_JK04);
+
+  EXPECT_NEAR(total.state, 53.691f, 0.001f);
+}
+
+TEST(JkBmsBleThrottleTest, SubsequentCellInfoWithinThrottleIsDropped) {
+  TestableJkBmsBle bms;
+  sensor::Sensor total;
+  bms.set_total_voltage_sensor(&total);
+  bms.set_throttle(THROTTLE_FOREVER);
+  bms.decode_jk02_cell_info_(CELL_INFO_JK02_24S_V10);
+  total.state = NAN;
+
+  bms.decode_jk02_cell_info_(CELL_INFO_JK02_24S_V10);
+
+  EXPECT_TRUE(std::isnan(total.state));
 }
 
 // ── Protocol version dispatch ────────────────────────────────────────────────

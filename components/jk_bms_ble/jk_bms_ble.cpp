@@ -673,11 +673,10 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   };
 
   const uint32_t now = millis();
-  if (this->cell_info_received_ && now - this->last_cell_info_ < this->throttle_) {
+  if (this->last_cell_info_ != 0 && now - this->last_cell_info_ < this->throttle_) {
     return;
   }
   this->last_cell_info_ = now;
-  this->cell_info_received_ = true;
 
   uint8_t frame_version = FRAME_VERSION_JK02_24S;
   uint8_t offset = 0;
@@ -979,11 +978,10 @@ void JkBmsBle::decode_jk04_cell_info_(const std::vector<uint8_t> &data) {
   };
 
   const uint32_t now = millis();
-  if (this->cell_info_received_ && now - this->last_cell_info_ < this->throttle_) {
+  if (this->last_cell_info_ != 0 && now - this->last_cell_info_ < this->throttle_) {
     return;
   }
   this->last_cell_info_ = now;
-  this->cell_info_received_ = true;
 
   ESP_LOGI(TAG, "Cell info frame (JK04, %zu bytes) received", data.size());
   log_hex_chunked(TAG, data.data(), data.size());
@@ -1893,7 +1891,6 @@ void JkBmsBle::reset_online_status_tracker_() {
 }
 
 void JkBmsBle::publish_device_unavailable_() {
-  this->cell_info_received_ = false;
   this->publish_state_(this->online_status_binary_sensor_, false);
   this->publish_state_(this->errors_text_sensor_, "Offline");
   this->publish_state_(this->errors_bitmask_hex_text_sensor_, "Offline");

@@ -582,7 +582,6 @@ class JkBmsBle :
   uint16_t notify_handle_{0};
 #endif
   uint32_t last_cell_info_{0};
-  bool cell_info_received_{false};
   uint32_t throttle_{0};
 
   void decode_(const std::vector<uint8_t> &data);
