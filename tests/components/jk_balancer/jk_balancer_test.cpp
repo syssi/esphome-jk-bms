@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <cmath>
 #include "common.h"
 
 namespace esphome::jk_balancer::testing {
@@ -91,6 +92,35 @@ TEST(JkBalancerStatusTest, CellVoltages) {
   EXPECT_NEAR(cells[1].state, 3.323f, 0.001f);
   EXPECT_NEAR(cells[2].state, 3.323f, 0.001f);
   EXPECT_NEAR(cells[3].state, 3.323f, 0.001f);
+}
+
+TEST(JkBalancerStatusTest, RemovedCellsClearedOnce) {
+  TestableJkBalancer bms;
+  sensor::Sensor cell17, cell18;
+  int cell17_publishes = 0, cell18_publishes = 0;
+  cell17.add_on_state_callback([&](float) { cell17_publishes++; });
+  cell18.add_on_state_callback([&](float) { cell18_publishes++; });
+  bms.set_cell_voltage_sensor(16, &cell17);
+  bms.set_cell_voltage_sensor(17, &cell18);
+
+  bms.on_jk_balancer_modbus_data(FUNCTION_READ_ALL, STATUS_FRAME_17S);
+  EXPECT_GT(cell17.state, 0.0f);
+  EXPECT_EQ(cell17_publishes, 1);
+
+  // Reduce the configured cell count to 1: cell 17 is cleared exactly once
+  auto reduced = STATUS_FRAME_17S;
+  reduced[22] = 1;
+  bms.on_jk_balancer_modbus_data(FUNCTION_READ_ALL, reduced);
+  bms.on_jk_balancer_modbus_data(FUNCTION_READ_ALL, reduced);
+  EXPECT_TRUE(std::isnan(cell17.state));
+  EXPECT_EQ(cell17_publishes, 2);
+
+  // A slot that never had a reading is never published
+  EXPECT_EQ(cell18_publishes, 0);
+
+  bms.on_jk_balancer_modbus_data(FUNCTION_READ_ALL, STATUS_FRAME_17S);
+  EXPECT_GT(cell17.state, 0.0f);
+  EXPECT_EQ(cell17_publishes, 3);
 }
 
 // ── Cell voltage statistics ───────────────────────────────────────────────────

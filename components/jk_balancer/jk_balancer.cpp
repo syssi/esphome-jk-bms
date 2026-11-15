@@ -2,6 +2,8 @@
 #include "esphome/core/log.h"
 #include "esphome/core/helpers.h"
 
+#include <cmath>
+
 // Fallback for ESPHome < 2026.10.0
 #ifndef ESPHOME_LOG_TAG
 #define ESPHOME_LOG_TAG(name, tag) static const char *const name = tag
@@ -156,8 +158,12 @@ void JkBalancer::on_status_data_(const std::vector<uint8_t> &data) {
     this->publish_state_(this->cells_[i].cell_voltage_sensor_, cell_voltage);
   }
 
+  // Clear readings of cells removed by a reduced cell count once instead of publishing NAN on every frame
   for (uint8_t i = cells; i < 24; i++) {
-    this->publish_state_(this->cells_[i].cell_voltage_sensor_, NAN);
+    sensor::Sensor *cell_voltage_sensor = this->cells_[i].cell_voltage_sensor_;
+    if (cell_voltage_sensor != nullptr && !std::isnan(cell_voltage_sensor->state)) {
+      cell_voltage_sensor->publish_state(NAN);
+    }
   }
 
   this->publish_state_(this->min_cell_voltage_sensor_, min_cell_voltage);
