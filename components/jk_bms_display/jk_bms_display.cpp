@@ -185,9 +185,7 @@ void JkBmsDisplay::on_jk_bms_display_status_data_(const std::vector<uint8_t> &da
       max_cell_voltage = cell_voltage;
       max_voltage_cell = i + 1;
     }
-    if (cell_voltage > 0) {
-      this->publish_state_(this->cells_[i].cell_voltage_sensor_, cell_voltage);
-    }
+    this->publish_state_(this->cells_[i].cell_voltage_sensor_, cell_voltage > 0 ? cell_voltage : NAN);
   }
   average_cell_voltage = average_cell_voltage / cells_enabled;
 
