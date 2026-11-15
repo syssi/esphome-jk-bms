@@ -51,7 +51,7 @@ def values_to_vertical_string(data):
     if hex_values == []:
         return ""
     matrix = [
-        [0 for _ in range(len(hex_values))]
+        ["   " for _ in range(len(hex_values))]
         for _ in range(max(len(inner_list) for inner_list in hex_values))
     ]
 
