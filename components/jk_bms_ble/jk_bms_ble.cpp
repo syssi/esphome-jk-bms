@@ -1893,6 +1893,13 @@ void JkBmsBle::reset_online_status_tracker_() {
 void JkBmsBle::publish_device_unavailable_() {
   this->publish_state_(this->online_status_binary_sensor_, false);
   this->publish_state_(this->errors_text_sensor_, "Offline");
+  this->publish_state_(this->charge_status_text_sensor_, "Offline");
+  this->publish_state_(this->balancer_status_text_sensor_, "Offline");
+  this->publish_state_(this->total_runtime_formatted_text_sensor_, "Offline");
+  this->publish_state_(this->emergency_time_countdown_sensor_, NAN);
+  this->publish_state_(this->smart_sleep_countdown_sensor_, NAN);
+  this->publish_state_(this->charge_status_id_sensor_, NAN);
+  this->publish_state_(this->charge_status_time_elapsed_sensor_, NAN);
 
   this->invalidate_binary_sensor_(this->balancing_binary_sensor_);
   this->invalidate_binary_sensor_(this->precharging_binary_sensor_);
