@@ -2,6 +2,8 @@
 #include "esphome/core/log.h"
 #include "esphome/core/helpers.h"
 
+#include <cmath>
+
 // Fallback for ESPHome < 2026.10.0
 #ifndef ESPHOME_LOG_TAG
 #define ESPHOME_LOG_TAG(name, tag) static const char *const name = tag
@@ -185,7 +187,13 @@ void JkBmsDisplay::on_jk_bms_display_status_data_(const std::vector<uint8_t> &da
       max_cell_voltage = cell_voltage;
       max_voltage_cell = i + 1;
     }
-    this->publish_state_(this->cells_[i].cell_voltage_sensor_, cell_voltage > 0 ? cell_voltage : NAN);
+    sensor::Sensor *cell_voltage_sensor = this->cells_[i].cell_voltage_sensor_;
+    if (cell_voltage > 0) {
+      this->publish_state_(cell_voltage_sensor, cell_voltage);
+    } else if (cell_voltage_sensor != nullptr && !std::isnan(cell_voltage_sensor->state)) {
+      // Clear a reading that disappeared once instead of publishing NAN on every frame
+      cell_voltage_sensor->publish_state(NAN);
+    }
   }
   average_cell_voltage = average_cell_voltage / cells_enabled;
 

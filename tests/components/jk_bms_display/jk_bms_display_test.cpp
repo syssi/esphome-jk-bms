@@ -92,23 +92,34 @@ TEST(JkBmsDisplayStatusTest, CellVoltages) {
   EXPECT_NEAR(cells[3].state, 3.324f, 0.001f);
 }
 
-TEST(JkBmsDisplayStatusTest, MissingCellVoltagePublishesNan) {
+TEST(JkBmsDisplayStatusTest, MissingCellVoltageClearedOnce) {
   TestableJkBmsDisplay bms;
-  sensor::Sensor cell;
-  bms.set_cell_voltage_sensor(0, &cell);
+  sensor::Sensor cell1, cell24;
+  int cell1_publishes = 0, cell24_publishes = 0;
+  cell1.add_on_state_callback([&](float) { cell1_publishes++; });
+  cell24.add_on_state_callback([&](float) { cell24_publishes++; });
+  bms.set_cell_voltage_sensor(0, &cell1);
+  bms.set_cell_voltage_sensor(23, &cell24);
 
   bms.on_jk_bms_display_data(STATUS_FRAME);
-  EXPECT_NEAR(cell.state, 3.328f, 0.001f);
+  EXPECT_NEAR(cell1.state, 3.328f, 0.001f);
+  EXPECT_EQ(cell1_publishes, 1);
 
-  // Cell 1 voltage at bytes 30-31 (offset 6 + 24) drops to 0 mV
+  // Cell 1 voltage at bytes 30-31 (offset 6 + 24) drops to 0 mV: cleared exactly once
   auto frame = STATUS_FRAME;
   frame[30] = 0x00;
   frame[31] = 0x00;
   bms.on_jk_bms_display_data(frame);
-  EXPECT_TRUE(std::isnan(cell.state));
+  bms.on_jk_bms_display_data(frame);
+  EXPECT_TRUE(std::isnan(cell1.state));
+  EXPECT_EQ(cell1_publishes, 2);
+
+  // A slot that never had a reading (cell 24 reports 0 mV) is never published
+  EXPECT_EQ(cell24_publishes, 0);
 
   bms.on_jk_bms_display_data(STATUS_FRAME);
-  EXPECT_NEAR(cell.state, 3.328f, 0.001f);
+  EXPECT_NEAR(cell1.state, 3.328f, 0.001f);
+  EXPECT_EQ(cell1_publishes, 3);
 }
 
 // ── Cell voltage statistics ───────────────────────────────────────────────────
