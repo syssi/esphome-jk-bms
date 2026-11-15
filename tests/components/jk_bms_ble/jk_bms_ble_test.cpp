@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <cmath>
 #include "common.h"
 
 namespace esphome::jk_bms_ble::testing {
@@ -357,6 +358,45 @@ TEST(JkBmsBlePublishDeviceUnavailableTest, InvalidatesBinarySensors) {
   for (size_t i = 0; i < binary_sensors.size(); i++) {
     EXPECT_FALSE(binary_sensors[i]->has_state()) << "binary sensor index " << i;
   }
+}
+
+TEST(JkBmsBlePublishDeviceUnavailableTest, ClearsCountdownAndChargeStatusSensors) {
+  TestableJkBmsBle bms;
+  sensor::Sensor emergency_time_countdown, smart_sleep_countdown, charge_status_id, charge_status_time_elapsed;
+  bms.set_emergency_time_countdown_sensor(&emergency_time_countdown);
+  bms.set_smart_sleep_countdown_sensor(&smart_sleep_countdown);
+  bms.set_charge_status_id_sensor(&charge_status_id);
+  bms.set_charge_status_time_elapsed_sensor(&charge_status_time_elapsed);
+  const std::vector<sensor::Sensor *> sensors = {&emergency_time_countdown, &smart_sleep_countdown, &charge_status_id,
+                                                 &charge_status_time_elapsed};
+
+  for (auto *sensor : sensors) {
+    sensor->publish_state(100.0f);
+  }
+
+  bms.publish_device_unavailable_();
+
+  for (size_t i = 0; i < sensors.size(); i++) {
+    EXPECT_TRUE(std::isnan(sensors[i]->state)) << "sensor index " << i;
+  }
+}
+
+TEST(JkBmsBlePublishDeviceUnavailableTest, MarksLiveStatusTextSensorsOffline) {
+  TestableJkBmsBle bms;
+  text_sensor::TextSensor charge_status, balancer_status, total_runtime_formatted;
+  bms.set_charge_status_text_sensor(&charge_status);
+  bms.set_balancer_status_text_sensor(&balancer_status);
+  bms.set_total_runtime_formatted_text_sensor(&total_runtime_formatted);
+
+  charge_status.publish_state("Float");
+  balancer_status.publish_state("Balancing");
+  total_runtime_formatted.publish_state("1h");
+
+  bms.publish_device_unavailable_();
+
+  EXPECT_EQ(charge_status.state, "Offline");
+  EXPECT_EQ(balancer_status.state, "Offline");
+  EXPECT_EQ(total_runtime_formatted.state, "Offline");
 }
 
 }  // namespace esphome::jk_bms_ble::testing
