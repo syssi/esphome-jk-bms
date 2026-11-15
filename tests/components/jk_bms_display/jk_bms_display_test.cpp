@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <cmath>
 #include "common.h"
 
 namespace esphome::jk_bms_display::testing {
@@ -89,6 +90,25 @@ TEST(JkBmsDisplayStatusTest, CellVoltages) {
   EXPECT_NEAR(cells[1].state, 3.329f, 0.001f);
   EXPECT_NEAR(cells[2].state, 3.328f, 0.001f);
   EXPECT_NEAR(cells[3].state, 3.324f, 0.001f);
+}
+
+TEST(JkBmsDisplayStatusTest, MissingCellVoltagePublishesNan) {
+  TestableJkBmsDisplay bms;
+  sensor::Sensor cell;
+  bms.set_cell_voltage_sensor(0, &cell);
+
+  bms.on_jk_bms_display_data(STATUS_FRAME);
+  EXPECT_NEAR(cell.state, 3.328f, 0.001f);
+
+  // Cell 1 voltage at bytes 30-31 (offset 6 + 24) drops to 0 mV
+  auto frame = STATUS_FRAME;
+  frame[30] = 0x00;
+  frame[31] = 0x00;
+  bms.on_jk_bms_display_data(frame);
+  EXPECT_TRUE(std::isnan(cell.state));
+
+  bms.on_jk_bms_display_data(STATUS_FRAME);
+  EXPECT_NEAR(cell.state, 3.328f, 0.001f);
 }
 
 // ── Cell voltage statistics ───────────────────────────────────────────────────
