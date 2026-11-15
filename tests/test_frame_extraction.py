@@ -41,12 +41,19 @@ class FrameExtractionTest(unittest.TestCase):
 
 
 class VerticalStringTest(unittest.TestCase):
-    def test_short_frame_does_not_gain_fake_bytes(self):
+    def test_short_last_frame_does_not_gain_fake_bytes(self):
         """Absent bytes are padded with blanks, not rendered as zeros."""
-        output = vertical(["55:00:aa", "55"])
-        rows = output.splitlines()
-        self.assertEqual(rows[1].split("\t")[1], "00    ")
-        self.assertEqual(rows[2].split("\t")[1], "aa    ")
+        self.assertEqual(
+            vertical(["55:00:aa", "55"]),
+            "000 \t55 55 \n001 \t00    \n002 \taa    \n",
+        )
+
+    def test_short_leading_frame_keeps_columns_aligned(self):
+        """A short frame before longer ones must not shift their columns."""
+        self.assertEqual(
+            vertical(["55", "55:00", "55:01"]),
+            "000 \t55 55 55 \n001 \t   00 01 \n",
+        )
 
     def test_no_frames(self):
         """An empty capture produces an empty string."""
