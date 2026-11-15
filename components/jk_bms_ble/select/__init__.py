@@ -1,8 +1,11 @@
+from dataclasses import dataclass, field
+
 import esphome.codegen as cg
 from esphome.components import select
 import esphome.config_validation as cv
+from esphome.core import CORE
 
-from .. import CONF_JK_BMS_BLE_ID, JK_BMS_BLE_COMPONENT_SCHEMA, jk_bms_ble_ns
+from .. import CONF_JK_BMS_BLE_ID, DOMAIN, JK_BMS_BLE_COMPONENT_SCHEMA, jk_bms_ble_ns
 from ..const import (
     CONF_CAN_PROTOCOL,
     CONF_DRY1_TRIGGER,
@@ -86,7 +89,7 @@ MULTIPLEXED_PORT_MODE_OPTIONS = [
 
 # Maps config key → (register, options, table setter, constexpr array name, data_len).
 # Entries sharing the same arr_name also share the same LookupTable in C++;
-# _emitted_arrays (module-level) dedups across multiple jk_bms_ble instances too.
+# Lookup arrays are shared by all jk_bms_ble instances in one build.
 _UART_ARR = "JK_BMS_BLE_UART_PROTOCOL_OPTS_"
 _CAN_ARR = "JK_BMS_BLE_CAN_PROTOCOL_OPTS_"
 _LCD_ARR = "JK_BMS_BLE_LCD_BUZZER_TRIGGER_OPTS_"
@@ -158,7 +161,18 @@ LOAD_CONFIG_PRESET_OPTIONS = {
     "LTO": 0x6A,
 }
 
-_emitted_arrays = set()
+
+@dataclass
+class SelectCodegenData:
+    emitted_arrays: set[str] = field(default_factory=set)
+
+
+def _get_select_data() -> SelectCodegenData:
+    data = CORE.data.setdefault(DOMAIN, {})
+    if "select_codegen" not in data:
+        data["select_codegen"] = SelectCodegenData()
+    return data["select_codegen"]
+
 
 JkSelect = jk_bms_ble_ns.class_("JkSelect", select.Select, cg.Component)
 JkPresetSelect = jk_bms_ble_ns.class_("JkPresetSelect", select.Select, cg.Component)
@@ -197,6 +211,7 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
 
 
 async def to_code(config):
+    emitted_arrays = _get_select_data().emitted_arrays
     hub = await cg.get_variable(config[CONF_JK_BMS_BLE_ID])
     for key, (address, options, table_setter, arr_name, data_len) in SELECTS.items():
         if key not in config:
@@ -214,8 +229,8 @@ async def to_code(config):
         # preserving flash (.rodata) placement on embedded targets.
         # emitted_arrays guards against double-definition when two selects share a table
         # (e.g. uart1_protocol and uart2_protocol both use UART_PROTOCOL_OPTIONS).
-        if arr_name not in _emitted_arrays:
-            _emitted_arrays.add(arr_name)
+        if arr_name not in emitted_arrays:
+            emitted_arrays.add(arr_name)
             entries = ", ".join(f'"{o}"' for o in options)
             cg.add_global(
                 cg.RawStatement(
