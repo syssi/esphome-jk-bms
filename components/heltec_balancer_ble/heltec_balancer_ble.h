@@ -368,6 +368,7 @@ class HeltecBalancerBle :
   uint16_t char_handle_{0};
   uint32_t connection_time_{0};
   uint32_t last_cell_info_{0};
+  bool cell_info_received_{false};
   uint32_t throttle_;
 
   std::array<uint8_t, 20> build_command_frame_(uint8_t function, uint8_t command, uint8_t register_address,
