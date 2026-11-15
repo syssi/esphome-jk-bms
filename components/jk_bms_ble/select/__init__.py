@@ -167,7 +167,7 @@ class SelectCodegenData:
     emitted_arrays: set[str] = field(default_factory=set)
 
 
-def _get_select_data():
+def _get_select_data() -> SelectCodegenData:
     data = CORE.data.setdefault(DOMAIN, {})
     if "select_codegen" not in data:
         data["select_codegen"] = SelectCodegenData()

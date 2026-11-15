@@ -12,8 +12,6 @@ from components.jk_bms_ble import select as selects
 
 def test_lookup_arrays_are_emitted_again_after_core_reset():
     CORE.reset()
-    if hasattr(selects, "_emitted_arrays"):
-        selects._emitted_arrays.clear()
     emitted = []
     config = {selects.CONF_JK_BMS_BLE_ID: "hub", selects.CONF_UART1_PROTOCOL: {}}
     with (
