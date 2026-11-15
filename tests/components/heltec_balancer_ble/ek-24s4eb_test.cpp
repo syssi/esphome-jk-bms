@@ -1,4 +1,6 @@
 #include <gtest/gtest.h>
+#include <cmath>
+#include <limits>
 #include "common.h"
 #include "frames_ek-24s4eb.h"
 
@@ -165,6 +167,36 @@ TEST(EkCellInfoTest, ErrorStatus) {
 TEST(EkCellInfoTest, NullSensorsDoNotCrash) {
   TestableHeltecBalancerBle bms;
   bms.decode_cell_info_(CELL_INFO_FRAME);
+}
+
+// ── Cell info throttling ─────────────────────────────────────────────────────
+
+// A throttle interval longer than any possible uptime would drop every frame if the
+// first one were compared against the zero-initialized timestamp.
+static const uint32_t THROTTLE_FOREVER = std::numeric_limits<uint32_t>::max();
+
+TEST(EkCellInfoTest, FirstCellInfoIsNotThrottled) {
+  TestableHeltecBalancerBle bms;
+  sensor::Sensor total;
+  bms.set_total_voltage_sensor(&total);
+  bms.set_throttle(THROTTLE_FOREVER);
+
+  bms.decode_cell_info_(CELL_INFO_FRAME);
+
+  EXPECT_NEAR(total.state, 53.22f, 0.01f);
+}
+
+TEST(EkCellInfoTest, SubsequentCellInfoWithinThrottleIsDropped) {
+  TestableHeltecBalancerBle bms;
+  sensor::Sensor total;
+  bms.set_total_voltage_sensor(&total);
+  bms.set_throttle(THROTTLE_FOREVER);
+  bms.decode_cell_info_(CELL_INFO_FRAME);
+  total.state = NAN;
+
+  bms.decode_cell_info_(CELL_INFO_FRAME);
+
+  EXPECT_TRUE(std::isnan(total.state));
 }
 
 // ── Device info frame (ZH-2.1.1) ─────────────────────────────────────────────

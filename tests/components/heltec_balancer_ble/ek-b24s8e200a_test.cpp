@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <limits>
 #include "common.h"
 #include "frames_ek-b24s8e200a.h"
 
@@ -208,6 +209,23 @@ TEST(EkB24S8E200ACellInfoTest, DispatchesToV2WhenProtocolVersionSet) {
 TEST(EkB24S8E200ACellInfoTest, NullSensorsDoNotCrash) {
   TestableHeltecBalancerBle bms;
   bms.decode_cell_info_v2_(CELL_INFO_FRAME);
+}
+
+// ── Cell info throttling ─────────────────────────────────────────────────────
+
+// A throttle interval longer than any possible uptime would drop every frame if the
+// first one were compared against the zero-initialized timestamp.
+static const uint32_t THROTTLE_FOREVER = std::numeric_limits<uint32_t>::max();
+
+TEST(EkB24S8E200ACellInfoTest, FirstCellInfoIsNotThrottled) {
+  TestableHeltecBalancerBle bms;
+  sensor::Sensor total;
+  bms.set_total_voltage_sensor(&total);
+  bms.set_throttle(THROTTLE_FOREVER);
+
+  bms.decode_cell_info_v2_(CELL_INFO_FRAME);
+
+  EXPECT_NEAR(total.state, 52.40f, 0.01f);
 }
 
 // ── Device info frame (same decode as legacy) ─────────────────────────────────

@@ -535,7 +535,7 @@ void HeltecBalancerBle::decode_cell_info_(const std::vector<uint8_t> &data) {
   };
 
   const uint32_t now = millis();
-  if (now - this->last_cell_info_ < this->throttle_) {
+  if (this->last_cell_info_ != 0 && now - this->last_cell_info_ < this->throttle_) {
     return;
   }
   this->last_cell_info_ = now;
@@ -715,7 +715,7 @@ void HeltecBalancerBle::decode_cell_info_v2_(const std::vector<uint8_t> &data) {
   };
 
   const uint32_t now = millis();
-  if (now - this->last_cell_info_ < this->throttle_) {
+  if (this->last_cell_info_ != 0 && now - this->last_cell_info_ < this->throttle_) {
     return;
   }
   this->last_cell_info_ = now;
