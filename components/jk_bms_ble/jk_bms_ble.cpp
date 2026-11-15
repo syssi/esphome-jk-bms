@@ -748,12 +748,16 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
     this->publish_state_(this->cells_[i].cell_voltage_sensor_, cell_voltage);
     this->publish_state_(this->cells_[i].cell_resistance_sensor_, cell_resistance);
   }
-  average_cell_voltage = average_cell_voltage / cells_enabled;
+  if (cells_enabled == 0) {
+    min_cell_voltage = NAN;
+    max_cell_voltage = NAN;
+  }
+  average_cell_voltage = cells_enabled > 0 ? average_cell_voltage / cells_enabled : NAN;
 
   this->publish_state_(this->min_cell_voltage_sensor_, min_cell_voltage);
   this->publish_state_(this->max_cell_voltage_sensor_, max_cell_voltage);
-  this->publish_state_(this->max_voltage_cell_sensor_, (float) max_voltage_cell);
-  this->publish_state_(this->min_voltage_cell_sensor_, (float) min_voltage_cell);
+  this->publish_state_(this->max_voltage_cell_sensor_, cells_enabled > 0 ? (float) max_voltage_cell : NAN);
+  this->publish_state_(this->min_voltage_cell_sensor_, cells_enabled > 0 ? (float) min_voltage_cell : NAN);
   this->publish_state_(this->delta_cell_voltage_sensor_, max_cell_voltage - min_cell_voltage);
   this->publish_state_(this->average_cell_voltage_sensor_, average_cell_voltage);
 
@@ -1082,12 +1086,16 @@ void JkBmsBle::decode_jk04_cell_info_(const std::vector<uint8_t> &data) {
     this->publish_state_(this->cells_[i].cell_voltage_sensor_, cell_voltage);
     this->publish_state_(this->cells_[i].cell_resistance_sensor_, cell_resistance);
   }
-  average_cell_voltage = average_cell_voltage / cells_enabled;
+  if (cells_enabled == 0) {
+    min_cell_voltage = NAN;
+    max_cell_voltage = NAN;
+  }
+  average_cell_voltage = cells_enabled > 0 ? average_cell_voltage / cells_enabled : NAN;
 
   this->publish_state_(this->min_cell_voltage_sensor_, min_cell_voltage);
   this->publish_state_(this->max_cell_voltage_sensor_, max_cell_voltage);
-  this->publish_state_(this->min_voltage_cell_sensor_, (float) min_voltage_cell);
-  this->publish_state_(this->max_voltage_cell_sensor_, (float) max_voltage_cell);
+  this->publish_state_(this->min_voltage_cell_sensor_, cells_enabled > 0 ? (float) min_voltage_cell : NAN);
+  this->publish_state_(this->max_voltage_cell_sensor_, cells_enabled > 0 ? (float) max_voltage_cell : NAN);
   this->publish_state_(this->delta_cell_voltage_sensor_, max_cell_voltage - min_cell_voltage);
   this->publish_state_(this->average_cell_voltage_sensor_, average_cell_voltage);
   this->publish_state_(this->total_voltage_sensor_, total_voltage);
