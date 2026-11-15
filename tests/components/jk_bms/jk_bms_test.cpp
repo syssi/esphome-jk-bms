@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <cmath>
 #include "common.h"
 
 namespace esphome::jk_bms::testing {
@@ -22,6 +23,36 @@ TEST(JkBmsStatusDataTest, CellVoltages) {
   EXPECT_NEAR(cells[3].state, 3.820f, 0.001f);   // cell 4
   EXPECT_NEAR(cells[8].state, 3.811f, 0.001f);   // cell 9 (min)
   EXPECT_NEAR(cells[11].state, 3.835f, 0.001f);  // cell 12 (max)
+}
+
+TEST(JkBmsStatusDataTest, RemovedCellsClearedOnce) {
+  TestableJkBms bms;
+  sensor::Sensor cell14, cell15;
+  int cell14_publishes = 0, cell15_publishes = 0;
+  cell14.add_on_state_callback([&](float) { cell14_publishes++; });
+  cell15.add_on_state_callback([&](float) { cell15_publishes++; });
+  bms.set_cell_voltage_sensor(13, &cell14);
+  bms.set_cell_voltage_sensor(14, &cell15);
+
+  bms.on_jk_modbus_data(FUNCTION_READ_ALL, STATUS_FRAME_14S);
+  EXPECT_GT(cell14.state, 0.0f);
+  EXPECT_EQ(cell14_publishes, 1);
+
+  // Drop the last cell record (3 bytes) and shrink the cell data length: 14S -> 13S
+  auto reduced = STATUS_FRAME_14S;
+  reduced.erase(reduced.begin() + 2 + 13 * 3, reduced.begin() + 2 + 14 * 3);
+  reduced[1] = 13 * 3;
+  bms.on_jk_modbus_data(FUNCTION_READ_ALL, reduced);
+  bms.on_jk_modbus_data(FUNCTION_READ_ALL, reduced);
+  EXPECT_TRUE(std::isnan(cell14.state));
+  EXPECT_EQ(cell14_publishes, 2);
+
+  // A slot that never had a reading is never published
+  EXPECT_EQ(cell15_publishes, 0);
+
+  bms.on_jk_modbus_data(FUNCTION_READ_ALL, STATUS_FRAME_14S);
+  EXPECT_GT(cell14.state, 0.0f);
+  EXPECT_EQ(cell14_publishes, 3);
 }
 
 // ── Cell voltage statistics ──────────────────────────────────────────────────
