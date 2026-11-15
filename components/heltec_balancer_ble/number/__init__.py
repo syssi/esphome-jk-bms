@@ -1,3 +1,5 @@
+import math
+
 import esphome.codegen as cg
 from esphome.components import number
 import esphome.config_validation as cv
@@ -327,7 +329,7 @@ HELTEC_NUMBER_SCHEMA = (
     .extend(cv.COMPONENT_SCHEMA)
 )
 
-CONFIG_SCHEMA = HELTEC_BALANCER_BLE_COMPONENT_SCHEMA.extend(
+_NUMBER_CONFIG_SCHEMA = HELTEC_BALANCER_BLE_COMPONENT_SCHEMA.extend(
     {
         cv.Optional(CONF_CELL_COUNT): HELTEC_NUMBER_SCHEMA.extend(
             {
@@ -662,6 +664,28 @@ CONFIG_SCHEMA = HELTEC_BALANCER_BLE_COMPONENT_SCHEMA.extend(
         ),
     }
 )
+
+
+def _validate_number_bounds(config):
+    for key in (*NUMBERS, *V2_NUMBERS):
+        if key not in config:
+            continue
+        item = config[key]
+        for option in (CONF_MIN_VALUE, CONF_MAX_VALUE, CONF_STEP):
+            if not math.isfinite(item[option]):
+                raise cv.Invalid(
+                    "Number limits and step must be finite", path=[key, option]
+                )
+        if item[CONF_MIN_VALUE] > item[CONF_MAX_VALUE]:
+            raise cv.Invalid(
+                "min_value must not exceed max_value", path=[key, CONF_MIN_VALUE]
+            )
+        if item[CONF_STEP] <= 0:
+            raise cv.Invalid("step must be greater than zero", path=[key, CONF_STEP])
+    return config
+
+
+CONFIG_SCHEMA = cv.All(_NUMBER_CONFIG_SCHEMA, _validate_number_bounds)
 
 
 async def to_code(config):
