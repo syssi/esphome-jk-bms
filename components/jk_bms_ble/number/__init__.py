@@ -1,3 +1,5 @@
+import math
+
 import esphome.codegen as cg
 from esphome.components import number
 import esphome.config_validation as cv
@@ -742,7 +744,29 @@ _NUMBER_CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
     }
 )
 
-CONFIG_SCHEMA = cv.All(deprecated_renames(_RENAMED_NUMBERS), _NUMBER_CONFIG_SCHEMA)
+
+def _validate_number_bounds(config):
+    for key in NUMBERS:
+        if key not in config:
+            continue
+        item = config[key]
+        for option in (CONF_MIN_VALUE, CONF_MAX_VALUE, CONF_STEP):
+            if not math.isfinite(item[option]):
+                raise cv.Invalid(
+                    "Number limits and step must be finite", path=[key, option]
+                )
+        if item[CONF_MIN_VALUE] > item[CONF_MAX_VALUE]:
+            raise cv.Invalid(
+                "min_value must not exceed max_value", path=[key, CONF_MIN_VALUE]
+            )
+        if item[CONF_STEP] <= 0:
+            raise cv.Invalid("step must be greater than zero", path=[key, CONF_STEP])
+    return config
+
+
+CONFIG_SCHEMA = cv.All(
+    deprecated_renames(_RENAMED_NUMBERS), _NUMBER_CONFIG_SCHEMA, _validate_number_bounds
+)
 
 
 async def to_code(config):
