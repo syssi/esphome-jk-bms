@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <cmath>
+#include <memory>
 #include "common.h"
 
 namespace esphome::jk_bms_ble::testing {
@@ -360,43 +361,265 @@ TEST(JkBmsBlePublishDeviceUnavailableTest, InvalidatesBinarySensors) {
   }
 }
 
-TEST(JkBmsBlePublishDeviceUnavailableTest, ClearsCountdownAndChargeStatusSensors) {
-  TestableJkBmsBle bms;
-  sensor::Sensor emergency_time_countdown, smart_sleep_countdown, charge_status_id, charge_status_time_elapsed;
-  bms.set_emergency_time_countdown_sensor(&emergency_time_countdown);
-  bms.set_smart_sleep_countdown_sensor(&smart_sleep_countdown);
-  bms.set_charge_status_id_sensor(&charge_status_id);
-  bms.set_charge_status_time_elapsed_sensor(&charge_status_time_elapsed);
-  const std::vector<sensor::Sensor *> sensors = {&emergency_time_countdown, &smart_sleep_countdown, &charge_status_id,
-                                                 &charge_status_time_elapsed};
+// The following tests assign every entity of the component to an expected outcome of
+// publish_device_unavailable_(): cleared (NAN / "Offline") or left untouched. Clearing an
+// additional entity, or no longer clearing one, makes one of them fail. New entities must be
+// added to the matching list.
 
-  for (auto *sensor : sensors) {
-    sensor->publish_state(100.0f);
+template<typename T> struct NamedSetter {
+  const char *name;
+  void (JkBmsBle::*setter)(T *);
+};
+
+#define ENTITY_SETTER(name) {#name, &JkBmsBle::name}
+
+template<typename Entity, typename T>
+std::vector<std::unique_ptr<Entity>> attach_entities(JkBmsBle &bms, const std::vector<NamedSetter<T>> &setters) {
+  std::vector<std::unique_ptr<Entity>> entities;
+  for (const auto &entry : setters) {
+    entities.push_back(std::make_unique<Entity>());
+    (bms.*entry.setter)(entities.back().get());
+  }
+  return entities;
+}
+
+TEST(JkBmsBlePublishDeviceUnavailableTest, ClearsLiveSensorsAndKeepsStaticSensors) {
+  const std::vector<NamedSetter<sensor::Sensor>> cleared_setters = {
+      ENTITY_SETTER(set_balancer_status_bitmask_sensor),
+      ENTITY_SETTER(set_min_cell_voltage_sensor),
+      ENTITY_SETTER(set_max_cell_voltage_sensor),
+      ENTITY_SETTER(set_min_voltage_cell_sensor),
+      ENTITY_SETTER(set_max_voltage_cell_sensor),
+      ENTITY_SETTER(set_delta_cell_voltage_sensor),
+      ENTITY_SETTER(set_average_cell_voltage_sensor),
+      ENTITY_SETTER(set_total_voltage_sensor),
+      ENTITY_SETTER(set_current_sensor),
+      ENTITY_SETTER(set_power_sensor),
+      ENTITY_SETTER(set_charging_power_sensor),
+      ENTITY_SETTER(set_discharging_power_sensor),
+      ENTITY_SETTER(set_mosfet_temperature_sensor),
+      ENTITY_SETTER(set_state_of_charge_sensor),
+      ENTITY_SETTER(set_state_of_health_sensor),
+      ENTITY_SETTER(set_capacity_remaining_sensor),
+      ENTITY_SETTER(set_full_charge_capacity_sensor),
+      ENTITY_SETTER(set_charging_cycles_sensor),
+      ENTITY_SETTER(set_total_charging_cycle_capacity_sensor),
+      ENTITY_SETTER(set_total_runtime_sensor),
+      ENTITY_SETTER(set_balancing_current_sensor),
+      ENTITY_SETTER(set_heating_current_sensor),
+      ENTITY_SETTER(set_emergency_time_countdown_sensor),
+      ENTITY_SETTER(set_smart_sleep_countdown_sensor),
+      ENTITY_SETTER(set_charge_status_id_sensor),
+      ENTITY_SETTER(set_charge_status_time_elapsed_sensor),
+  };
+  const std::vector<NamedSetter<sensor::Sensor>> retained_setters = {
+      ENTITY_SETTER(set_power_on_count_sensor),
+      ENTITY_SETTER(set_detail_log_entry_count_sensor),
+      ENTITY_SETTER(set_battery_type_id_sensor),
+      ENTITY_SETTER(set_device_address_sensor),
+      ENTITY_SETTER(set_uart1_protocols_enabled_bitmask_sensor),
+      ENTITY_SETTER(set_uart2_protocols_enabled_bitmask_sensor),
+      ENTITY_SETTER(set_uart3_protocols_enabled_bitmask_sensor),
+      ENTITY_SETTER(set_can_protocols_enabled_bitmask_sensor),
+  };
+  TestableJkBmsBle bms;
+  auto cleared = attach_entities<sensor::Sensor>(bms, cleared_setters);
+  auto retained = attach_entities<sensor::Sensor>(bms, retained_setters);
+  sensor::Sensor cell_voltages[32], cell_resistances[32], temperatures[5];
+  for (uint8_t i = 0; i < 32; i++) {
+    bms.set_cell_voltage_sensor(i, &cell_voltages[i]);
+    bms.set_cell_resistance_sensor(i, &cell_resistances[i]);
+  }
+  for (uint8_t i = 0; i < 5; i++) {
+    bms.set_temperature_sensor(i, &temperatures[i]);
+  }
+
+  for (auto &sensor : cleared) {
+    sensor->publish_state(42.0f);
+  }
+  for (auto &sensor : retained) {
+    sensor->publish_state(42.0f);
+  }
+  for (uint8_t i = 0; i < 32; i++) {
+    cell_voltages[i].publish_state(3.3f);
+    cell_resistances[i].publish_state(0.1f);
+  }
+  for (auto &temperature : temperatures) {
+    temperature.publish_state(25.0f);
   }
 
   bms.publish_device_unavailable_();
 
-  for (size_t i = 0; i < sensors.size(); i++) {
-    EXPECT_TRUE(std::isnan(sensors[i]->state)) << "sensor index " << i;
+  for (size_t i = 0; i < cleared.size(); i++) {
+    EXPECT_TRUE(std::isnan(cleared[i]->state)) << cleared_setters[i].name;
+  }
+  for (size_t i = 0; i < retained.size(); i++) {
+    EXPECT_FLOAT_EQ(retained[i]->state, 42.0f) << retained_setters[i].name;
+  }
+  for (uint8_t i = 0; i < 32; i++) {
+    EXPECT_TRUE(std::isnan(cell_voltages[i].state)) << "cell voltage " << (int) i;
+    EXPECT_TRUE(std::isnan(cell_resistances[i].state)) << "cell resistance " << (int) i;
+  }
+  for (uint8_t i = 0; i < 5; i++) {
+    EXPECT_TRUE(std::isnan(temperatures[i].state)) << "temperature " << (int) i;
   }
 }
 
-TEST(JkBmsBlePublishDeviceUnavailableTest, MarksLiveStatusTextSensorsOffline) {
+TEST(JkBmsBlePublishDeviceUnavailableTest, MarksLiveTextSensorsOfflineAndKeepsStaticOnes) {
+  const std::vector<NamedSetter<text_sensor::TextSensor>> offline_setters = {
+      ENTITY_SETTER(set_errors_text_sensor),
+      ENTITY_SETTER(set_balancer_status_text_sensor),
+      ENTITY_SETTER(set_total_runtime_formatted_text_sensor),
+      ENTITY_SETTER(set_charge_status_text_sensor),
+  };
+  const std::vector<NamedSetter<text_sensor::TextSensor>> retained_setters = {
+      ENTITY_SETTER(set_errors_bitmask_hex_text_sensor), ENTITY_SETTER(set_software_version_text_sensor),
+      ENTITY_SETTER(set_hardware_version_text_sensor),   ENTITY_SETTER(set_battery_type_text_sensor),
+      ENTITY_SETTER(set_device_model_text_sensor),       ENTITY_SETTER(set_device_name_text_sensor),
+      ENTITY_SETTER(set_manufacturing_date_text_sensor), ENTITY_SETTER(set_serial_number_text_sensor),
+  };
   TestableJkBmsBle bms;
-  text_sensor::TextSensor charge_status, balancer_status, total_runtime_formatted;
-  bms.set_charge_status_text_sensor(&charge_status);
-  bms.set_balancer_status_text_sensor(&balancer_status);
-  bms.set_total_runtime_formatted_text_sensor(&total_runtime_formatted);
+  auto offline = attach_entities<text_sensor::TextSensor>(bms, offline_setters);
+  auto retained = attach_entities<text_sensor::TextSensor>(bms, retained_setters);
 
-  charge_status.publish_state("Float");
-  balancer_status.publish_state("Balancing");
-  total_runtime_formatted.publish_state("1h");
+  for (auto &text_sensor : offline) {
+    text_sensor->publish_state("before");
+  }
+  for (auto &text_sensor : retained) {
+    text_sensor->publish_state("before");
+  }
 
   bms.publish_device_unavailable_();
 
-  EXPECT_EQ(charge_status.state, "Offline");
-  EXPECT_EQ(balancer_status.state, "Offline");
-  EXPECT_EQ(total_runtime_formatted.state, "Offline");
+  for (size_t i = 0; i < offline.size(); i++) {
+    EXPECT_EQ(offline[i]->state, "Offline") << offline_setters[i].name;
+  }
+  for (size_t i = 0; i < retained.size(); i++) {
+    EXPECT_EQ(retained[i]->state, "before") << retained_setters[i].name;
+  }
 }
+
+TEST(JkBmsBlePublishDeviceUnavailableTest, KeepsNumbers) {
+  const std::vector<NamedSetter<number::Number>> setters = {
+      ENTITY_SETTER(set_smart_sleep_voltage_number),
+      ENTITY_SETTER(set_balance_trigger_voltage_number),
+      ENTITY_SETTER(set_cell_soc100_voltage_number),
+      ENTITY_SETTER(set_cell_soc0_voltage_number),
+      ENTITY_SETTER(set_cell_request_charge_voltage_number),
+      ENTITY_SETTER(set_cell_request_float_voltage_number),
+      ENTITY_SETTER(set_cell_request_charge_voltage_time_number),
+      ENTITY_SETTER(set_cell_request_float_voltage_time_number),
+      ENTITY_SETTER(set_cell_count_number),
+      ENTITY_SETTER(set_total_battery_capacity_number),
+      ENTITY_SETTER(set_cell_voltage_overvoltage_protection_number),
+      ENTITY_SETTER(set_cell_voltage_overvoltage_recovery_number),
+      ENTITY_SETTER(set_cell_voltage_undervoltage_protection_number),
+      ENTITY_SETTER(set_cell_voltage_undervoltage_recovery_number),
+      ENTITY_SETTER(set_balancing_start_voltage_number),
+      ENTITY_SETTER(set_voltage_calibration_number),
+      ENTITY_SETTER(set_current_calibration_number),
+      ENTITY_SETTER(set_power_off_voltage_number),
+      ENTITY_SETTER(set_max_balance_current_number),
+      ENTITY_SETTER(set_max_charge_current_number),
+      ENTITY_SETTER(set_max_discharge_current_number),
+      ENTITY_SETTER(set_charge_overcurrent_protection_delay_number),
+      ENTITY_SETTER(set_charge_overcurrent_protection_recovery_time_number),
+      ENTITY_SETTER(set_discharge_overcurrent_protection_delay_number),
+      ENTITY_SETTER(set_discharge_overcurrent_protection_recovery_time_number),
+      ENTITY_SETTER(set_short_circuit_protection_delay_number),
+      ENTITY_SETTER(set_short_circuit_protection_recovery_time_number),
+      ENTITY_SETTER(set_charge_overtemperature_protection_number),
+      ENTITY_SETTER(set_charge_overtemperature_protection_recovery_number),
+      ENTITY_SETTER(set_discharge_overtemperature_protection_number),
+      ENTITY_SETTER(set_discharge_overtemperature_protection_recovery_number),
+      ENTITY_SETTER(set_charge_undertemperature_protection_number),
+      ENTITY_SETTER(set_charge_undertemperature_protection_recovery_number),
+      ENTITY_SETTER(set_discharge_undertemperature_protection_number),
+      ENTITY_SETTER(set_discharge_undertemperature_protection_recovery_number),
+      ENTITY_SETTER(set_mosfet_overtemperature_protection_number),
+      ENTITY_SETTER(set_mosfet_overtemperature_protection_recovery_number),
+      ENTITY_SETTER(set_discharge_precharge_time_number),
+      ENTITY_SETTER(set_heating_start_temperature_number),
+      ENTITY_SETTER(set_heating_stop_temperature_number),
+      ENTITY_SETTER(set_smart_sleep_delay_number),
+      ENTITY_SETTER(set_emergency_duration_number),
+      ENTITY_SETTER(set_re_bulk_soc_number),
+      ENTITY_SETTER(set_soc_calibration_number),
+      ENTITY_SETTER(set_soh_calibration_number),
+  };
+  TestableJkBmsBle bms;
+  auto numbers = attach_entities<TestNumber>(bms, setters);
+
+  for (auto &number : numbers) {
+    number->publish_state(42.0f);
+  }
+
+  bms.publish_device_unavailable_();
+
+  for (size_t i = 0; i < numbers.size(); i++) {
+    EXPECT_FLOAT_EQ(numbers[i]->state, 42.0f) << setters[i].name;
+  }
+}
+
+TEST(JkBmsBlePublishDeviceUnavailableTest, KeepsSwitches) {
+  const std::vector<NamedSetter<switch_::Switch>> setters = {
+      ENTITY_SETTER(set_charging_switch),
+      ENTITY_SETTER(set_discharging_switch),
+      ENTITY_SETTER(set_balancer_switch),
+      ENTITY_SETTER(set_emergency_switch),
+      ENTITY_SETTER(set_heating_switch),
+      ENTITY_SETTER(set_disable_temperature_sensors_switch),
+      ENTITY_SETTER(set_display_always_on_switch),
+      ENTITY_SETTER(set_smart_sleep_switch),
+      ENTITY_SETTER(set_timed_stored_data_switch),
+      ENTITY_SETTER(set_disable_pcl_module_switch),
+      ENTITY_SETTER(set_charging_float_mode_switch),
+      ENTITY_SETTER(set_emergency_button_trigger_switch),
+      ENTITY_SETTER(set_dry_contact_alarm_intermittent_switch),
+      ENTITY_SETTER(set_discharge_overcurrent_protection_2_switch),
+      ENTITY_SETTER(set_discharge_overcurrent_protection_3_switch),
+      ENTITY_SETTER(set_gps_locked_charging_switch),
+      ENTITY_SETTER(set_gps_locked_discharging_switch),
+  };
+  TestableJkBmsBle bms;
+  auto switches = attach_entities<TestSwitch>(bms, setters);
+
+  for (auto &switch_entity : switches) {
+    switch_entity->publish_state(true);
+  }
+
+  bms.publish_device_unavailable_();
+
+  for (size_t i = 0; i < switches.size(); i++) {
+    EXPECT_TRUE(switches[i]->state) << setters[i].name;
+  }
+}
+
+TEST(JkBmsBlePublishDeviceUnavailableTest, KeepsSelects) {
+  const std::vector<NamedSetter<select::Select>> setters = {
+      ENTITY_SETTER(set_uart1_protocol_select), ENTITY_SETTER(set_uart2_protocol_select),
+      ENTITY_SETTER(set_can_protocol_select),   ENTITY_SETTER(set_lcd_buzzer_trigger_select),
+      ENTITY_SETTER(set_uart3_protocol_select), ENTITY_SETTER(set_dry1_trigger_select),
+      ENTITY_SETTER(set_dry2_trigger_select),   ENTITY_SETTER(set_multiplexed_port_mode_select),
+  };
+  TestableJkBmsBle bms;
+  std::vector<std::unique_ptr<TestSelect>> selects;
+  for (const auto &entry : setters) {
+    selects.push_back(std::make_unique<TestSelect>(std::initializer_list<const char *>{"A", "B"}));
+    (bms.*entry.setter)(selects.back().get());
+  }
+
+  for (auto &select : selects) {
+    select->publish_state(size_t{1});
+  }
+
+  bms.publish_device_unavailable_();
+
+  for (size_t i = 0; i < selects.size(); i++) {
+    EXPECT_EQ(selects[i]->active_index().value_or(0), 1u) << setters[i].name;
+  }
+}
+
+#undef ENTITY_SETTER
 
 }  // namespace esphome::jk_bms_ble::testing
