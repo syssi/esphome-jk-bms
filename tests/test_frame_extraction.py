@@ -11,6 +11,7 @@ spec = importlib.util.spec_from_file_location("extract_frame", SCRIPT)
 extract_frame = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(extract_frame)
 assemble = extract_frame.append_values
+vertical = extract_frame.values_to_vertical_string
 
 
 class FrameExtractionTest(unittest.TestCase):
@@ -37,6 +38,26 @@ class FrameExtractionTest(unittest.TestCase):
 
     def test_no_frame(self):
         self.assertEqual(assemble(["aa:55:01", "12:34"], 0), [])
+
+
+class VerticalStringTest(unittest.TestCase):
+    def test_short_last_frame_does_not_gain_fake_bytes(self):
+        """Absent bytes are padded with blanks, not rendered as zeros."""
+        self.assertEqual(
+            vertical(["55:00:aa", "55"]),
+            "000 \t55 55 \n001 \t00    \n002 \taa    \n",
+        )
+
+    def test_short_leading_frame_keeps_columns_aligned(self):
+        """A short frame before longer ones must not shift their columns."""
+        self.assertEqual(
+            vertical(["55", "55:00", "55:01"]),
+            "000 \t55 55 55 \n001 \t   00 01 \n",
+        )
+
+    def test_no_frames(self):
+        """An empty capture produces an empty string."""
+        self.assertEqual(vertical([]), "")
 
 
 if __name__ == "__main__":

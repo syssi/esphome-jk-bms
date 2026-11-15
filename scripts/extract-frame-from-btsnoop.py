@@ -51,7 +51,7 @@ def values_to_vertical_string(data):
     if hex_values == []:
         return ""
     matrix = [
-        [0 for _ in range(len(hex_values))]
+        ["   " for _ in range(len(hex_values))]
         for _ in range(max(len(inner_list) for inner_list in hex_values))
     ]
 
@@ -62,10 +62,7 @@ def values_to_vertical_string(data):
             matrix[i_row][i_col] = hex_val + " "
 
     for i, col in enumerate(matrix):
-        output_string += str(i).zfill(3) + " \t"
-        for row in col:
-            output_string += str(row)
-        output_string += "\n"
+        output_string += str(i).zfill(3) + " \t" + "".join(col) + "\n"
     return output_string
 
 
