@@ -156,6 +156,10 @@ void JkBalancer::on_status_data_(const std::vector<uint8_t> &data) {
     this->publish_state_(this->cells_[i].cell_voltage_sensor_, cell_voltage);
   }
 
+  for (uint8_t i = cells; i < 24; i++) {
+    this->publish_state_(this->cells_[i].cell_voltage_sensor_, NAN);
+  }
+
   this->publish_state_(this->min_cell_voltage_sensor_, min_cell_voltage);
   this->publish_state_(this->max_cell_voltage_sensor_, max_cell_voltage);
   this->publish_state_(this->max_voltage_cell_sensor_, (float) max_voltage_cell);
