@@ -10,7 +10,7 @@ VENV_DIR=$WORKSPACE/venv
 if [[ ! -d "$ESPHOME_DIR/.git" ]]; then
     echo "Cloning esphome (dev)..."
     mkdir -p "$WORKSPACE"
-    git clone --depth 1 --branch dev git@github.com:esphome/esphome.git "$ESPHOME_DIR"
+    git clone --depth 1 --branch dev https://github.com/esphome/esphome.git "$ESPHOME_DIR"
 else
     echo "esphome already cloned - skipping clone"
 fi
