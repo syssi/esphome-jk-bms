@@ -1037,7 +1037,7 @@ void HeltecBalancerBle::decode_factory_defaults_(const std::vector<uint8_t> &dat
   ESP_LOGI(TAG, "  Standard voltage 1: %.3f V", ieee_float_(heltec_get_32bit(8)));
 
   // 12    4   0x35 0xCC 0xBF 0x3F    Standard voltage 2
-  ESP_LOGI(TAG, "  Standard voltage 2: %.3f V", ieee_float_(heltec_get_32bit(2)));
+  ESP_LOGI(TAG, "  Standard voltage 2: %.3f V", ieee_float_(heltec_get_32bit(12)));
 
   // 16    4   0x51 0x82 0x54 0x40    Battery voltage 1
   ESP_LOGI(TAG, "  Battery voltage 1: %.3f V", ieee_float_(heltec_get_32bit(16)));
@@ -1082,7 +1082,7 @@ void HeltecBalancerBle::decode_factory_defaults_(const std::vector<uint8_t> &dat
   ESP_LOGI(TAG, "  Total runtime: %lu", (unsigned long) heltec_get_32bit(68));
 
   // 72    8   0x32 0x30 0x32 0x32 0x30 0x35 0x33 0x31    Production date
-  ESP_LOGI(TAG, "  Protocol version: %s", std::string(data.begin() + 72, data.begin() + 72 + 8).c_str());
+  ESP_LOGI(TAG, "  Production date: %s", std::string(data.begin() + 72, data.begin() + 72 + 8).c_str());
 
   // 80   18   0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
   // 98    1   0x20                   CRC
@@ -1145,7 +1145,7 @@ void HeltecBalancerBle::decode_device_info_(const std::vector<uint8_t> &data) {
       std::string(manufacturing_date_begin, std::find(manufacturing_date_begin, manufacturing_date_begin + 8, '\0')));
 
   // 56    4   0x05 0x00 0x00 0x00    Power on count                                 5
-  this->publish_state_(this->power_on_count_sensor_, (float) heltec_get_16bit(56));
+  this->publish_state_(this->power_on_count_sensor_, (float) heltec_get_32bit(56));
 
   // 60    4   0x01 0x91 0x0A 0x00    Total runtime                                  7D
   //                                  (0x0A9101 = 692481 / 3600 = 192.35h = 8.01d)
