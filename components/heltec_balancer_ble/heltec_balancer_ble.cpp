@@ -1178,6 +1178,7 @@ void HeltecBalancerBle::reset_online_status_tracker_() {
 void HeltecBalancerBle::publish_device_unavailable_() {
   this->publish_state_(this->online_status_binary_sensor_, false);
   this->publish_state_(this->operation_status_text_sensor_, "Offline");
+  this->publish_state_(this->total_runtime_formatted_text_sensor_, "Offline");
 
   this->invalidate_binary_sensor_(this->balancing_binary_sensor_);
   this->invalidate_binary_sensor_(this->error_charging_binary_sensor_);
