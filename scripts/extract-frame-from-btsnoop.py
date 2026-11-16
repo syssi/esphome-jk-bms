@@ -96,6 +96,12 @@ def main():
     vertical_string = values_to_vertical_string(appended_values)
 
     file_name = str(pathlib.Path(file_path).with_suffix(""))
+    if pathlib.Path(file_name + ".txt").resolve() == pathlib.Path(file_path).resolve():
+        file_name += "-frames"
+    if pathlib.Path(file_name + ".txt").resolve() == pathlib.Path(file_path).resolve():
+        parser.error(
+            "Report output points to the input file; choose another input filename"
+        )
     save_to_file(file_name, vertical_string)
     print("saved to " + file_name + ".txt")
 
