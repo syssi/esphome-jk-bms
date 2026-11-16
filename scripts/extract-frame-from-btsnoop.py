@@ -90,6 +90,9 @@ def main():
     file_path = args.file_path
     frame_type = args.frame_type
 
+    if pathlib.Path(file_path).suffix == ".txt":
+        parser.error("input file must not use the .txt extension")
+
     json_data = load_json_from_file(file_path)
     btatt_values = extract_btatt_values(json_data)
     appended_values = append_values(btatt_values, frame_type)
