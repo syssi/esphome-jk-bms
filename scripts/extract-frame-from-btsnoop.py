@@ -90,18 +90,15 @@ def main():
     file_path = args.file_path
     frame_type = args.frame_type
 
+    if pathlib.Path(file_path).suffix == ".txt":
+        parser.error("input file must not use the .txt extension")
+
     json_data = load_json_from_file(file_path)
     btatt_values = extract_btatt_values(json_data)
     appended_values = append_values(btatt_values, frame_type)
     vertical_string = values_to_vertical_string(appended_values)
 
     file_name = str(pathlib.Path(file_path).with_suffix(""))
-    if pathlib.Path(file_name + ".txt").resolve() == pathlib.Path(file_path).resolve():
-        file_name += "-frames"
-    if pathlib.Path(file_name + ".txt").resolve() == pathlib.Path(file_path).resolve():
-        parser.error(
-            "Report output points to the input file; choose another input filename"
-        )
     save_to_file(file_name, vertical_string)
     print("saved to " + file_name + ".txt")
 
