@@ -79,6 +79,8 @@ def error_overrides(value):
                 f"Error bit {bit} is out of range, must be between 0 and {MAX_ERROR_BIT}",
                 path=[key],
             )
+        if bit in overrides and overrides[bit] != label:
+            raise cv.Invalid(f"Conflicting labels for error bit {bit}", path=[key])
         overrides[bit] = label
 
     return overrides
