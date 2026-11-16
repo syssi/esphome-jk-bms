@@ -13,6 +13,11 @@ struct TestSwitch : switch_::Switch {
   void write_state(bool) override {}
 };
 
+struct TestSelect : select::Select {
+  explicit TestSelect(std::initializer_list<const char *> options) { this->traits.set_options(options); }
+  void control(size_t) override {}
+};
+
 class TestableHeltecBalancerBle : public HeltecBalancerBle {
  public:
   TestableHeltecBalancerBle() { set_throttle(0); }
