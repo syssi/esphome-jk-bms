@@ -388,7 +388,7 @@ class TestJkBalancerSensorLists:
         assert len(jk_balancer_sensor.CELLS) == 24
 
     def test_sensor_defs_completeness(self):
-        assert len(jk_balancer_sensor.SENSOR_DEFS) == 14
+        assert len(jk_balancer_sensor.SENSOR_DEFS) == 12
 
     def test_binary_sensor_defs_dict(self):
         assert len(jk_balancer_binary_sensor.BINARY_SENSOR_DEFS) == 2
@@ -464,7 +464,7 @@ class TestHeltecBalancerBleSensorLists:
     def test_sensor_defs_completeness(self):
         assert heltec_sensor.CONF_TOTAL_RUNTIME in heltec_sensor.SENSOR_DEFS
         assert heltec_sensor.CONF_POWER_ON_COUNT in heltec_sensor.SENSOR_DEFS
-        assert len(heltec_sensor.SENSOR_DEFS) == 24
+        assert len(heltec_sensor.SENSOR_DEFS) == 23
 
     def test_binary_sensor_defs_dict(self):
         assert (

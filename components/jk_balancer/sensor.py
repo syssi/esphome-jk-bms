@@ -2,11 +2,8 @@ import esphome.codegen as cg
 from esphome.components import sensor
 import esphome.config_validation as cv
 from esphome.const import (
-    CONF_CURRENT,
-    CONF_POWER,
     DEVICE_CLASS_CURRENT,
     DEVICE_CLASS_EMPTY,
-    DEVICE_CLASS_POWER,
     DEVICE_CLASS_TEMPERATURE,
     DEVICE_CLASS_VOLTAGE,
     ENTITY_CATEGORY_DIAGNOSTIC,
@@ -16,7 +13,6 @@ from esphome.const import (
     UNIT_CELSIUS,
     UNIT_EMPTY,
     UNIT_VOLT,
-    UNIT_WATT,
 )
 
 from . import CONF_JK_BALANCER_ID, JK_BALANCER_COMPONENT_SCHEMA
@@ -116,20 +112,6 @@ SENSOR_DEFS = {
         "icon": ICON_EMPTY,
         "accuracy_decimals": 2,
         "device_class": DEVICE_CLASS_VOLTAGE,
-        "state_class": STATE_CLASS_MEASUREMENT,
-    },
-    CONF_CURRENT: {
-        "unit_of_measurement": UNIT_AMPERE,
-        "icon": ICON_CURRENT_DC,
-        "accuracy_decimals": 2,
-        "device_class": DEVICE_CLASS_CURRENT,
-        "state_class": STATE_CLASS_MEASUREMENT,
-    },
-    CONF_POWER: {
-        "unit_of_measurement": UNIT_WATT,
-        "icon": ICON_EMPTY,
-        "accuracy_decimals": 2,
-        "device_class": DEVICE_CLASS_POWER,
         "state_class": STATE_CLASS_MEASUREMENT,
     },
     CONF_CELL_COUNT_DETECTED: {
