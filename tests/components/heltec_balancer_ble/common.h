@@ -27,6 +27,7 @@ class TestableHeltecBalancerBle : public HeltecBalancerBle {
   using HeltecBalancerBle::decode_cell_info_;
   using HeltecBalancerBle::decode_cell_info_v2_;
   using HeltecBalancerBle::decode_device_info_;
+  using HeltecBalancerBle::decode_factory_defaults_;
   using HeltecBalancerBle::decode_settings_;
   using HeltecBalancerBle::decode_settings_v2_;
   using HeltecBalancerBle::publish_device_unavailable_;
