@@ -14,7 +14,10 @@ def extract_btatt_values(json_data):
             and "btatt.value" in entry["_source"]["layers"]["btatt"]
         ):
             btatt_value = entry["_source"]["layers"]["btatt"]["btatt.value"]
-            extracted_data.append("".join(btatt_value))
+            if isinstance(btatt_value, list):
+                extracted_data.extend(btatt_value)
+            else:
+                extracted_data.append(btatt_value)
     return extracted_data
 
 
