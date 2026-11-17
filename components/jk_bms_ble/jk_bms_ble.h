@@ -580,6 +580,10 @@ class JkBmsBle :
 #ifdef USE_ESP32
   uint16_t char_handle_{0};
   uint16_t notify_handle_{0};
+  uint32_t last_write_slot_{0};
+  uint8_t deferred_writes_{0};
+
+  bool send_frame_(uint8_t address, uint32_t value, uint8_t length);
 #endif
   uint32_t last_cell_info_{0};
   uint32_t throttle_{0};

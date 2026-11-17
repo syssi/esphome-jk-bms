@@ -346,6 +346,31 @@ TEST(JkBmsBleThrottleTest, SubsequentCellInfoWithinThrottleIsDropped) {
   EXPECT_TRUE(std::isnan(total.state));
 }
 
+// The throttle only rate-limits how often the cell info sensors get republished. It must not
+// delay status_notification_received_, which stops update() from requesting cell info again.
+TEST(JkBmsBleThrottleTest, Jk02ThrottledCellInfoStillMarksStatusNotificationReceived) {
+  TestableJkBmsBle bms;
+  bms.set_throttle(THROTTLE_FOREVER);
+  bms.decode_(CELL_INFO_JK02_24S_V10);
+  bms.status_notification_received_ = false;
+
+  bms.decode_(CELL_INFO_JK02_24S_V10);
+
+  EXPECT_TRUE(bms.status_notification_received_);
+}
+
+TEST(JkBmsBleThrottleTest, Jk04ThrottledCellInfoStillMarksStatusNotificationReceived) {
+  TestableJkBmsBle bms;
+  bms.set_protocol_version(PROTOCOL_VERSION_JK04);
+  bms.set_throttle(THROTTLE_FOREVER);
+  bms.decode_(CELL_INFO_JK04);
+  bms.status_notification_received_ = false;
+
+  bms.decode_(CELL_INFO_JK04);
+
+  EXPECT_TRUE(bms.status_notification_received_);
+}
+
 // ── Protocol version dispatch ────────────────────────────────────────────────
 
 TEST(JkBmsBleDispatchTest, FrameType02DispatchesToCellInfo) {
