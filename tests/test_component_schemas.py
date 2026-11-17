@@ -1,6 +1,7 @@
 """Schema structure tests for jk_bms ESPHome component modules."""
 
 from pathlib import Path
+import re
 import sys
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -142,6 +143,17 @@ class TestJkBmsErrorOverrides:
         with pytest.raises(vol.Invalid, match="Error bit -1 is out of range"):
             self._validate({"-1": "Nope"})
 
+    @pytest.mark.parametrize("alias", ["01", "0x1", " 1", "+1"])
+    def test_schema_rejects_non_decimal_bit_spelling(self, alias):
+        with pytest.raises(
+            vol.Invalid, match=f"Write error bit '{re.escape(alias)}' as 1"
+        ):
+            self._validate({"1": "a", alias: "b"})
+
+    def test_schema_rejects_aliased_suppressed_bit(self):
+        with pytest.raises(vol.Invalid, match="Write error bit '0x1' as 1"):
+            self._validate({"1": "", "0x1": ""})
+
     def test_schema_rejects_non_numeric_bit(self):
         with pytest.raises(vol.Invalid, match="'abc' is not a valid error bit"):
             self._validate({"abc": "Nope"})
@@ -218,14 +230,28 @@ class TestJkBmsBleErrorOverrides:
     def test_schema_accepts_empty_label(self):
         assert self._validate({"4": ""}) == {4: ""}
 
-    def test_schema_accepts_hex_bit_index(self):
-        assert self._validate({"0x1F": "Reserved"}) == {31: "Reserved"}
+    def test_schema_rejects_quoted_hex_bit_index(self):
+        # Unquoted 0x1F arrives as "31" from the YAML loader; only the quoted
+        # spelling reaches the validator and would alias bit 31.
+        with pytest.raises(vol.Invalid, match="Write error bit '0x1F' as 31"):
+            self._validate({"0x1F": "Reserved"})
 
     def test_schema_rejects_out_of_range_bit(self):
         with pytest.raises(vol.Invalid, match="Error bit 32 is out of range"):
             self._validate({"32": "Nope"})
         with pytest.raises(vol.Invalid, match="Error bit -1 is out of range"):
             self._validate({"-1": "Nope"})
+
+    @pytest.mark.parametrize("alias", ["01", "0x1", " 1", "+1"])
+    def test_schema_rejects_non_decimal_bit_spelling(self, alias):
+        with pytest.raises(
+            vol.Invalid, match=f"Write error bit '{re.escape(alias)}' as 1"
+        ):
+            self._validate({"1": "a", alias: "b"})
+
+    def test_schema_rejects_aliased_suppressed_bit(self):
+        with pytest.raises(vol.Invalid, match="Write error bit '0x1' as 1"):
+            self._validate({"1": "", "0x1": ""})
 
     def test_schema_rejects_non_numeric_bit(self):
         with pytest.raises(vol.Invalid, match="'abc' is not a valid error bit"):
@@ -444,6 +470,17 @@ class TestJkBalancerErrorOverrides:
             self._validate({"8": "Nope"})
         with pytest.raises(vol.Invalid, match="Error bit -1 is out of range"):
             self._validate({"-1": "Nope"})
+
+    @pytest.mark.parametrize("alias", ["01", "0x1", " 1", "+1"])
+    def test_schema_rejects_non_decimal_bit_spelling(self, alias):
+        with pytest.raises(
+            vol.Invalid, match=f"Write error bit '{re.escape(alias)}' as 1"
+        ):
+            self._validate({"1": "a", alias: "b"})
+
+    def test_schema_rejects_aliased_suppressed_bit(self):
+        with pytest.raises(vol.Invalid, match="Write error bit '0x1' as 1"):
+            self._validate({"1": "", "0x1": ""})
 
     def test_schema_rejects_non_numeric_bit(self):
         with pytest.raises(vol.Invalid, match="'abc' is not a valid error bit"):
