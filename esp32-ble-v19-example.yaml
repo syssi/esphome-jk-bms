@@ -1,7 +1,7 @@
 substitutions:
   name: jk-bms
   device_description: "Monitor and control a JK-BMS v19 via bluetooth"
-  external_components_source: github://syssi/esphome-jk-bms@main
+  external_components_source: github://syssi/esphome-jk-bms@feature/device-time-sync
   # Please use "JK02_24S" if you own a old JK-BMS < hardware version 11.0 (hardware version >= 6.0 and < 11.0)
   # Please use "JK02_32S" if you own a new JK-BMS >= hardware version 11.0 (f.e. JK-B2A8S20P hw 11.XW, sw 11.26)
   # Please use "JK04" if you have some old JK-BMS <= hardware version 3.0 (f.e. JK-B2A16S hw 3.0, sw. 3.3.0)
@@ -45,6 +45,11 @@ logger:
 # If you don't use Home Assistant please remove this `api` section and uncomment the `mqtt` component!
 api:
 
+# Optional: a time source to set the BMS clock on every connect (and via the `sync_time` button)
+time:
+  - platform: sntp
+    id: sntp_time
+
 # mqtt:
 #   broker: !secret mqtt_host
 #   username: !secret mqtt_username
@@ -64,6 +69,8 @@ jk_bms_ble:
     protocol_version: ${protocol_version}
     throttle: 5s
     id: bms0
+    # Optional: sets the BMS clock on every connect. Remove if your BMS doesn't need it.
+    time_id: sntp_time
     # Override the label of one or more error bits (bit 0-31, JK02 only).
     # An empty label suppresses the bit entirely.
     #
@@ -101,6 +108,8 @@ button:
       name: "restart"
     factory_reset:
       name: "factory reset"
+    sync_time:
+      name: "sync time"
 
 number:
   - platform: jk_bms_ble
