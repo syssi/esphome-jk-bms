@@ -26,9 +26,7 @@ BUTTONS = {
     CONF_RETRIEVE_FACTORY_DEFAULTS: 0x03,
 }
 
-HeltecButton = heltec_balancer_ble_ns.class_(
-    "HeltecButton", button.Button, cg.Component
-)
+HeltecButton = heltec_balancer_ble_ns.class_("HeltecButton", button.Button)
 
 CONFIG_SCHEMA = HELTEC_BALANCER_BLE_COMPONENT_SCHEMA.extend(
     {
@@ -54,6 +52,5 @@ async def to_code(config):
         if key in config:
             conf = config[key]
             var = await button.new_button(conf)
-            await cg.register_component(var, conf)
             cg.add(var.set_parent(hub))
             cg.add(var.set_holding_register(address))

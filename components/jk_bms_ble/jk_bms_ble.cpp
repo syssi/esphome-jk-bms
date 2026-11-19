@@ -427,6 +427,24 @@ void JkBmsBle::dump_config() {  // NOLINT(google-readability-function-size,reada
   LOG_TEXT_SENSOR("", "Device Name", this->device_name_text_sensor_);
   LOG_TEXT_SENSOR("", "Manufacturing Date", this->manufacturing_date_text_sensor_);
   LOG_TEXT_SENSOR("", "Serial Number", this->serial_number_text_sensor_);
+
+  LOG_SWITCH("", "Charging", this->charging_switch_);
+  LOG_SWITCH("", "Discharging", this->discharging_switch_);
+  LOG_SWITCH("", "Balancer", this->balancer_switch_);
+  LOG_SWITCH("", "Emergency", this->emergency_switch_);
+  LOG_SWITCH("", "Heating", this->heating_switch_);
+  LOG_SWITCH("", "Disable temperature sensors", this->disable_temperature_sensors_switch_);
+  LOG_SWITCH("", "Display always on", this->display_always_on_switch_);
+  LOG_SWITCH("", "Smart sleep", this->smart_sleep_switch_);
+  LOG_SWITCH("", "Timed stored data", this->timed_stored_data_switch_);
+  LOG_SWITCH("", "Disable PCL module", this->disable_pcl_module_switch_);
+  LOG_SWITCH("", "Charging float mode", this->charging_float_mode_switch_);
+  LOG_SWITCH("", "Emergency button trigger", this->emergency_button_trigger_switch_);
+  LOG_SWITCH("", "Dry contact alarm intermittent", this->dry_contact_alarm_intermittent_switch_);
+  LOG_SWITCH("", "Discharge overcurrent protection 2", this->discharge_overcurrent_protection_2_switch_);
+  LOG_SWITCH("", "Discharge overcurrent protection 3", this->discharge_overcurrent_protection_3_switch_);
+  LOG_SWITCH("", "GPS locked charging", this->gps_locked_charging_switch_);
+  LOG_SWITCH("", "GPS locked discharging", this->gps_locked_discharging_switch_);
 }
 
 #ifdef USE_ESP32

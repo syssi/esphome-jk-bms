@@ -10,7 +10,6 @@ namespace esphome::jk_bms_ble {
 
 ESPHOME_LOG_TAG(TAG, "jk_bms_ble.switch");
 
-void JkSwitch::dump_config() { LOG_SWITCH("", "JkBmsBle Switch", this); }
 void JkSwitch::write_state(bool state) {
   if (this->parent_->get_protocol_version() == PROTOCOL_VERSION_JK04 && this->jk04_holding_register_) {
     if (this->parent_->write_register(this->jk04_holding_register_, (state) ? 0x00000001 : 0x00000000, 0x01)) {
