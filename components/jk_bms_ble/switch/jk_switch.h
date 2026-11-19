@@ -20,7 +20,6 @@ class JkSwitch : public switch_::Switch, public Component {
     this->jk02_32s_holding_register_ = jk02_32s_holding_register;
   };
   void dump_config() override;
-  void loop() override {}
   float get_setup_priority() const override { return setup_priority::DATA; }
 
  protected:
