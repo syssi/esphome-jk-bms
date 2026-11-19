@@ -664,6 +664,10 @@ void JkBms::dump_config() {  // NOLINT(google-readability-function-size,readabil
   LOG_SENSOR("", "Actual Battery Capacity", this->actual_battery_capacity_sensor_);
   LOG_TEXT_SENSOR("", "Total Runtime Formatted", this->total_runtime_formatted_text_sensor_);
   LOG_TEXT_SENSOR("", "Errors", this->errors_text_sensor_);
+
+  LOG_SWITCH("", "Charging", this->charging_switch_);
+  LOG_SWITCH("", "Discharging", this->discharging_switch_);
+  LOG_SWITCH("", "Balancer", this->balancer_switch_);
 }
 
 }  // namespace esphome::jk_bms

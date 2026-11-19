@@ -189,6 +189,8 @@ void HeltecBalancerBle::dump_config() {  // NOLINT(google-readability-function-s
   LOG_TEXT_SENSOR("", "Software Version", this->software_version_text_sensor_);
   LOG_TEXT_SENSOR("", "Protocol Version", this->protocol_version_text_sensor_);
   LOG_TEXT_SENSOR("", "Manufacturing Date", this->manufacturing_date_text_sensor_);
+
+  LOG_SWITCH("", "Balancer", this->balancer_switch_);
 }
 
 std::array<uint8_t, 20> HeltecBalancerBle::build_command_frame_(uint8_t function, uint8_t command,

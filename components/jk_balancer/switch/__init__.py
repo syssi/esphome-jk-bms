@@ -16,7 +16,7 @@ SWITCHES = {
     CONF_BALANCER: 0xF6,
 }
 
-JkSwitch = jk_balancer_ns.class_("JkSwitch", switch.Switch, cg.Component)
+JkSwitch = jk_balancer_ns.class_("JkSwitch", switch.Switch)
 
 CONFIG_SCHEMA = JK_BALANCER_COMPONENT_SCHEMA.extend(
     {
@@ -34,7 +34,6 @@ async def to_code(config):
         if key in config:
             conf = config[key]
             var = await switch.new_switch(conf)
-            await cg.register_component(var, conf)
             cg.add(getattr(hub, f"set_{key}_switch")(var))
             cg.add(var.set_parent(hub))
             cg.add(var.set_holding_register(address))

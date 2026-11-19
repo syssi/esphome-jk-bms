@@ -327,6 +327,8 @@ void JkBalancer::dump_config() {  // NOLINT(google-readability-function-size,rea
   LOG_SENSOR("", "Balancer Status", this->balancer_status_sensor_);
   LOG_SENSOR("", "Balancing Current", this->balancing_current_sensor_);
   LOG_TEXT_SENSOR("", "Errors", this->errors_text_sensor_);
+
+  LOG_SWITCH("", "Balancer", this->balancer_switch_);
 }
 
 }  // namespace esphome::jk_balancer

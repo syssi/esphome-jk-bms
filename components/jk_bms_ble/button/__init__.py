@@ -36,7 +36,7 @@ BUTTONS = {
     CONF_FACTORY_RESET: 0x9D,
 }
 
-JkButton = jk_bms_ble_ns.class_("JkButton", button.Button, cg.Component)
+JkButton = jk_bms_ble_ns.class_("JkButton", button.Button)
 
 CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
     {
@@ -77,6 +77,5 @@ async def to_code(config):
         if key in config:
             conf = config[key]
             var = await button.new_button(conf)
-            await cg.register_component(var, conf)
             cg.add(var.set_parent(hub))
             cg.add(var.set_holding_register(address))
