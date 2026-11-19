@@ -1,6 +1,5 @@
 #include "heltec_button.h"
 #include "esphome/core/log.h"
-#include "esphome/core/application.h"
 
 // Fallback for ESPHome < 2026.10.0
 #ifndef ESPHOME_LOG_TAG
