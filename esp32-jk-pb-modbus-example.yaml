@@ -136,6 +136,16 @@ binary_sensor:
     bitmask: 0x00FF
 
 sensor:
+  # 0x1114 function bits as a whole word, used by the `heating` switch to keep the
+  # other bits when it writes the register
+  - platform: modbus_controller
+    modbus_controller_id: bms0
+    id: reg_1114
+    address: 0x1114
+    register_type: holding
+    value_type: U_WORD
+    internal: true
+
   # 0x1000 0 UINT32 4 RW    VolSmartSleep    mV
   - platform: modbus_controller
     modbus_controller_id: bms0
@@ -1619,6 +1629,42 @@ sensor:
     filters:
       - multiply: 0.1
 
+number:
+  # 0x1116 (firmware V15.41+): high byte = heating start, low byte = heating stop
+  # temperature, signed °C. Both share one register, so each number writes the whole
+  # word with the other threshold's last polled value.
+  - platform: modbus_controller
+    modbus_controller_id: bms0
+    id: heating_start_temperature
+    name: "heating start temperature"
+    address: 0x1116
+    value_type: U_WORD
+    use_write_multiple: true
+    unit_of_measurement: "°C"
+    min_value: -20
+    max_value: 40
+    step: 1
+    lambda: return (int8_t) data[item->offset];
+    write_lambda: |-
+      if (std::isnan(id(heating_stop_temperature).state)) return {};
+      return (float) encode_uint16((int8_t) x, (int8_t) id(heating_stop_temperature).state);
+
+  - platform: modbus_controller
+    modbus_controller_id: bms0
+    id: heating_stop_temperature
+    name: "heating stop temperature"
+    address: 0x1116
+    value_type: U_WORD
+    use_write_multiple: true
+    unit_of_measurement: "°C"
+    min_value: -20
+    max_value: 40
+    step: 1
+    lambda: return (int8_t) data[item->offset + 1];
+    write_lambda: |-
+      if (std::isnan(id(heating_start_temperature).state)) return {};
+      return (float) encode_uint16((int8_t) id(heating_start_temperature).state, (int8_t) x);
+
 select:
   - platform: modbus_controller
     modbus_controller_id: bms0
@@ -1682,6 +1728,24 @@ switch:
       lambda: 'id(select_discharging).make_call().set_option("On");'
     turn_off_action:
       lambda: 'id(select_discharging).make_call().set_option("Off");'
+
+  # 0x1114 bit 0 ("Dsg Heat" in the app). The register holds other function bits as
+  # well, so the switch writes back the polled word (sensor `reg_1114`) with only
+  # bit 0 changed (function 0x10, the BMS rejects 0x06).
+  # On firmware V15.42 the heater also runs with this bit off while below the start
+  # temperature; the thresholds on 0x1116 are what actually control heating.
+  - platform: modbus_controller
+    modbus_controller_id: bms0
+    name: "heating"
+    address: 0x1114
+    register_type: holding
+    bitmask: 0x0001
+    write_lambda: |-
+      if (std::isnan(id(reg_1114).state)) return {};
+      uint16_t reg = (uint16_t) id(reg_1114).state;
+      reg = x ? (reg | 0x0001) : (reg & ~0x0001);
+      item->write_multiple_registers(item->write_address(), std::array<uint16_t, 1>{reg});
+      return {};
 
 text_sensor:
   - platform: modbus_controller
