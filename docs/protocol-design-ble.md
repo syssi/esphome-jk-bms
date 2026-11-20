@@ -140,8 +140,7 @@ uint8_t crc(const uint8_t data[], const uint16_t len) {
 |          194-197 |      4 | Total runtime | uint32 | 1 | s | - |
 |              198 |      1 | Charging MOSFET status | Raw | - | - | 0=Off, 1=On |
 |              199 |      1 | Discharging MOSFET status | Raw | - | - | 0=Off, 1=On |
-|              200 |      1 | Precharging status | Raw | - | - | 0=Off, 1=On |
-|              201 |      1 | Balancing indicator | Raw | - | - | 0=Off, 1=On; logged only |
+|          200-201 |      2 | User alarm 2 | uint16 | - | - | Logged only |
 |          202-203 |      2 | Discharge overcurrent protection release timer | uint16 | 1 | s | Logged only |
 |          204-205 |      2 | Discharge short circuit protection release timer | uint16 | 1 | s | Logged only |
 |          206-207 |      2 | Charge overcurrent protection release timer | uint16 | 1 | s | Logged only |

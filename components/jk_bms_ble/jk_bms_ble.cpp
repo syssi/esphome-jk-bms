@@ -890,8 +890,8 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // 158   1   0x64                   SOH                  1.0           %
   this->publish_state_(this->state_of_health_sensor_, (float) data[158 + offset]);
 
-  // 159   1   0x00                   Precharge
-  ESP_LOGD(TAG, "Precharge: %s", ONOFF(data[159 + offset]));
+  // 159   1   0x00                   Precharging                                  0x00: off, 0x01: on
+  this->publish_state_(this->precharging_binary_sensor_, (bool) data[159 + offset]);
 
   // 160   2   0x79 0x04              User alarm
   ESP_LOGD(TAG, "User alarm: 0x%02X 0x%02X (always 0xC5 0x09?)", data[160 + offset], data[161 + offset]);
@@ -906,12 +906,8 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // 167   1   0x01                   Discharging mosfet enabled                   0x00: off, 0x01: on
   this->publish_state_(this->discharging_binary_sensor_, (bool) data[167 + offset]);
 
-  // 168   1   0x01                   Precharging                                  0x00: off, 0x01: on
-  this->publish_state_(this->precharging_binary_sensor_, (bool) data[168 + offset]);
-
-  // 169   1   0x01                   Balancer working                             0x00: off, 0x01: on
-  // this->publish_state_(this->balancing_binary_sensor_, (bool) data[169 + offset]);
-  ESP_LOGD(TAG, "Balancing indicator (new): %s", YESNO((bool) data[169 + offset]));
+  // 168   2   0x00 0x00              User alarm 2
+  ESP_LOGD(TAG, "User alarm 2: 0x%04X", jk_get_16bit(168 + offset));
 
   ESP_LOGD(TAG, "Discharge overcurrent protection release timer: %d", jk_get_16bit(170 + offset));
   ESP_LOGD(TAG, "Discharge short circuit protection release timer: %d", jk_get_16bit(172 + offset));
