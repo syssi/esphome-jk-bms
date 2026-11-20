@@ -141,6 +141,42 @@ TEST(JkBmsV19CellInfoTest, MosfetState) {
   EXPECT_TRUE(discharging.state);
 }
 
+TEST(JkBmsV19CellInfoTest, PrechargingOff) {
+  TestableJkBmsBle bms;
+  bms.set_protocol_version(PROTOCOL_VERSION_JK02_32S);
+  binary_sensor::BinarySensor precharging;
+  bms.set_precharging_binary_sensor(&precharging);
+  bms.decode_jk02_cell_info_(CELL_INFO_JK02_32S_V19);
+  EXPECT_TRUE(precharging.has_state());
+  EXPECT_FALSE(precharging.state);
+}
+
+// The precharge flag is the low byte of the SOH/precharge word (byte 191), see
+// docs/pb2a16s20p/BMS RS485 Modbus V1.1.pdf. None of the captures was taken during
+// a precharge, so the flag is set on a copy of the real frame.
+TEST(JkBmsV19CellInfoTest, PrechargingOn) {
+  TestableJkBmsBle bms;
+  bms.set_protocol_version(PROTOCOL_VERSION_JK02_32S);
+  binary_sensor::BinarySensor precharging;
+  bms.set_precharging_binary_sensor(&precharging);
+  auto frame = CELL_INFO_JK02_32S_V19;
+  frame[191] = 0x01;
+  bms.decode_jk02_cell_info_(frame);
+  EXPECT_TRUE(precharging.state);
+}
+
+// Bytes 200-201 hold the user alarm 2 word, so an alarm bit must not report precharging.
+TEST(JkBmsV19CellInfoTest, UserAlarm2DoesNotSetPrecharging) {
+  TestableJkBmsBle bms;
+  bms.set_protocol_version(PROTOCOL_VERSION_JK02_32S);
+  binary_sensor::BinarySensor precharging;
+  bms.set_precharging_binary_sensor(&precharging);
+  auto frame = CELL_INFO_JK02_32S_V19;
+  frame[200] = 0x01;
+  bms.decode_jk02_cell_info_(frame);
+  EXPECT_FALSE(precharging.state);
+}
+
 TEST(JkBmsV19CellInfoTest, DetailLogCount) {
   TestableJkBmsBle bms;
   bms.set_protocol_version(PROTOCOL_VERSION_JK02_32S);
