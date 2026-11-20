@@ -126,6 +126,15 @@ binary_sensor:
     register_type: holding
     bitmask: 0x0200
 
+  # 0x12D0 low byte: 1 while the BMS heats. It needs heating enabled (0x1114 bit 0),
+  # a battery temperature below the start temperature and, in practice, charge current.
+  - platform: modbus_controller
+    modbus_controller_id: bms0
+    name: "heating active"
+    address: 0x12D0
+    register_type: holding
+    bitmask: 0x00FF
+
 sensor:
   # 0x1000 0 UINT32 4 RW    VolSmartSleep    mV
   - platform: modbus_controller
