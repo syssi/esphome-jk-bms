@@ -117,7 +117,7 @@ binary_sensor:
     id: balancing
     name: "balancing"
     lambda: |-
-      return id(balancing_raw).state == 1;
+      return id(balancing_raw).state > 0;
 
   - platform: modbus_controller
     modbus_controller_id: bms0
@@ -1330,7 +1330,9 @@ sensor:
     register_type: holding
     value_type: U_WORD
     disabled_by_default: true
-    bitmask: 0x01
+    # High byte: balancer state (0: off, 1: charging cells, 2: discharging cells).
+    # The low byte is the state of charge.
+    bitmask: 0xFF00
 
   # 0x12A8   168    INT32    2    R    SOCCapRemain    mAH
   - platform: modbus_controller
@@ -1589,7 +1591,8 @@ sensor:
     unit_of_measurement: "h"
     device_class: duration
     state_class: measurement
-    bitmask: 0xFF
+    # High byte: RCV time (the BLE frame has it at byte 266, the first byte of 0x1504)
+    bitmask: 0xFF00
     filters:
       - multiply: 0.1
 
@@ -1602,7 +1605,8 @@ sensor:
     unit_of_measurement: "h"
     device_class: duration
     state_class: measurement
-    bitmask: 0xFF00
+    # Low byte: RFV time (byte 267 of the BLE frame)
+    bitmask: 0x00FF
     filters:
       - multiply: 0.1
 
