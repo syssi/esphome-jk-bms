@@ -1802,9 +1802,25 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
 
   // 22    8   0x31 0x34 0x2E 0x58 0x41 0x00 0x00 0x00    Hardware version
   auto hardware_version_begin = data.begin() + 22;
-  this->publish_state_(
-      this->hardware_version_text_sensor_,
-      std::string(hardware_version_begin, std::find(hardware_version_begin, hardware_version_begin + 8, '\0')));
+  const std::string hardware_version(hardware_version_begin,
+                                     std::find(hardware_version_begin, hardware_version_begin + 8, '\0'));
+  this->publish_state_(this->hardware_version_text_sensor_, hardware_version);
+
+  // The JK02 variants select frame layouts, not the number of cells.
+  size_t version_pos = 0;
+  if (!hardware_version.empty() && (hardware_version[0] == 'V' || hardware_version[0] == 'v'))
+    version_pos++;
+  unsigned int hardware_major = 0;
+  while (version_pos < hardware_version.size() && hardware_version[version_pos] >= '0' &&
+         hardware_version[version_pos] <= '9') {
+    hardware_major = hardware_major * 10 + (hardware_version[version_pos++] - '0');
+  }
+  if (this->protocol_version_ == PROTOCOL_VERSION_JK02_24S && hardware_major >= 11) {
+    ESP_LOGW(TAG,
+             "Possible protocol mismatch: hardware %s normally uses JK02_32S, but JK02_24S is configured. "
+             "Check protocol_version; cell voltages can look correct while aggregate readings are wrong.",
+             hardware_version.c_str());
+  }
 
   // 30    8   0x31 0x34 0x2E 0x32 0x30 0x00 0x00 0x00    Software version
   auto software_version_begin = data.begin() + 30;
