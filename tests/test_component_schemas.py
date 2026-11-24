@@ -373,7 +373,8 @@ class TestJkBmsBleButtonConstants:
         assert ble_button.CONF_SHUTDOWN in ble_button.BUTTONS
         assert ble_button.CONF_RESTART in ble_button.BUTTONS
         assert ble_button.CONF_FACTORY_RESET in ble_button.BUTTONS
-        assert len(ble_button.BUTTONS) == 6
+        assert ble_button.CONF_HEATING_TEST in ble_button.BUTTONS
+        assert len(ble_button.BUTTONS) == 7
 
     def test_button_addresses_are_unique(self):
         addresses = list(ble_button.BUTTONS.values())
@@ -383,6 +384,7 @@ class TestJkBmsBleButtonConstants:
         assert ble_button.BUTTONS[ble_button.CONF_SHUTDOWN] == 0x65
         assert ble_button.BUTTONS[ble_button.CONF_RESTART] == 0x66
         assert ble_button.BUTTONS[ble_button.CONF_FACTORY_RESET] == 0x9D
+        assert ble_button.BUTTONS[ble_button.CONF_HEATING_TEST] == 0x6D
 
 
 class TestJkBleTextSensorConstants:

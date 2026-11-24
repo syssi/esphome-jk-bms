@@ -18,12 +18,14 @@ CONF_RETRIEVE_SETTINGS = "retrieve_settings"
 CONF_RETRIEVE_DEVICE_INFO = "retrieve_device_info"
 CONF_RETRIEVE_LOGBOOK = "retrieve_logbook"
 CONF_SHUTDOWN = "shutdown"
+CONF_HEATING_TEST = "heating_test"
 
 ICON_RETRIEVE_SETTINGS = "mdi:cog"
 ICON_RETRIEVE_DEVICE_INFO = "mdi:information-variant"
 ICON_RETRIEVE_LOGBOOK = "mdi:history"
 ICON_SHUTDOWN = "mdi:power"
 ICON_FACTORY_RESET = "mdi:restore"
+ICON_HEATING_TEST = "mdi:heat-wave"
 
 BUTTONS = {
     # The BMS responds to the 0x96 request with a single settings frame and enables the notification stream
@@ -34,6 +36,8 @@ BUTTONS = {
     CONF_SHUTDOWN: 0x65,
     CONF_RESTART: 0x66,
     CONF_FACTORY_RESET: 0x9D,
+    # Triggers the heating test (firmware >= V19.36). The BMS switches the heater off after 10 seconds.
+    CONF_HEATING_TEST: 0x6D,
 }
 
 JkButton = jk_bms_ble_ns.class_("JkButton", button.Button)
@@ -65,6 +69,11 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
         cv.Optional(CONF_FACTORY_RESET): button.button_schema(
             JkButton,
             icon=ICON_FACTORY_RESET,
+            entity_category=ENTITY_CATEGORY_CONFIG,
+        ),
+        cv.Optional(CONF_HEATING_TEST): button.button_schema(
+            JkButton,
+            icon=ICON_HEATING_TEST,
             entity_category=ENTITY_CATEGORY_CONFIG,
         ),
     }
