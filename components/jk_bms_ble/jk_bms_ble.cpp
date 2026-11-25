@@ -939,7 +939,8 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   ESP_LOGD(TAG, "Discharge current correction factor: %d", jk_get_16bit(188 + offset));
   ESP_LOGD(TAG, "Charging current sensor voltage: %.3f", jk_get_16bit(190 + offset) * 0.001f);
   ESP_LOGD(TAG, "Discharging current sensor voltage: %.3f", jk_get_16bit(192 + offset) * 0.001f);
-  ESP_LOGD(TAG, "Battery voltage correction factor: %f", (float) jk_get_32bit(194 + offset) * 1.0f);
+  // 194+32  4   0x51 0x97 0x3F 0x40    Battery voltage correction factor (IEEE 754 float)
+  ESP_LOGD(TAG, "Battery voltage correction factor: %f", ieee_float_(jk_get_32bit(194 + offset)));
 
   // 202+32   2   0x30 0x14              Battery voltage       0.01         V
   ESP_LOGD(TAG, "Battery voltage: %.2f V", (float) jk_get_16bit(202 + offset) * 0.01f);
@@ -1405,7 +1406,7 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
     // 246   4   0x00 0x00 0x00 0x00    Con. wire resistance 23
     // 250   4   0x00 0x00 0x00 0x00    Con. wire resistance 24
     for (uint8_t i = 0; i < 24; i++) {
-      ESP_LOGI(TAG, "  Con. wire resistance %d: %f Ohm", i + 1, (float) jk_get_32bit(i * 4 + 158) * 0.001f);
+      ESP_LOGI(TAG, "  Con. wire resistance %d: %.3f mOhm", i + 1, (float) jk_get_32bit(i * 4 + 158) * 0.001f);
     }
 
   } else {
@@ -1414,12 +1415,12 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
     // 150   4   0x00 0x00 0x00 0x00    Con. wire resistance 3
     // 154   4   0x00 0x00 0x00 0x00    Con. wire resistance 4
     // ...   4   0x00 0x00 0x00 0x00    ...
-    // 252   4   0x00 0x00 0x00 0x00    Con. wire resistance 29
-    // 256   4   0x00 0x00 0x00 0x00    Con. wire resistance 30
-    // 260   4   0x00 0x00 0x00 0x00    Con. wire resistance 31
+    // 254   4   0x00 0x00 0x00 0x00    Con. wire resistance 29
+    // 258   4   0x00 0x00 0x00 0x00    Con. wire resistance 30
+    // 262   4   0x00 0x00 0x00 0x00    Con. wire resistance 31
     // 266   4   0x00 0x00 0x00 0x00    Con. wire resistance 32
     for (uint8_t i = 0; i < 32; i++) {
-      ESP_LOGI(TAG, "  Con. wire resistance %d: %f Ohm", i + 1, (float) jk_get_32bit(i * 4 + 142) * 0.001f);
+      ESP_LOGI(TAG, "  Con. wire resistance %d: %.3f mOhm", i + 1, (float) jk_get_32bit(i * 4 + 142) * 0.001f);
     }
 
     // 254   4   0x00 0x00 0x00 0x00

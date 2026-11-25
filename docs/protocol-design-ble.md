@@ -141,16 +141,17 @@ uint8_t crc(const uint8_t data[], const uint16_t len) {
 |              198 |      1 | Charging MOSFET status | Raw | - | - | 0=Off, 1=On |
 |              199 |      1 | Discharging MOSFET status | Raw | - | - | 0=Off, 1=On |
 |          200-201 |      2 | User alarm 2 | uint16 | - | - | Logged only |
-|          202-203 |      2 | Discharge overcurrent protection release timer | uint16 | 1 | s | Logged only |
-|          204-205 |      2 | Discharge short circuit protection release timer | uint16 | 1 | s | Logged only |
-|          206-207 |      2 | Charge overcurrent protection release timer | uint16 | 1 | s | Logged only |
-|          208-209 |      2 | Charge short circuit protection release timer | uint16 | 1 | s | Logged only |
-|          210-211 |      2 | Undervoltage protection release timer | uint16 | 1 | s | Logged only |
-|          212-213 |      2 | Overvoltage protection release timer | uint16 | 1 | s | Logged only |
+|          202-203 |      2 | Discharge overcurrent protection release timer | uint16 | 1 | s | JK02_32S only |
+|          204-205 |      2 | Discharge short circuit protection release timer | uint16 | 1 | s | JK02_32S only |
+|          206-207 |      2 | Charge overcurrent protection release timer | uint16 | 1 | s | JK02_32S only |
+|          208-209 |      2 | Charge short circuit protection release timer | uint16 | 1 | s | JK02_32S only |
+|          210-211 |      2 | Undervoltage protection release timer | uint16 | 1 | s | JK02_32S only |
+|          212-213 |      2 | Overvoltage protection release timer | uint16 | 1 | s | JK02_32S only |
 |              214 |      1 | Temperature sensor presence bitmask | uint8 | - | - | Logged only; bit set = present; bit0=MOS, bit1-5=Sensors 1-5; unused inputs report 1 |
 |              215 |      1 | Heating status | Raw | - | - | 0=Off, 1=On |
 |          216-217 |      2 | Reserved | - | - | - | - |
 |          218-219 |      2 | Emergency time countdown | uint16 | 1 | s | >0 = Emergency active |
+|          226-229 |      4 | Battery voltage correction factor | float32 | - | - | Logged only; IEEE 754 single precision |
 |          254-255 |      2 | Temperature Sensor 5 | int16 | 0.1 | °C | - |
 |          256-257 |      2 | Temperature Sensor 4 | int16 | 0.1 | °C | - |
 |          258-259 |      2 | Temperature Sensor 3 | int16 | 0.1 | °C | - |
@@ -285,7 +286,7 @@ Dry contact bitmask notes for byte 281 (JK02_32S only):
 |          130-133 |      4 | Nominal battery capacity | uint32 | 0.001 | Ah | - |
 |          134-137 |      4 | Short circuit protection delay | uint32 | 1.0 | μs | - |
 |          138-141 |      4 | Start balance voltage | uint32 | 0.001 | V | - |
-|          142-269 |    128 | Connection wire resistance (1-32) | uint32 | 0.001 | Ω | 32 x 4-byte values |
+|          142-269 |    128 | Connection wire resistance (1-32) | uint32 | 0.001 | mΩ | 32 x 4-byte values (raw value in µΩ) |
 |          270-273 |      4 | Device address | uint32 | - | - | - |
 |          274-277 |      4 | Precharge time | uint32 | 1 | s | - |
 |          278-281 |      4 | (Reserved) | - | - | - | - |
