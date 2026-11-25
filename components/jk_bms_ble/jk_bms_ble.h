@@ -1,6 +1,8 @@
 #pragma once
 
 #include <array>
+#include <cstdint>
+#include <ctime>
 #include "esphome/core/component.h"
 #include "esphome/core/hal.h"
 #include "esphome/components/binary_sensor/binary_sensor.h"
@@ -9,6 +11,10 @@
 #include "esphome/components/select/select.h"
 #include "esphome/components/switch/switch.h"
 #include "esphome/components/text_sensor/text_sensor.h"
+
+#ifdef USE_TIME
+#include "esphome/components/time/real_time_clock.h"
+#endif
 
 #ifdef USE_ESP32
 #include "esphome/components/ble_client/ble_client.h"
@@ -371,6 +377,9 @@ class JkBmsBle :
   void set_device_name_text_sensor(text_sensor::TextSensor *device_name_text_sensor) {
     device_name_text_sensor_ = device_name_text_sensor;
   }
+  void set_device_time_text_sensor(text_sensor::TextSensor *device_time_text_sensor) {
+    device_time_text_sensor_ = device_time_text_sensor;
+  }
   void set_manufacturing_date_text_sensor(text_sensor::TextSensor *manufacturing_date_text_sensor) {
     manufacturing_date_text_sensor_ = manufacturing_date_text_sensor;
   }
@@ -448,10 +457,18 @@ class JkBmsBle :
   void assemble(const uint8_t *data, uint16_t length);
   void set_protocol_version(ProtocolVersion protocol_version) { protocol_version_ = protocol_version; }
   ProtocolVersion get_protocol_version() { return protocol_version_; }
+  bool has_clock() const { return has_clock_; }
   static std::array<uint8_t, 20> build_frame(uint8_t address, uint32_t value, uint8_t length);
   static uint32_t encode_jk04_payload(float value, uint8_t len, float factor);
+  // Converts between a unix timestamp and the BMS clock format (seconds since 2020-01-01 00:00:00 UTC+8)
+  static uint32_t encode_time(time_t utc);
+  static time_t decode_time(uint32_t value);
 #ifdef USE_ESP32
   bool write_register(uint8_t address, uint32_t value, uint8_t length);
+  bool sync_time();
+#endif
+#ifdef USE_TIME
+  void set_time_id(time::RealTimeClock *time_id) { time_id_ = time_id; }
 #endif
 
   struct Cell {
@@ -605,8 +622,15 @@ class JkBmsBle :
   text_sensor::TextSensor *device_model_text_sensor_{nullptr};
   text_sensor::TextSensor *device_name_text_sensor_{nullptr};
   text_sensor::TextSensor *manufacturing_date_text_sensor_{nullptr};
+  text_sensor::TextSensor *device_time_text_sensor_{nullptr};
   text_sensor::TextSensor *serial_number_text_sensor_{nullptr};
 
+#ifdef USE_TIME
+  time::RealTimeClock *time_id_{nullptr};
+  bool time_synced_{false};
+#endif
+
+  bool has_clock_{false};
   std::vector<uint8_t> frame_buffer_;
   bool status_notification_received_ = false;
   uint8_t no_response_count_{0};
@@ -618,6 +642,7 @@ class JkBmsBle :
   uint32_t throttle_{0};
 
   void decode_(const std::vector<uint8_t> &data);
+  void sync_time_on_connect_();
   void decode_logbook_(const std::vector<uint8_t> &data);
   void decode_device_info_(const std::vector<uint8_t> &data);
   void decode_jk02_cell_info_(const std::vector<uint8_t> &data);

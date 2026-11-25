@@ -1,6 +1,7 @@
 #include "jk_bms_ble.h"
 #include "esphome/core/log.h"
 #include "esphome/core/helpers.h"
+#include "esphome/core/time.h"
 #include <cinttypes>
 
 // Fallback for ESPHome < 2026.10.0
@@ -36,6 +37,11 @@ static const uint16_t JK_BMS_CHARACTERISTIC_UUID = 0xFFE1;
 static const uint8_t COMMAND_CELL_INFO = 0x96;
 static const uint8_t COMMAND_DEVICE_INFO = 0x97;
 static const uint8_t COMMAND_LOGBOOK = 0xA1;
+static const uint8_t REGISTER_TIME = 0x6C;
+
+// The BMS clock counts seconds since 2020-01-01 00:00:00 UTC+8 (2019-12-31 16:00:00 UTC). It is set and read
+// independently of the local time zone.
+static const int64_t JK_TIME_EPOCH = 1577808000LL;
 
 static const uint16_t MIN_RESPONSE_SIZE = 300;
 static const uint16_t MAX_RESPONSE_SIZE = 384 + 16;
@@ -435,6 +441,7 @@ void JkBmsBle::dump_config() {  // NOLINT(google-readability-function-size,reada
   LOG_TEXT_SENSOR("", "Device Model", this->device_model_text_sensor_);
   LOG_TEXT_SENSOR("", "Device Name", this->device_name_text_sensor_);
   LOG_TEXT_SENSOR("", "Manufacturing Date", this->manufacturing_date_text_sensor_);
+  LOG_TEXT_SENSOR("", "Device Time", this->device_time_text_sensor_);
   LOG_TEXT_SENSOR("", "Serial Number", this->serial_number_text_sensor_);
 
   LOG_SWITCH("", "Charging", this->charging_switch_);
@@ -466,6 +473,9 @@ void JkBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gat
     case ESP_GATTC_DISCONNECT_EVT: {
       this->node_state = espbt::ClientState::IDLE;
       this->status_notification_received_ = false;
+#ifdef USE_TIME
+      this->time_synced_ = false;
+#endif
 
       if (this->notify_handle_ != 0) {
         auto status = esp_ble_gattc_unregister_for_notify(this->parent()->get_gattc_if(),
@@ -546,6 +556,9 @@ void JkBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gat
     case ESP_GATTC_REG_FOR_NOTIFY_EVT: {
       this->node_state = espbt::ClientState::ESTABLISHED;
       this->status_notification_received_ = false;
+#ifdef USE_TIME
+      this->time_synced_ = false;
+#endif
 
       ESP_LOGI(TAG, "Request device info");
       this->write_register(COMMAND_DEVICE_INFO, 0x00000000, 0x00);
@@ -579,7 +592,11 @@ void JkBmsBle::update() {
   if (!this->status_notification_received_) {
     ESP_LOGI(TAG, "Request status notification");
     this->write_register(COMMAND_CELL_INFO, 0x00000000, 0x00);
+    return;
   }
+
+  // Retry if the time source wasn't valid yet when the settings frame arrived (e.g. SNTP right after boot)
+  this->sync_time_on_connect_();
 }
 
 bool JkBmsBle::write_register(uint8_t address, uint32_t value, uint8_t length) {
@@ -598,11 +615,60 @@ bool JkBmsBle::write_register(uint8_t address, uint32_t value, uint8_t length) {
   return (status == 0);
 }
 
+bool JkBmsBle::sync_time() {
+#ifdef USE_TIME
+  if (this->protocol_version_ == PROTOCOL_VERSION_JK04) {
+    ESP_LOGW(TAG, "Can't sync time: not supported by JK04 devices");
+    return false;
+  }
+
+  if (this->time_id_ == nullptr) {
+    ESP_LOGW(TAG, "Can't sync time: no time_id configured");
+    return false;
+  }
+
+  if (!this->has_clock_) {
+    ESP_LOGW(TAG, "Can't sync time: the BMS doesn't report a real-time clock");
+    return false;
+  }
+
+  ESPTime now = this->time_id_->now();
+  if (!now.is_valid()) {
+    ESP_LOGW(TAG, "Can't sync time: the time source has no valid time yet");
+    return false;
+  }
+
+  ESP_LOGI(TAG, "Syncing BMS time to %04d-%02d-%02d %02d:%02d:%02d", now.year, now.month, now.day_of_month, now.hour,
+           now.minute, now.second);
+  return this->write_register(REGISTER_TIME, encode_time(now.timestamp), 0x04);
+#else
+  ESP_LOGW(TAG, "Can't sync time: no time component configured");
+  return false;
+#endif
+}
+
 #else
 
 void JkBmsBle::update() {}
 
 #endif  // USE_ESP32
+
+// Set the BMS clock once per connection, right after the first settings frame (0x01) was received, if the device info
+// frame reports a real-time clock
+void JkBmsBle::sync_time_on_connect_() {
+#if defined(USE_ESP32) && defined(USE_TIME)
+  if (this->time_id_ == nullptr || this->time_synced_ || !this->has_clock_ ||
+      this->protocol_version_ == PROTOCOL_VERSION_JK04)
+    return;
+
+  if (!this->time_id_->now().is_valid()) {
+    ESP_LOGD(TAG, "Time sync postponed: the time source has no valid time yet");
+    return;
+  }
+
+  this->time_synced_ = this->sync_time();
+#endif
+}
 
 std::array<uint8_t, 20> JkBmsBle::build_frame(uint8_t address, uint32_t value, uint8_t length) {
   std::array<uint8_t, 20> frame{};
@@ -619,6 +685,17 @@ std::array<uint8_t, 20> JkBmsBle::build_frame(uint8_t address, uint32_t value, u
   frame[19] = crc(frame.data(), frame.size() - 1);
   return frame;
 }
+
+uint32_t JkBmsBle::encode_time(time_t utc) {
+  int64_t seconds = (int64_t) utc - JK_TIME_EPOCH;
+  if (seconds < 0)
+    return 0;
+  if (seconds > UINT32_MAX)
+    return UINT32_MAX;
+  return (uint32_t) seconds;
+}
+
+time_t JkBmsBle::decode_time(uint32_t value) { return (time_t) ((int64_t) value + JK_TIME_EPOCH); }
 
 uint32_t JkBmsBle::encode_jk04_payload(float value, uint8_t len, float factor) {
   if (len == 4) {
@@ -674,6 +751,7 @@ void JkBmsBle::decode_(const std::vector<uint8_t> &data) {
       } else {
         this->decode_jk02_settings_(data);
       }
+      this->sync_time_on_connect_();
       break;
     case 0x02:
       if (this->protocol_version_ == PROTOCOL_VERSION_JK04) {
@@ -986,6 +1064,13 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
     this->publish_temperature_(this->temperatures_[4].temperature_sensor_, (int16_t) jk_get_16bit(222 + offset));
     this->publish_temperature_(this->temperatures_[3].temperature_sensor_, (int16_t) jk_get_16bit(224 + offset));
     this->publish_temperature_(this->temperatures_[2].temperature_sensor_, (int16_t) jk_get_16bit(226 + offset));
+
+    // 230+32  4   0x3A 0xC9 0xFB 0x0C    BMS clock            s since 2020-01-01 00:00:00 UTC+8
+    uint32_t raw_device_time = jk_get_32bit(230 + offset);
+    if (raw_device_time != 0) {
+      this->publish_state_(this->device_time_text_sensor_,
+                           ESPTime::from_epoch_local(decode_time(raw_device_time)).strftime("%Y-%m-%d %H:%M:%S"));
+    }
 
     // 234+32  4   0x3E 0x00 0x00 0x00    Detail log count     1
     this->publish_state_(this->detail_log_entry_count_sensor_, (float) jk_get_32bit(234 + offset));
@@ -1635,6 +1720,12 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
   ESP_LOGI(TAG, "Device info frame (%zu bytes) received", data.size());
   log_hex_chunked(TAG, data.data(), data.size());
 
+  // 163 bit 4: the BMS has a real-time clock that can be set via register 0x6C
+  if (data.size() > 163) {
+    this->has_clock_ = check_bit_(data[163], 0x10);
+    ESP_LOGD(TAG, "  Real-time clock: %s", YESNO(this->has_clock_));
+  }
+
   // JK04 (JK-B2A16S v3) response example:
   //
   // 0x55 0xAA 0xEB 0x90 0x03 0xE7 0x4A 0x4B 0x2D 0x42 0x32 0x41 0x31 0x36 0x53 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x33
@@ -1934,6 +2025,7 @@ void JkBmsBle::publish_device_unavailable_() {
   this->publish_state_(this->charge_status_text_sensor_, "Offline");
   this->publish_state_(this->balancer_status_text_sensor_, "Offline");
   this->publish_state_(this->total_runtime_formatted_text_sensor_, "Offline");
+  this->publish_state_(this->device_time_text_sensor_, "Offline");
   this->publish_state_(this->emergency_time_countdown_sensor_, NAN);
   this->publish_state_(this->smart_sleep_countdown_sensor_, NAN);
   this->publish_state_(this->discharge_overcurrent_protection_recovery_countdown_sensor_, NAN);

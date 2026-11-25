@@ -17,4 +17,13 @@ class JkButton : public button::Button {
   uint8_t holding_register_;
 };
 
+class JkSyncTimeButton : public button::Button {
+ public:
+  void set_parent(JkBmsBle *parent) { this->parent_ = parent; };
+
+ protected:
+  void press_action() override;
+  JkBmsBle *parent_;
+};
+
 }  // namespace esphome::jk_bms_ble
