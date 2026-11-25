@@ -101,6 +101,8 @@ button:
       name: "restart"
     factory_reset:
       name: "factory reset"
+    heating_test:
+      name: "heating test"
 
 number:
   - platform: jk_bms_ble
