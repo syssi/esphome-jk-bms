@@ -325,6 +325,39 @@ class TestJkBmsBleSelectConstants:
     def test_multiplexed_port_mode_options(self):
         assert ble_select.MULTIPLEXED_PORT_MODE_OPTIONS == ["CAN", "RS485"]
 
+    def test_protocol_options_cover_indices_0_to_20(self):
+        # The BMS reports protocol numbers 0-20. An index without an option leaves
+        # the select without a state and can't be selected.
+        assert len(ble_select.UART_PROTOCOL_OPTIONS) == 21
+        assert len(ble_select.CAN_PROTOCOL_OPTIONS) == 21
+
+    def test_protocol_options_are_unique(self):
+        for options in (
+            ble_select.UART_PROTOCOL_OPTIONS,
+            ble_select.CAN_PROTOCOL_OPTIONS,
+        ):
+            assert len(options) == len(set(options))
+
+    def test_can_protocol_options_keep_existing_names(self):
+        # Option strings are the select state, so existing entries must not change.
+        options = ble_select.CAN_PROTOCOL_OPTIONS
+        assert options[0] == "JK BMS CAN Protocol (250K) V2.0"
+        assert options[3] == "Growatt BMS CAN-Bus-protocol-low-voltage_Rev_05"
+        assert options[12] == "CAN BUS User customization 1"
+        assert options[13] == "CAN BUS User customization 2"
+
+    def test_can_protocol_options_14_to_20(self):
+        options = ble_select.CAN_PROTOCOL_OPTIONS
+        assert options[14] == "JINLONG Low-voltage inverter CAN Bus Protocol V1.0"
+        assert options[15] == "NMEA 2000 V1.300"
+        assert options[16:] == [f"CAN BUS Protocol {i}" for i in range(16, 21)]
+
+    def test_uart_protocol_option_17(self):
+        assert (
+            ble_select.UART_PROTOCOL_OPTIONS[17]
+            == "JK Active Balancer LCD Protocol V1.0"
+        )
+
 
 class TestJkBmsBleLoadConfigPresetConstants:
     def test_load_config_preset_options(self):
