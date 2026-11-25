@@ -277,4 +277,42 @@ TEST(JkBmsV19SettingsTest, DeviceAddressNonZero) {
   EXPECT_EQ(device_address.state, 15.0f);
 }
 
+TEST(JkBmsV19SettingsTest, DeviceAddressIsUint32) {
+  // The device address is a 32-bit field (bytes 270-273), not a single byte.
+  std::vector<uint8_t> data = SETTINGS_JK02_32S_V19;
+  data[270] = 0x2C;
+  data[271] = 0x01;
+
+  TestableJkBmsBle bms;
+  bms.set_protocol_version(PROTOCOL_VERSION_JK02_32S);
+  sensor::Sensor device_address;
+  bms.set_device_address_sensor(&device_address);
+  bms.decode_jk02_settings_(data);
+  EXPECT_EQ(device_address.state, 300.0f);
+}
+
+TEST(JkBmsV19SettingsTest, DischargePrechargeTime) {
+  TestableJkBmsBle bms;
+  bms.set_protocol_version(PROTOCOL_VERSION_JK02_32S);
+  TestNumber precharge_time;
+  bms.set_discharge_precharge_time_number(&precharge_time);
+  bms.decode_jk02_settings_(SETTINGS_JK02_32S_V19);
+  EXPECT_EQ(precharge_time.state, 0.0f);  // bytes 274-277
+}
+
+TEST(JkBmsV19SettingsTest, DischargePrechargeTimeAbove255Seconds) {
+  // The precharge time is a 32-bit field (bytes 274-277). Values above 255 s
+  // must not be truncated to the low byte (300 s = 0x012C).
+  std::vector<uint8_t> data = SETTINGS_JK02_32S_V19;
+  data[274] = 0x2C;
+  data[275] = 0x01;
+
+  TestableJkBmsBle bms;
+  bms.set_protocol_version(PROTOCOL_VERSION_JK02_32S);
+  TestNumber precharge_time;
+  bms.set_discharge_precharge_time_number(&precharge_time);
+  bms.decode_jk02_settings_(data);
+  EXPECT_EQ(precharge_time.state, 300.0f);
+}
+
 }  // namespace esphome::jk_bms_ble::testing
