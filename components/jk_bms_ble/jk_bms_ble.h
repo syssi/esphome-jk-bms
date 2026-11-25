@@ -285,6 +285,33 @@ class JkBmsBle :
   void set_smart_sleep_countdown_sensor(sensor::Sensor *smart_sleep_countdown_sensor) {
     smart_sleep_countdown_sensor_ = smart_sleep_countdown_sensor;
   }
+  void set_discharge_overcurrent_protection_recovery_countdown_sensor(
+      sensor::Sensor *discharge_overcurrent_protection_recovery_countdown_sensor) {
+    discharge_overcurrent_protection_recovery_countdown_sensor_ =
+        discharge_overcurrent_protection_recovery_countdown_sensor;
+  }
+  void set_discharge_short_circuit_protection_recovery_countdown_sensor(
+      sensor::Sensor *discharge_short_circuit_protection_recovery_countdown_sensor) {
+    discharge_short_circuit_protection_recovery_countdown_sensor_ =
+        discharge_short_circuit_protection_recovery_countdown_sensor;
+  }
+  void set_charge_overcurrent_protection_recovery_countdown_sensor(
+      sensor::Sensor *charge_overcurrent_protection_recovery_countdown_sensor) {
+    charge_overcurrent_protection_recovery_countdown_sensor_ = charge_overcurrent_protection_recovery_countdown_sensor;
+  }
+  void set_charge_short_circuit_protection_recovery_countdown_sensor(
+      sensor::Sensor *charge_short_circuit_protection_recovery_countdown_sensor) {
+    charge_short_circuit_protection_recovery_countdown_sensor_ =
+        charge_short_circuit_protection_recovery_countdown_sensor;
+  }
+  void set_cell_undervoltage_protection_recovery_countdown_sensor(
+      sensor::Sensor *cell_undervoltage_protection_recovery_countdown_sensor) {
+    cell_undervoltage_protection_recovery_countdown_sensor_ = cell_undervoltage_protection_recovery_countdown_sensor;
+  }
+  void set_cell_overvoltage_protection_recovery_countdown_sensor(
+      sensor::Sensor *cell_overvoltage_protection_recovery_countdown_sensor) {
+    cell_overvoltage_protection_recovery_countdown_sensor_ = cell_overvoltage_protection_recovery_countdown_sensor;
+  }
   void set_heating_current_sensor(sensor::Sensor *heating_current_sensor) {
     heating_current_sensor_ = heating_current_sensor;
   }
@@ -517,6 +544,12 @@ class JkBmsBle :
   sensor::Sensor *balancing_current_sensor_{nullptr};
   sensor::Sensor *emergency_time_countdown_sensor_{nullptr};
   sensor::Sensor *smart_sleep_countdown_sensor_{nullptr};
+  sensor::Sensor *discharge_overcurrent_protection_recovery_countdown_sensor_{nullptr};
+  sensor::Sensor *discharge_short_circuit_protection_recovery_countdown_sensor_{nullptr};
+  sensor::Sensor *charge_overcurrent_protection_recovery_countdown_sensor_{nullptr};
+  sensor::Sensor *charge_short_circuit_protection_recovery_countdown_sensor_{nullptr};
+  sensor::Sensor *cell_undervoltage_protection_recovery_countdown_sensor_{nullptr};
+  sensor::Sensor *cell_overvoltage_protection_recovery_countdown_sensor_{nullptr};
   sensor::Sensor *heating_current_sensor_{nullptr};
   sensor::Sensor *charge_status_id_sensor_{nullptr};
   sensor::Sensor *charge_status_time_elapsed_sensor_{nullptr};

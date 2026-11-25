@@ -177,6 +177,54 @@ TEST(JkBmsV19CellInfoTest, UserAlarm2DoesNotSetPrecharging) {
   EXPECT_FALSE(precharging.state);
 }
 
+// Protection recovery countdowns (bytes 202-213, uint16, seconds). The captured frame
+// wasn't recorded during a protection event, so all countdowns are zero.
+TEST(JkBmsV19CellInfoTest, ProtectionRecoveryCountdownsIdle) {
+  TestableJkBmsBle bms;
+  bms.set_protocol_version(PROTOCOL_VERSION_JK02_32S);
+  sensor::Sensor dch_ocp, dch_scp, chg_ocp, chg_scp, cell_uvp, cell_ovp;
+  bms.set_discharge_overcurrent_protection_recovery_countdown_sensor(&dch_ocp);
+  bms.set_discharge_short_circuit_protection_recovery_countdown_sensor(&dch_scp);
+  bms.set_charge_overcurrent_protection_recovery_countdown_sensor(&chg_ocp);
+  bms.set_charge_short_circuit_protection_recovery_countdown_sensor(&chg_scp);
+  bms.set_cell_undervoltage_protection_recovery_countdown_sensor(&cell_uvp);
+  bms.set_cell_overvoltage_protection_recovery_countdown_sensor(&cell_ovp);
+  bms.decode_jk02_cell_info_(CELL_INFO_JK02_32S_V19);
+  for (auto *sens : {&dch_ocp, &dch_scp, &chg_ocp, &chg_scp, &cell_uvp, &cell_ovp}) {
+    EXPECT_TRUE(sens->has_state());
+    EXPECT_EQ(sens->state, 0.0f);
+  }
+}
+
+// Distinct values per field verify the mapping of each countdown to its bytes.
+TEST(JkBmsV19CellInfoTest, ProtectionRecoveryCountdowns) {
+  TestableJkBmsBle bms;
+  bms.set_protocol_version(PROTOCOL_VERSION_JK02_32S);
+  sensor::Sensor dch_ocp, dch_scp, chg_ocp, chg_scp, cell_uvp, cell_ovp;
+  bms.set_discharge_overcurrent_protection_recovery_countdown_sensor(&dch_ocp);
+  bms.set_discharge_short_circuit_protection_recovery_countdown_sensor(&dch_scp);
+  bms.set_charge_overcurrent_protection_recovery_countdown_sensor(&chg_ocp);
+  bms.set_charge_short_circuit_protection_recovery_countdown_sensor(&chg_scp);
+  bms.set_cell_undervoltage_protection_recovery_countdown_sensor(&cell_uvp);
+  bms.set_cell_overvoltage_protection_recovery_countdown_sensor(&cell_ovp);
+  auto frame = CELL_INFO_JK02_32S_V19;
+  frame[202] = 0x01;  // 1 s
+  frame[204] = 0x02;  // 2 s
+  frame[206] = 0x03;  // 3 s
+  frame[208] = 0x04;  // 4 s
+  frame[210] = 0x2C;  // 300 s
+  frame[211] = 0x01;
+  frame[212] = 0xFF;  // 65535 s
+  frame[213] = 0xFF;
+  bms.decode_jk02_cell_info_(frame);
+  EXPECT_EQ(dch_ocp.state, 1.0f);
+  EXPECT_EQ(dch_scp.state, 2.0f);
+  EXPECT_EQ(chg_ocp.state, 3.0f);
+  EXPECT_EQ(chg_scp.state, 4.0f);
+  EXPECT_EQ(cell_uvp.state, 300.0f);
+  EXPECT_EQ(cell_ovp.state, 65535.0f);
+}
+
 TEST(JkBmsV19CellInfoTest, DetailLogCount) {
   TestableJkBmsBle bms;
   bms.set_protocol_version(PROTOCOL_VERSION_JK02_32S);

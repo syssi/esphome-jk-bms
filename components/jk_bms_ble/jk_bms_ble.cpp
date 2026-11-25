@@ -410,6 +410,13 @@ void JkBmsBle::dump_config() {  // NOLINT(google-readability-function-size,reada
   LOG_SENSOR("", "Heating Current", this->heating_current_sensor_);
   LOG_SENSOR("", "Balancing Current", this->balancing_current_sensor_);
   LOG_SENSOR("", "Emergency Time Countdown", this->emergency_time_countdown_sensor_);
+  LOG_SENSOR("", "Discharge OCP Recovery Countdown", this->discharge_overcurrent_protection_recovery_countdown_sensor_);
+  LOG_SENSOR("", "Discharge SCP Recovery Countdown",
+             this->discharge_short_circuit_protection_recovery_countdown_sensor_);
+  LOG_SENSOR("", "Charge OCP Recovery Countdown", this->charge_overcurrent_protection_recovery_countdown_sensor_);
+  LOG_SENSOR("", "Charge SCP Recovery Countdown", this->charge_short_circuit_protection_recovery_countdown_sensor_);
+  LOG_SENSOR("", "Cell UVP Recovery Countdown", this->cell_undervoltage_protection_recovery_countdown_sensor_);
+  LOG_SENSOR("", "Cell OVP Recovery Countdown", this->cell_overvoltage_protection_recovery_countdown_sensor_);
   LOG_SENSOR("", "Charge Status ID", this->charge_status_id_sensor_);
   LOG_SENSOR("", "Charge Status Time Elapsed", this->charge_status_time_elapsed_sensor_);
   LOG_SENSOR("", "Battery Type ID", this->battery_type_id_sensor_);
@@ -955,6 +962,25 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
     ESP_LOGI(TAG, "Emergency switch: %s", ONOFF(raw_emergency_time_countdown > 0));
     this->publish_state_(this->emergency_switch_, raw_emergency_time_countdown > 0);
     this->publish_state_(this->emergency_time_countdown_sensor_, (float) raw_emergency_time_countdown * 1.0f);
+
+    // 170+32  2   0x00 0x00              Discharge OCP recovery countdown     s
+    // 172+32  2   0x00 0x00              Discharge SCP recovery countdown     s
+    // 174+32  2   0x00 0x00              Charge OCP recovery countdown        s
+    // 176+32  2   0x00 0x00              Charge SCP recovery countdown        s
+    // 178+32  2   0x00 0x00              Cell UVP recovery countdown          s
+    // 180+32  2   0x00 0x00              Cell OVP recovery countdown          s
+    this->publish_state_(this->discharge_overcurrent_protection_recovery_countdown_sensor_,
+                         (float) jk_get_16bit(170 + offset));
+    this->publish_state_(this->discharge_short_circuit_protection_recovery_countdown_sensor_,
+                         (float) jk_get_16bit(172 + offset));
+    this->publish_state_(this->charge_overcurrent_protection_recovery_countdown_sensor_,
+                         (float) jk_get_16bit(174 + offset));
+    this->publish_state_(this->charge_short_circuit_protection_recovery_countdown_sensor_,
+                         (float) jk_get_16bit(176 + offset));
+    this->publish_state_(this->cell_undervoltage_protection_recovery_countdown_sensor_,
+                         (float) jk_get_16bit(178 + offset));
+    this->publish_state_(this->cell_overvoltage_protection_recovery_countdown_sensor_,
+                         (float) jk_get_16bit(180 + offset));
 
     this->publish_state_(this->temperatures_[4].temperature_sensor_,
                          (float) ((int16_t) jk_get_16bit(222 + offset)) * 0.1f);
@@ -1912,6 +1938,12 @@ void JkBmsBle::publish_device_unavailable_() {
   this->publish_state_(this->total_runtime_formatted_text_sensor_, "Offline");
   this->publish_state_(this->emergency_time_countdown_sensor_, NAN);
   this->publish_state_(this->smart_sleep_countdown_sensor_, NAN);
+  this->publish_state_(this->discharge_overcurrent_protection_recovery_countdown_sensor_, NAN);
+  this->publish_state_(this->discharge_short_circuit_protection_recovery_countdown_sensor_, NAN);
+  this->publish_state_(this->charge_overcurrent_protection_recovery_countdown_sensor_, NAN);
+  this->publish_state_(this->charge_short_circuit_protection_recovery_countdown_sensor_, NAN);
+  this->publish_state_(this->cell_undervoltage_protection_recovery_countdown_sensor_, NAN);
+  this->publish_state_(this->cell_overvoltage_protection_recovery_countdown_sensor_, NAN);
   this->publish_state_(this->charge_status_id_sensor_, NAN);
   this->publish_state_(this->charge_status_time_elapsed_sensor_, NAN);
   this->publish_state_(this->detail_log_entry_count_sensor_, NAN);

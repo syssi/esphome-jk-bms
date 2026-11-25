@@ -52,7 +52,7 @@ DEFAULT_ERRORS_JK02 = (
     "Wire resistance",                      # bit 0
     "MOSFET overtemperature",               # bit 1
     "Cell count is not equal to settings",  # bit 2
-    "",                                     # bit 3 (Previously: "Current sensor anomaly")
+    "",                                     # bit 3 "Current sensor anomaly", see below
     "Battery is fully charged",             # bit 4
     "Battery pack overvoltage",             # bit 5
     "Charge overcurrent",                   # bit 6
@@ -83,6 +83,8 @@ DEFAULT_ERRORS_JK02 = (
     "",                                     # bit 31
 )
 # fmt: on
+# Bit 3 ("Current sensor anomaly") is left blank on purpose: the BMS reports it
+# regularly and the message isn't helpful. Use error_overrides to show it anyway.
 MAX_ERROR_BIT = len(DEFAULT_ERRORS_JK02) - 1
 
 
