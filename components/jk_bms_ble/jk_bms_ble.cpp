@@ -2,7 +2,6 @@
 #include "esphome/core/log.h"
 #include "esphome/core/helpers.h"
 #include <cinttypes>
-#include <cstring>
 
 // Fallback for ESPHome < 2026.10.0
 #ifndef ESPHOME_LOG_TAG
@@ -941,10 +940,7 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   ESP_LOGD(TAG, "Charging current sensor voltage: %.3f", jk_get_16bit(190 + offset) * 0.001f);
   ESP_LOGD(TAG, "Discharging current sensor voltage: %.3f", jk_get_16bit(192 + offset) * 0.001f);
   // 194+32  4   0x51 0x97 0x3F 0x40    Battery voltage correction factor (IEEE 754 float)
-  uint32_t raw_battery_voltage_correction_factor = jk_get_32bit(194 + offset);
-  float battery_voltage_correction_factor;
-  memcpy(&battery_voltage_correction_factor, &raw_battery_voltage_correction_factor, sizeof(float));
-  ESP_LOGD(TAG, "Battery voltage correction factor: %f", battery_voltage_correction_factor);
+  ESP_LOGD(TAG, "Battery voltage correction factor: %f", ieee_float_(jk_get_32bit(194 + offset)));
 
   // 202+32   2   0x30 0x14              Battery voltage       0.01         V
   ESP_LOGD(TAG, "Battery voltage: %.2f V", (float) jk_get_16bit(202 + offset) * 0.01f);
