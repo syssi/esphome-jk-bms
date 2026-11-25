@@ -629,6 +629,7 @@ class JkBmsBle :
   void publish_state_(number::Number *number, float value);
   void publish_state_(select::Select *obj, const std::string &state);
   void publish_state_(sensor::Sensor *sensor, float value);
+  void publish_temperature_(sensor::Sensor *sensor, int16_t raw_value);
   void publish_state_(switch_::Switch *obj, const bool &state);
   void publish_state_(text_sensor::TextSensor *text_sensor, const std::string &state);
   void publish_device_unavailable_();

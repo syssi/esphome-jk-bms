@@ -28,6 +28,8 @@ static const uint8_t FRAME_VERSION_JK04 = 0x01;
 static const uint8_t FRAME_VERSION_JK02_24S = 0x02;
 static const uint8_t FRAME_VERSION_JK02_32S = 0x03;
 
+static const int16_t TEMPERATURE_SENSOR_NOT_CONNECTED = -2000;
+
 static const uint16_t JK_BMS_SERVICE_UUID = 0xFFE0;
 static const uint16_t JK_BMS_CHARACTERISTIC_UUID = 0xFFE1;
 
@@ -815,7 +817,7 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
 
   // 112   2   0x00 0x00              Unknown112
   if (frame_version == FRAME_VERSION_JK02_32S) {
-    this->publish_state_(this->mosfet_temperature_sensor_, (float) ((int16_t) jk_get_16bit(112 + offset)) * 0.1f);
+    this->publish_temperature_(this->mosfet_temperature_sensor_, (int16_t) jk_get_16bit(112 + offset));
   } else {
     ESP_LOGD(TAG, "Unknown112: 0x%02X 0x%02X", data[112 + offset], data[113 + offset]);
   }
@@ -841,12 +843,10 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->discharging_power_sensor_, std::abs(std::min(0.0f, power)));  // -500W vs 0W -> 500W
 
   // 130   2   0xBE 0x00              Temperature Sensor 1  0.1          °C
-  this->publish_state_(this->temperatures_[0].temperature_sensor_,
-                       (float) ((int16_t) jk_get_16bit(130 + offset)) * 0.1f);
+  this->publish_temperature_(this->temperatures_[0].temperature_sensor_, (int16_t) jk_get_16bit(130 + offset));
 
   // 132   2   0xBF 0x00              Temperature Sensor 2  0.1          °C
-  this->publish_state_(this->temperatures_[1].temperature_sensor_,
-                       (float) ((int16_t) jk_get_16bit(132 + offset)) * 0.1f);
+  this->publish_temperature_(this->temperatures_[1].temperature_sensor_, (int16_t) jk_get_16bit(132 + offset));
 
   // 134   2   0xD2 0x00              MOS Temperature       0.1          °C
   if (frame_version == FRAME_VERSION_JK02_32S) {
@@ -856,7 +856,7 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
     this->publish_state_(this->errors_text_sensor_,
                          this->error_bits_to_string_(raw_errors_bitmask, this->errors_jk02_table_, 32));
   } else {
-    this->publish_state_(this->mosfet_temperature_sensor_, (float) ((int16_t) jk_get_16bit(134 + offset)) * 0.1f);
+    this->publish_temperature_(this->mosfet_temperature_sensor_, (int16_t) jk_get_16bit(134 + offset));
   }
 
   // 136-137: errors bitmask (JK02_24S only), little-endian 16-bit
@@ -983,12 +983,9 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
     this->publish_state_(this->cell_overvoltage_protection_recovery_countdown_sensor_,
                          (float) jk_get_16bit(180 + offset));
 
-    this->publish_state_(this->temperatures_[4].temperature_sensor_,
-                         (float) ((int16_t) jk_get_16bit(222 + offset)) * 0.1f);
-    this->publish_state_(this->temperatures_[3].temperature_sensor_,
-                         (float) ((int16_t) jk_get_16bit(224 + offset)) * 0.1f);
-    this->publish_state_(this->temperatures_[2].temperature_sensor_,
-                         (float) ((int16_t) jk_get_16bit(226 + offset)) * 0.1f);
+    this->publish_temperature_(this->temperatures_[4].temperature_sensor_, (int16_t) jk_get_16bit(222 + offset));
+    this->publish_temperature_(this->temperatures_[3].temperature_sensor_, (int16_t) jk_get_16bit(224 + offset));
+    this->publish_temperature_(this->temperatures_[2].temperature_sensor_, (int16_t) jk_get_16bit(226 + offset));
 
     // 234+32  4   0x3E 0x00 0x00 0x00    Detail log count     1
     this->publish_state_(this->detail_log_entry_count_sensor_, (float) jk_get_32bit(234 + offset));
@@ -2015,6 +2012,21 @@ void JkBmsBle::publish_state_(sensor::Sensor *sensor, float value) {
     return;
 
   sensor->publish_state(value);
+}
+
+void JkBmsBle::publish_temperature_(sensor::Sensor *sensor, int16_t raw_value) {
+  if (sensor == nullptr)
+    return;
+
+  // Unconnected temperature probes report -2000 (-200.0 °C). Clear a previous reading once
+  // instead of publishing the placeholder.
+  if (raw_value == TEMPERATURE_SENSOR_NOT_CONNECTED) {
+    if (!std::isnan(sensor->state))
+      sensor->publish_state(NAN);
+    return;
+  }
+
+  sensor->publish_state((float) raw_value * 0.1f);
 }
 
 void JkBmsBle::publish_state_(switch_::Switch *obj, const bool &state) {
