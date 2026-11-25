@@ -188,7 +188,16 @@ class TestJkBmsBleSensorLists:
         assert "battery_type_id" in ble_sensor.SENSOR_DEFS
         assert ble_sensor.CONF_POWER_ON_COUNT in ble_sensor.SENSOR_DEFS
         assert ble_sensor.CONF_DEVICE_ADDRESS in ble_sensor.SENSOR_DEFS
-        assert len(ble_sensor.SENSOR_DEFS) == 34
+        for key in (
+            "discharge_overcurrent_protection_recovery_countdown",
+            "discharge_short_circuit_protection_recovery_countdown",
+            "charge_overcurrent_protection_recovery_countdown",
+            "charge_short_circuit_protection_recovery_countdown",
+            "cell_undervoltage_protection_recovery_countdown",
+            "cell_overvoltage_protection_recovery_countdown",
+        ):
+            assert key in ble_sensor.SENSOR_DEFS
+        assert len(ble_sensor.SENSOR_DEFS) == 40
 
 
 class TestJkBmsBleErrorOverrides:

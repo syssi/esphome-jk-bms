@@ -361,6 +361,18 @@ sensor:
       name: "emergency time countdown"
     smart_sleep_countdown:
       name: "smart sleep countdown"
+    discharge_overcurrent_protection_recovery_countdown:
+      name: "discharge overcurrent protection recovery countdown"
+    discharge_short_circuit_protection_recovery_countdown:
+      name: "discharge short circuit protection recovery countdown"
+    charge_overcurrent_protection_recovery_countdown:
+      name: "charge overcurrent protection recovery countdown"
+    charge_short_circuit_protection_recovery_countdown:
+      name: "charge short circuit protection recovery countdown"
+    cell_undervoltage_protection_recovery_countdown:
+      name: "cell undervoltage protection recovery countdown"
+    cell_overvoltage_protection_recovery_countdown:
+      name: "cell overvoltage protection recovery countdown"
     charge_status_id:
       name: "charge status id"
     charge_status_time_elapsed:

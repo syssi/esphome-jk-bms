@@ -130,4 +130,16 @@ TEST(JkBmsV10CellInfoTest, NegTempsStateOfCharge) {
   EXPECT_FLOAT_EQ(soc.state, 47.0f);
 }
 
+// The layout of the protection recovery countdowns is only known for JK02_32S,
+// so they aren't published for JK02_24S frames.
+TEST(JkBmsV10CellInfoTest, ProtectionRecoveryCountdownsNotPublished) {
+  TestableJkBmsBle bms;
+  sensor::Sensor dch_ocp, cell_ovp;
+  bms.set_discharge_overcurrent_protection_recovery_countdown_sensor(&dch_ocp);
+  bms.set_cell_overvoltage_protection_recovery_countdown_sensor(&cell_ovp);
+  bms.decode_jk02_cell_info_(CELL_INFO_JK02_24S_V10);
+  EXPECT_FALSE(dch_ocp.has_state());
+  EXPECT_FALSE(cell_ovp.has_state());
+}
+
 }  // namespace esphome::jk_bms_ble::testing

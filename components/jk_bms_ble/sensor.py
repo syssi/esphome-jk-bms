@@ -57,6 +57,24 @@ CONF_POWER_ON_COUNT = "power_on_count"
 CONF_BALANCING_CURRENT = "balancing_current"
 CONF_EMERGENCY_TIME_COUNTDOWN = "emergency_time_countdown"
 CONF_SMART_SLEEP_COUNTDOWN = "smart_sleep_countdown"
+CONF_DISCHARGE_OVERCURRENT_PROTECTION_RECOVERY_COUNTDOWN = (
+    "discharge_overcurrent_protection_recovery_countdown"
+)
+CONF_DISCHARGE_SHORT_CIRCUIT_PROTECTION_RECOVERY_COUNTDOWN = (
+    "discharge_short_circuit_protection_recovery_countdown"
+)
+CONF_CHARGE_OVERCURRENT_PROTECTION_RECOVERY_COUNTDOWN = (
+    "charge_overcurrent_protection_recovery_countdown"
+)
+CONF_CHARGE_SHORT_CIRCUIT_PROTECTION_RECOVERY_COUNTDOWN = (
+    "charge_short_circuit_protection_recovery_countdown"
+)
+CONF_CELL_UNDERVOLTAGE_PROTECTION_RECOVERY_COUNTDOWN = (
+    "cell_undervoltage_protection_recovery_countdown"
+)
+CONF_CELL_OVERVOLTAGE_PROTECTION_RECOVERY_COUNTDOWN = (
+    "cell_overvoltage_protection_recovery_countdown"
+)
 CONF_HEATING_CURRENT = "heating_current"
 CONF_CHARGE_STATUS_ID = "charge_status_id"
 CONF_CHARGE_STATUS_TIME_ELAPSED = "charge_status_time_elapsed"
@@ -280,6 +298,42 @@ SENSOR_DEFS = {
         "device_class": DEVICE_CLASS_EMPTY,
     },
     CONF_SMART_SLEEP_COUNTDOWN: {
+        "unit_of_measurement": UNIT_SECOND,
+        "icon": ICON_TIMELAPSE,
+        "accuracy_decimals": 0,
+        "device_class": DEVICE_CLASS_EMPTY,
+    },
+    CONF_DISCHARGE_OVERCURRENT_PROTECTION_RECOVERY_COUNTDOWN: {
+        "unit_of_measurement": UNIT_SECOND,
+        "icon": ICON_TIMELAPSE,
+        "accuracy_decimals": 0,
+        "device_class": DEVICE_CLASS_EMPTY,
+    },
+    CONF_DISCHARGE_SHORT_CIRCUIT_PROTECTION_RECOVERY_COUNTDOWN: {
+        "unit_of_measurement": UNIT_SECOND,
+        "icon": ICON_TIMELAPSE,
+        "accuracy_decimals": 0,
+        "device_class": DEVICE_CLASS_EMPTY,
+    },
+    CONF_CHARGE_OVERCURRENT_PROTECTION_RECOVERY_COUNTDOWN: {
+        "unit_of_measurement": UNIT_SECOND,
+        "icon": ICON_TIMELAPSE,
+        "accuracy_decimals": 0,
+        "device_class": DEVICE_CLASS_EMPTY,
+    },
+    CONF_CHARGE_SHORT_CIRCUIT_PROTECTION_RECOVERY_COUNTDOWN: {
+        "unit_of_measurement": UNIT_SECOND,
+        "icon": ICON_TIMELAPSE,
+        "accuracy_decimals": 0,
+        "device_class": DEVICE_CLASS_EMPTY,
+    },
+    CONF_CELL_UNDERVOLTAGE_PROTECTION_RECOVERY_COUNTDOWN: {
+        "unit_of_measurement": UNIT_SECOND,
+        "icon": ICON_TIMELAPSE,
+        "accuracy_decimals": 0,
+        "device_class": DEVICE_CLASS_EMPTY,
+    },
+    CONF_CELL_OVERVOLTAGE_PROTECTION_RECOVERY_COUNTDOWN: {
         "unit_of_measurement": UNIT_SECOND,
         "icon": ICON_TIMELAPSE,
         "accuracy_decimals": 0,
