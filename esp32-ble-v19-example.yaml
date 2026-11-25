@@ -69,7 +69,7 @@ jk_bms_ble:
     protocol_version: ${protocol_version}
     throttle: 5s
     id: bms0
-    # Optional: sets the BMS clock on every connect. Remove if your BMS doesn't need it.
+    # Optional: sets the BMS clock on every connect if the BMS reports a real-time clock
     time_id: sntp_time
     # Override the label of one or more error bits (bit 0-31, JK02 only).
     # An empty label suppresses the bit entirely.
@@ -485,5 +485,7 @@ text_sensor:
       name: "manufacturing date"
     serial_number:
       name: "serial number"
+    device_time:
+      name: "device time"
     device_name:
       name: "device name"

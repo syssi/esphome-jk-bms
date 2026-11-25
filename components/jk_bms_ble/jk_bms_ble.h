@@ -377,6 +377,9 @@ class JkBmsBle :
   void set_device_name_text_sensor(text_sensor::TextSensor *device_name_text_sensor) {
     device_name_text_sensor_ = device_name_text_sensor;
   }
+  void set_device_time_text_sensor(text_sensor::TextSensor *device_time_text_sensor) {
+    device_time_text_sensor_ = device_time_text_sensor;
+  }
   void set_manufacturing_date_text_sensor(text_sensor::TextSensor *manufacturing_date_text_sensor) {
     manufacturing_date_text_sensor_ = manufacturing_date_text_sensor;
   }
@@ -454,10 +457,12 @@ class JkBmsBle :
   void assemble(const uint8_t *data, uint16_t length);
   void set_protocol_version(ProtocolVersion protocol_version) { protocol_version_ = protocol_version; }
   ProtocolVersion get_protocol_version() { return protocol_version_; }
+  bool has_clock() const { return has_clock_; }
   static std::array<uint8_t, 20> build_frame(uint8_t address, uint32_t value, uint8_t length);
   static uint32_t encode_jk04_payload(float value, uint8_t len, float factor);
-  // Converts a UTC unix timestamp into the BMS clock format (local wall-clock seconds since 2020-01-01 00:00:00)
-  static uint32_t encode_time(time_t utc, int32_t timezone_offset);
+  // Converts between a unix timestamp and the BMS clock format (seconds since 2020-01-01 00:00:00 UTC+8)
+  static uint32_t encode_time(time_t utc);
+  static time_t decode_time(uint32_t value);
 #ifdef USE_ESP32
   bool write_register(uint8_t address, uint32_t value, uint8_t length);
   bool sync_time();
@@ -617,6 +622,7 @@ class JkBmsBle :
   text_sensor::TextSensor *device_model_text_sensor_{nullptr};
   text_sensor::TextSensor *device_name_text_sensor_{nullptr};
   text_sensor::TextSensor *manufacturing_date_text_sensor_{nullptr};
+  text_sensor::TextSensor *device_time_text_sensor_{nullptr};
   text_sensor::TextSensor *serial_number_text_sensor_{nullptr};
 
 #ifdef USE_TIME
@@ -624,6 +630,7 @@ class JkBmsBle :
   bool time_synced_{false};
 #endif
 
+  bool has_clock_{false};
   std::vector<uint8_t> frame_buffer_;
   bool status_notification_received_ = false;
   uint8_t no_response_count_{0};
