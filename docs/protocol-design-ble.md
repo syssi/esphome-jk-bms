@@ -286,8 +286,8 @@ Dry contact bitmask notes for byte 281 (JK02_32S only):
 |          134-137 |      4 | Short circuit protection delay | uint32 | 1.0 | μs | - |
 |          138-141 |      4 | Start balance voltage | uint32 | 0.001 | V | - |
 |          142-269 |    128 | Connection wire resistance (1-32) | uint32 | 0.001 | Ω | 32 x 4-byte values |
-|          270-273 |      4 | Device address | uint32 | - | - | Only first byte used |
-|          274-277 |      4 | Precharge time | uint32 | 1 | s | Only first byte used |
+|          270-273 |      4 | Device address | uint32 | - | - | - |
+|          274-277 |      4 | Precharge time | uint32 | 1 | s | - |
 |          278-281 |      4 | (Reserved) | - | - | - | - |
 |          282-283 |      2 | Controls bitmask | uint16 | - | - | See bitmask notes |
 |              284 |      1 | Heating start temperature | int8 | 1 | °C | - |

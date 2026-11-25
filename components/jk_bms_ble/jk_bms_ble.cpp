@@ -1400,12 +1400,11 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
     // 258   4   0x00 0x00 0x00 0x00
     // 262   4   0x00 0x00 0x00 0x00
     // 266   4   0x00 0x00 0x00 0x00
-    // 270   4   0x00 0x00 0x00 0x00
-    this->publish_state_(this->device_address_sensor_, (uint8_t) data[270]);
+    // 270   4   0x00 0x00 0x00 0x00    Device address (uint32)
+    this->publish_state_(this->device_address_sensor_, (float) jk_get_32bit(270));
 
-    // 274   4   0x00 0x00 0x00 0x00
-    ESP_LOGI(TAG, "  Precharge time: %d s", data[274]);
-    this->publish_state_(this->discharge_precharge_time_number_, (float) data[274]);
+    // 274   4   0x00 0x00 0x00 0x00    Discharge precharge time (uint32)  s
+    this->publish_state_(this->discharge_precharge_time_number_, (float) jk_get_32bit(274));
 
     // 278   4   0x00 0x00 0x00 0x00
     // 282   2   0x00 0x00                 New controls bitmask
