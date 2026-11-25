@@ -13,6 +13,7 @@ CODEOWNERS = ["@syssi", "@txubelaxu"]
 CONF_ONLINE_STATUS = "online_status"
 CONF_DRY_CONTACT_1 = "dry_contact_1"
 CONF_DRY_CONTACT_2 = "dry_contact_2"
+CONF_PRECHARGING = "precharging"
 
 ICON_CHARGING = "mdi:battery-charging"
 ICON_DISCHARGING = "mdi:power-plug"
@@ -20,12 +21,14 @@ ICON_BALANCING = "mdi:battery-heart-variant"
 ICON_HEATING = "mdi:radiator"
 ICON_DRY_CONTACT_1 = "mdi:alarm-bell"
 ICON_DRY_CONTACT_2 = "mdi:alarm-bell"
+ICON_PRECHARGING = "mdi:battery-clock"
 
 BINARY_SENSOR_DEFS = {
     CONF_CHARGING: {"icon": ICON_CHARGING},
     CONF_DISCHARGING: {"icon": ICON_DISCHARGING},
     CONF_BALANCING: {"icon": ICON_BALANCING},
     CONF_HEATING: {"icon": ICON_HEATING},
+    CONF_PRECHARGING: {"icon": ICON_PRECHARGING},
     CONF_DRY_CONTACT_1: {"icon": ICON_DRY_CONTACT_1},
     CONF_DRY_CONTACT_2: {"icon": ICON_DRY_CONTACT_2},
     CONF_ONLINE_STATUS: {

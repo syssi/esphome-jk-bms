@@ -285,7 +285,10 @@ class TestJkBmsBleBinarySensorConstants:
         assert (
             ble_binary_sensor.CONF_ONLINE_STATUS in ble_binary_sensor.BINARY_SENSOR_DEFS
         )
-        assert len(ble_binary_sensor.BINARY_SENSOR_DEFS) == 7
+        assert (
+            ble_binary_sensor.CONF_PRECHARGING in ble_binary_sensor.BINARY_SENSOR_DEFS
+        )
+        assert len(ble_binary_sensor.BINARY_SENSOR_DEFS) == 8
 
 
 class TestJkBmsBleSelectConstants:
