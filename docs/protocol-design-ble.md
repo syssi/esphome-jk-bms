@@ -119,13 +119,13 @@ uint8_t crc(const uint8_t data[], const uint16_t len) {
 |               78 |      1 | Max voltage cell number | uint8 | 1 | - | Present in frame; ESPHome computes locally |
 |               79 |      1 | Min voltage cell number | uint8 | 1 | - | Present in frame; ESPHome computes locally |
 |           80-143 |     64 | Cell resistances 1-32 | uint16 | 0.001 | Ohm | 2 bytes per cell |
-|          144-145 |      2 | Power tube temperature | int16 | 0.1 | °C | - |
+|          144-145 |      2 | Power tube temperature | int16 | 0.1 | °C | -2000 is published as unknown |
 |          146-149 |      4 | Wire resistance warning bitmask | Raw | - | - | 32-bit LE; bit0=cell1 … bit31=cell32 |
 |          150-153 |      4 | Battery voltage | uint32 | 0.001 | V | - |
 |          154-157 |      4 | Battery power | uint32 | 0.001 | W | Raw field; ESPHome computes signed power from voltage × current instead |
 |          158-161 |      4 | Charge current | int32 | 0.001 | A | - |
-|          162-163 |      2 | Temperature Sensor 1 | int16 | 0.1 | °C | - |
-|          164-165 |      2 | Temperature Sensor 2 | int16 | 0.1 | °C | - |
+|          162-163 |      2 | Temperature Sensor 1 | int16 | 0.1 | °C | -2000 is published as unknown |
+|          164-165 |      2 | Temperature Sensor 2 | int16 | 0.1 | °C | -2000 is published as unknown |
 |          166-169 |      4 | Errors bitmask | uint32 | - | - | Little-endian; see errors bitmask notes below |
 |          170-171 |      2 | Balance current | int16 | 0.001 | A | - |
 |              172 |      1 | Balancing action | Raw | - | - | 0=Off, 1=Charging balancer, 2=Discharging balancer |
@@ -152,9 +152,9 @@ uint8_t crc(const uint8_t data[], const uint16_t len) {
 |          216-217 |      2 | Reserved | - | - | - | - |
 |          218-219 |      2 | Emergency time countdown | uint16 | 1 | s | >0 = Emergency active |
 |          226-229 |      4 | Battery voltage correction factor | float32 | - | - | Logged only; IEEE 754 single precision |
-|          254-255 |      2 | Temperature Sensor 5 | int16 | 0.1 | °C | - |
-|          256-257 |      2 | Temperature Sensor 4 | int16 | 0.1 | °C | - |
-|          258-259 |      2 | Temperature Sensor 3 | int16 | 0.1 | °C | - |
+|          254-255 |      2 | Temperature Sensor 5 | int16 | 0.1 | °C | Mirrors the MOS temperature on devices without a fifth probe (e.g. JK-B1A8S10P) |
+|          256-257 |      2 | Temperature Sensor 4 | int16 | 0.1 | °C | -2000 = probe not connected (published as unknown) |
+|          258-259 |      2 | Temperature Sensor 3 | int16 | 0.1 | °C | -2000 = probe not connected (published as unknown) |
 |          278-279 |      2 | Charge status time elapsed | uint16 | 1 | s | JK02_32S only |
 |              280 |      1 | Charge status ID | uint8 | - | - | JK02_32S only; 0=Bulk, 1=Absorption, 2=Float |
 |              281 |      1 | Dry contact switch status | Raw | - | - | JK02_32S only; see dry contact bitmask notes below |
