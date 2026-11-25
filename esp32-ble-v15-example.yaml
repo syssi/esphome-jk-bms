@@ -80,6 +80,8 @@ binary_sensor:
       name: "discharging"
     heating:
       name: "heating"
+    precharging:
+      name: "precharging"
     online_status:
       name: "online status"
     dry_contact_1:
