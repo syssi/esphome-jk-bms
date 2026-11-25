@@ -1404,7 +1404,6 @@ void JkBmsBle::decode_jk02_settings_(const std::vector<uint8_t> &data) {
     this->publish_state_(this->device_address_sensor_, (float) jk_get_32bit(270));
 
     // 274   4   0x00 0x00 0x00 0x00    Discharge precharge time (uint32)  s
-    ESP_LOGI(TAG, "  Precharge time: %lu s", (unsigned long) jk_get_32bit(274));
     this->publish_state_(this->discharge_precharge_time_number_, (float) jk_get_32bit(274));
 
     // 278   4   0x00 0x00 0x00 0x00
