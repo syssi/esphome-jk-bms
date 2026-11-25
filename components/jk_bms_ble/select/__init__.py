@@ -40,7 +40,7 @@ UART_PROTOCOL_OPTIONS = [
     "(9600) PYLON_low_voltage_Protocol_RS485_V3.5",
     "JK BMS PBxx SERIES LCD Protocol V1.0",
     "JK BMS LIN BUS V1.0",
-    "RS485 Protocol 17",
+    "JK Active Balancer LCD Protocol V1.0",
     "RS485 Protocol 18",
     "RS485 Protocol 19",
     "RS485 Protocol 20",
@@ -61,6 +61,13 @@ CAN_PROTOCOL_OPTIONS = [
     "LuxpowerTek Battery CAN protocol V01",
     "CAN BUS User customization 1",
     "CAN BUS User customization 2",
+    "JINLONG Low-voltage inverter CAN Bus Protocol V1.0",
+    "NMEA 2000 V1.300",
+    "CAN BUS Protocol 16",
+    "CAN BUS Protocol 17",
+    "CAN BUS Protocol 18",
+    "CAN BUS Protocol 19",
+    "CAN BUS Protocol 20",
 ]
 
 LCD_BUZZER_TRIGGER_OPTIONS = [
