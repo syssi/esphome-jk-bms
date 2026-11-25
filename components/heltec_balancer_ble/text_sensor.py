@@ -6,6 +6,11 @@ from esphome.const import ENTITY_CATEGORY_DIAGNOSTIC, ICON_EMPTY, ICON_TIMELAPSE
 from . import CONF_HELTEC_BALANCER_BLE_ID, HELTEC_BALANCER_BLE_COMPONENT_SCHEMA
 from .const import CONF_BATTERY_TYPE, CONF_BUZZER_MODE
 
+try:
+    from esphome.components.const import CONF_HARDWARE_VERSION
+except ImportError:  # ESPHome < 2026.12.0
+    CONF_HARDWARE_VERSION = "hardware_version"
+
 DEPENDENCIES = ["heltec_balancer_ble"]
 
 CODEOWNERS = ["@syssi"]
@@ -14,7 +19,6 @@ CONF_ERRORS = "errors"
 CONF_OPERATION_STATUS = "operation_status"
 CONF_TOTAL_RUNTIME_FORMATTED = "total_runtime_formatted"
 CONF_DEVICE_MODEL = "device_model"
-CONF_HARDWARE_VERSION = "hardware_version"
 CONF_SOFTWARE_VERSION = "software_version"
 CONF_PROTOCOL_VERSION = "protocol_version"
 CONF_MANUFACTURING_DATE = "manufacturing_date"
