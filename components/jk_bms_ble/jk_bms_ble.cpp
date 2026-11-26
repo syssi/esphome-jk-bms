@@ -1711,6 +1711,15 @@ void JkBmsBle::decode_logbook_(const std::vector<uint8_t> &data) {
   }
 }
 
+// Software 11.x and newer uses the JK02_32S frame layout, older JK02 firmware uses JK02_24S.
+// The hardware version isn't reliable (e.g. hw 10.XW with sw 11.21h uses JK02_32S).
+optional<ProtocolVersion> JkBmsBle::jk02_protocol_version_for_software(const std::string &software_version) {
+  const unsigned long software_major = strtoul(software_version.c_str(), nullptr, 10);
+  if (software_major == 0)
+    return {};
+  return software_major >= 11 ? PROTOCOL_VERSION_JK02_32S : PROTOCOL_VERSION_JK02_24S;
+}
+
 void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
   auto jk_get_16bit = [&](size_t i) -> uint16_t { return (uint16_t(data[i + 1]) << 8) | (uint16_t(data[i + 0]) << 0); };
   auto jk_get_32bit = [&](size_t i) -> uint32_t {
@@ -1802,31 +1811,22 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
 
   // 22    8   0x31 0x34 0x2E 0x58 0x41 0x00 0x00 0x00    Hardware version
   auto hardware_version_begin = data.begin() + 22;
-  const std::string hardware_version(hardware_version_begin,
-                                     std::find(hardware_version_begin, hardware_version_begin + 8, '\0'));
-  this->publish_state_(this->hardware_version_text_sensor_, hardware_version);
-
-  // The JK02 variants select frame layouts, not the number of cells.
-  size_t version_pos = 0;
-  if (!hardware_version.empty() && (hardware_version[0] == 'V' || hardware_version[0] == 'v'))
-    version_pos++;
-  unsigned int hardware_major = 0;
-  while (version_pos < hardware_version.size() && hardware_version[version_pos] >= '0' &&
-         hardware_version[version_pos] <= '9') {
-    hardware_major = hardware_major * 10 + (hardware_version[version_pos++] - '0');
-  }
-  if (this->protocol_version_ == PROTOCOL_VERSION_JK02_24S && hardware_major >= 11) {
-    ESP_LOGW(TAG,
-             "Possible protocol mismatch: hardware %s normally uses JK02_32S, but JK02_24S is configured. "
-             "Check protocol_version; cell voltages can look correct while aggregate readings are wrong.",
-             hardware_version.c_str());
-  }
+  this->publish_state_(
+      this->hardware_version_text_sensor_,
+      std::string(hardware_version_begin, std::find(hardware_version_begin, hardware_version_begin + 8, '\0')));
 
   // 30    8   0x31 0x34 0x2E 0x32 0x30 0x00 0x00 0x00    Software version
   auto software_version_begin = data.begin() + 30;
-  this->publish_state_(
-      this->software_version_text_sensor_,
-      std::string(software_version_begin, std::find(software_version_begin, software_version_begin + 8, '\0')));
+  const std::string software_version(software_version_begin,
+                                     std::find(software_version_begin, software_version_begin + 8, '\0'));
+  this->publish_state_(this->software_version_text_sensor_, software_version);
+
+  auto expected_protocol_version = jk02_protocol_version_for_software(software_version);
+  if (this->protocol_version_ != PROTOCOL_VERSION_JK04 && expected_protocol_version.has_value() &&
+      this->protocol_version_ != *expected_protocol_version) {
+    ESP_LOGW(TAG, "Software %s requires protocol_version %s", software_version.c_str(),
+             *expected_protocol_version == PROTOCOL_VERSION_JK02_32S ? "JK02_32S" : "JK02_24S");
+  }
 
   // 38    4   0x54 0xE6 0x01 0x00
   ESP_LOGI(TAG, "  Uptime: %lu s", (unsigned long) jk_get_32bit(38));

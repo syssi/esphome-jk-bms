@@ -5,6 +5,7 @@
 #include <ctime>
 #include "esphome/core/component.h"
 #include "esphome/core/hal.h"
+#include "esphome/core/optional.h"
 #include "esphome/components/binary_sensor/binary_sensor.h"
 #include "esphome/components/number/number.h"
 #include "esphome/components/sensor/sensor.h"
@@ -463,6 +464,7 @@ class JkBmsBle :
   // Converts between a unix timestamp and the BMS clock format (seconds since 2020-01-01 00:00:00 UTC+8)
   static uint32_t encode_time(time_t utc);
   static time_t decode_time(uint32_t value);
+  static optional<ProtocolVersion> jk02_protocol_version_for_software(const std::string &software_version);
 #ifdef USE_ESP32
   bool write_register(uint8_t address, uint32_t value, uint8_t length);
   bool sync_time();

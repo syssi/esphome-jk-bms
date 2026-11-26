@@ -1,55 +1,28 @@
 #include <gtest/gtest.h>
-#include <algorithm>
-#include <string>
 #include "common.h"
-#include "frames_jk02_32s_v11.h"
-#include "esphome/components/logger/logger.h"
 
 namespace esphome::jk_bms_ble::testing {
 
-class JkBmsBleProtocolWarningTest : public ::testing::Test {
- protected:
-  std::string decode_(const std::string &version, ProtocolVersion protocol) {
-    auto frame = DEVICE_INFO_JK02_24S_V10;
-    std::fill(frame.begin() + 22, frame.begin() + 30, 0);
-    std::copy_n(version.begin(), std::min(version.size(), size_t{8}), frame.begin() + 22);
-    return decode_frame_(frame, protocol);
-  }
-
-  std::string decode_frame_(const std::vector<uint8_t> &frame, ProtocolVersion protocol) {
-    logger::Logger logger{115200};
-    auto *previous = logger::global_logger;
-    logger.pre_setup();
-    ::testing::internal::CaptureStdout();
-    TestableJkBmsBle bms;
-    bms.set_protocol_version(protocol);
-    bms.decode_device_info_(frame);
-    logger::global_logger = previous;
-    return ::testing::internal::GetCapturedStdout();
-  }
-};
-
-TEST_F(JkBmsBleProtocolWarningTest, WarnsForNewHardwareUsingOldFrameFormat) {
-  for (const auto *version : {"11A", "18H", "11.XW", "V17H"}) {
+// Software versions taken from the supported devices list in the README and the captured frames
+TEST(JkBmsBleProtocolWarningTest, OlderSoftwareUsesJk02_24s) {
+  for (const auto *version : {"8.1.2H", "8.20G", "9.01M3", "10.02", "10.07", "10.07D30", "10.10"}) {
     SCOPED_TRACE(version);
-    EXPECT_NE(decode_(version, PROTOCOL_VERSION_JK02_24S).find("protocol mismatch"), std::string::npos);
+    EXPECT_EQ(JkBmsBle::jk02_protocol_version_for_software(version), PROTOCOL_VERSION_JK02_24S);
   }
 }
 
-TEST_F(JkBmsBleProtocolWarningTest, CapturedHardwareInfoWarnsOnlyForMismatchedConfiguration) {
-  EXPECT_NE(decode_frame_(DEVICE_INFO_JK02_32S_V11, PROTOCOL_VERSION_JK02_24S).find("protocol mismatch"),
-            std::string::npos);
-  EXPECT_EQ(decode_frame_(DEVICE_INFO_JK02_32S_V11, PROTOCOL_VERSION_JK02_32S).find("protocol mismatch"),
-            std::string::npos);
+TEST(JkBmsBleProtocolWarningTest, NewerSoftwareUsesJk02_32s) {
+  for (const auto *version : {"11.17", "11.21h", "11.284", "14.20", "15.38", "18.00", "19.27"}) {
+    SCOPED_TRACE(version);
+    EXPECT_EQ(JkBmsBle::jk02_protocol_version_for_software(version), PROTOCOL_VERSION_JK02_32S);
+  }
 }
 
-TEST_F(JkBmsBleProtocolWarningTest, DoesNotWarnForMatchingOrUnknownHardware) {
-  for (const auto *version : {"", "unknown", "10.XG", "9.0", "V", "X11", "0"}) {
+TEST(JkBmsBleProtocolWarningTest, UnknownSoftwareHasNoExpectation) {
+  for (const auto *version : {"", "unknown", "V11.2", "0.1"}) {
     SCOPED_TRACE(version);
-    EXPECT_EQ(decode_(version, PROTOCOL_VERSION_JK02_24S).find("protocol mismatch"), std::string::npos);
+    EXPECT_FALSE(JkBmsBle::jk02_protocol_version_for_software(version).has_value());
   }
-  EXPECT_EQ(decode_("11A", PROTOCOL_VERSION_JK02_32S).find("protocol mismatch"), std::string::npos);
-  EXPECT_EQ(decode_("18H", PROTOCOL_VERSION_JK04).find("protocol mismatch"), std::string::npos);
 }
 
 }  // namespace esphome::jk_bms_ble::testing
