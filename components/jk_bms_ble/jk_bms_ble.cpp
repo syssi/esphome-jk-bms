@@ -1714,7 +1714,7 @@ void JkBmsBle::decode_logbook_(const std::vector<uint8_t> &data) {
 // Software 11.x and newer uses the JK02_32S frame layout, older JK02 firmware uses JK02_24S.
 // The hardware version isn't reliable (e.g. hw 10.XW with sw 11.21h uses JK02_32S).
 optional<ProtocolVersion> JkBmsBle::jk02_protocol_version_for_software(const std::string &software_version) {
-  const unsigned long software_major = strtoul(software_version.c_str(), nullptr, 10);
+  const uint32_t software_major = strtoul(software_version.c_str(), nullptr, 10);
   if (software_major == 0)
     return {};
   return software_major >= 11 ? PROTOCOL_VERSION_JK02_32S : PROTOCOL_VERSION_JK02_24S;
@@ -1825,7 +1825,8 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
   if (this->protocol_version_ != PROTOCOL_VERSION_JK04 && expected_protocol_version.has_value() &&
       this->protocol_version_ != *expected_protocol_version) {
     ESP_LOGW(TAG, "Software %s requires protocol_version %s", software_version.c_str(),
-             *expected_protocol_version == PROTOCOL_VERSION_JK02_32S ? "JK02_32S" : "JK02_24S");
+             *expected_protocol_version == PROTOCOL_VERSION_JK02_32S ? LOG_STR_LITERAL("JK02_32S")
+                                                                     : LOG_STR_LITERAL("JK02_24S"));
   }
 
   // 38    4   0x54 0xE6 0x01 0x00
