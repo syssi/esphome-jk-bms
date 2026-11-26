@@ -225,6 +225,7 @@ Dry contact bitmask notes for byte 281 (JK02_32S only):
 |           86-101 |     16 | Serial number | string | - | - | Null-terminated string |
 |          102-117 |     16 | User data | string | - | - | Null-terminated string |
 |          118-133 |     16 | Setup passcode | string | - | - | Null-terminated string |
+|          182-183 |      2 | Dealer ID | uint16 | - | - | Little-endian. The JK app refuses devices with a dealer ID other than 0 |
 |              184 |      1 | UART1M Protocol number | uint8 | - | - | Protocol version |
 |              185 |      1 | CAN Protocol number | uint8 | - | - | Protocol version |
 |              218 |      1 | UART2M Protocol number | uint8 | - | - | Protocol version |
@@ -243,7 +244,15 @@ Dry contact bitmask notes for byte 281 (JK02_32S only):
 |              266 |      1 | RCV Time | uint8 | 0.1 | hours | Request Charge Voltage Time |
 |              267 |      1 | RFV Time | uint8 | 0.1 | hours | Request Float Voltage Time |
 |              268 |      1 | CAN protocol library version | uint8 | - | - | Protocol version |
+|              298 |      1 | Protocol version (`protocolVer`) | uint8 | - | - | See notes below |
 |              299 |      1 | CRC checksum | uint8 | - | - | - |
+
+Notes for byte 298: the JK app (6.3.01) reads this byte from the first device info frame. `2` selects the
+`JK02_32S` layout. `0` makes the app look up the device model (bytes 6-21) in two allowlists: known new models use
+`JK02_32S`, known old models (mostly with a `JK-` instead of a `JK_` prefix) use `JK02_24S` and are converted to the
+new layout by the app. Unknown models and other values are rejected. Most captured devices report `0` with both
+layouts, so this byte alone doesn't identify the layout. `jk_bms_ble` derives the expected layout from the software
+version instead (`< 11` → `JK02_24S`, `>= 11` → `JK02_32S`) and warns about a mismatch.
 
 ### Settings Frame Specification (`JK02_32S`)
 

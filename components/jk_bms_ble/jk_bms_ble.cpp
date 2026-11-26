@@ -1915,8 +1915,8 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
   // 179  0x00
   // 180  0x00
   // 181  0x00
-  // 182  0x00
-  // 183  0x00
+  // 182  2    0x00 0x00         Dealer ID
+  ESP_LOGD(TAG, "  Dealer ID: %u", jk_get_16bit(182));
   // 184  0x01                  UART1M Protocol number
   if (const char *name = uart_protocol_table_.get(data[184]))
     this->publish_state_(this->uart1_protocol_select_, name);
@@ -2016,7 +2016,8 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
   // 295  0x00
   // 296  0x00
   // 297  0x00
-  // 298  0x00
+  // 298  0x00  Protocol version (protocolVer)
+  ESP_LOGD(TAG, "  Protocol version: %u", data[298]);
   // 299  0x1B  CRC
 }
 
