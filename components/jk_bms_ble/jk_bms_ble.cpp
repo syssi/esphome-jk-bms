@@ -494,6 +494,9 @@ void JkBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gat
       this->char_handle_ = 0;
 
       this->frame_buffer_.clear();
+      // Pending writes belong to the lost connection and must not be sent after a reconnect
+      this->pending_writes_.clear();
+      this->cancel_timeout("write_queue");
       this->cancel_timeout("verify_settings");
 
       break;
@@ -612,36 +615,40 @@ bool JkBmsBle::write_register(uint8_t address, uint32_t value, uint8_t length) {
     return false;
   }
 
-  // Defer the write to the next free slot, WRITE_SPACING_MS after the previously scheduled one
-  const uint32_t now = millis();
-  uint32_t delay = 0;
-  if (this->deferred_writes_ > 0) {
-    // The previous slot is at most a few loop iterations in the past, so the signed difference is safe
-    delay = std::max<int32_t>((int32_t) (this->last_write_slot_ - now), 0) + WRITE_SPACING_MS;
-  } else if (now - this->last_write_slot_ < WRITE_SPACING_MS) {
-    delay = WRITE_SPACING_MS - (now - this->last_write_slot_);
-  }
-  this->last_write_slot_ = now + delay;
+  this->enqueue_write_(address, value, length);
+  return this->process_write_queue_();
+}
 
-  bool sent = true;
-  if (delay == 0) {
-    sent = this->send_frame_(address, value, length);
-  } else {
-    this->deferred_writes_++;
-    this->set_timeout(delay, [this, address, value, length]() {
-      this->deferred_writes_--;
-      if (this->node_state == espbt::ClientState::ESTABLISHED) {
-        this->send_frame_(address, value, length);
-      }
-    });
+// Sends the oldest pending write if WRITE_SPACING_MS have passed since the previous one, otherwise (re)arms the single
+// "write_queue" timeout for the next free slot
+bool JkBmsBle::process_write_queue_() {
+  if (this->pending_writes_.empty())
+    return true;
+
+  const uint32_t now = millis();
+  const uint32_t elapsed = now - this->last_write_;
+  if (this->has_written_ && elapsed < WRITE_SPACING_MS) {
+    this->set_timeout("write_queue", WRITE_SPACING_MS - elapsed, [this]() { this->process_write_queue_(); });
+    return true;
   }
+
+  const PendingWrite write = this->pending_writes_.front();
+  this->pending_writes_.erase(this->pending_writes_.begin());
+  this->last_write_ = now;
+  this->has_written_ = true;
+
+  const bool sent = this->send_frame_(write.address, write.value, write.length);
 
   // Every settings write restarts the timer, so a batch of writes results in a single read
-  if (address != COMMAND_CELL_INFO && address != COMMAND_DEVICE_INFO && address != COMMAND_LOGBOOK) {
-    this->set_timeout("verify_settings", delay + SETTINGS_VERIFICATION_DELAY_MS, [this]() {
+  if (is_settings_register_(write.address)) {
+    this->set_timeout("verify_settings", SETTINGS_VERIFICATION_DELAY_MS, [this]() {
       ESP_LOGD(TAG, "Request settings to verify the last write");
       this->write_register(COMMAND_CELL_INFO, 0x00000000, 0x00);
     });
+  }
+
+  if (!this->pending_writes_.empty()) {
+    this->set_timeout("write_queue", WRITE_SPACING_MS, [this]() { this->process_write_queue_(); });
   }
 
   return sent;
@@ -716,6 +723,22 @@ void JkBmsBle::sync_time_on_connect_() {
 
   this->time_synced_ = this->sync_time();
 #endif
+}
+
+void JkBmsBle::enqueue_write_(uint8_t address, uint32_t value, uint8_t length) {
+  // The last value wins: a pending write to the same register is updated in place and keeps its position
+  for (auto &pending : this->pending_writes_) {
+    if (pending.address == address) {
+      pending.value = value;
+      pending.length = length;
+      return;
+    }
+  }
+  this->pending_writes_.push_back({address, value, length});
+}
+
+bool JkBmsBle::is_settings_register_(uint8_t address) {
+  return address != COMMAND_CELL_INFO && address != COMMAND_DEVICE_INFO && address != COMMAND_LOGBOOK;
 }
 
 std::array<uint8_t, 20> JkBmsBle::build_frame(uint8_t address, uint32_t value, uint8_t length) {
