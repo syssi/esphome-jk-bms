@@ -6,6 +6,7 @@
 #include "esphome/core/component.h"
 #include "esphome/core/hal.h"
 #include "esphome/core/optional.h"
+#include "write_queue.h"
 #include "esphome/components/binary_sensor/binary_sensor.h"
 #include "esphome/components/number/number.h"
 #include "esphome/components/sensor/sensor.h"
@@ -30,14 +31,6 @@ struct LookupTable {
   const char *const *entries{nullptr};
   size_t count{0};
   const char *get(uint8_t index) const { return (entries != nullptr && index < count) ? entries[index] : nullptr; }
-};
-
-// Frames requested shortly after a write to verify it, so the entity publishes what the BMS actually stored. The BMS
-// never acknowledges a write. Flags, set per writable entity in its Python table.
-enum Verify : uint8_t {
-  VERIFY_NONE = 0,
-  VERIFY_SETTINGS = 1 << 0,     // 0x96 request, answered with a settings frame
-  VERIFY_DEVICE_INFO = 1 << 1,  // 0x97 request
 };
 
 enum ProtocolVersion {
@@ -649,29 +642,14 @@ class JkBmsBle :
   std::vector<uint8_t> frame_buffer_;
   bool status_notification_received_ = false;
   uint8_t no_response_count_{0};
-  struct PendingWrite {
-    uint8_t address;
-    uint32_t value;
-    uint8_t length;
-    uint8_t verify;
-  };
-  // Writes waiting for their slot, oldest first. Holds at most one entry per register: a newer value replaces a pending
-  // one in place, so the queue is bounded by the number of registers.
-  std::vector<PendingWrite> pending_writes_;
-  void enqueue_write_(uint8_t address, uint32_t value, uint8_t length, uint8_t verify);
 #ifdef USE_ESP32
   uint16_t char_handle_{0};
   uint16_t notify_handle_{0};
-  // The last command was sent and the queue waits for its acknowledgement (plus a settle time) or the timeout
-  bool awaiting_acknowledgement_{false};
-  uint8_t awaited_command_{0};
-  uint32_t awaited_since_{0};
+  WriteQueue write_queue_;
 
   // Requests a frame (0x96 cell info/settings, 0x97 device info). Queued like a write, but never verified.
   bool request_frame_(uint8_t command);
-  bool process_write_queue_();
-  void on_acknowledgement_();
-  void schedule_verification_(uint8_t verify);
+  bool service_write_queue_();
   bool send_frame_(uint8_t address, uint32_t value, uint8_t length);
 #endif
   uint32_t last_cell_info_{0};
