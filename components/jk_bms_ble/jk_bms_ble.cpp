@@ -1940,7 +1940,6 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
   // 62   16   0x31 0x32 0x33 0x34 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
   // Device password, written via 0x9C. The BMS only stores it (no Bluetooth pairing PIN).
   const std::string device_password(data.begin() + 62, std::find(data.begin() + 62, data.begin() + 62 + 16, 0));
-  ESP_LOGI(TAG, "  Device password: %s", device_password.c_str());
   this->publish_state_(this->device_password_text_, device_password);
 
   // 78    6   0x32 0x33 0x31 0x31 0x31 0x38    Manufacturing date (YYMMDD), empty on JK04
