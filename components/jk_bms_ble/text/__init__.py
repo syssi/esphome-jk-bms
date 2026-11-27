@@ -15,8 +15,10 @@ DEPENDENCIES = ["jk_bms_ble"]
 
 CODEOWNERS = ["@syssi"]
 
+CONF_DEVICE_PASSWORD = "device_password"
 CONF_SETTINGS_PASSWORD = "settings_password"
 
+ICON_DEVICE_PASSWORD = "mdi:key"
 ICON_SETTINGS_PASSWORD = "mdi:form-textbox-password"
 
 # The payload of a command frame holds 13 bytes
@@ -24,6 +26,9 @@ MAX_PAYLOAD_SIZE = 13
 
 TEXTS = {
     # register, min_length, max_length, verify
+    # Stored at device info bytes 62-77, factory default 1234. The BMS only stores it: it is no Bluetooth pairing PIN and
+    # doesn't protect the connection or writes.
+    CONF_DEVICE_PASSWORD: [0x9C, 1, 13, VERIFY_DEVICE_INFO],
     # The app asks for this password before changing settings; the BMS doesn't check it. While it is the factory
     # default 123456 the BMS raises the "Modify password in time" alarm (red LED).
     CONF_SETTINGS_PASSWORD: [0xA0, 1, 13, VERIFY_DEVICE_INFO],
@@ -39,6 +44,12 @@ JkText = jk_bms_ble_ns.class_("JkText", text.Text, cg.Component)
 
 CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
     {
+        cv.Optional(CONF_DEVICE_PASSWORD): text.text_schema(
+            JkText,
+            icon=ICON_DEVICE_PASSWORD,
+            entity_category=ENTITY_CATEGORY_CONFIG,
+            mode="text",
+        ).extend(cv.COMPONENT_SCHEMA),
         cv.Optional(CONF_SETTINGS_PASSWORD): text.text_schema(
             JkText,
             icon=ICON_SETTINGS_PASSWORD,

@@ -40,6 +40,8 @@ sends them that way.
 
 - `0x97`: Device info request → triggers Frame 0x03 (device info)
 - `0x96`: Settings request → triggers Frame 0x01 (settings); Frame 0x02 (cell data) auto-streams once both `0x96` and `0x97` have been sent
+- `0x9C`: Sets the device password (device info bytes 62-77, 1-13 characters, factory default `1234`). The BMS only
+  stores it: it is no Bluetooth pairing PIN and protects neither the connection nor writes
 - `0xA0`: Sets the settings password (device info bytes 118-133), see below
 
 ### Example Command Payloads
@@ -72,7 +74,7 @@ itself; the BMS accepts writes without it. While the password is the factory def
 "Modify password in time" alarm (bit 19, red LED). Measured on a JK-B1A8S10P (hw 19H, sw 19.25): `0xA0` is
 acknowledged, the BMS stores the password zero-padded to 16 bytes and clears the alarm within a second; writing
 `123456` back raises it again. The PB firmware V19.27 does the same (it re-evaluates the alarm after every `0xA0`
-write). `0x9C` sets the Bluetooth passcode (bytes 62-77) instead and doesn't affect the alarm.
+write). `0x9C` sets the device password (bytes 62-77) instead and doesn't affect the alarm.
 
 #### Cell Info Command (0x96)
 ```
@@ -263,7 +265,7 @@ Dry contact bitmask notes for byte 281 (JK02_32S only):
 |            38-41 |      4 | Device uptime | uint32 | 1 | seconds | Little-endian |
 |            42-45 |      4 | Power on count | uint32 | 1 | count | Little-endian |
 |            46-61 |     16 | Device name | string | - | - | Null-terminated string |
-|            62-77 |     16 | Device passcode | string | - | - | Null-terminated string, Bluetooth passcode, set via `0x9C` |
+|            62-77 |     16 | Device password | string | - | - | Null-terminated string, set via `0x9C` |
 |            78-85 |      8 | Manufacturing date | string | - | - | Null-terminated string |
 |           86-101 |     16 | Serial number | string | - | - | Null-terminated string |
 |          102-117 |     16 | User data | string | - | - | Null-terminated string |
