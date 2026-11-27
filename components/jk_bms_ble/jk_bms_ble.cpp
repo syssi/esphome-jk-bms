@@ -627,7 +627,8 @@ bool JkBmsBle::write_register(uint8_t address, uint32_t value, uint8_t length, u
 
 bool JkBmsBle::request_frame_(uint8_t command) { return this->write_register(command, 0x00000000, 0x00, VERIFY_NONE); }
 
-// Does whatever the write queue has due and arms a single timer for its next deadline. Returns false if a send failed.
+// Does whatever the command queue has due and arms a single timer for its next deadline. Returns false if a send
+// failed.
 bool JkBmsBle::service_command_queue_() {
   const uint32_t now = millis();
 
