@@ -18,6 +18,7 @@ class JkSwitch : public switch_::Switch {
   void set_jk02_32s_holding_register(uint8_t jk02_32s_holding_register) {
     this->jk02_32s_holding_register_ = jk02_32s_holding_register;
   };
+  void set_verify(uint8_t verify) { this->verify_ = verify; }
 
  protected:
   void write_state(bool state) override;
@@ -25,6 +26,7 @@ class JkSwitch : public switch_::Switch {
   uint8_t jk04_holding_register_;
   uint8_t jk02_holding_register_;
   uint8_t jk02_32s_holding_register_;
+  uint8_t verify_{VERIFY_NONE};
 };
 
 }  // namespace esphome::jk_bms_ble

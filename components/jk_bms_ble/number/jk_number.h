@@ -23,6 +23,7 @@ class JkNumber : public number::Number, public Component {
   };
   void set_factor(float factor) { this->factor_ = factor; };
   void set_length(uint8_t length) { this->length_ = length; };
+  void set_verify(uint8_t verify) { this->verify_ = verify; }
   void dump_config() override;
 
  protected:
@@ -35,6 +36,7 @@ class JkNumber : public number::Number, public Component {
   uint8_t jk02_32s_holding_register_;
   uint8_t length_;
   float factor_{1000.0f};
+  uint8_t verify_{VERIFY_NONE};
 };
 
 }  // namespace esphome::jk_bms_ble

@@ -20,7 +20,7 @@ void JkSelect::control(const std::string &value) {
     return;
   }
   uint32_t index = (uint32_t) (it - options.begin());
-  if (this->parent_->write_register(this->holding_register_, index, this->data_len_)) {
+  if (this->parent_->write_register(this->holding_register_, index, this->data_len_, this->verify_)) {
     this->publish_state(value);
   }
 }
@@ -30,7 +30,7 @@ void JkPresetSelect::dump_config() { LOG_SELECT("", "JkBmsBle Preset Select", th
 void JkPresetSelect::control(const std::string &value) {
   for (const auto &[opt, reg] : this->option_registers_) {
     if (opt == value) {
-      this->parent_->write_register(reg, 0x00000000, 0x00);
+      this->parent_->write_register(reg, 0x00000000, 0x00, this->verify_);
       return;
     }
   }

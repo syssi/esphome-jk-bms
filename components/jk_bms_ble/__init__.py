@@ -129,6 +129,24 @@ PROTOCOL_VERSION_OPTIONS = {
     "JK02_32S": ProtocolVersion.PROTOCOL_VERSION_JK02_32S,
 }
 
+# The BMS never acknowledges a write. Each writable entity names the frames whose response shows the written value;
+# they are requested shortly after the write, so the entity publishes what the BMS actually stored. Flags, combinable
+# with "|". VERIFY_NONE if no frame contains the value or every cell info frame already does.
+Verify = jk_bms_ble_ns.enum("Verify")
+VERIFY_NONE = Verify.VERIFY_NONE
+VERIFY_SETTINGS = Verify.VERIFY_SETTINGS
+VERIFY_DEVICE_INFO = Verify.VERIFY_DEVICE_INFO
+
+
+def check_write_table(table, fields):
+    """Fails on import if an entry of a write table lacks a field, its verify frames in particular."""
+    for key, entry in table.items():
+        if len(entry) != len(fields):
+            raise ValueError(
+                f"jk_bms_ble: entry '{key}' must be [{', '.join(fields)}], got {entry}"
+            )
+
+
 JK_BMS_BLE_COMPONENT_SCHEMA = cv.Schema(
     {
         cv.GenerateID(CONF_JK_BMS_BLE_ID): cv.use_id(JkBmsBle),
