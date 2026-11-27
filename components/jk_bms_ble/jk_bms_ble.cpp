@@ -803,8 +803,9 @@ void JkBmsBle::assemble(const uint8_t *data, uint16_t length) {
   static const uint8_t PREAMBLE[4] = {0x55, 0xAA, 0xEB, 0x90};
   const uint8_t *preamble = std::search(data, data + length, std::begin(PREAMBLE), std::end(PREAMBLE));
   if (preamble != data + length) {
-    if (preamble != data)
+    if (preamble != data) {
       ESP_LOGV(TAG, "Dropping %u bytes in front of the preamble", (unsigned) (preamble - data));
+    }
     this->frame_buffer_.clear();
     length -= preamble - data;
     data = preamble;

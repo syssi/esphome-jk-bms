@@ -36,78 +36,78 @@ static void assemble_frame(TestableJkBmsBle &bms, const std::vector<uint8_t> &fr
 
 class JkBmsAssembleTest : public ::testing::Test {
  protected:
-  void SetUp() override { bms.set_software_version_text_sensor(&software_version); }
+  void SetUp() override { bms_.set_software_version_text_sensor(&software_version_); }
 
   // True if a device info frame was decoded since the last call
-  bool decoded() {
-    bool result = software_version.state == "19.27";
-    software_version.state = "";
+  bool decoded_() {
+    bool result = software_version_.state == "19.27";
+    software_version_.state = "";
     return result;
   }
 
-  TestableJkBmsBle bms;
-  text_sensor::TextSensor software_version;
+  TestableJkBmsBle bms_;
+  text_sensor::TextSensor software_version_;
 };
 
 TEST_F(JkBmsAssembleTest, FrameSplitIntoNotificationsIsDecoded) {
-  assemble_frame(bms, DEVICE_INFO_JK02_32S_V19, 128);
-  EXPECT_TRUE(decoded());
-  EXPECT_TRUE(bms.frame_buffer_.empty());
+  assemble_frame(bms_, DEVICE_INFO_JK02_32S_V19, 128);
+  EXPECT_TRUE(decoded_());
+  EXPECT_TRUE(bms_.frame_buffer_.empty());
 }
 
 TEST_F(JkBmsAssembleTest, AtLinesAreDropped) {
   for (int i = 0; i < 100; i++)
-    assemble(bms, AT_LINE);
-  EXPECT_TRUE(bms.frame_buffer_.empty());
+    assemble(bms_, AT_LINE);
+  EXPECT_TRUE(bms_.frame_buffer_.empty());
 }
 
 // 75 "AT\r\n" lines used to add up to 300 bytes and fail the CRC check of a frame that never existed
 TEST_F(JkBmsAssembleTest, AtLinesDontBreakTheNextFrame) {
   for (int i = 0; i < 74; i++)
-    assemble(bms, AT_LINE);
-  assemble_frame(bms, DEVICE_INFO_JK02_32S_V19, 128);
-  EXPECT_TRUE(decoded());
+    assemble(bms_, AT_LINE);
+  assemble_frame(bms_, DEVICE_INFO_JK02_32S_V19, 128);
+  EXPECT_TRUE(decoded_());
 }
 
 TEST_F(JkBmsAssembleTest, AcknowledgementsAreDropped) {
-  assemble(bms, ACKNOWLEDGEMENT);
-  assemble(bms, concat({AT_LINE, ACKNOWLEDGEMENT, AT_LINE}));
-  assemble(bms, concat({ACKNOWLEDGEMENT, AT_LINE}));
-  EXPECT_TRUE(bms.frame_buffer_.empty());
+  assemble(bms_, ACKNOWLEDGEMENT);
+  assemble(bms_, concat({AT_LINE, ACKNOWLEDGEMENT, AT_LINE}));
+  assemble(bms_, concat({ACKNOWLEDGEMENT, AT_LINE}));
+  EXPECT_TRUE(bms_.frame_buffer_.empty());
 }
 
 TEST_F(JkBmsAssembleTest, AtLineInFrontOfThePreambleIsDropped) {
   const auto &frame = DEVICE_INFO_JK02_32S_V19;
-  assemble(bms, concat({AT_LINE, slice(frame, 0, 124)}));
-  assemble(bms, slice(frame, 124, 252));
-  assemble(bms, slice(frame, 252, 300));
-  EXPECT_TRUE(decoded());
+  assemble(bms_, concat({AT_LINE, slice(frame, 0, 124)}));
+  assemble(bms_, slice(frame, 124, 252));
+  assemble(bms_, slice(frame, 252, 300));
+  EXPECT_TRUE(decoded_());
 }
 
 // Old devices were said to send frames of up to 320 bytes: the frame followed by its acknowledgement
 TEST_F(JkBmsAssembleTest, AcknowledgementBehindTheFrameIsDropped) {
-  assemble_frame(bms, concat({DEVICE_INFO_JK02_32S_V19, ACKNOWLEDGEMENT}), 128);
-  EXPECT_TRUE(decoded());
-  EXPECT_TRUE(bms.frame_buffer_.empty());
+  assemble_frame(bms_, concat({DEVICE_INFO_JK02_32S_V19, ACKNOWLEDGEMENT}), 128);
+  EXPECT_TRUE(decoded_());
+  EXPECT_TRUE(bms_.frame_buffer_.empty());
 }
 
 TEST_F(JkBmsAssembleTest, BytesBetweenFramesAreDropped) {
-  assemble_frame(bms, DEVICE_INFO_JK02_32S_V19, 150);
-  EXPECT_TRUE(decoded());
+  assemble_frame(bms_, DEVICE_INFO_JK02_32S_V19, 150);
+  EXPECT_TRUE(decoded_());
 
-  assemble(bms, concat({ACKNOWLEDGEMENT, AT_LINE}));
-  assemble(bms, AT_LINE);
-  EXPECT_TRUE(bms.frame_buffer_.empty());
+  assemble(bms_, concat({ACKNOWLEDGEMENT, AT_LINE}));
+  assemble(bms_, AT_LINE);
+  EXPECT_TRUE(bms_.frame_buffer_.empty());
 
-  assemble_frame(bms, DEVICE_INFO_JK02_32S_V19, 150);
-  EXPECT_TRUE(decoded());
+  assemble_frame(bms_, DEVICE_INFO_JK02_32S_V19, 150);
+  EXPECT_TRUE(decoded_());
 }
 
 // A frame cut short (e.g. a lost notification) is discarded by the next preamble
 TEST_F(JkBmsAssembleTest, IncompleteFrameIsReplacedByTheNextOne) {
-  assemble(bms, slice(DEVICE_INFO_JK02_32S_V19, 0, 128));
-  assemble_frame(bms, DEVICE_INFO_JK02_32S_V19, 128);
-  EXPECT_TRUE(decoded());
+  assemble(bms_, slice(DEVICE_INFO_JK02_32S_V19, 0, 128));
+  assemble_frame(bms_, DEVICE_INFO_JK02_32S_V19, 128);
+  EXPECT_TRUE(decoded_());
 }
 
 }  // namespace esphome::jk_bms_ble::testing
