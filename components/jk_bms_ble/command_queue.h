@@ -20,7 +20,7 @@ enum Verify : uint8_t {
 //
 // The BMS drops a command that arrives while it is still processing the previous one, e.g. a 0x96 request sent while
 // the device info frame of a 0x97 request is still being transmitted. It acknowledges every processed command
-// (64-250 ms after a write, up to 454 ms after a 0x96 request; seen on JK02_32S hw 19, JK02_24S hw 7.x, 8.x, 10.x and
+// (64-250 ms after a write, up to 488 ms after a 0x96 request; seen on JK02_32S hw 19, JK02_24S hw 7.x, 8.x, 10.x and
 // JK04 hw 3.0), so the next command is sent once the acknowledgement arrived and the settle time passed. The timeout
 // releases the queue if an acknowledgement gets lost or a device doesn't send one.
 //
