@@ -5,7 +5,15 @@ from esphome.components import select
 import esphome.config_validation as cv
 from esphome.core import CORE
 
-from .. import CONF_JK_BMS_BLE_ID, DOMAIN, JK_BMS_BLE_COMPONENT_SCHEMA, jk_bms_ble_ns
+from .. import (
+    CONF_JK_BMS_BLE_ID,
+    DOMAIN,
+    JK_BMS_BLE_COMPONENT_SCHEMA,
+    VERIFY_DEVICE_INFO,
+    VERIFY_SETTINGS,
+    check_write_table,
+    jk_bms_ble_ns,
+)
 from ..const import (
     CONF_CAN_PROTOCOL,
     CONF_DRY1_TRIGGER,
@@ -94,7 +102,7 @@ MULTIPLEXED_PORT_MODE_OPTIONS = [
     "RS485",
 ]
 
-# Maps config key → (register, options, table setter, constexpr array name, data_len).
+# Maps config key → (register, options, table setter, constexpr array name, data_len, verify).
 # Entries sharing the same arr_name also share the same LookupTable in C++;
 # Lookup arrays are shared by all jk_bms_ble instances in one build.
 _UART_ARR = "JK_BMS_BLE_UART_PROTOCOL_OPTS_"
@@ -109,6 +117,7 @@ SELECTS = {
         "set_uart_protocol_table",
         _UART_ARR,
         0x02,
+        VERIFY_DEVICE_INFO,
     ),
     CONF_UART2_PROTOCOL: (
         0xA8,
@@ -116,6 +125,7 @@ SELECTS = {
         "set_uart_protocol_table",
         _UART_ARR,
         0x02,
+        VERIFY_DEVICE_INFO,
     ),
     CONF_UART3_PROTOCOL: (
         0xB6,
@@ -123,6 +133,7 @@ SELECTS = {
         "set_uart_protocol_table",
         _UART_ARR,
         0x02,
+        VERIFY_DEVICE_INFO,
     ),
     CONF_CAN_PROTOCOL: (
         0xA6,
@@ -130,6 +141,7 @@ SELECTS = {
         "set_can_protocol_table",
         _CAN_ARR,
         0x02,
+        VERIFY_DEVICE_INFO,
     ),
     CONF_LCD_BUZZER_TRIGGER: (
         0xA9,
@@ -137,6 +149,7 @@ SELECTS = {
         "set_lcd_buzzer_trigger_table",
         _LCD_ARR,
         0x02,
+        VERIFY_DEVICE_INFO,
     ),
     CONF_DRY1_TRIGGER: (
         0xAA,
@@ -144,6 +157,7 @@ SELECTS = {
         "set_lcd_buzzer_trigger_table",
         _LCD_ARR,
         0x02,
+        VERIFY_DEVICE_INFO,
     ),
     CONF_DRY2_TRIGGER: (
         0xAB,
@@ -151,6 +165,7 @@ SELECTS = {
         "set_lcd_buzzer_trigger_table",
         _LCD_ARR,
         0x02,
+        VERIFY_DEVICE_INFO,
     ),
     CONF_MULTIPLEXED_PORT_MODE: (
         0x2A,
@@ -158,10 +173,15 @@ SELECTS = {
         "set_multiplexed_port_mode_table",
         _MULTIPLEXED_PORT_MODE_ARR,
         0x04,
+        VERIFY_SETTINGS,
     ),
 }
+check_write_table(
+    SELECTS, ("register", "options", "table_setter", "arr_name", "data_len", "verify")
+)
 
 # JK02_32S: each chemistry loads via a dedicated register with data_len=0
+LOAD_CONFIG_PRESET_VERIFY = VERIFY_SETTINGS
 LOAD_CONFIG_PRESET_OPTIONS = {
     "Li-Ion": 0x68,
     "LiFePO4": 0x69,
@@ -220,7 +240,14 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
 async def to_code(config):
     emitted_arrays = _get_select_data().emitted_arrays
     hub = await cg.get_variable(config[CONF_JK_BMS_BLE_ID])
-    for key, (address, options, table_setter, arr_name, data_len) in SELECTS.items():
+    for key, (
+        address,
+        options,
+        table_setter,
+        arr_name,
+        data_len,
+        verify,
+    ) in SELECTS.items():
         if key not in config:
             continue
         conf = config[key]
@@ -230,6 +257,7 @@ async def to_code(config):
         cg.add(var.set_parent(hub))
         cg.add(var.set_holding_register(address))
         cg.add(var.set_data_len(data_len))
+        cg.add(var.set_verify(verify))
 
         # Emit a static constexpr lookup table in flash and hand a pointer to the hub.
         # This keeps the option strings as the single source of truth in Python while
@@ -253,5 +281,6 @@ async def to_code(config):
         )
         await cg.register_component(var, conf)
         cg.add(var.set_parent(hub))
+        cg.add(var.set_verify(LOAD_CONFIG_PRESET_VERIFY))
         for opt, reg in LOAD_CONFIG_PRESET_OPTIONS.items():
             cg.add(var.add_option_register(opt, reg))

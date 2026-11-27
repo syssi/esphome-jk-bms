@@ -11,7 +11,13 @@ from esphome.const import (
 )
 import esphome.final_validate as fv
 
-from .. import CONF_JK_BMS_BLE_ID, JK_BMS_BLE_COMPONENT_SCHEMA, jk_bms_ble_ns
+from .. import (
+    CONF_JK_BMS_BLE_ID,
+    JK_BMS_BLE_COMPONENT_SCHEMA,
+    VERIFY_NONE,
+    check_write_table,
+    jk_bms_ble_ns,
+)
 
 DEPENDENCIES = ["jk_bms_ble"]
 
@@ -33,17 +39,20 @@ ICON_HEATING_TEST = "mdi:heat-wave"
 ICON_SYNC_TIME = "mdi:clock-outline"
 
 BUTTONS = {
+    # register, verify
     # The BMS responds to the 0x96 request with a single settings frame and enables the notification stream
-    CONF_RETRIEVE_SETTINGS: 0x96,
-    CONF_RETRIEVE_DEVICE_INFO: 0x97,
-    CONF_RETRIEVE_LOGBOOK: 0xA1,
-    # JK02_32S: data_len=0 commands
-    CONF_SHUTDOWN: 0x65,
-    CONF_RESTART: 0x66,
-    CONF_FACTORY_RESET: 0x9D,
+    CONF_RETRIEVE_SETTINGS: (0x96, VERIFY_NONE),
+    CONF_RETRIEVE_DEVICE_INFO: (0x97, VERIFY_NONE),
+    CONF_RETRIEVE_LOGBOOK: (0xA1, VERIFY_NONE),
+    # JK02_32S: data_len=0 commands. Actions without a setting to read back.
+    # The restart and the factory reset (which restarts the BMS) drop the connection.
+    CONF_SHUTDOWN: (0x65, VERIFY_NONE),
+    CONF_RESTART: (0x66, VERIFY_NONE),
+    CONF_FACTORY_RESET: (0x9D, VERIFY_NONE),
     # Triggers the heating test (firmware >= V19.36). The BMS switches the heater off after 10 seconds.
-    CONF_HEATING_TEST: 0x6D,
+    CONF_HEATING_TEST: (0x6D, VERIFY_NONE),
 }
+check_write_table(BUTTONS, ("register", "verify"))
 
 JkButton = jk_bms_ble_ns.class_("JkButton", button.Button)
 JkSyncTimeButton = jk_bms_ble_ns.class_("JkSyncTimeButton", button.Button)
@@ -111,12 +120,13 @@ FINAL_VALIDATE_SCHEMA = _final_validate
 
 async def to_code(config):
     hub = await cg.get_variable(config[CONF_JK_BMS_BLE_ID])
-    for key, address in BUTTONS.items():
+    for key, (address, verify) in BUTTONS.items():
         if key in config:
             conf = config[key]
             var = await button.new_button(conf)
             cg.add(var.set_parent(hub))
             cg.add(var.set_holding_register(address))
+            cg.add(var.set_verify(verify))
 
     if CONF_SYNC_TIME in config:
         conf = config[CONF_SYNC_TIME]

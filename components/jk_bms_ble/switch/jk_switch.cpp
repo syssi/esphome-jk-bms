@@ -12,21 +12,24 @@ ESPHOME_LOG_TAG(TAG, "jk_bms_ble.switch");
 
 void JkSwitch::write_state(bool state) {
   if (this->parent_->get_protocol_version() == PROTOCOL_VERSION_JK04 && this->jk04_holding_register_) {
-    if (this->parent_->write_register(this->jk04_holding_register_, (state) ? 0x00000001 : 0x00000000, 0x01)) {
+    if (this->parent_->write_register(this->jk04_holding_register_, (state) ? 0x00000001 : 0x00000000, 0x01,
+                                      this->verify_)) {
       this->publish_state(state);
     }
     return;
   }
 
   if (this->parent_->get_protocol_version() == PROTOCOL_VERSION_JK02_24S && this->jk02_holding_register_) {
-    if (this->parent_->write_register(this->jk02_holding_register_, (state) ? 0x00000001 : 0x00000000, 0x04)) {
+    if (this->parent_->write_register(this->jk02_holding_register_, (state) ? 0x00000001 : 0x00000000, 0x04,
+                                      this->verify_)) {
       this->publish_state(state);
     }
     return;
   }
 
   if (this->parent_->get_protocol_version() == PROTOCOL_VERSION_JK02_32S && this->jk02_32s_holding_register_) {
-    if (this->parent_->write_register(this->jk02_32s_holding_register_, (state) ? 0x00000001 : 0x00000000, 0x04)) {
+    if (this->parent_->write_register(this->jk02_32s_holding_register_, (state) ? 0x00000001 : 0x00000000, 0x04,
+                                      this->verify_)) {
       this->publish_state(state);
     }
     return;

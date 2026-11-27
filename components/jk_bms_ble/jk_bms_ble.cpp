@@ -498,6 +498,7 @@ void JkBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gat
       this->pending_writes_.clear();
       this->cancel_timeout("write_queue");
       this->cancel_timeout("verify_settings");
+      this->cancel_timeout("verify_device_info");
 
       break;
     }
@@ -571,7 +572,7 @@ void JkBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gat
 #endif
 
       ESP_LOGI(TAG, "Request device info");
-      this->write_register(COMMAND_DEVICE_INFO, 0x00000000, 0x00);
+      this->request_frame_(COMMAND_DEVICE_INFO);
 
       break;
     }
@@ -601,7 +602,7 @@ void JkBmsBle::update() {
 
   if (!this->status_notification_received_) {
     ESP_LOGI(TAG, "Request status notification");
-    this->write_register(COMMAND_CELL_INFO, 0x00000000, 0x00);
+    this->request_frame_(COMMAND_CELL_INFO);
     return;
   }
 
@@ -609,15 +610,17 @@ void JkBmsBle::update() {
   this->sync_time_on_connect_();
 }
 
-bool JkBmsBle::write_register(uint8_t address, uint32_t value, uint8_t length) {
+bool JkBmsBle::write_register(uint8_t address, uint32_t value, uint8_t length, uint8_t verify) {
   if (this->node_state != espbt::ClientState::ESTABLISHED) {
     ESP_LOGW(TAG, "[%s] Not connected, dropping command 0x%02X", this->parent_->address_str(), address);
     return false;
   }
 
-  this->enqueue_write_(address, value, length);
+  this->enqueue_write_(address, value, length, verify);
   return this->process_write_queue_();
 }
+
+bool JkBmsBle::request_frame_(uint8_t command) { return this->write_register(command, 0x00000000, 0x00, VERIFY_NONE); }
 
 // Sends the oldest pending write if WRITE_SPACING_MS have passed since the previous one, otherwise (re)arms the single
 // "write_queue" timeout for the next free slot
@@ -638,20 +641,29 @@ bool JkBmsBle::process_write_queue_() {
   this->has_written_ = true;
 
   const bool sent = this->send_frame_(write.address, write.value, write.length);
-
-  // Every settings write restarts the timer, so a batch of writes results in a single read
-  if (is_settings_register_(write.address)) {
-    this->set_timeout("verify_settings", SETTINGS_VERIFICATION_DELAY_MS, [this]() {
-      ESP_LOGD(TAG, "Request settings to verify the last write");
-      this->write_register(COMMAND_CELL_INFO, 0x00000000, 0x00);
-    });
-  }
+  this->schedule_verification_(write.verify);
 
   if (!this->pending_writes_.empty()) {
     this->set_timeout("write_queue", WRITE_SPACING_MS, [this]() { this->process_write_queue_(); });
   }
 
   return sent;
+}
+
+// Every write restarts the timer of its frame, so a batch of writes results in a single read per frame
+void JkBmsBle::schedule_verification_(uint8_t verify) {
+  if (verify & VERIFY_SETTINGS) {
+    this->set_timeout("verify_settings", SETTINGS_VERIFICATION_DELAY_MS, [this]() {
+      ESP_LOGD(TAG, "Request settings to verify the last write");
+      this->request_frame_(COMMAND_CELL_INFO);
+    });
+  }
+  if (verify & VERIFY_DEVICE_INFO) {
+    this->set_timeout("verify_device_info", SETTINGS_VERIFICATION_DELAY_MS, [this]() {
+      ESP_LOGD(TAG, "Request device info to verify the last write");
+      this->request_frame_(COMMAND_DEVICE_INFO);
+    });
+  }
 }
 
 bool JkBmsBle::send_frame_(uint8_t address, uint32_t value, uint8_t length) {
@@ -695,7 +707,8 @@ bool JkBmsBle::sync_time() {
 
   ESP_LOGI(TAG, "Syncing BMS time to %04d-%02d-%02d %02d:%02d:%02d", now.year, now.month, now.day_of_month, now.hour,
            now.minute, now.second);
-  return this->write_register(REGISTER_TIME, encode_time(now.timestamp), 0x04);
+  // The clock is not part of the settings frame
+  return this->write_register(REGISTER_TIME, encode_time(now.timestamp), 0x04, VERIFY_NONE);
 #else
   ESP_LOGW(TAG, "Can't sync time: no time component configured");
   return false;
@@ -725,20 +738,17 @@ void JkBmsBle::sync_time_on_connect_() {
 #endif
 }
 
-void JkBmsBle::enqueue_write_(uint8_t address, uint32_t value, uint8_t length) {
+void JkBmsBle::enqueue_write_(uint8_t address, uint32_t value, uint8_t length, uint8_t verify) {
   // The last value wins: a pending write to the same register is updated in place and keeps its position
   for (auto &pending : this->pending_writes_) {
     if (pending.address == address) {
       pending.value = value;
       pending.length = length;
+      pending.verify = verify;
       return;
     }
   }
-  this->pending_writes_.push_back({address, value, length});
-}
-
-bool JkBmsBle::is_settings_register_(uint8_t address) {
-  return address != COMMAND_CELL_INFO && address != COMMAND_DEVICE_INFO && address != COMMAND_LOGBOOK;
+  this->pending_writes_.push_back({address, value, length, verify});
 }
 
 std::array<uint8_t, 20> JkBmsBle::build_frame(uint8_t address, uint32_t value, uint8_t length) {

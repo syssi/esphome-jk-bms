@@ -31,7 +31,6 @@ class TestableJkBmsBle : public JkBmsBle {
   using JkBmsBle::decode_logbook_;
   using JkBmsBle::publish_device_unavailable_;
   using JkBmsBle::enqueue_write_;
-  using JkBmsBle::is_settings_register_;
   using JkBmsBle::pending_writes_;
   using JkBmsBle::status_notification_received_;
 };

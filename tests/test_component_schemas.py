@@ -392,7 +392,7 @@ class TestJkBmsBleSwitchConstants:
 
 class TestJkBmsBleNumberConstants:
     def test_soc_soh_calibration_registers(self):
-        assert ble_number.NUMBERS[ble_number.CONF_SOC_CALIBRATION] == [
+        assert ble_number.NUMBERS[ble_number.CONF_SOC_CALIBRATION][:-1] == [
             0x00,
             0x00,
             0x6E,
@@ -400,7 +400,7 @@ class TestJkBmsBleNumberConstants:
             1,
             0,
         ]
-        assert ble_number.NUMBERS[ble_number.CONF_SOH_CALIBRATION] == [
+        assert ble_number.NUMBERS[ble_number.CONF_SOH_CALIBRATION][:-1] == [
             0x00,
             0x00,
             0x6F,
@@ -422,14 +422,14 @@ class TestJkBmsBleButtonConstants:
         assert len(ble_button.BUTTONS) == 7
 
     def test_button_addresses_are_unique(self):
-        addresses = list(ble_button.BUTTONS.values())
+        addresses = [address for address, _ in ble_button.BUTTONS.values()]
         assert len(addresses) == len(set(addresses))
 
     def test_button_addresses(self):
-        assert ble_button.BUTTONS[ble_button.CONF_SHUTDOWN] == 0x65
-        assert ble_button.BUTTONS[ble_button.CONF_RESTART] == 0x66
-        assert ble_button.BUTTONS[ble_button.CONF_FACTORY_RESET] == 0x9D
-        assert ble_button.BUTTONS[ble_button.CONF_HEATING_TEST] == 0x6D
+        assert ble_button.BUTTONS[ble_button.CONF_SHUTDOWN][0] == 0x65
+        assert ble_button.BUTTONS[ble_button.CONF_RESTART][0] == 0x66
+        assert ble_button.BUTTONS[ble_button.CONF_FACTORY_RESET][0] == 0x9D
+        assert ble_button.BUTTONS[ble_button.CONF_HEATING_TEST][0] == 0x6D
 
 
 class TestJkBleTextSensorConstants:
