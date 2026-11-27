@@ -672,6 +672,7 @@ class JkBmsBle :
   uint32_t last_cell_info_{0};
   uint32_t throttle_{0};
 
+  void decode_frame_buffer_();
   void decode_(const std::vector<uint8_t> &data);
   void sync_time_on_connect_();
   void decode_logbook_(const std::vector<uint8_t> &data);
