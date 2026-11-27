@@ -44,20 +44,9 @@ static const uint8_t REGISTER_TIME = 0x6C;
 // independently of the local time zone.
 static const int64_t JK_TIME_EPOCH = 1577808000LL;
 
-// The BMS drops a command that arrives while it is still processing the previous one, e.g. a 0x96 request sent while
-// the device info frame of a 0x97 request is still being transmitted. The BMS acknowledges every processed command with
-// ACKNOWLEDGEMENT_FRAME (64-250 ms after a write, up to 454 ms after a 0x96 request), so the next command is sent once
-// it arrives. Seen on JK02_32S (hw 19), JK02_24S (hw 7.x, 8.x, right behind the response frame) and JK04 (hw 3.0); the
-// timeout releases the queue if an acknowledgement gets lost or a device doesn't send one.
-static const uint32_t ACKNOWLEDGEMENT_TIMEOUT_MS = 1000;
-// The BMS isn't ready for the next command right away: a command sent within a few milliseconds of the acknowledgement
-// is still dropped now and then, 25 ms were enough in every test (JK-B1A8S10P, sw 19.25)
-static const uint32_t ACKNOWLEDGEMENT_SETTLE_MS = 100;
+// Sent by the BMS after every processed command, see CommandQueue
 static const uint8_t ACKNOWLEDGEMENT_FRAME[20] = {0xAA, 0x55, 0x90, 0xEB, 0xC8, 0x01, 0x01, 0x00, 0x00, 0x00,
                                                   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x44};
-// The acknowledgement only confirms that a command was processed, not which value was stored. This long after the last
-// write the frame containing the value is read back, so the entities publish what the BMS actually stored.
-static const uint32_t SETTINGS_VERIFICATION_DELAY_MS = 500;
 
 static const uint16_t MIN_RESPONSE_SIZE = 300;
 static const uint16_t MAX_RESPONSE_SIZE = 384 + 16;
@@ -505,11 +494,8 @@ void JkBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gat
 
       this->frame_buffer_.clear();
       // Pending writes belong to the lost connection and must not be sent after a reconnect
-      this->pending_writes_.clear();
-      this->awaiting_acknowledgement_ = false;
-      this->cancel_timeout("write_queue");
-      this->cancel_timeout("verify_settings");
-      this->cancel_timeout("verify_device_info");
+      this->command_queue_.reset();
+      this->cancel_timeout("command_queue");
 
       break;
     }
@@ -595,8 +581,13 @@ void JkBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gat
       ESP_LOGVV(TAG, "Notification received: %s",
                 format_hex_pretty_to(hex_buf, param->notify.value, param->notify.value_len, '.'));
 
-      if (contains_acknowledgement(param->notify.value, param->notify.value_len))
-        this->on_acknowledgement_();
+      if (contains_acknowledgement(param->notify.value, param->notify.value_len)) {
+        if (auto latency = this->command_queue_.on_acknowledgement(millis())) {
+          ESP_LOGD(TAG, "Command 0x%02X acknowledged after %" PRIu32 " ms", this->command_queue_.awaited_command(),
+                   *latency);
+          this->service_command_queue_();
+        }
+      }
 
       this->assemble(param->notify.value, param->notify.value_len);
 
@@ -630,65 +621,43 @@ bool JkBmsBle::write_register(uint8_t address, uint32_t value, uint8_t length, u
     return false;
   }
 
-  this->enqueue_write_(address, value, length, verify);
-  return this->process_write_queue_();
+  this->command_queue_.enqueue({address, value, length, verify});
+  return this->service_command_queue_();
 }
 
 bool JkBmsBle::request_frame_(uint8_t command) { return this->write_register(command, 0x00000000, 0x00, VERIFY_NONE); }
 
-// Sends the oldest pending write unless the previous one is still waiting for its acknowledgement
-bool JkBmsBle::process_write_queue_() {
-  if (this->awaiting_acknowledgement_ || this->pending_writes_.empty())
-    return true;
+// Does whatever the command queue has due and arms a single timer for its next deadline. Returns false if a send
+// failed.
+bool JkBmsBle::service_command_queue_() {
+  const uint32_t now = millis();
 
-  const PendingWrite write = this->pending_writes_.front();
-  this->pending_writes_.erase(this->pending_writes_.begin());
+  if (auto command = this->command_queue_.expire(now)) {
+    ESP_LOGD(TAG, "Command 0x%02X not acknowledged within %" PRIu32 " ms", *command,
+             CommandQueue::ACKNOWLEDGEMENT_TIMEOUT_MS);
+  }
 
-  const bool sent = this->send_frame_(write.address, write.value, write.length);
-  this->schedule_verification_(write.verify);
+  const uint8_t due = this->command_queue_.take_due_verifications(now);
+  if (due & VERIFY_SETTINGS) {
+    ESP_LOGD(TAG, "Request settings to verify the last write");
+    this->command_queue_.enqueue({COMMAND_CELL_INFO, 0x00000000, 0x00, VERIFY_NONE});
+  }
+  if (due & VERIFY_DEVICE_INFO) {
+    ESP_LOGD(TAG, "Request device info to verify the last write");
+    this->command_queue_.enqueue({COMMAND_DEVICE_INFO, 0x00000000, 0x00, VERIFY_NONE});
+  }
 
-  this->awaiting_acknowledgement_ = true;
-  this->awaited_command_ = write.address;
-  this->awaited_since_ = millis();
-  this->set_timeout("write_queue", ACKNOWLEDGEMENT_TIMEOUT_MS, [this]() {
-    ESP_LOGD(TAG, "Command 0x%02X not acknowledged within %" PRIu32 " ms", this->awaited_command_,
-             ACKNOWLEDGEMENT_TIMEOUT_MS);
-    this->awaiting_acknowledgement_ = false;
-    this->process_write_queue_();
-  });
+  bool sent = true;
+  if (auto command = this->command_queue_.next(now))
+    sent = this->send_frame_(command->address, command->value, command->length);
+
+  if (auto deadline = this->command_queue_.next_deadline(now)) {
+    this->set_timeout("command_queue", *deadline, [this]() { this->service_command_queue_(); });
+  } else {
+    this->cancel_timeout("command_queue");
+  }
 
   return sent;
-}
-
-void JkBmsBle::on_acknowledgement_() {
-  if (!this->awaiting_acknowledgement_) {
-    ESP_LOGV(TAG, "Unexpected acknowledgement");
-    return;
-  }
-
-  ESP_LOGD(TAG, "Command 0x%02X acknowledged after %" PRIu32 " ms", this->awaited_command_,
-           millis() - this->awaited_since_);
-  // Replaces the acknowledgement timeout
-  this->set_timeout("write_queue", ACKNOWLEDGEMENT_SETTLE_MS, [this]() {
-    this->awaiting_acknowledgement_ = false;
-    this->process_write_queue_();
-  });
-}
-
-// Every write restarts the timer of its frame, so a batch of writes results in a single read per frame
-void JkBmsBle::schedule_verification_(uint8_t verify) {
-  if (verify & VERIFY_SETTINGS) {
-    this->set_timeout("verify_settings", SETTINGS_VERIFICATION_DELAY_MS, [this]() {
-      ESP_LOGD(TAG, "Request settings to verify the last write");
-      this->request_frame_(COMMAND_CELL_INFO);
-    });
-  }
-  if (verify & VERIFY_DEVICE_INFO) {
-    this->set_timeout("verify_device_info", SETTINGS_VERIFICATION_DELAY_MS, [this]() {
-      ESP_LOGD(TAG, "Request device info to verify the last write");
-      this->request_frame_(COMMAND_DEVICE_INFO);
-    });
-  }
 }
 
 bool JkBmsBle::send_frame_(uint8_t address, uint32_t value, uint8_t length) {
@@ -767,19 +736,6 @@ void JkBmsBle::sync_time_on_connect_() {
 bool JkBmsBle::contains_acknowledgement(const uint8_t *data, uint16_t length) {
   return std::search(data, data + length, std::begin(ACKNOWLEDGEMENT_FRAME), std::end(ACKNOWLEDGEMENT_FRAME)) !=
          data + length;
-}
-
-void JkBmsBle::enqueue_write_(uint8_t address, uint32_t value, uint8_t length, uint8_t verify) {
-  // The last value wins: a pending write to the same register is updated in place and keeps its position
-  for (auto &pending : this->pending_writes_) {
-    if (pending.address == address) {
-      pending.value = value;
-      pending.length = length;
-      pending.verify = verify;
-      return;
-    }
-  }
-  this->pending_writes_.push_back({address, value, length, verify});
 }
 
 std::array<uint8_t, 20> JkBmsBle::build_frame(uint8_t address, uint32_t value, uint8_t length) {
