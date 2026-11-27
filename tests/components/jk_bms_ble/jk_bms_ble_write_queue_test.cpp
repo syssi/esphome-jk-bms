@@ -79,4 +79,62 @@ TEST(JkBmsWriteQueueTest, ReplacementUpdatesTheVerifyFlags) {
   EXPECT_EQ(bms.pending_writes_[0].verify, VERIFY_SETTINGS | VERIFY_DEVICE_INFO);
 }
 
+// ── Acknowledgement ──────────────────────────────────────────────────────────
+
+// Captured from a JK-B1A8S10P (hw 19H, sw 19.25) and the JK app btsnoop logs in docs/
+static const std::vector<uint8_t> ACKNOWLEDGEMENT = {0xAA, 0x55, 0x90, 0xEB, 0xC8, 0x01, 0x01, 0x00, 0x00, 0x00,
+                                                     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x44};
+static const std::vector<uint8_t> AT_LINE = {0x41, 0x54, 0x0D, 0x0A};
+
+static bool contains_acknowledgement(const std::vector<uint8_t> &data) {
+  return JkBmsBle::contains_acknowledgement(data.data(), data.size());
+}
+
+TEST(JkBmsAcknowledgementTest, StandaloneAcknowledgementIsDetected) {
+  EXPECT_TRUE(contains_acknowledgement(ACKNOWLEDGEMENT));
+}
+
+static std::vector<uint8_t> concat(std::initializer_list<std::vector<uint8_t>> parts) {
+  std::vector<uint8_t> result;
+  for (const auto &part : parts)
+    result.insert(result.end(), part.begin(), part.end());
+  return result;
+}
+
+// The JK app btsnoop logs contain "AT\r\n" + acknowledgement + "AT\r\n" and acknowledgement + "AT\r\n" notifications
+TEST(JkBmsAcknowledgementTest, AcknowledgementSharingANotificationIsDetected) {
+  EXPECT_TRUE(contains_acknowledgement(concat({AT_LINE, ACKNOWLEDGEMENT})));
+  EXPECT_TRUE(contains_acknowledgement(concat({AT_LINE, ACKNOWLEDGEMENT, AT_LINE})));
+  EXPECT_TRUE(contains_acknowledgement(concat({ACKNOWLEDGEMENT, AT_LINE})));
+}
+
+// The acknowledgement of a request may follow the end of the response frame
+TEST(JkBmsAcknowledgementTest, AcknowledgementBehindAFrameIsDetected) {
+  std::vector<uint8_t> tail(CELL_INFO_JK02_24S_V10.end() - 50, CELL_INFO_JK02_24S_V10.end());
+  EXPECT_TRUE(contains_acknowledgement(concat({tail, ACKNOWLEDGEMENT})));
+}
+
+TEST(JkBmsAcknowledgementTest, AtLineAloneIsNoAcknowledgement) {
+  EXPECT_FALSE(contains_acknowledgement(AT_LINE));
+  EXPECT_FALSE(contains_acknowledgement({}));
+}
+
+TEST(JkBmsAcknowledgementTest, TruncatedAcknowledgementIsRejected) {
+  std::vector<uint8_t> data(ACKNOWLEDGEMENT.begin(), ACKNOWLEDGEMENT.end() - 1);
+  EXPECT_FALSE(contains_acknowledgement(data));
+}
+
+TEST(JkBmsAcknowledgementTest, AcknowledgementWithWrongChecksumIsRejected) {
+  std::vector<uint8_t> data = ACKNOWLEDGEMENT;
+  data[19] = 0x45;
+  EXPECT_FALSE(contains_acknowledgement(data));
+}
+
+// A command echo or a response frame must not release the queue
+TEST(JkBmsAcknowledgementTest, OtherFramesAreNoAcknowledgement) {
+  auto request = JkBmsBle::build_frame(0x96, 0x00000000, 0x00);
+  EXPECT_FALSE(JkBmsBle::contains_acknowledgement(request.data(), request.size()));
+  EXPECT_FALSE(contains_acknowledgement(CELL_INFO_JK02_24S_V10));
+}
+
 }  // namespace esphome::jk_bms_ble::testing
