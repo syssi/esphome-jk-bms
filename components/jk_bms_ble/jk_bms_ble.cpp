@@ -2,6 +2,7 @@
 #include "esphome/core/log.h"
 #include "esphome/core/helpers.h"
 #include "esphome/core/time.h"
+#include <algorithm>
 #include <cinttypes>
 
 // Fallback for ESPHome < 2026.10.0
@@ -788,15 +789,28 @@ uint32_t JkBmsBle::encode_jk04_payload(float value, uint8_t len, float factor) {
 }
 
 // TODO: There is no need to assemble frames if the MTU can be increased to > 320 bytes
+// Notifications carry more than frames: the BMS sends "AT\r\n" several times per second and acknowledges every command
+// with a 20 byte frame starting with 0xAA 0x55 0x90 0xEB. The BLE module packs whatever it has buffered into one
+// notification, so these bytes may also sit right in front of a frame's preamble or behind its end. Only bytes from a
+// preamble on are collected; everything outside of a frame is dropped.
 void JkBmsBle::assemble(const uint8_t *data, uint16_t length) {
   if (this->frame_buffer_.size() > MAX_RESPONSE_SIZE) {
     ESP_LOGW(TAG, "Frame dropped because of invalid length");
     this->frame_buffer_.clear();
   }
 
-  // Flush buffer on every preamble
-  if (length >= 4 && data[0] == 0x55 && data[1] == 0xAA && data[2] == 0xEB && data[3] == 0x90) {
+  // A preamble starts a new frame, wherever it is within the notification
+  static const uint8_t PREAMBLE[4] = {0x55, 0xAA, 0xEB, 0x90};
+  const uint8_t *preamble = std::search(data, data + length, std::begin(PREAMBLE), std::end(PREAMBLE));
+  if (preamble != data + length) {
+    if (preamble != data)
+      ESP_LOGV(TAG, "Dropping %u bytes in front of the preamble", (unsigned) (preamble - data));
     this->frame_buffer_.clear();
+    length -= preamble - data;
+    data = preamble;
+  } else if (this->frame_buffer_.empty()) {
+    ESP_LOGV(TAG, "Dropping %u bytes outside of a frame", length);
+    return;
   }
 
   this->frame_buffer_.insert(this->frame_buffer_.end(), data, data + length);

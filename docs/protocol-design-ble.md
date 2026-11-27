@@ -69,12 +69,28 @@ XX              # Counter (sequence)
 ## Response Handling
 
 ### Frame Assembly
-- Responses are at least 300 bytes; some devices send up to 320 bytes
+- Response frames are 300 bytes long. What looked like 320 byte frames on some devices is a frame followed by the
+  20 byte command acknowledgement (see below)
 - Responses are fragmented due to BLE MTU limitations
 - Each response frame starts with sequence: `0x55 0xAA 0xEB 0x90`
-- When start sequence is detected, current frame buffer is cleared
+- The start sequence starts a new frame wherever it is within a notification; bytes in front of it and bytes received
+  while no frame is in progress are dropped
 - Frame validation uses CRC (sum of all bytes except CRC byte)
 - All responses are received as notifications on characteristic `0xFFE1` (handle `0x05`)
+
+### Other Notification Content
+Besides the response frames the notifications carry:
+
+- `41 54 0D 0A` (`AT\r\n`), several times per second, whether a command was sent or not. It isn't answered (the JK
+  app doesn't either). Answering `OK\r\n` doesn't stop it and keeps the BMS from starting the cell info stream.
+- A 20 byte acknowledgement after every processed command:
+  `AA 55 90 EB C8 01 01 00 00 00 00 00 00 00 00 00 00 00 00 44`. It is sent 64-250 ms after a write and up to 454 ms
+  after a `0x96` request (after the settings and device info frames). A command the BMS dropped is not acknowledged.
+  Old JK02_24S devices (hw 7.x, 8.x) don't send acknowledgements.
+
+The BLE module packs whatever it has buffered into one notification, so these bytes may share a notification with
+each other or with a frame: the JK app btsnoop logs contain `AT\r\n` + acknowledgement + `AT\r\n` and `AT\r\n`
+right in front of a settings frame's start sequence.
 
 ### Response Frame Types
 Response type is identified by byte[4]:
