@@ -49,7 +49,6 @@ static const uint8_t ACKNOWLEDGEMENT_FRAME[20] = {0xAA, 0x55, 0x90, 0xEB, 0xC8, 
                                                   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x44};
 
 static const uint16_t MIN_RESPONSE_SIZE = 300;
-static const uint16_t MAX_RESPONSE_SIZE = 384 + 16;
 
 static constexpr const char *const LOGBOOK_CODES[] = {
     "",                                                    // 0x00
@@ -781,11 +780,6 @@ uint32_t JkBmsBle::encode_jk04_payload(float value, uint8_t len, float factor) {
 // frame may share a notification with the start of the next. Only bytes from a preamble on are collected; everything
 // outside of a frame is dropped.
 void JkBmsBle::assemble(const uint8_t *data, uint16_t length) {
-  if (this->frame_buffer_.size() > MAX_RESPONSE_SIZE) {
-    ESP_LOGW(TAG, "Frame dropped because of invalid length");
-    this->frame_buffer_.clear();
-  }
-
   static const uint8_t PREAMBLE[4] = {0x55, 0xAA, 0xEB, 0x90};
   const uint8_t *preamble = std::search(data, data + length, std::begin(PREAMBLE), std::end(PREAMBLE));
 
@@ -810,7 +804,8 @@ void JkBmsBle::assemble(const uint8_t *data, uint16_t length) {
   this->decode_frame_buffer_();
 }
 
-// Decodes the frame buffer once it holds a whole frame
+// Decodes the frame buffer once it holds a whole frame. The buffer is cleared afterwards, so it never grows beyond
+// 300 bytes plus one notification and keeps its capacity: no allocation per frame.
 void JkBmsBle::decode_frame_buffer_() {
   if (this->frame_buffer_.size() < MIN_RESPONSE_SIZE)
     return;
@@ -827,9 +822,7 @@ void JkBmsBle::decode_frame_buffer_() {
     return;
   }
 
-  std::vector<uint8_t> data(this->frame_buffer_.begin(), this->frame_buffer_.end());
-
-  this->decode_(data);
+  this->decode_(this->frame_buffer_);
   this->frame_buffer_.clear();
 }
 

@@ -152,4 +152,23 @@ TEST_F(JkBmsAssembleTest, IncompleteFrameInFrontOfAPreambleIsDropped) {
   EXPECT_TRUE(decoded_());
 }
 
+// A preamble followed by an endless stream: the buffer is checked at 300 bytes and cleared, everything after it is
+// dropped notification by notification. The buffer never holds more than 300 bytes after a notification.
+TEST_F(JkBmsAssembleTest, EndlessFrameDoesntGrowTheBuffer) {
+  total_voltage_.state = NAN;
+  const std::vector<uint8_t> preamble = {0x55, 0xAA, 0xEB, 0x90};
+  std::vector<uint8_t> stream = concat({preamble, std::vector<uint8_t>(60000, 0x00)});
+  for (size_t i = 0; i < stream.size(); i += 244) {
+    assemble(bms_, slice(stream, i, i + 244));
+    ASSERT_LT(bms_.frame_buffer_.size(), 300u) << "after " << i + 244 << " bytes";
+  }
+  EXPECT_FALSE(decoded_());
+  EXPECT_FALSE(cell_info_decoded_());
+  EXPECT_TRUE(bms_.frame_buffer_.empty());
+
+  // The next frame is decoded again
+  assemble_frame(bms_, DEVICE_INFO_JK02_32S_V19, 128);
+  EXPECT_TRUE(decoded_());
+}
+
 }  // namespace esphome::jk_bms_ble::testing
