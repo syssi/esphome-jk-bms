@@ -615,12 +615,25 @@ void JkBmsBle::update() {
 }
 
 bool JkBmsBle::write_register(uint8_t address, uint32_t value, uint8_t length, uint8_t verify) {
+  return this->send_command(CommandQueue::Command::with_value(address, value, length, verify));
+}
+
+bool JkBmsBle::write_register_bytes(uint8_t address, const uint8_t *data, size_t size, uint8_t verify) {
+  auto command = CommandQueue::Command::with_payload(address, data, size, verify);
+  if (!command) {
+    ESP_LOGW(TAG, "Payload of command 0x%02X too long: %zu > %zu bytes", address, size, CommandQueue::MAX_PAYLOAD_SIZE);
+    return false;
+  }
+  return this->send_command(*command);
+}
+
+bool JkBmsBle::send_command(const CommandQueue::Command &command) {
   if (this->node_state != espbt::ClientState::ESTABLISHED) {
-    ESP_LOGW(TAG, "[%s] Not connected, dropping command 0x%02X", this->parent_->address_str(), address);
+    ESP_LOGW(TAG, "[%s] Not connected, dropping command 0x%02X", this->parent_->address_str(), command.address);
     return false;
   }
 
-  this->command_queue_.enqueue({address, value, length, verify});
+  this->command_queue_.enqueue(command);
   return this->service_command_queue_();
 }
 
@@ -639,16 +652,16 @@ bool JkBmsBle::service_command_queue_() {
   const uint8_t due = this->command_queue_.take_due_verifications(now);
   if (due & VERIFY_SETTINGS) {
     ESP_LOGD(TAG, "Request settings to verify the last write");
-    this->command_queue_.enqueue({COMMAND_CELL_INFO, 0x00000000, 0x00, VERIFY_NONE});
+    this->command_queue_.enqueue(CommandQueue::Command::with_value(COMMAND_CELL_INFO, 0x00000000, 0x00, VERIFY_NONE));
   }
   if (due & VERIFY_DEVICE_INFO) {
     ESP_LOGD(TAG, "Request device info to verify the last write");
-    this->command_queue_.enqueue({COMMAND_DEVICE_INFO, 0x00000000, 0x00, VERIFY_NONE});
+    this->command_queue_.enqueue(CommandQueue::Command::with_value(COMMAND_DEVICE_INFO, 0x00000000, 0x00, VERIFY_NONE));
   }
 
   bool sent = true;
   if (auto command = this->command_queue_.next(now))
-    sent = this->send_frame_(command->address, command->value, command->length);
+    sent = this->send_frame_(*command);
 
   if (auto deadline = this->command_queue_.next_deadline(now)) {
     this->set_timeout("command_queue", *deadline, [this]() { this->service_command_queue_(); });
@@ -659,8 +672,8 @@ bool JkBmsBle::service_command_queue_() {
   return sent;
 }
 
-bool JkBmsBle::send_frame_(uint8_t address, uint32_t value, uint8_t length) {
-  auto frame = build_frame(address, value, length);
+bool JkBmsBle::send_frame_(const CommandQueue::Command &command) {
+  auto frame = build_frame(command);
 
   char hex_buf[format_hex_pretty_size(MAX_HEX_DUMP_BYTES)];
   ESP_LOGD(TAG, "Write register: %s", format_hex_pretty_to(hex_buf, frame, '.'));
@@ -738,17 +751,18 @@ bool JkBmsBle::contains_acknowledgement(const uint8_t *data, uint16_t length) {
 }
 
 std::array<uint8_t, 20> JkBmsBle::build_frame(uint8_t address, uint32_t value, uint8_t length) {
+  return build_frame(CommandQueue::Command::with_value(address, value, length, VERIFY_NONE));
+}
+
+std::array<uint8_t, 20> JkBmsBle::build_frame(const CommandQueue::Command &command) {
   std::array<uint8_t, 20> frame{};
-  frame[0] = 0xAA;     // start sequence
-  frame[1] = 0x55;     // start sequence
-  frame[2] = 0x90;     // start sequence
-  frame[3] = 0xEB;     // start sequence
-  frame[4] = address;  // holding register
-  frame[5] = length;   // size of the value in byte
-  frame[6] = value >> 0;
-  frame[7] = value >> 8;
-  frame[8] = value >> 16;
-  frame[9] = value >> 24;
+  frame[0] = 0xAA;             // start sequence
+  frame[1] = 0x55;             // start sequence
+  frame[2] = 0x90;             // start sequence
+  frame[3] = 0xEB;             // start sequence
+  frame[4] = command.address;  // holding register
+  frame[5] = command.length;   // size of the value in byte
+  std::copy(command.payload.begin(), command.payload.end(), frame.begin() + 6);
   frame[19] = crc(frame.data(), frame.size() - 1);
   return frame;
 }
@@ -1847,7 +1861,7 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
   //   Serial number:
   //   Passcode:
   //   User data:
-  //   Setup passcode:
+  //   Settings password:
 
   // JK02_24S response example:
   //
@@ -1945,7 +1959,11 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
   ESP_LOGI(TAG, "  User data: %s", std::string(data.begin() + 102, data.begin() + 102 + 16).c_str());
 
   // 118  16   0x31 0x32 0x33 0x34 0x35 0x37 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
-  ESP_LOGI(TAG, "  Setup passcode: %s", std::string(data.begin() + 118, data.begin() + 118 + 16).c_str());
+  // Settings password: the app asks for it before changing settings, the BMS itself doesn't check it. The firmware
+  // raises the "Modify password in time" alarm (bit 19) while it is the factory default 123456. Written via 0xA0.
+  const std::string settings_password(data.begin() + 118, std::find(data.begin() + 118, data.begin() + 118 + 16, 0));
+  ESP_LOGI(TAG, "  Settings password: %s", settings_password.c_str());
+  this->publish_state_(this->settings_password_text_, settings_password);
 
   if (this->protocol_version_ != PROTOCOL_VERSION_JK02_32S)
     return;
@@ -2223,6 +2241,13 @@ void JkBmsBle::publish_temperature_(sensor::Sensor *sensor, int16_t raw_value) {
 }
 
 void JkBmsBle::publish_state_(switch_::Switch *obj, const bool &state) {
+  if (obj == nullptr)
+    return;
+
+  obj->publish_state(state);
+}
+
+void JkBmsBle::publish_state_(text::Text *obj, const std::string &state) {
   if (obj == nullptr)
     return;
 

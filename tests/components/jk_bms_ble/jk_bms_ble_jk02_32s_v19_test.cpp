@@ -36,6 +36,28 @@ TEST(JkBmsV19DeviceInfoTest, DeviceName) {
   EXPECT_EQ(device_name.state, "506177F49000674");
 }
 
+TEST(JkBmsV19DeviceInfoTest, SettingsPassword) {
+  TestableJkBmsBle bms;
+  TestText settings_password;
+  bms.set_settings_password_text(&settings_password);
+  bms.decode_device_info_(DEVICE_INFO_JK02_32S_V19);
+  EXPECT_EQ(settings_password.state, "12345");
+}
+
+TEST(JkBmsV19DeviceInfoTest, SettingsPasswordWithoutNullTerminator) {
+  // A password using all 16 bytes has no terminating zero: it must not run into the field at offset 134
+  std::vector<uint8_t> data = DEVICE_INFO_JK02_32S_V19;
+  for (size_t i = 0; i < 16; i++) {
+    data[118 + i] = 'a' + i;
+  }
+
+  TestableJkBmsBle bms;
+  TestText settings_password;
+  bms.set_settings_password_text(&settings_password);
+  bms.decode_device_info_(data);
+  EXPECT_EQ(settings_password.state, "abcdefghijklmnop");
+}
+
 TEST(JkBmsV19DeviceInfoTest, DeviceNameWithoutNullTerminator) {
   // A name using all 16 bytes has no terminating zero: it must not run into the passcode at offset 62.
   std::vector<uint8_t> data = DEVICE_INFO_JK02_32S_V19;

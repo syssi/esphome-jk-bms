@@ -12,6 +12,7 @@
 #include "esphome/components/sensor/sensor.h"
 #include "esphome/components/select/select.h"
 #include "esphome/components/switch/switch.h"
+#include "esphome/components/text/text.h"
 #include "esphome/components/text_sensor/text_sensor.h"
 
 #ifdef USE_TIME
@@ -443,6 +444,9 @@ class JkBmsBle :
   }
   void set_dry1_trigger_select(select::Select *dry1_trigger_select) { dry1_trigger_select_ = dry1_trigger_select; }
   void set_dry2_trigger_select(select::Select *dry2_trigger_select) { dry2_trigger_select_ = dry2_trigger_select; }
+  void set_settings_password_text(text::Text *settings_password_text) {
+    settings_password_text_ = settings_password_text;
+  }
   void set_multiplexed_port_mode_select(select::Select *multiplexed_port_mode_select) {
     multiplexed_port_mode_select_ = multiplexed_port_mode_select;
   }
@@ -461,6 +465,7 @@ class JkBmsBle :
   ProtocolVersion get_protocol_version() { return protocol_version_; }
   bool has_clock() const { return has_clock_; }
   static std::array<uint8_t, 20> build_frame(uint8_t address, uint32_t value, uint8_t length);
+  static std::array<uint8_t, 20> build_frame(const CommandQueue::Command &command);
   // True if the notification carries the frame the BMS sends after processing a command
   static bool contains_acknowledgement(const uint8_t *data, uint16_t length);
   static uint32_t encode_jk04_payload(float value, uint8_t len, float factor);
@@ -473,6 +478,10 @@ class JkBmsBle :
   // flags naming the frames read back afterwards. Returns false if the link is down or the immediate send failed; true
   // means the write was sent or queued.
   bool write_register(uint8_t address, uint32_t value, uint8_t length, uint8_t verify);
+  // Same for a register taking raw bytes (e.g. a text) of at most CommandQueue::MAX_PAYLOAD_SIZE bytes
+  bool write_register_bytes(uint8_t address, const uint8_t *data, size_t size, uint8_t verify);
+  // Queues any command frame
+  bool send_command(const CommandQueue::Command &command);
   bool sync_time();
 #endif
 #ifdef USE_TIME
@@ -612,6 +621,7 @@ class JkBmsBle :
   select::Select *dry1_trigger_select_{nullptr};
   select::Select *dry2_trigger_select_{nullptr};
   select::Select *multiplexed_port_mode_select_{nullptr};
+  text::Text *settings_password_text_{nullptr};
 
   LookupTable uart_protocol_table_;
   LookupTable can_protocol_table_;
@@ -650,7 +660,7 @@ class JkBmsBle :
   // Requests a frame (0x96 cell info/settings, 0x97 device info). Queued like a write, but never verified.
   bool request_frame_(uint8_t command);
   bool service_command_queue_();
-  bool send_frame_(uint8_t address, uint32_t value, uint8_t length);
+  bool send_frame_(const CommandQueue::Command &command);
 #endif
   uint32_t last_cell_info_{0};
   uint32_t throttle_{0};
@@ -672,6 +682,7 @@ class JkBmsBle :
   void publish_temperature_(sensor::Sensor *sensor, int16_t raw_value);
   void publish_state_(switch_::Switch *obj, const bool &state);
   void publish_state_(text_sensor::TextSensor *text_sensor, const std::string &state);
+  void publish_state_(text::Text *obj, const std::string &state);
   void publish_device_unavailable_();
   void reset_online_status_tracker_();
   void track_online_status_();
