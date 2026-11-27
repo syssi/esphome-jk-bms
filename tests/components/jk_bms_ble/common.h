@@ -18,6 +18,10 @@ struct TestSelect : select::Select {
   void control(size_t) override {}
 };
 
+struct TestText : text::Text {
+  void control(const std::string &) override {}
+};
+
 // Exposes protected decoder methods for direct testing.
 class TestableJkBmsBle : public JkBmsBle {
  public:

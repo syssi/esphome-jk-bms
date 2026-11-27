@@ -1,7 +1,10 @@
 #include <gtest/gtest.h>
+#include <algorithm>
 #include "common.h"
 
 namespace esphome::jk_bms_ble::testing {
+
+using Command = CommandQueue::Command;
 
 // ── Queue contents ───────────────────────────────────────────────────────────
 
@@ -14,21 +17,21 @@ static std::vector<uint8_t> addresses(const CommandQueue &queue) {
 
 TEST(JkBmsCommandQueueTest, DistinctRegistersKeepTheirOrder) {
   CommandQueue queue;
-  queue.enqueue({0x1D, 0x00000001, 0x04, VERIFY_SETTINGS});  // charging
-  queue.enqueue({0x1E, 0x00000000, 0x04, VERIFY_SETTINGS});  // discharging
-  queue.enqueue({0x1F, 0x00000001, 0x04, VERIFY_SETTINGS});  // balancer
+  queue.enqueue(Command::with_value(0x1D, 0x00000001, 0x04, VERIFY_SETTINGS));  // charging
+  queue.enqueue(Command::with_value(0x1E, 0x00000000, 0x04, VERIFY_SETTINGS));  // discharging
+  queue.enqueue(Command::with_value(0x1F, 0x00000001, 0x04, VERIFY_SETTINGS));  // balancer
 
   EXPECT_EQ(addresses(queue), (std::vector<uint8_t>{0x1D, 0x1E, 0x1F}));
 }
 
 TEST(JkBmsCommandQueueTest, NewerValueReplacesPendingWriteInPlace) {
   CommandQueue queue;
-  queue.enqueue({0x1D, 0x00000001, 0x04, VERIFY_SETTINGS});
-  queue.enqueue({0x1E, 0x00000000, 0x04, VERIFY_SETTINGS});
-  queue.enqueue({0x1D, 0x00000000, 0x01, VERIFY_SETTINGS | VERIFY_DEVICE_INFO});
+  queue.enqueue(Command::with_value(0x1D, 0x00000001, 0x04, VERIFY_SETTINGS));
+  queue.enqueue(Command::with_value(0x1E, 0x00000000, 0x04, VERIFY_SETTINGS));
+  queue.enqueue(Command::with_value(0x1D, 0x00000000, 0x01, VERIFY_SETTINGS | VERIFY_DEVICE_INFO));
 
   ASSERT_EQ(addresses(queue), (std::vector<uint8_t>{0x1D, 0x1E}));
-  EXPECT_EQ(queue.pending()[0].value, 0x00000000u);
+  EXPECT_EQ(queue.pending()[0].payload, Command::with_value(0x1D, 0x00000000, 0x01, VERIFY_NONE).payload);
   EXPECT_EQ(queue.pending()[0].length, 0x01);
   EXPECT_EQ(queue.pending()[0].verify, VERIFY_SETTINGS | VERIFY_DEVICE_INFO);
 }
@@ -37,17 +40,17 @@ TEST(JkBmsCommandQueueTest, NewerValueReplacesPendingWriteInPlace) {
 TEST(JkBmsCommandQueueTest, RepeatedWritesToOneRegisterStayASingleEntry) {
   CommandQueue queue;
   for (uint32_t value = 0; value < 1000; value++)
-    queue.enqueue({0x0B, value, 0x04, VERIFY_SETTINGS});  // power off voltage
+    queue.enqueue(Command::with_value(0x0B, value, 0x04, VERIFY_SETTINGS));  // power off voltage
 
   ASSERT_EQ(queue.pending().size(), 1u);
-  EXPECT_EQ(queue.pending()[0].value, 999u);
+  EXPECT_EQ(queue.pending()[0].payload, Command::with_value(0x0B, 999, 0x04, VERIFY_NONE).payload);
 }
 
 TEST(JkBmsCommandQueueTest, QueueIsBoundedByTheNumberOfRegisters) {
   CommandQueue queue;
   for (int round = 0; round < 3; round++) {
     for (int address = 0; address <= 0xFF; address++)
-      queue.enqueue({(uint8_t) address, (uint32_t) round, 0x04, VERIFY_SETTINGS});
+      queue.enqueue(Command::with_value((uint8_t) address, (uint32_t) round, 0x04, VERIFY_SETTINGS));
   }
 
   EXPECT_EQ(queue.pending().size(), 256u);
@@ -59,7 +62,7 @@ static constexpr uint32_t T0 = 1000;
 
 TEST(JkBmsCommandQueueTest, FirstWriteIsSentRightAway) {
   CommandQueue queue;
-  queue.enqueue({0x1D, 0x00000001, 0x04, VERIFY_SETTINGS});
+  queue.enqueue(Command::with_value(0x1D, 0x00000001, 0x04, VERIFY_SETTINGS));
 
   EXPECT_EQ(queue.next_deadline(T0), 0u);
   auto command = queue.next(T0);
@@ -70,8 +73,8 @@ TEST(JkBmsCommandQueueTest, FirstWriteIsSentRightAway) {
 
 TEST(JkBmsCommandQueueTest, NextWriteWaitsForTheAcknowledgementAndTheSettleTime) {
   CommandQueue queue;
-  queue.enqueue({0x1D, 0x00000001, 0x04, VERIFY_NONE});
-  queue.enqueue({0x1E, 0x00000001, 0x04, VERIFY_NONE});
+  queue.enqueue(Command::with_value(0x1D, 0x00000001, 0x04, VERIFY_NONE));
+  queue.enqueue(Command::with_value(0x1E, 0x00000001, 0x04, VERIFY_NONE));
   ASSERT_TRUE(queue.next(T0).has_value());
 
   EXPECT_FALSE(queue.next(T0 + 50).has_value());
@@ -91,8 +94,8 @@ TEST(JkBmsCommandQueueTest, NextWriteWaitsForTheAcknowledgementAndTheSettleTime)
 // Devices may lose or not send an acknowledgement: the timeout releases the queue
 TEST(JkBmsCommandQueueTest, MissingAcknowledgementTimesOut) {
   CommandQueue queue;
-  queue.enqueue({0xB3, 0x00000005, 0x01, VERIFY_NONE});
-  queue.enqueue({0xB7, 0x00000001, 0x01, VERIFY_NONE});
+  queue.enqueue(Command::with_value(0xB3, 0x00000005, 0x01, VERIFY_NONE));
+  queue.enqueue(Command::with_value(0xB7, 0x00000001, 0x01, VERIFY_NONE));
   ASSERT_TRUE(queue.next(T0).has_value());
 
   EXPECT_EQ(queue.next_deadline(T0), CommandQueue::ACKNOWLEDGEMENT_TIMEOUT_MS);
@@ -108,7 +111,7 @@ TEST(JkBmsCommandQueueTest, UnexpectedAcknowledgementIsIgnored) {
   CommandQueue queue;
   EXPECT_FALSE(queue.on_acknowledgement(T0).has_value());
 
-  queue.enqueue({0x1D, 0x00000001, 0x04, VERIFY_NONE});
+  queue.enqueue(Command::with_value(0x1D, 0x00000001, 0x04, VERIFY_NONE));
   ASSERT_TRUE(queue.next(T0).has_value());
   ASSERT_TRUE(queue.on_acknowledgement(T0 + 80).has_value());
   // A second acknowledgement must not shorten the settle time
@@ -120,7 +123,7 @@ TEST(JkBmsCommandQueueTest, IdleQueueHasNoDeadline) {
   CommandQueue queue;
   EXPECT_FALSE(queue.next_deadline(T0).has_value());
 
-  queue.enqueue({0x96, 0x00000000, 0x00, VERIFY_NONE});
+  queue.enqueue(Command::with_value(0x96, 0x00000000, 0x00, VERIFY_NONE));
   ASSERT_TRUE(queue.next(T0).has_value());
   ASSERT_TRUE(queue.on_acknowledgement(T0 + 300).has_value());
   queue.expire(T0 + 300 + CommandQueue::SETTLE_MS);
@@ -131,7 +134,7 @@ TEST(JkBmsCommandQueueTest, IdleQueueHasNoDeadline) {
 TEST(JkBmsCommandQueueTest, DeadlinesSurviveTheClockWrapping) {
   CommandQueue queue;
   const uint32_t before_wrap = 0xFFFFFFFFu - 20;
-  queue.enqueue({0x1D, 0x00000001, 0x04, VERIFY_NONE});
+  queue.enqueue(Command::with_value(0x1D, 0x00000001, 0x04, VERIFY_NONE));
   ASSERT_TRUE(queue.next(before_wrap).has_value());
 
   const uint32_t after_wrap = before_wrap + CommandQueue::ACKNOWLEDGEMENT_TIMEOUT_MS;  // wraps around
@@ -143,7 +146,7 @@ TEST(JkBmsCommandQueueTest, DeadlinesSurviveTheClockWrapping) {
 
 TEST(JkBmsCommandQueueTest, VerificationIsDueAfterTheDelay) {
   CommandQueue queue;
-  queue.enqueue({0x01, 3500, 0x04, VERIFY_SETTINGS});  // smart sleep voltage
+  queue.enqueue(Command::with_value(0x01, 3500, 0x04, VERIFY_SETTINGS));  // smart sleep voltage
   ASSERT_TRUE(queue.next(T0).has_value());
 
   EXPECT_EQ(queue.take_due_verifications(T0 + CommandQueue::VERIFICATION_DELAY_MS - 1), VERIFY_NONE);
@@ -155,8 +158,8 @@ TEST(JkBmsCommandQueueTest, VerificationIsDueAfterTheDelay) {
 // The readback starts when the write is sent, not when it is queued
 TEST(JkBmsCommandQueueTest, VerificationStartsWhenTheWriteIsSent) {
   CommandQueue queue;
-  queue.enqueue({0x1D, 0x00000001, 0x04, VERIFY_NONE});
-  queue.enqueue({0xA5, 0x00000001, 0x02, VERIFY_DEVICE_INFO});  // UART1 protocol
+  queue.enqueue(Command::with_value(0x1D, 0x00000001, 0x04, VERIFY_NONE));
+  queue.enqueue(Command::with_value(0xA5, 0x00000001, 0x02, VERIFY_DEVICE_INFO));  // UART1 protocol
   ASSERT_TRUE(queue.next(T0).has_value());
   ASSERT_TRUE(queue.on_acknowledgement(T0 + 80).has_value());
   queue.expire(T0 + 180);
@@ -171,8 +174,8 @@ TEST(JkBmsCommandQueueTest, BatchOfWritesCoalescesIntoOneReadPerFrame) {
   CommandQueue queue;
   uint32_t now = T0;
   for (uint8_t address : {0x01, 0x0B, 0xA5, 0x1D}) {
-    queue.enqueue(
-        {address, 0x00000001, 0x04, address == 0xA5 ? (uint8_t) VERIFY_DEVICE_INFO : (uint8_t) VERIFY_SETTINGS});
+    queue.enqueue(Command::with_value(address, 0x00000001, 0x04,
+                                      address == 0xA5 ? (uint8_t) VERIFY_DEVICE_INFO : (uint8_t) VERIFY_SETTINGS));
     ASSERT_TRUE(queue.next(now).has_value());
     ASSERT_TRUE(queue.on_acknowledgement(now + 80).has_value());
     now += 80 + CommandQueue::SETTLE_MS;
@@ -189,7 +192,7 @@ TEST(JkBmsCommandQueueTest, BatchOfWritesCoalescesIntoOneReadPerFrame) {
 
 TEST(JkBmsCommandQueueTest, ArmedVerificationSetsTheDeadline) {
   CommandQueue queue;
-  queue.enqueue({0x01, 3500, 0x04, VERIFY_SETTINGS});
+  queue.enqueue(Command::with_value(0x01, 3500, 0x04, VERIFY_SETTINGS));
   ASSERT_TRUE(queue.next(T0).has_value());
   ASSERT_TRUE(queue.on_acknowledgement(T0 + 80).has_value());
   queue.expire(T0 + 180);
@@ -200,8 +203,8 @@ TEST(JkBmsCommandQueueTest, ArmedVerificationSetsTheDeadline) {
 // Pending writes and readbacks of a lost connection must not be sent after a reconnect
 TEST(JkBmsCommandQueueTest, ResetDropsEverything) {
   CommandQueue queue;
-  queue.enqueue({0x01, 3500, 0x04, VERIFY_SETTINGS});
-  queue.enqueue({0x1D, 0x00000001, 0x04, VERIFY_SETTINGS});
+  queue.enqueue(Command::with_value(0x01, 3500, 0x04, VERIFY_SETTINGS));
+  queue.enqueue(Command::with_value(0x1D, 0x00000001, 0x04, VERIFY_SETTINGS));
   ASSERT_TRUE(queue.next(T0).has_value());
 
   queue.reset();
@@ -209,8 +212,70 @@ TEST(JkBmsCommandQueueTest, ResetDropsEverything) {
   EXPECT_TRUE(queue.pending().empty());
   EXPECT_FALSE(queue.next_deadline(T0 + 1).has_value());
   EXPECT_EQ(queue.take_due_verifications(T0 + CommandQueue::VERIFICATION_DELAY_MS), VERIFY_NONE);
-  queue.enqueue({0x97, 0x00000000, 0x00, VERIFY_NONE});
+  queue.enqueue(Command::with_value(0x97, 0x00000000, 0x00, VERIFY_NONE));
   EXPECT_TRUE(queue.next(T0 + 2).has_value());
+}
+
+// ── Payload ──────────────────────────────────────────────────────────────────
+
+TEST(JkBmsCommandQueueTest, ValueIsStoredLittleEndianInFrontOfTheLengthByte) {
+  const Command command = Command::with_value(0x0B, 0x12345678, 0x02, VERIFY_SETTINGS);
+  EXPECT_EQ(command.length, 0x02);
+  EXPECT_EQ(command.payload[0], 0x78);
+  EXPECT_EQ(command.payload[1], 0x56);
+  EXPECT_EQ(command.payload[2], 0x34);
+  EXPECT_EQ(command.payload[3], 0x12);
+  for (size_t i = 4; i < CommandQueue::MAX_PAYLOAD_SIZE; i++)
+    EXPECT_EQ(command.payload[i], 0x00) << i;
+}
+
+TEST(JkBmsCommandQueueTest, RawPayloadSetsTheLengthByte) {
+  const uint8_t text[] = {'6', '5', '4', '3', '2', '1'};
+  auto command = Command::with_payload(0xA0, text, sizeof(text), VERIFY_DEVICE_INFO);
+  ASSERT_TRUE(command.has_value());
+  EXPECT_EQ(command->address, 0xA0);
+  EXPECT_EQ(command->length, 6);
+  EXPECT_EQ(command->verify, VERIFY_DEVICE_INFO);
+  EXPECT_TRUE(std::equal(std::begin(text), std::end(text), command->payload.begin()));
+  for (size_t i = sizeof(text); i < CommandQueue::MAX_PAYLOAD_SIZE; i++)
+    EXPECT_EQ(command->payload[i], 0x00) << i;
+}
+
+TEST(JkBmsCommandQueueTest, PayloadFillsTheFrame) {
+  const uint8_t data[CommandQueue::MAX_PAYLOAD_SIZE] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
+  auto command = Command::with_payload(0xA0, data, sizeof(data), VERIFY_NONE);
+  ASSERT_TRUE(command.has_value());
+  EXPECT_EQ(command->length, 13);
+  EXPECT_EQ(command->payload[12], 13);
+}
+
+TEST(JkBmsCommandQueueTest, PayloadLongerThanTheFrameIsRejected) {
+  const uint8_t data[CommandQueue::MAX_PAYLOAD_SIZE + 1] = {};
+  EXPECT_FALSE(Command::with_payload(0xA0, data, sizeof(data), VERIFY_NONE).has_value());
+}
+
+TEST(JkBmsCommandQueueTest, EmptyPayloadIsAllowed) {
+  auto command = Command::with_payload(0x97, nullptr, 0, VERIFY_NONE);
+  ASSERT_TRUE(command.has_value());
+  EXPECT_EQ(command->length, 0);
+}
+
+// The last value wins for raw payloads too, including a shorter one
+TEST(JkBmsCommandQueueTest, NewerPayloadReplacesPendingOne) {
+  CommandQueue queue;
+  const uint8_t first[] = {'6', '5', '4', '3', '2', '1', '0'};
+  const uint8_t second[] = {'1', '2', '3'};
+  auto first_command = Command::with_payload(0xA0, first, sizeof(first), VERIFY_DEVICE_INFO);
+  auto second_command = Command::with_payload(0xA0, second, sizeof(second), VERIFY_DEVICE_INFO);
+  ASSERT_TRUE(first_command.has_value());
+  ASSERT_TRUE(second_command.has_value());
+  queue.enqueue(*first_command);
+  queue.enqueue(*second_command);
+
+  ASSERT_EQ(queue.pending().size(), 1u);
+  EXPECT_EQ(queue.pending()[0].length, 3);
+  EXPECT_EQ(queue.pending()[0].payload[2], '3');
+  EXPECT_EQ(queue.pending()[0].payload[3], 0x00);
 }
 
 // ── Acknowledgement ──────────────────────────────────────────────────────────

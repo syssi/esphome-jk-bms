@@ -17,6 +17,7 @@ AUTO_LOAD = [
     "select",
     "sensor",
     "switch",
+    "text",
     "text_sensor",
 ]
 MULTI_CONF = True

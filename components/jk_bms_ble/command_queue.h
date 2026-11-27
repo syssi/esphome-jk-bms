@@ -1,6 +1,9 @@
 #pragma once
 
+#include <array>
+#include <cstddef>
 #include <cstdint>
+#include <cstring>
 #include <optional>
 #include <vector>
 
@@ -35,11 +38,35 @@ class CommandQueue {
   static constexpr uint32_t SETTLE_MS = 100;
   static constexpr uint32_t VERIFICATION_DELAY_MS = 500;
 
+  // Bytes 6-18 of the 20 byte command frame
+  static constexpr size_t MAX_PAYLOAD_SIZE = 13;
+
+  // Any command frame: register (byte 4), length byte (byte 5) and payload (bytes 6-18). The length byte is not always
+  // the payload size: numeric registers carry a 4 byte little endian value with a length byte of 0, 1, 2 or 4.
   struct Command {
     uint8_t address;
-    uint32_t value;
     uint8_t length;
     uint8_t verify;
+    std::array<uint8_t, MAX_PAYLOAD_SIZE> payload;
+
+    // A numeric register: the value goes little endian into the first 4 payload bytes
+    static Command with_value(uint8_t address, uint32_t value, uint8_t length, uint8_t verify) {
+      Command command{address, length, verify, {}};
+      for (size_t i = 0; i < 4; i++)
+        command.payload[i] = value >> (8 * i);
+      return command;
+    }
+
+    // A register taking raw bytes, e.g. a text: the length byte is the payload size. Nothing if it doesn't fit into a
+    // frame.
+    static std::optional<Command> with_payload(uint8_t address, const uint8_t *data, size_t size, uint8_t verify) {
+      if (size > MAX_PAYLOAD_SIZE)
+        return std::nullopt;
+      Command command{address, static_cast<uint8_t>(size), verify, {}};
+      if (size > 0)
+        std::memcpy(command.payload.data(), data, size);
+      return command;
+    }
   };
 
   // The last value wins: a pending command for the same register is updated in place and keeps its position. The queue

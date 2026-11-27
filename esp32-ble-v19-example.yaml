@@ -461,6 +461,12 @@ select:
     load_config_preset:
       name: "load config preset"
 
+text:
+  - platform: jk_bms_ble
+    # The BMS raises the "Modify password in time" alarm (red LED) while this is the factory default 123456
+    settings_password:
+      name: "settings password"
+
 text_sensor:
   - platform: jk_bms_ble
     errors:

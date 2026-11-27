@@ -466,4 +466,36 @@ TEST(JkBmsWriteCommandTest, RegistersAreDistinct) {
   EXPECT_NE(f35, f36);
 }
 
+// ── Text registers ───────────────────────────────────────────────────────────
+
+// Recorded on a JK-B1A8S10P (hw 19H, sw 19.25): settings password 654321, acknowledged by the BMS, which then cleared
+// the "Modify password in time" alarm
+TEST(JkBmsWriteCommandTest, SettingsPasswordFrame) {
+  const std::string password = "654321";
+  auto command = CommandQueue::Command::with_payload(0xA0, reinterpret_cast<const uint8_t *>(password.data()),
+                                                     password.size(), VERIFY_DEVICE_INFO);
+  ASSERT_TRUE(command.has_value());
+
+  const std::array<uint8_t, 20> expected = {0xAA, 0x55, 0x90, 0xEB, 0xA0, 0x06, 0x36, 0x35, 0x34, 0x33,
+                                            0x32, 0x31, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x55};
+  EXPECT_EQ(JkBmsBle::build_frame(*command), expected);
+}
+
+TEST(JkBmsWriteCommandTest, TextUsesTheWholePayload) {
+  const std::string text = "ABCDEFGHIJKLM";
+  auto command = CommandQueue::Command::with_payload(0xA0, reinterpret_cast<const uint8_t *>(text.data()), text.size(),
+                                                     VERIFY_NONE);
+  ASSERT_TRUE(command.has_value());
+
+  auto f = JkBmsBle::build_frame(*command);
+  EXPECT_EQ(f[5], 13);
+  EXPECT_EQ(std::string(f.begin() + 6, f.begin() + 19), text);
+}
+
+// The numeric overload still produces the frames the captures above show
+TEST(JkBmsWriteCommandTest, NumericOverloadMatchesTheCommand) {
+  EXPECT_EQ(JkBmsBle::build_frame(0x31, 0x00000001, 0x04),
+            JkBmsBle::build_frame(CommandQueue::Command::with_value(0x31, 0x00000001, 0x04, VERIFY_NONE)));
+}
+
 }  // namespace esphome::jk_bms_ble::testing

@@ -20,6 +20,7 @@ from components.jk_bms_ble import (
     number,
     select,
     switch,
+    text,
 )
 
 SOURCE = (
@@ -53,6 +54,7 @@ WRITE_TABLES = [
     *((key, f"{key}_switch_", entry[-1]) for key, entry in switch.SWITCHES.items()),
     *((key, f"{key}_number_", entry[-1]) for key, entry in number.NUMBERS.items()),
     *((key, f"{key}_select_", entry[-1]) for key, entry in select.SELECTS.items()),
+    *((key, f"{key}_text_", entry[-1]) for key, entry in text.TEXTS.items()),
 ]
 
 

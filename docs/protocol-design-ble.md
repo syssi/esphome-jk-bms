@@ -33,10 +33,14 @@ Commands are sent as 20-byte frames with the following format:
 |  17-18 |      2 | Reserved (0x00 0x00) |
 |     19 |      1 | CRC |
 
+Text registers use bytes 6-18 for the text (at most 13 bytes) and the length byte for its length; the JK app 6.3
+sends them that way.
+
 ### Command Types
 
 - `0x97`: Device info request → triggers Frame 0x03 (device info)
 - `0x96`: Settings request → triggers Frame 0x01 (settings); Frame 0x02 (cell data) auto-streams once both `0x96` and `0x97` have been sent
+- `0xA0`: Sets the settings password (device info bytes 118-133), see below
 
 ### Example Command Payloads
 
@@ -52,6 +56,23 @@ XX              # Counter (sequence)
 00 00           # Reserved
 00              # CRC (sum8 of bytes 0-18)
 ```
+
+#### Settings Password Command (0xA0)
+```
+AA 55 90 EB                          # Header
+A0                                   # Command
+06                                   # Length of the password
+36 35 34 33 32 31                    # "654321"
+00 00 00 00 00 00 00                 # Padding
+55                                   # CRC (sum8 of bytes 0-18)
+```
+
+The JK app asks for the settings password before changing settings and compares it with device info bytes 118-133
+itself; the BMS accepts writes without it. While the password is the factory default `123456` the BMS raises the
+"Modify password in time" alarm (bit 19, red LED). Measured on a JK-B1A8S10P (hw 19H, sw 19.25): `0xA0` is
+acknowledged, the BMS stores the password zero-padded to 16 bytes and clears the alarm within a second; writing
+`123456` back raises it again. The PB firmware V19.27 does the same (it re-evaluates the alarm after every `0xA0`
+write). `0x9C` sets the Bluetooth passcode (bytes 62-77) instead and doesn't affect the alarm.
 
 #### Cell Info Command (0x96)
 ```
@@ -211,7 +232,7 @@ Both variants share the same bit layout. Published as a zero-padded hex string v
 | 16 | Charging MOSFET abnormal | JK02_32S only |
 | 17 | Discharging MOSFET abnormal | JK02_32S only |
 | 18 | GPS disconnected | JK02_32S only |
-| 19 | Modify password in time | JK02_32S only |
+| 19 | Modify password in time | JK02_32S only. Set while the settings password is `123456`, see `0xA0` |
 | 20 | Discharge on failed | JK02_32S only |
 | 21 | Battery overtemperature | JK02_32S only |
 | 22 | Temperature sensor anomaly | JK02_32S only |
@@ -242,11 +263,11 @@ Dry contact bitmask notes for byte 281 (JK02_32S only):
 |            38-41 |      4 | Device uptime | uint32 | 1 | seconds | Little-endian |
 |            42-45 |      4 | Power on count | uint32 | 1 | count | Little-endian |
 |            46-61 |     16 | Device name | string | - | - | Null-terminated string |
-|            62-77 |     16 | Device passcode | string | - | - | Null-terminated string |
+|            62-77 |     16 | Device passcode | string | - | - | Null-terminated string, Bluetooth passcode, set via `0x9C` |
 |            78-85 |      8 | Manufacturing date | string | - | - | Null-terminated string |
 |           86-101 |     16 | Serial number | string | - | - | Null-terminated string |
 |          102-117 |     16 | User data | string | - | - | Null-terminated string |
-|          118-133 |     16 | Setup passcode | string | - | - | Null-terminated string |
+|          118-133 |     16 | Settings password | string | - | - | Null-terminated string, set via `0xA0` |
 |          182-183 |      2 | Dealer ID | uint16 | - | - | Little-endian. The JK app refuses devices with a dealer ID other than 0 |
 |              184 |      1 | UART1M Protocol number | uint8 | - | - | Protocol version |
 |              185 |      1 | CAN Protocol number | uint8 | - | - | Protocol version |
