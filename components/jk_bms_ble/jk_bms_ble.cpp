@@ -791,49 +791,60 @@ uint32_t JkBmsBle::encode_jk04_payload(float value, uint8_t len, float factor) {
 // TODO: There is no need to assemble frames if the MTU can be increased to > 320 bytes
 // Notifications carry more than frames: the BMS sends "AT\r\n" several times per second and acknowledges every command
 // with a 20 byte frame starting with 0xAA 0x55 0x90 0xEB. The BLE module packs whatever it has buffered into one
-// notification, so these bytes may also sit right in front of a frame's preamble or behind its end. Only bytes from a
-// preamble on are collected; everything outside of a frame is dropped.
+// notification, so these bytes may also sit right in front of a frame's preamble or behind its end, and the end of one
+// frame may share a notification with the start of the next. Only bytes from a preamble on are collected; everything
+// outside of a frame is dropped.
 void JkBmsBle::assemble(const uint8_t *data, uint16_t length) {
   if (this->frame_buffer_.size() > MAX_RESPONSE_SIZE) {
     ESP_LOGW(TAG, "Frame dropped because of invalid length");
     this->frame_buffer_.clear();
   }
 
-  // A preamble starts a new frame, wherever it is within the notification
   static const uint8_t PREAMBLE[4] = {0x55, 0xAA, 0xEB, 0x90};
   const uint8_t *preamble = std::search(data, data + length, std::begin(PREAMBLE), std::end(PREAMBLE));
-  if (preamble != data + length) {
-    if (preamble != data) {
-      ESP_LOGV(TAG, "Dropping %u bytes in front of the preamble", (unsigned) (preamble - data));
+
+  // The bytes in front of a preamble (all bytes if there is none) belong to the frame in progress
+  if (preamble != data) {
+    if (this->frame_buffer_.empty()) {
+      ESP_LOGV(TAG, "Dropping %u bytes outside of a frame", (unsigned) (preamble - data));
+    } else {
+      this->frame_buffer_.insert(this->frame_buffer_.end(), data, preamble);
+      this->decode_frame_buffer_();
     }
+  }
+
+  if (preamble == data + length)
+    return;
+
+  // A preamble starts a new frame, wherever it is within the notification. A frame still in progress is incomplete.
+  if (!this->frame_buffer_.empty()) {
+    ESP_LOGV(TAG, "Dropping an incomplete frame of %zu bytes", this->frame_buffer_.size());
+  }
+  this->frame_buffer_.assign(preamble, data + length);
+  this->decode_frame_buffer_();
+}
+
+// Decodes the frame buffer once it holds a whole frame
+void JkBmsBle::decode_frame_buffer_() {
+  if (this->frame_buffer_.size() < MIN_RESPONSE_SIZE)
+    return;
+
+  const uint8_t *raw = &this->frame_buffer_[0];
+  // Even if the frame is 320 bytes long the CRC is at position 300 in front of 0xAA 0x55 0x90 0xEB
+  const uint16_t frame_size = 300;  // this->frame_buffer_.size();
+
+  uint8_t computed_crc = crc(raw, frame_size - 1);
+  uint8_t remote_crc = raw[frame_size - 1];
+  if (computed_crc != remote_crc) {
+    ESP_LOGW(TAG, "CRC check failed! 0x%02X != 0x%02X", computed_crc, remote_crc);
     this->frame_buffer_.clear();
-    length -= preamble - data;
-    data = preamble;
-  } else if (this->frame_buffer_.empty()) {
-    ESP_LOGV(TAG, "Dropping %u bytes outside of a frame", length);
     return;
   }
 
-  this->frame_buffer_.insert(this->frame_buffer_.end(), data, data + length);
+  std::vector<uint8_t> data(this->frame_buffer_.begin(), this->frame_buffer_.end());
 
-  if (this->frame_buffer_.size() >= MIN_RESPONSE_SIZE) {
-    const uint8_t *raw = &this->frame_buffer_[0];
-    // Even if the frame is 320 bytes long the CRC is at position 300 in front of 0xAA 0x55 0x90 0xEB
-    const uint16_t frame_size = 300;  // this->frame_buffer_.size();
-
-    uint8_t computed_crc = crc(raw, frame_size - 1);
-    uint8_t remote_crc = raw[frame_size - 1];
-    if (computed_crc != remote_crc) {
-      ESP_LOGW(TAG, "CRC check failed! 0x%02X != 0x%02X", computed_crc, remote_crc);
-      this->frame_buffer_.clear();
-      return;
-    }
-
-    std::vector<uint8_t> data(this->frame_buffer_.begin(), this->frame_buffer_.end());
-
-    this->decode_(data);
-    this->frame_buffer_.clear();
-  }
+  this->decode_(data);
+  this->frame_buffer_.clear();
 }
 
 void JkBmsBle::decode_(const std::vector<uint8_t> &data) {

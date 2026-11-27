@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <cmath>
 #include "common.h"
 #include "frames_jk02_32s_v19.h"
 
@@ -36,7 +37,11 @@ static void assemble_frame(TestableJkBmsBle &bms, const std::vector<uint8_t> &fr
 
 class JkBmsAssembleTest : public ::testing::Test {
  protected:
-  void SetUp() override { bms_.set_software_version_text_sensor(&software_version_); }
+  void SetUp() override {
+    bms_.set_protocol_version(PROTOCOL_VERSION_JK02_32S);
+    bms_.set_software_version_text_sensor(&software_version_);
+    bms_.set_total_voltage_sensor(&total_voltage_);
+  }
 
   // True if a device info frame was decoded since the last call
   bool decoded_() {
@@ -45,8 +50,16 @@ class JkBmsAssembleTest : public ::testing::Test {
     return result;
   }
 
+  // True if a cell info frame was decoded since the last call
+  bool cell_info_decoded_() {
+    bool result = !std::isnan(total_voltage_.state);
+    total_voltage_.state = NAN;
+    return result;
+  }
+
   TestableJkBmsBle bms_;
   text_sensor::TextSensor software_version_;
+  sensor::Sensor total_voltage_;
 };
 
 TEST_F(JkBmsAssembleTest, FrameSplitIntoNotificationsIsDecoded) {
@@ -107,6 +120,35 @@ TEST_F(JkBmsAssembleTest, BytesBetweenFramesAreDropped) {
 TEST_F(JkBmsAssembleTest, IncompleteFrameIsReplacedByTheNextOne) {
   assemble(bms_, slice(DEVICE_INFO_JK02_32S_V19, 0, 128));
   assemble_frame(bms_, DEVICE_INFO_JK02_32S_V19, 128);
+  EXPECT_TRUE(decoded_());
+}
+
+// JK-BD6A17S6P (hw 7.X, sw 7.1.0H): a 0x97 request answered while a cell info frame is being sent. The last
+// notification of the cell info frame carries its last 44 bytes followed by the start of the device info frame.
+TEST_F(JkBmsAssembleTest, FrameEndAndNextPreambleInOneNotificationAreBothDecoded) {
+  const auto &cell_info = CELL_INFO_JK02_32S_V19;
+  const auto &device_info = DEVICE_INFO_JK02_32S_V19;
+  total_voltage_.state = NAN;
+
+  assemble(bms_, slice(cell_info, 0, 128));
+  assemble(bms_, slice(cell_info, 128, 256));
+  assemble(bms_, concat({slice(cell_info, 256, 300), slice(device_info, 0, 84)}));
+  EXPECT_TRUE(cell_info_decoded_());
+
+  assemble(bms_, slice(device_info, 84, 212));
+  assemble(bms_, slice(device_info, 212, 300));
+  EXPECT_TRUE(decoded_());
+  EXPECT_TRUE(bms_.frame_buffer_.empty());
+}
+
+// The bytes in front of the preamble don't complete the frame in progress: it is dropped, the new one is kept
+TEST_F(JkBmsAssembleTest, IncompleteFrameInFrontOfAPreambleIsDropped) {
+  total_voltage_.state = NAN;
+  assemble(bms_, slice(CELL_INFO_JK02_32S_V19, 0, 128));
+  assemble(bms_, concat({slice(CELL_INFO_JK02_32S_V19, 128, 140), slice(DEVICE_INFO_JK02_32S_V19, 0, 128)}));
+  assemble(bms_, slice(DEVICE_INFO_JK02_32S_V19, 128, 256));
+  assemble(bms_, slice(DEVICE_INFO_JK02_32S_V19, 256, 300));
+  EXPECT_FALSE(cell_info_decoded_());
   EXPECT_TRUE(decoded_());
 }
 
