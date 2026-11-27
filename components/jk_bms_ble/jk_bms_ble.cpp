@@ -45,9 +45,10 @@ static const uint8_t REGISTER_TIME = 0x6C;
 static const int64_t JK_TIME_EPOCH = 1577808000LL;
 
 // The BMS drops a command that arrives while it is still processing the previous one, e.g. a 0x96 request sent while
-// the device info frame of a 0x97 request is still being transmitted. Most devices acknowledge every processed command
-// with ACKNOWLEDGEMENT_FRAME (64-250 ms after a write, up to 454 ms after a 0x96 request), so the next command is sent
-// once it arrives. Old JK02_24S devices (hw 7.x, 8.x) never acknowledge; the timeout releases the queue for them.
+// the device info frame of a 0x97 request is still being transmitted. The BMS acknowledges every processed command with
+// ACKNOWLEDGEMENT_FRAME (64-250 ms after a write, up to 454 ms after a 0x96 request), so the next command is sent once
+// it arrives. Seen on JK02_32S (hw 19), JK02_24S (hw 7.x, 8.x, right behind the response frame) and JK04 (hw 3.0); the
+// timeout releases the queue if an acknowledgement gets lost or a device doesn't send one.
 static const uint32_t ACKNOWLEDGEMENT_TIMEOUT_MS = 1000;
 // The BMS isn't ready for the next command right away: a command sent within a few milliseconds of the acknowledgement
 // is still dropped now and then, 25 ms were enough in every test (JK-B1A8S10P, sw 19.25)

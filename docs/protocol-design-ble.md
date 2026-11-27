@@ -81,12 +81,15 @@ XX              # Counter (sequence)
 ### Other Notification Content
 Besides the response frames the notifications carry:
 
-- `41 54 0D 0A` (`AT\r\n`), several times per second, whether a command was sent or not. It isn't answered (the JK
-  app doesn't either). Answering `OK\r\n` doesn't stop it and keeps the BMS from starting the cell info stream.
+- `41 54 0D 0A` (`AT\r\n`), several times per second, whether a command was sent or not (JK02_32S hw 19; not seen on
+  JK02_24S hw 7.x, 8.x). It isn't answered (the JK app doesn't either). Answering `OK\r\n` doesn't stop it and keeps
+  the BMS from starting the cell info stream.
 - A 20 byte acknowledgement after every processed command:
   `AA 55 90 EB C8 01 01 00 00 00 00 00 00 00 00 00 00 00 00 44`. It is sent 64-250 ms after a write and up to 454 ms
-  after a `0x96` request (after the settings and device info frames). A command the BMS dropped is not acknowledged.
-  Old JK02_24S devices (hw 7.x, 8.x) don't send acknowledgements.
+  after a request, once the response frames were sent. JK02_32S devices (hw 19) answer `0x96` with the settings and
+  the device info frame, JK02_24S devices (hw 7.x, 8.x) with the settings frame only, followed directly by the
+  acknowledgement. A command the BMS dropped is not acknowledged. The acknowledgement only means the command was
+  processed: a write to a register the model doesn't support (e.g. `0xB7` on a JK-B2A8S20P) is acknowledged too.
 
 The BLE module packs whatever it has buffered into one notification, so these bytes may share a notification with
 each other or with a frame: the JK app btsnoop logs contain `AT\r\n` + acknowledgement + `AT\r\n` and `AT\r\n`
