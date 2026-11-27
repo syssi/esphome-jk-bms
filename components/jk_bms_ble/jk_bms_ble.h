@@ -468,13 +468,15 @@ class JkBmsBle :
   ProtocolVersion get_protocol_version() { return protocol_version_; }
   bool has_clock() const { return has_clock_; }
   static std::array<uint8_t, 20> build_frame(uint8_t address, uint32_t value, uint8_t length);
+  // True if the notification carries the frame the BMS sends after processing a command
+  static bool contains_acknowledgement(const uint8_t *data, uint16_t length);
   static uint32_t encode_jk04_payload(float value, uint8_t len, float factor);
   // Converts between a unix timestamp and the BMS clock format (seconds since 2020-01-01 00:00:00 UTC+8)
   static uint32_t encode_time(time_t utc);
   static time_t decode_time(uint32_t value);
   static optional<ProtocolVersion> jk02_protocol_version_for_software(const std::string &software_version);
 #ifdef USE_ESP32
-  // Queues the write and sends it as soon as the spacing to the previous write allows. `verify` is a set of Verify
+  // Queues the write and sends it once the BMS acknowledged the previous command. `verify` is a set of Verify
   // flags naming the frames read back afterwards. Returns false if the link is down or the immediate send failed; true
   // means the write was sent or queued.
   bool write_register(uint8_t address, uint32_t value, uint8_t length, uint8_t verify);
@@ -660,12 +662,15 @@ class JkBmsBle :
 #ifdef USE_ESP32
   uint16_t char_handle_{0};
   uint16_t notify_handle_{0};
-  uint32_t last_write_{0};
-  bool has_written_{false};
+  // The last command was sent and the queue waits for its acknowledgement (plus a settle time) or the timeout
+  bool awaiting_acknowledgement_{false};
+  uint8_t awaited_command_{0};
+  uint32_t awaited_since_{0};
 
   // Requests a frame (0x96 cell info/settings, 0x97 device info). Queued like a write, but never verified.
   bool request_frame_(uint8_t command);
   bool process_write_queue_();
+  void on_acknowledgement_();
   void schedule_verification_(uint8_t verify);
   bool send_frame_(uint8_t address, uint32_t value, uint8_t length);
 #endif

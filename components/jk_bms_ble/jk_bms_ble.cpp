@@ -44,10 +44,18 @@ static const uint8_t REGISTER_TIME = 0x6C;
 // independently of the local time zone.
 static const int64_t JK_TIME_EPOCH = 1577808000LL;
 
-// The BMS silently drops a register write that follows the previous one within a few milliseconds.
-static const uint32_t WRITE_SPACING_MS = 100;
-// The BMS never acknowledges a settings write. This long after the last write the settings are read
-// back, so the entities publish what the BMS actually stored.
+// The BMS drops a command that arrives while it is still processing the previous one, e.g. a 0x96 request sent while
+// the device info frame of a 0x97 request is still being transmitted. Most devices acknowledge every processed command
+// with ACKNOWLEDGEMENT_FRAME (64-250 ms after a write, up to 454 ms after a 0x96 request), so the next command is sent
+// once it arrives. Old JK02_24S devices (hw 7.x, 8.x) never acknowledge; the timeout releases the queue for them.
+static const uint32_t ACKNOWLEDGEMENT_TIMEOUT_MS = 1000;
+// The BMS isn't ready for the next command right away: a command sent within a few milliseconds of the acknowledgement
+// is still dropped now and then, 25 ms were enough in every test (JK-B1A8S10P, sw 19.25)
+static const uint32_t ACKNOWLEDGEMENT_SETTLE_MS = 100;
+static const uint8_t ACKNOWLEDGEMENT_FRAME[20] = {0xAA, 0x55, 0x90, 0xEB, 0xC8, 0x01, 0x01, 0x00, 0x00, 0x00,
+                                                  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x44};
+// The acknowledgement only confirms that a command was processed, not which value was stored. This long after the last
+// write the frame containing the value is read back, so the entities publish what the BMS actually stored.
 static const uint32_t SETTINGS_VERIFICATION_DELAY_MS = 500;
 
 static const uint16_t MIN_RESPONSE_SIZE = 300;
@@ -497,6 +505,7 @@ void JkBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gat
       this->frame_buffer_.clear();
       // Pending writes belong to the lost connection and must not be sent after a reconnect
       this->pending_writes_.clear();
+      this->awaiting_acknowledgement_ = false;
       this->cancel_timeout("write_queue");
       this->cancel_timeout("verify_settings");
       this->cancel_timeout("verify_device_info");
@@ -585,6 +594,9 @@ void JkBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gat
       ESP_LOGVV(TAG, "Notification received: %s",
                 format_hex_pretty_to(hex_buf, param->notify.value, param->notify.value_len, '.'));
 
+      if (contains_acknowledgement(param->notify.value, param->notify.value_len))
+        this->on_acknowledgement_();
+
       this->assemble(param->notify.value, param->notify.value_len);
 
       break;
@@ -623,32 +635,43 @@ bool JkBmsBle::write_register(uint8_t address, uint32_t value, uint8_t length, u
 
 bool JkBmsBle::request_frame_(uint8_t command) { return this->write_register(command, 0x00000000, 0x00, VERIFY_NONE); }
 
-// Sends the oldest pending write if WRITE_SPACING_MS have passed since the previous one, otherwise (re)arms the single
-// "write_queue" timeout for the next free slot
+// Sends the oldest pending write unless the previous one is still waiting for its acknowledgement
 bool JkBmsBle::process_write_queue_() {
-  if (this->pending_writes_.empty())
+  if (this->awaiting_acknowledgement_ || this->pending_writes_.empty())
     return true;
-
-  const uint32_t now = millis();
-  const uint32_t elapsed = now - this->last_write_;
-  if (this->has_written_ && elapsed < WRITE_SPACING_MS) {
-    this->set_timeout("write_queue", WRITE_SPACING_MS - elapsed, [this]() { this->process_write_queue_(); });
-    return true;
-  }
 
   const PendingWrite write = this->pending_writes_.front();
   this->pending_writes_.erase(this->pending_writes_.begin());
-  this->last_write_ = now;
-  this->has_written_ = true;
 
   const bool sent = this->send_frame_(write.address, write.value, write.length);
   this->schedule_verification_(write.verify);
 
-  if (!this->pending_writes_.empty()) {
-    this->set_timeout("write_queue", WRITE_SPACING_MS, [this]() { this->process_write_queue_(); });
-  }
+  this->awaiting_acknowledgement_ = true;
+  this->awaited_command_ = write.address;
+  this->awaited_since_ = millis();
+  this->set_timeout("write_queue", ACKNOWLEDGEMENT_TIMEOUT_MS, [this]() {
+    ESP_LOGD(TAG, "Command 0x%02X not acknowledged within %" PRIu32 " ms", this->awaited_command_,
+             ACKNOWLEDGEMENT_TIMEOUT_MS);
+    this->awaiting_acknowledgement_ = false;
+    this->process_write_queue_();
+  });
 
   return sent;
+}
+
+void JkBmsBle::on_acknowledgement_() {
+  if (!this->awaiting_acknowledgement_) {
+    ESP_LOGV(TAG, "Unexpected acknowledgement");
+    return;
+  }
+
+  ESP_LOGD(TAG, "Command 0x%02X acknowledged after %" PRIu32 " ms", this->awaited_command_,
+           millis() - this->awaited_since_);
+  // Replaces the acknowledgement timeout
+  this->set_timeout("write_queue", ACKNOWLEDGEMENT_SETTLE_MS, [this]() {
+    this->awaiting_acknowledgement_ = false;
+    this->process_write_queue_();
+  });
 }
 
 // Every write restarts the timer of its frame, so a batch of writes results in a single read per frame
@@ -737,6 +760,12 @@ void JkBmsBle::sync_time_on_connect_() {
 
   this->time_synced_ = this->sync_time();
 #endif
+}
+
+// Like a frame's preamble the acknowledgement may share a notification with other bytes, see assemble()
+bool JkBmsBle::contains_acknowledgement(const uint8_t *data, uint16_t length) {
+  return std::search(data, data + length, std::begin(ACKNOWLEDGEMENT_FRAME), std::end(ACKNOWLEDGEMENT_FRAME)) !=
+         data + length;
 }
 
 void JkBmsBle::enqueue_write_(uint8_t address, uint32_t value, uint8_t length, uint8_t verify) {
