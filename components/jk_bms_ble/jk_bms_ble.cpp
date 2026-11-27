@@ -773,7 +773,6 @@ uint32_t JkBmsBle::encode_jk04_payload(float value, uint8_t len, float factor) {
   return (uint32_t) (int32_t) (value * factor);
 }
 
-// TODO: There is no need to assemble frames if the MTU can be increased to > 320 bytes
 // Notifications carry more than frames: the BMS sends "AT\r\n" several times per second and acknowledges every command
 // with a 20 byte frame starting with 0xAA 0x55 0x90 0xEB. The BLE module packs whatever it has buffered into one
 // notification, so these bytes may also sit right in front of a frame's preamble or behind its end, and the end of one

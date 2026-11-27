@@ -71,7 +71,8 @@ XX              # Counter (sequence)
 ### Frame Assembly
 - Response frames are 300 bytes long. What looked like 320 byte frames on some devices is a frame followed by the
   20 byte command acknowledgement (see below)
-- Responses are fragmented due to BLE MTU limitations
+- Responses are fragmented regardless of the MTU: a JK02_32S (hw 19) negotiates an MTU of 512 bytes but sends every
+  300 byte frame as two notifications of 150 bytes, about 35 ms apart
 - Each response frame starts with sequence: `0x55 0xAA 0xEB 0x90`
 - The start sequence starts a new frame wherever it is within a notification; bytes in front of it and bytes received
   while no frame is in progress are dropped
