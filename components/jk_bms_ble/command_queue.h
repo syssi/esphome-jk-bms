@@ -27,7 +27,7 @@ enum Verify : uint8_t {
 // The acknowledgement only confirms that a command was processed, not which value was stored. Each write therefore
 // (re)arms the readback of the frames named by its verify flags: a batch of writes results in a single read per frame,
 // requested once the queue is idle again.
-class WriteQueue {
+class CommandQueue {
  public:
   static constexpr uint32_t ACKNOWLEDGEMENT_TIMEOUT_MS = 1000;
   // A command sent within a few milliseconds of the acknowledgement is still dropped now and then; 25 ms were enough in
@@ -35,23 +35,23 @@ class WriteQueue {
   static constexpr uint32_t SETTLE_MS = 100;
   static constexpr uint32_t VERIFICATION_DELAY_MS = 500;
 
-  struct Write {
+  struct Command {
     uint8_t address;
     uint32_t value;
     uint8_t length;
     uint8_t verify;
   };
 
-  // The last value wins: a pending write to the same register is updated in place and keeps its position. The queue
+  // The last value wins: a pending command for the same register is updated in place and keeps its position. The queue
   // holds at most one entry per register.
-  void enqueue(const Write &write) {
+  void enqueue(const Command &command) {
     for (auto &pending : this->pending_) {
-      if (pending.address == write.address) {
-        pending = write;
+      if (pending.address == command.address) {
+        pending = command;
         return;
       }
     }
-    this->pending_.push_back(write);
+    this->pending_.push_back(command);
   }
 
   // Ends a wait that is over: the settle time after an acknowledgement, or the acknowledgement timeout. Returns the
@@ -78,23 +78,23 @@ class WriteQueue {
     return due;
   }
 
-  // The write to send now, if the previous command is done. The queue then waits for its acknowledgement.
-  std::optional<Write> next(uint32_t now) {
+  // The command to send now, if the previous one is done. The queue then waits for its acknowledgement.
+  std::optional<Command> next(uint32_t now) {
     if (this->state_ != State::IDLE || this->pending_.empty())
       return std::nullopt;
 
-    const Write write = this->pending_.front();
+    const Command command = this->pending_.front();
     this->pending_.erase(this->pending_.begin());
     this->state_ = State::AWAITING_ACKNOWLEDGEMENT;
     this->since_ = now;
-    this->awaited_command_ = write.address;
+    this->awaited_command_ = command.address;
     for (auto &verification : this->verifications_) {
-      if (write.verify & verification.flag) {
+      if (command.verify & verification.flag) {
         verification.armed = true;
         verification.since = now;
       }
     }
-    return write;
+    return command;
   }
 
   // Returns the milliseconds the awaited command took, or nothing if no acknowledgement was awaited
@@ -132,9 +132,9 @@ class WriteQueue {
   }
 
   uint8_t awaited_command() const { return this->awaited_command_; }
-  const std::vector<Write> &pending() const { return this->pending_; }
+  const std::vector<Command> &pending() const { return this->pending_; }
 
-  // Pending writes and readbacks belong to a lost connection and must not be sent after a reconnect
+  // Pending commands and readbacks belong to a lost connection and must not be sent after a reconnect
   void reset() {
     this->pending_.clear();
     this->state_ = State::IDLE;
@@ -151,7 +151,7 @@ class WriteQueue {
   };
 
   // Oldest first
-  std::vector<Write> pending_;
+  std::vector<Command> pending_;
   State state_{State::IDLE};
   // Start of the current wait: when the awaited command was sent, or when it was acknowledged
   uint32_t since_{0};

@@ -6,7 +6,7 @@
 #include "esphome/core/component.h"
 #include "esphome/core/hal.h"
 #include "esphome/core/optional.h"
-#include "write_queue.h"
+#include "command_queue.h"
 #include "esphome/components/binary_sensor/binary_sensor.h"
 #include "esphome/components/number/number.h"
 #include "esphome/components/sensor/sensor.h"
@@ -645,11 +645,11 @@ class JkBmsBle :
 #ifdef USE_ESP32
   uint16_t char_handle_{0};
   uint16_t notify_handle_{0};
-  WriteQueue write_queue_;
+  CommandQueue command_queue_;
 
   // Requests a frame (0x96 cell info/settings, 0x97 device info). Queued like a write, but never verified.
   bool request_frame_(uint8_t command);
-  bool service_write_queue_();
+  bool service_command_queue_();
   bool send_frame_(uint8_t address, uint32_t value, uint8_t length);
 #endif
   uint32_t last_cell_info_{0};

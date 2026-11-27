@@ -44,7 +44,7 @@ static const uint8_t REGISTER_TIME = 0x6C;
 // independently of the local time zone.
 static const int64_t JK_TIME_EPOCH = 1577808000LL;
 
-// Sent by the BMS after every processed command, see WriteQueue
+// Sent by the BMS after every processed command, see CommandQueue
 static const uint8_t ACKNOWLEDGEMENT_FRAME[20] = {0xAA, 0x55, 0x90, 0xEB, 0xC8, 0x01, 0x01, 0x00, 0x00, 0x00,
                                                   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x44};
 
@@ -494,8 +494,8 @@ void JkBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gat
 
       this->frame_buffer_.clear();
       // Pending writes belong to the lost connection and must not be sent after a reconnect
-      this->write_queue_.reset();
-      this->cancel_timeout("write_queue");
+      this->command_queue_.reset();
+      this->cancel_timeout("command_queue");
 
       break;
     }
@@ -582,10 +582,10 @@ void JkBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gat
                 format_hex_pretty_to(hex_buf, param->notify.value, param->notify.value_len, '.'));
 
       if (contains_acknowledgement(param->notify.value, param->notify.value_len)) {
-        if (auto latency = this->write_queue_.on_acknowledgement(millis())) {
-          ESP_LOGD(TAG, "Command 0x%02X acknowledged after %" PRIu32 " ms", this->write_queue_.awaited_command(),
+        if (auto latency = this->command_queue_.on_acknowledgement(millis())) {
+          ESP_LOGD(TAG, "Command 0x%02X acknowledged after %" PRIu32 " ms", this->command_queue_.awaited_command(),
                    *latency);
-          this->service_write_queue_();
+          this->service_command_queue_();
         }
       }
 
@@ -621,39 +621,39 @@ bool JkBmsBle::write_register(uint8_t address, uint32_t value, uint8_t length, u
     return false;
   }
 
-  this->write_queue_.enqueue({address, value, length, verify});
-  return this->service_write_queue_();
+  this->command_queue_.enqueue({address, value, length, verify});
+  return this->service_command_queue_();
 }
 
 bool JkBmsBle::request_frame_(uint8_t command) { return this->write_register(command, 0x00000000, 0x00, VERIFY_NONE); }
 
 // Does whatever the write queue has due and arms a single timer for its next deadline. Returns false if a send failed.
-bool JkBmsBle::service_write_queue_() {
+bool JkBmsBle::service_command_queue_() {
   const uint32_t now = millis();
 
-  if (auto command = this->write_queue_.expire(now)) {
+  if (auto command = this->command_queue_.expire(now)) {
     ESP_LOGD(TAG, "Command 0x%02X not acknowledged within %" PRIu32 " ms", *command,
-             WriteQueue::ACKNOWLEDGEMENT_TIMEOUT_MS);
+             CommandQueue::ACKNOWLEDGEMENT_TIMEOUT_MS);
   }
 
-  const uint8_t due = this->write_queue_.take_due_verifications(now);
+  const uint8_t due = this->command_queue_.take_due_verifications(now);
   if (due & VERIFY_SETTINGS) {
     ESP_LOGD(TAG, "Request settings to verify the last write");
-    this->write_queue_.enqueue({COMMAND_CELL_INFO, 0x00000000, 0x00, VERIFY_NONE});
+    this->command_queue_.enqueue({COMMAND_CELL_INFO, 0x00000000, 0x00, VERIFY_NONE});
   }
   if (due & VERIFY_DEVICE_INFO) {
     ESP_LOGD(TAG, "Request device info to verify the last write");
-    this->write_queue_.enqueue({COMMAND_DEVICE_INFO, 0x00000000, 0x00, VERIFY_NONE});
+    this->command_queue_.enqueue({COMMAND_DEVICE_INFO, 0x00000000, 0x00, VERIFY_NONE});
   }
 
   bool sent = true;
-  if (auto write = this->write_queue_.next(now))
-    sent = this->send_frame_(write->address, write->value, write->length);
+  if (auto command = this->command_queue_.next(now))
+    sent = this->send_frame_(command->address, command->value, command->length);
 
-  if (auto deadline = this->write_queue_.next_deadline(now)) {
-    this->set_timeout("write_queue", *deadline, [this]() { this->service_write_queue_(); });
+  if (auto deadline = this->command_queue_.next_deadline(now)) {
+    this->set_timeout("command_queue", *deadline, [this]() { this->service_command_queue_(); });
   } else {
-    this->cancel_timeout("write_queue");
+    this->cancel_timeout("command_queue");
   }
 
   return sent;

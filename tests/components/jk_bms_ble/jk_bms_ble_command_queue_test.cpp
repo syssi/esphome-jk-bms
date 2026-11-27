@@ -5,15 +5,15 @@ namespace esphome::jk_bms_ble::testing {
 
 // ── Queue contents ───────────────────────────────────────────────────────────
 
-static std::vector<uint8_t> addresses(const WriteQueue &queue) {
+static std::vector<uint8_t> addresses(const CommandQueue &queue) {
   std::vector<uint8_t> result;
-  for (const auto &write : queue.pending())
-    result.push_back(write.address);
+  for (const auto &command : queue.pending())
+    result.push_back(command.address);
   return result;
 }
 
-TEST(JkBmsWriteQueueTest, DistinctRegistersKeepTheirOrder) {
-  WriteQueue queue;
+TEST(JkBmsCommandQueueTest, DistinctRegistersKeepTheirOrder) {
+  CommandQueue queue;
   queue.enqueue({0x1D, 0x00000001, 0x04, VERIFY_SETTINGS});  // charging
   queue.enqueue({0x1E, 0x00000000, 0x04, VERIFY_SETTINGS});  // discharging
   queue.enqueue({0x1F, 0x00000001, 0x04, VERIFY_SETTINGS});  // balancer
@@ -21,8 +21,8 @@ TEST(JkBmsWriteQueueTest, DistinctRegistersKeepTheirOrder) {
   EXPECT_EQ(addresses(queue), (std::vector<uint8_t>{0x1D, 0x1E, 0x1F}));
 }
 
-TEST(JkBmsWriteQueueTest, NewerValueReplacesPendingWriteInPlace) {
-  WriteQueue queue;
+TEST(JkBmsCommandQueueTest, NewerValueReplacesPendingWriteInPlace) {
+  CommandQueue queue;
   queue.enqueue({0x1D, 0x00000001, 0x04, VERIFY_SETTINGS});
   queue.enqueue({0x1E, 0x00000000, 0x04, VERIFY_SETTINGS});
   queue.enqueue({0x1D, 0x00000000, 0x01, VERIFY_SETTINGS | VERIFY_DEVICE_INFO});
@@ -34,8 +34,8 @@ TEST(JkBmsWriteQueueTest, NewerValueReplacesPendingWriteInPlace) {
 }
 
 // A number slider or a looping automation must not grow the queue
-TEST(JkBmsWriteQueueTest, RepeatedWritesToOneRegisterStayASingleEntry) {
-  WriteQueue queue;
+TEST(JkBmsCommandQueueTest, RepeatedWritesToOneRegisterStayASingleEntry) {
+  CommandQueue queue;
   for (uint32_t value = 0; value < 1000; value++)
     queue.enqueue({0x0B, value, 0x04, VERIFY_SETTINGS});  // power off voltage
 
@@ -43,8 +43,8 @@ TEST(JkBmsWriteQueueTest, RepeatedWritesToOneRegisterStayASingleEntry) {
   EXPECT_EQ(queue.pending()[0].value, 999u);
 }
 
-TEST(JkBmsWriteQueueTest, QueueIsBoundedByTheNumberOfRegisters) {
-  WriteQueue queue;
+TEST(JkBmsCommandQueueTest, QueueIsBoundedByTheNumberOfRegisters) {
+  CommandQueue queue;
   for (int round = 0; round < 3; round++) {
     for (int address = 0; address <= 0xFF; address++)
       queue.enqueue({(uint8_t) address, (uint32_t) round, 0x04, VERIFY_SETTINGS});
@@ -57,19 +57,19 @@ TEST(JkBmsWriteQueueTest, QueueIsBoundedByTheNumberOfRegisters) {
 
 static constexpr uint32_t T0 = 1000;
 
-TEST(JkBmsWriteQueueTest, FirstWriteIsSentRightAway) {
-  WriteQueue queue;
+TEST(JkBmsCommandQueueTest, FirstWriteIsSentRightAway) {
+  CommandQueue queue;
   queue.enqueue({0x1D, 0x00000001, 0x04, VERIFY_SETTINGS});
 
   EXPECT_EQ(queue.next_deadline(T0), 0u);
-  auto write = queue.next(T0);
-  ASSERT_TRUE(write.has_value());
-  EXPECT_EQ(write->address, 0x1D);
+  auto command = queue.next(T0);
+  ASSERT_TRUE(command.has_value());
+  EXPECT_EQ(command->address, 0x1D);
   EXPECT_EQ(queue.awaited_command(), 0x1D);
 }
 
-TEST(JkBmsWriteQueueTest, NextWriteWaitsForTheAcknowledgementAndTheSettleTime) {
-  WriteQueue queue;
+TEST(JkBmsCommandQueueTest, NextWriteWaitsForTheAcknowledgementAndTheSettleTime) {
+  CommandQueue queue;
   queue.enqueue({0x1D, 0x00000001, 0x04, VERIFY_NONE});
   queue.enqueue({0x1E, 0x00000001, 0x04, VERIFY_NONE});
   ASSERT_TRUE(queue.next(T0).has_value());
@@ -78,34 +78,34 @@ TEST(JkBmsWriteQueueTest, NextWriteWaitsForTheAcknowledgementAndTheSettleTime) {
   EXPECT_EQ(queue.on_acknowledgement(T0 + 80), 80u);
 
   // Settling: nothing is sent until SETTLE_MS after the acknowledgement
-  EXPECT_EQ(queue.next_deadline(T0 + 80), WriteQueue::SETTLE_MS);
-  EXPECT_FALSE(queue.expire(T0 + 80 + WriteQueue::SETTLE_MS - 1).has_value());
-  EXPECT_FALSE(queue.next(T0 + 80 + WriteQueue::SETTLE_MS - 1).has_value());
+  EXPECT_EQ(queue.next_deadline(T0 + 80), CommandQueue::SETTLE_MS);
+  EXPECT_FALSE(queue.expire(T0 + 80 + CommandQueue::SETTLE_MS - 1).has_value());
+  EXPECT_FALSE(queue.next(T0 + 80 + CommandQueue::SETTLE_MS - 1).has_value());
 
-  EXPECT_FALSE(queue.expire(T0 + 80 + WriteQueue::SETTLE_MS).has_value());
-  auto write = queue.next(T0 + 80 + WriteQueue::SETTLE_MS);
-  ASSERT_TRUE(write.has_value());
-  EXPECT_EQ(write->address, 0x1E);
+  EXPECT_FALSE(queue.expire(T0 + 80 + CommandQueue::SETTLE_MS).has_value());
+  auto command = queue.next(T0 + 80 + CommandQueue::SETTLE_MS);
+  ASSERT_TRUE(command.has_value());
+  EXPECT_EQ(command->address, 0x1E);
 }
 
 // Devices may lose or not send an acknowledgement: the timeout releases the queue
-TEST(JkBmsWriteQueueTest, MissingAcknowledgementTimesOut) {
-  WriteQueue queue;
+TEST(JkBmsCommandQueueTest, MissingAcknowledgementTimesOut) {
+  CommandQueue queue;
   queue.enqueue({0xB3, 0x00000005, 0x01, VERIFY_NONE});
   queue.enqueue({0xB7, 0x00000001, 0x01, VERIFY_NONE});
   ASSERT_TRUE(queue.next(T0).has_value());
 
-  EXPECT_EQ(queue.next_deadline(T0), WriteQueue::ACKNOWLEDGEMENT_TIMEOUT_MS);
-  EXPECT_FALSE(queue.expire(T0 + WriteQueue::ACKNOWLEDGEMENT_TIMEOUT_MS - 1).has_value());
+  EXPECT_EQ(queue.next_deadline(T0), CommandQueue::ACKNOWLEDGEMENT_TIMEOUT_MS);
+  EXPECT_FALSE(queue.expire(T0 + CommandQueue::ACKNOWLEDGEMENT_TIMEOUT_MS - 1).has_value());
 
-  EXPECT_EQ(queue.expire(T0 + WriteQueue::ACKNOWLEDGEMENT_TIMEOUT_MS), 0xB3);
-  auto write = queue.next(T0 + WriteQueue::ACKNOWLEDGEMENT_TIMEOUT_MS);
-  ASSERT_TRUE(write.has_value());
-  EXPECT_EQ(write->address, 0xB7);
+  EXPECT_EQ(queue.expire(T0 + CommandQueue::ACKNOWLEDGEMENT_TIMEOUT_MS), 0xB3);
+  auto command = queue.next(T0 + CommandQueue::ACKNOWLEDGEMENT_TIMEOUT_MS);
+  ASSERT_TRUE(command.has_value());
+  EXPECT_EQ(command->address, 0xB7);
 }
 
-TEST(JkBmsWriteQueueTest, UnexpectedAcknowledgementIsIgnored) {
-  WriteQueue queue;
+TEST(JkBmsCommandQueueTest, UnexpectedAcknowledgementIsIgnored) {
+  CommandQueue queue;
   EXPECT_FALSE(queue.on_acknowledgement(T0).has_value());
 
   queue.enqueue({0x1D, 0x00000001, 0x04, VERIFY_NONE});
@@ -113,48 +113,48 @@ TEST(JkBmsWriteQueueTest, UnexpectedAcknowledgementIsIgnored) {
   ASSERT_TRUE(queue.on_acknowledgement(T0 + 80).has_value());
   // A second acknowledgement must not shorten the settle time
   EXPECT_FALSE(queue.on_acknowledgement(T0 + 90).has_value());
-  EXPECT_EQ(queue.next_deadline(T0 + 90), WriteQueue::SETTLE_MS - 10);
+  EXPECT_EQ(queue.next_deadline(T0 + 90), CommandQueue::SETTLE_MS - 10);
 }
 
-TEST(JkBmsWriteQueueTest, IdleQueueHasNoDeadline) {
-  WriteQueue queue;
+TEST(JkBmsCommandQueueTest, IdleQueueHasNoDeadline) {
+  CommandQueue queue;
   EXPECT_FALSE(queue.next_deadline(T0).has_value());
 
   queue.enqueue({0x96, 0x00000000, 0x00, VERIFY_NONE});
   ASSERT_TRUE(queue.next(T0).has_value());
   ASSERT_TRUE(queue.on_acknowledgement(T0 + 300).has_value());
-  queue.expire(T0 + 300 + WriteQueue::SETTLE_MS);
-  EXPECT_FALSE(queue.next_deadline(T0 + 300 + WriteQueue::SETTLE_MS).has_value());
+  queue.expire(T0 + 300 + CommandQueue::SETTLE_MS);
+  EXPECT_FALSE(queue.next_deadline(T0 + 300 + CommandQueue::SETTLE_MS).has_value());
 }
 
 // The millis() clock wraps after 49.7 days
-TEST(JkBmsWriteQueueTest, DeadlinesSurviveTheClockWrapping) {
-  WriteQueue queue;
+TEST(JkBmsCommandQueueTest, DeadlinesSurviveTheClockWrapping) {
+  CommandQueue queue;
   const uint32_t before_wrap = 0xFFFFFFFFu - 20;
   queue.enqueue({0x1D, 0x00000001, 0x04, VERIFY_NONE});
   ASSERT_TRUE(queue.next(before_wrap).has_value());
 
-  const uint32_t after_wrap = before_wrap + WriteQueue::ACKNOWLEDGEMENT_TIMEOUT_MS;  // wraps around
+  const uint32_t after_wrap = before_wrap + CommandQueue::ACKNOWLEDGEMENT_TIMEOUT_MS;  // wraps around
   EXPECT_FALSE(queue.expire(after_wrap - 1).has_value());
   EXPECT_EQ(queue.expire(after_wrap), 0x1D);
 }
 
 // ── Verification ─────────────────────────────────────────────────────────────
 
-TEST(JkBmsWriteQueueTest, VerificationIsDueAfterTheDelay) {
-  WriteQueue queue;
+TEST(JkBmsCommandQueueTest, VerificationIsDueAfterTheDelay) {
+  CommandQueue queue;
   queue.enqueue({0x01, 3500, 0x04, VERIFY_SETTINGS});  // smart sleep voltage
   ASSERT_TRUE(queue.next(T0).has_value());
 
-  EXPECT_EQ(queue.take_due_verifications(T0 + WriteQueue::VERIFICATION_DELAY_MS - 1), VERIFY_NONE);
-  EXPECT_EQ(queue.take_due_verifications(T0 + WriteQueue::VERIFICATION_DELAY_MS), VERIFY_SETTINGS);
+  EXPECT_EQ(queue.take_due_verifications(T0 + CommandQueue::VERIFICATION_DELAY_MS - 1), VERIFY_NONE);
+  EXPECT_EQ(queue.take_due_verifications(T0 + CommandQueue::VERIFICATION_DELAY_MS), VERIFY_SETTINGS);
   // Each verification is returned once
-  EXPECT_EQ(queue.take_due_verifications(T0 + WriteQueue::VERIFICATION_DELAY_MS + 1), VERIFY_NONE);
+  EXPECT_EQ(queue.take_due_verifications(T0 + CommandQueue::VERIFICATION_DELAY_MS + 1), VERIFY_NONE);
 }
 
 // The readback starts when the write is sent, not when it is queued
-TEST(JkBmsWriteQueueTest, VerificationStartsWhenTheWriteIsSent) {
-  WriteQueue queue;
+TEST(JkBmsCommandQueueTest, VerificationStartsWhenTheWriteIsSent) {
+  CommandQueue queue;
   queue.enqueue({0x1D, 0x00000001, 0x04, VERIFY_NONE});
   queue.enqueue({0xA5, 0x00000001, 0x02, VERIFY_DEVICE_INFO});  // UART1 protocol
   ASSERT_TRUE(queue.next(T0).has_value());
@@ -162,44 +162,44 @@ TEST(JkBmsWriteQueueTest, VerificationStartsWhenTheWriteIsSent) {
   queue.expire(T0 + 180);
   ASSERT_TRUE(queue.next(T0 + 180).has_value());
 
-  EXPECT_EQ(queue.take_due_verifications(T0 + WriteQueue::VERIFICATION_DELAY_MS), VERIFY_NONE);
-  EXPECT_EQ(queue.take_due_verifications(T0 + 180 + WriteQueue::VERIFICATION_DELAY_MS), VERIFY_DEVICE_INFO);
+  EXPECT_EQ(queue.take_due_verifications(T0 + CommandQueue::VERIFICATION_DELAY_MS), VERIFY_NONE);
+  EXPECT_EQ(queue.take_due_verifications(T0 + 180 + CommandQueue::VERIFICATION_DELAY_MS), VERIFY_DEVICE_INFO);
 }
 
 // Every write restarts the timer of its frame, so a batch of writes results in a single read per frame
-TEST(JkBmsWriteQueueTest, BatchOfWritesCoalescesIntoOneReadPerFrame) {
-  WriteQueue queue;
+TEST(JkBmsCommandQueueTest, BatchOfWritesCoalescesIntoOneReadPerFrame) {
+  CommandQueue queue;
   uint32_t now = T0;
   for (uint8_t address : {0x01, 0x0B, 0xA5, 0x1D}) {
     queue.enqueue(
         {address, 0x00000001, 0x04, address == 0xA5 ? (uint8_t) VERIFY_DEVICE_INFO : (uint8_t) VERIFY_SETTINGS});
     ASSERT_TRUE(queue.next(now).has_value());
     ASSERT_TRUE(queue.on_acknowledgement(now + 80).has_value());
-    now += 80 + WriteQueue::SETTLE_MS;
+    now += 80 + CommandQueue::SETTLE_MS;
     queue.expire(now);
     EXPECT_EQ(queue.take_due_verifications(now), VERIFY_NONE);
   }
   // 0xA5 was the third write, 0x1D the last one
-  const uint32_t a5_sent = T0 + 2 * (80 + WriteQueue::SETTLE_MS);
-  const uint32_t last_sent = T0 + 3 * (80 + WriteQueue::SETTLE_MS);
-  EXPECT_EQ(queue.take_due_verifications(a5_sent + WriteQueue::VERIFICATION_DELAY_MS), VERIFY_DEVICE_INFO);
-  EXPECT_EQ(queue.take_due_verifications(last_sent + WriteQueue::VERIFICATION_DELAY_MS - 1), VERIFY_NONE);
-  EXPECT_EQ(queue.take_due_verifications(last_sent + WriteQueue::VERIFICATION_DELAY_MS), VERIFY_SETTINGS);
+  const uint32_t a5_sent = T0 + 2 * (80 + CommandQueue::SETTLE_MS);
+  const uint32_t last_sent = T0 + 3 * (80 + CommandQueue::SETTLE_MS);
+  EXPECT_EQ(queue.take_due_verifications(a5_sent + CommandQueue::VERIFICATION_DELAY_MS), VERIFY_DEVICE_INFO);
+  EXPECT_EQ(queue.take_due_verifications(last_sent + CommandQueue::VERIFICATION_DELAY_MS - 1), VERIFY_NONE);
+  EXPECT_EQ(queue.take_due_verifications(last_sent + CommandQueue::VERIFICATION_DELAY_MS), VERIFY_SETTINGS);
 }
 
-TEST(JkBmsWriteQueueTest, ArmedVerificationSetsTheDeadline) {
-  WriteQueue queue;
+TEST(JkBmsCommandQueueTest, ArmedVerificationSetsTheDeadline) {
+  CommandQueue queue;
   queue.enqueue({0x01, 3500, 0x04, VERIFY_SETTINGS});
   ASSERT_TRUE(queue.next(T0).has_value());
   ASSERT_TRUE(queue.on_acknowledgement(T0 + 80).has_value());
   queue.expire(T0 + 180);
 
-  EXPECT_EQ(queue.next_deadline(T0 + 180), WriteQueue::VERIFICATION_DELAY_MS - 180);
+  EXPECT_EQ(queue.next_deadline(T0 + 180), CommandQueue::VERIFICATION_DELAY_MS - 180);
 }
 
 // Pending writes and readbacks of a lost connection must not be sent after a reconnect
-TEST(JkBmsWriteQueueTest, ResetDropsEverything) {
-  WriteQueue queue;
+TEST(JkBmsCommandQueueTest, ResetDropsEverything) {
+  CommandQueue queue;
   queue.enqueue({0x01, 3500, 0x04, VERIFY_SETTINGS});
   queue.enqueue({0x1D, 0x00000001, 0x04, VERIFY_SETTINGS});
   ASSERT_TRUE(queue.next(T0).has_value());
@@ -208,7 +208,7 @@ TEST(JkBmsWriteQueueTest, ResetDropsEverything) {
 
   EXPECT_TRUE(queue.pending().empty());
   EXPECT_FALSE(queue.next_deadline(T0 + 1).has_value());
-  EXPECT_EQ(queue.take_due_verifications(T0 + WriteQueue::VERIFICATION_DELAY_MS), VERIFY_NONE);
+  EXPECT_EQ(queue.take_due_verifications(T0 + CommandQueue::VERIFICATION_DELAY_MS), VERIFY_NONE);
   queue.enqueue({0x97, 0x00000000, 0x00, VERIFY_NONE});
   EXPECT_TRUE(queue.next(T0 + 2).has_value());
 }
