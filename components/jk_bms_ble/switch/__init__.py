@@ -10,7 +10,6 @@ from .. import (
     VERIFY_SETTINGS,
     check_write_table,
     jk_bms_ble_ns,
-    protocol_versions_from_registers,
     validate_protocol_support,
 )
 from ..const import (
@@ -181,6 +180,4 @@ async def to_code(config):
             cg.add(var.set_verify(verify))
 
 
-FINAL_VALIDATE_SCHEMA = validate_protocol_support(
-    "switch", protocol_versions_from_registers(SWITCHES)
-)
+FINAL_VALIDATE_SCHEMA = validate_protocol_support("switch", SWITCHES)

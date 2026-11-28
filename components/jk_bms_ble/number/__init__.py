@@ -30,7 +30,6 @@ from .. import (
     check_write_table,
     deprecated_renames,
     jk_bms_ble_ns,
-    protocol_versions_from_registers,
     validate_protocol_support,
 )
 
@@ -791,6 +790,4 @@ async def to_code(config):
             cg.add(var.set_verify(verify))
 
 
-FINAL_VALIDATE_SCHEMA = validate_protocol_support(
-    "number", protocol_versions_from_registers(NUMBERS)
-)
+FINAL_VALIDATE_SCHEMA = validate_protocol_support("number", NUMBERS)

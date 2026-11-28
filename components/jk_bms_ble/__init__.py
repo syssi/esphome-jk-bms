@@ -149,34 +149,40 @@ def check_write_table(table, fields):
             )
 
 
-# The protocol versions in the order the write tables of switch and number list their registers
+# Every write table starts with one register per protocol version, in this order. 0x00: the protocol version doesn't
+# support the entity.
 PROTOCOL_VERSIONS = ("JK04", "JK02_24S", "JK02_32S")
-JK02_PROTOCOL_VERSIONS = ("JK02_24S", "JK02_32S")
-JK02_32S_ONLY = ("JK02_32S",)
 
 
-def protocol_versions_from_registers(table):
-    """The protocol versions of each entry of a write table whose first three fields are the JK04, JK02_24S and
-    JK02_32S registers (0x00: the protocol version has none)."""
-    return {
-        key: tuple(
-            version
-            for version, register in zip(PROTOCOL_VERSIONS, entry[:3], strict=True)
-            if register
+def supported_protocol_versions(entry):
+    """The protocol versions of a write table entry: those with a register."""
+    return tuple(
+        version
+        for version, register in zip(PROTOCOL_VERSIONS, entry[:3], strict=True)
+        if register
+    )
+
+
+def common_register(key, entry):
+    """The register of an entry that uses the same one for every protocol version it supports. Platforms that hand a
+    single register to C++ (select, button, text) rely on that."""
+    registers = {register for register in entry[:3] if register}
+    if len(registers) != 1:
+        raise ValueError(
+            f"jk_bms_ble: entry '{key}' needs one register for all its protocol versions, got {entry[:3]}"
         )
-        for key, entry in table.items()
+    return registers.pop()
+
+
+def validate_protocol_support(platform, table):
+    """A final validation rejecting the entities of a write table the protocol version of their hub doesn't
+    support, see supported_protocol_versions()."""
+    supported = {
+        key: supported_protocol_versions(entry) for key, entry in table.items()
     }
-
-
-def validate_protocol_support(platform, supported):
-    """A final validation rejecting entities the protocol version of their hub doesn't support. `supported` maps each
-    configuration key to the protocol versions it works with."""
     for key, versions in supported.items():
-        unknown = set(versions) - set(PROTOCOL_VERSIONS)
-        if not versions or unknown:
-            raise ValueError(
-                f"jk_bms_ble: {platform} '{key}' needs at least one of {PROTOCOL_VERSIONS}, got {versions}"
-            )
+        if not versions:
+            raise ValueError(f"jk_bms_ble: {platform} '{key}' has no register")
 
     def validator(config):
         hub_id = config[CONF_JK_BMS_BLE_ID]

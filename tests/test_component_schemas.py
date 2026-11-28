@@ -315,21 +315,21 @@ class TestJkBmsBleSelectConstants:
         assert "multiplexed_port_mode" in ble_select.SELECTS
 
     def test_selects_registers_are_unique(self):
-        registers = [v[0] for v in ble_select.SELECTS.values()]
+        registers = [v[2] for v in ble_select.SELECTS.values()]
         assert len(registers) == len(set(registers))
 
     def test_selects_registers(self):
-        assert ble_select.SELECTS["uart1_protocol"][0] == 0xA5
-        assert ble_select.SELECTS["uart2_protocol"][0] == 0xA8
-        assert ble_select.SELECTS["uart3_protocol"][0] == 0xB6
-        assert ble_select.SELECTS["can_protocol"][0] == 0xA6
-        assert ble_select.SELECTS["lcd_buzzer_trigger"][0] == 0xA9
-        assert ble_select.SELECTS["dry1_trigger"][0] == 0xAA
-        assert ble_select.SELECTS["dry2_trigger"][0] == 0xAB
-        assert ble_select.SELECTS["multiplexed_port_mode"][0] == 0x2A
+        assert ble_select.SELECTS["uart1_protocol"][2] == 0xA5
+        assert ble_select.SELECTS["uart2_protocol"][2] == 0xA8
+        assert ble_select.SELECTS["uart3_protocol"][2] == 0xB6
+        assert ble_select.SELECTS["can_protocol"][2] == 0xA6
+        assert ble_select.SELECTS["lcd_buzzer_trigger"][2] == 0xA9
+        assert ble_select.SELECTS["dry1_trigger"][2] == 0xAA
+        assert ble_select.SELECTS["dry2_trigger"][2] == 0xAB
+        assert ble_select.SELECTS["multiplexed_port_mode"][2] == 0x2A
 
     def test_multiplexed_port_mode_data_len(self):
-        assert ble_select.SELECTS["multiplexed_port_mode"][4] == 0x04
+        assert ble_select.SELECTS["multiplexed_port_mode"][6] == 0x04
 
     def test_multiplexed_port_mode_options(self):
         assert ble_select.MULTIPLEXED_PORT_MODE_OPTIONS == ["CAN", "RS485"]
@@ -376,9 +376,9 @@ class TestJkBmsBleLoadConfigPresetConstants:
         assert "LTO" in ble_select.LOAD_CONFIG_PRESET_OPTIONS
 
     def test_load_config_preset_registers(self):
-        assert ble_select.LOAD_CONFIG_PRESET_OPTIONS["Li-Ion"] == 0x68
-        assert ble_select.LOAD_CONFIG_PRESET_OPTIONS["LiFePO4"] == 0x69
-        assert ble_select.LOAD_CONFIG_PRESET_OPTIONS["LTO"] == 0x6A
+        assert ble_select.LOAD_CONFIG_PRESET_OPTIONS["Li-Ion"] == (0x00, 0x00, 0x68)
+        assert ble_select.LOAD_CONFIG_PRESET_OPTIONS["LiFePO4"] == (0x00, 0x00, 0x69)
+        assert ble_select.LOAD_CONFIG_PRESET_OPTIONS["LTO"] == (0x00, 0x00, 0x6A)
 
     def test_load_config_preset_registers_are_unique(self):
         registers = list(ble_select.LOAD_CONFIG_PRESET_OPTIONS.values())
@@ -419,17 +419,18 @@ class TestJkBmsBleButtonConstants:
         assert ble_button.CONF_RESTART in ble_button.BUTTONS
         assert ble_button.CONF_FACTORY_RESET in ble_button.BUTTONS
         assert ble_button.CONF_HEATING_TEST in ble_button.BUTTONS
-        assert len(ble_button.BUTTONS) == 7
+        assert ble_button.CONF_SYNC_TIME in ble_button.BUTTONS
+        assert len(ble_button.BUTTONS) == 8
 
     def test_button_addresses_are_unique(self):
-        addresses = [address for address, _ in ble_button.BUTTONS.values()]
+        addresses = [entry[2] for entry in ble_button.BUTTONS.values()]
         assert len(addresses) == len(set(addresses))
 
     def test_button_addresses(self):
-        assert ble_button.BUTTONS[ble_button.CONF_SHUTDOWN][0] == 0x65
-        assert ble_button.BUTTONS[ble_button.CONF_RESTART][0] == 0x66
-        assert ble_button.BUTTONS[ble_button.CONF_FACTORY_RESET][0] == 0x9D
-        assert ble_button.BUTTONS[ble_button.CONF_HEATING_TEST][0] == 0x6D
+        assert ble_button.BUTTONS[ble_button.CONF_SHUTDOWN][2] == 0x65
+        assert ble_button.BUTTONS[ble_button.CONF_RESTART][2] == 0x66
+        assert ble_button.BUTTONS[ble_button.CONF_FACTORY_RESET][2] == 0x9D
+        assert ble_button.BUTTONS[ble_button.CONF_HEATING_TEST][2] == 0x6D
 
 
 class TestJkBleTextSensorConstants:

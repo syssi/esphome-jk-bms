@@ -77,7 +77,7 @@ def test_read_requests_and_actions_are_not_verified():
         button.CONF_FACTORY_RESET,
         button.CONF_HEATING_TEST,
     ):
-        assert str(button.BUTTONS[key][1]) == str(VERIFY_NONE), key
+        assert str(button.BUTTONS[key][-1]) == str(VERIFY_NONE), key
 
 
 def test_preset_is_verified_with_the_settings_frame():

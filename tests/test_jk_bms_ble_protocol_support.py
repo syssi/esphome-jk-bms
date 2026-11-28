@@ -15,9 +15,10 @@ from components.jk_bms_ble import (  # noqa: E402
     CONF_PROTOCOL_VERSION,
     PROTOCOL_VERSIONS,
     button,
+    common_register,
     number,
-    protocol_versions_from_registers,
     select,
+    supported_protocol_versions,
     switch,
     text,
     validate_protocol_support,
@@ -50,7 +51,7 @@ PLATFORMS = [
     ("number", number._NUMBER_CONFIG_SCHEMA, number.FINAL_VALIDATE_SCHEMA.supported),
     ("select", select.CONFIG_SCHEMA, select.FINAL_VALIDATE_SCHEMA.supported),
     ("text", text.CONFIG_SCHEMA, text.FINAL_VALIDATE_SCHEMA.supported),
-    ("button", button.CONFIG_SCHEMA, button.BUTTON_PROTOCOL_VERSIONS),
+    ("button", button.CONFIG_SCHEMA, button.BUTTON_PROTOCOL_SUPPORT.supported),
 ]
 
 
@@ -59,17 +60,22 @@ def test_every_entity_has_protocol_versions(platform, schema, supported):
     assert _schema_keys(schema) == set(supported), platform
 
 
-def test_protocol_versions_from_registers():
-    table = {
-        "a": [0x00, 0x1D, 0x1D, 0],
-        "b": [0x6C, 0x00, 0x00, 0],
-        "c": [0, 0, 0x27, 0],
-    }
-    assert protocol_versions_from_registers(table) == {
-        "a": ("JK02_24S", "JK02_32S"),
-        "b": ("JK04",),
-        "c": ("JK02_32S",),
-    }
+def test_supported_protocol_versions():
+    assert supported_protocol_versions([0x00, 0x1D, 0x1D, 0]) == (
+        "JK02_24S",
+        "JK02_32S",
+    )
+    assert supported_protocol_versions([0x6C, 0x00, 0x00, 0]) == ("JK04",)
+    assert supported_protocol_versions([0, 0, 0x27, 0]) == ("JK02_32S",)
+
+
+def test_common_register():
+    assert common_register("a", [0x96, 0x96, 0x96, 0]) == 0x96
+    assert common_register("a", [0x00, 0x00, 0xA2, 0]) == 0xA2
+    with pytest.raises(ValueError, match="one register"):
+        common_register("a", [0x6C, 0x00, 0x6D, 0])
+    with pytest.raises(ValueError, match="one register"):
+        common_register("a", [0x00, 0x00, 0x00, 0])
 
 
 def test_switch_and_number_follow_their_registers():
@@ -172,9 +178,12 @@ def test_other_hubs_are_ignored():
     )
 
 
-@pytest.mark.parametrize(
-    "supported", [{"a": ()}, {"a": ("JK05",)}], ids=["empty", "unknown"]
-)
-def test_invalid_support_maps_fail_on_import(supported):
-    with pytest.raises(ValueError):
-        validate_protocol_support("switch", supported)
+def test_entry_without_register_fails_on_import():
+    with pytest.raises(ValueError, match="has no register"):
+        validate_protocol_support("switch", {"a": [0x00, 0x00, 0x00, 0]})
+
+
+def test_preset_select_follows_its_option_registers():
+    assert select.FINAL_VALIDATE_SCHEMA.supported[select.CONF_LOAD_CONFIG_PRESET] == (
+        "JK02_32S",
+    )
