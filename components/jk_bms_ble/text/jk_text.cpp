@@ -13,11 +13,6 @@ ESPHOME_LOG_TAG(TAG, "jk_bms_ble.text");
 void JkText::dump_config() { LOG_TEXT("", "JkBmsBle Text", this); }
 
 void JkText::control(const std::string &value) {
-  if (this->parent_->get_protocol_version() == PROTOCOL_VERSION_JK04) {
-    ESP_LOGW(TAG, "Text registers are not supported by JK04 devices");
-    return;
-  }
-
   const char *rejected =
       text_reject_reason(value, this->min_write_length_, this->max_write_length_, this->name_charset_);
   if (rejected != nullptr) {
