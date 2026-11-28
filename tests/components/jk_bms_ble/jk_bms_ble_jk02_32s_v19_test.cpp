@@ -77,6 +77,16 @@ TEST(JkBmsV19DeviceInfoTest, UserData2WithoutNullTerminator) {
   EXPECT_EQ(user_data_2.state, "abcdefghijklmnop");
 }
 
+TEST(JkBmsV19DeviceInfoTest, SupportedCommandsBitmask) {
+  // Bit N is command N: 0x00-0x3B are all supported, 0xB4 (bit 180) isn't
+  TestableJkBmsBle bms;
+  bms.set_protocol_version(PROTOCOL_VERSION_JK02_32S);
+  text_sensor::TextSensor supported_commands;
+  bms.set_supported_commands_bitmask_hex_text_sensor(&supported_commands);
+  bms.decode_device_info_(DEVICE_INFO_JK02_32S_V19);
+  EXPECT_EQ(supported_commands.state, "0x000000000000000000EFFEF7D8C0000000001F90000000000F8DE9AFFFFFFFFF");
+}
+
 TEST(JkBmsV19DeviceInfoTest, DevicePassword) {
   TestableJkBmsBle bms;
   TestText device_password;

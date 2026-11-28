@@ -393,6 +393,10 @@ class JkBmsBle :
   void set_serial_number_text_sensor(text_sensor::TextSensor *serial_number_text_sensor) {
     serial_number_text_sensor_ = serial_number_text_sensor;
   }
+  void set_supported_commands_bitmask_hex_text_sensor(
+      text_sensor::TextSensor *supported_commands_bitmask_hex_text_sensor) {
+    supported_commands_bitmask_hex_text_sensor_ = supported_commands_bitmask_hex_text_sensor;
+  }
 
   void set_charging_switch(switch_::Switch *charging_switch) { charging_switch_ = charging_switch; }
   void set_discharging_switch(switch_::Switch *discharging_switch) { discharging_switch_ = discharging_switch; }
@@ -655,6 +659,7 @@ class JkBmsBle :
   text_sensor::TextSensor *manufacturing_date_text_sensor_{nullptr};
   text_sensor::TextSensor *device_time_text_sensor_{nullptr};
   text_sensor::TextSensor *serial_number_text_sensor_{nullptr};
+  text_sensor::TextSensor *supported_commands_bitmask_hex_text_sensor_{nullptr};
 
 #ifdef USE_TIME
   time::RealTimeClock *time_id_{nullptr};
@@ -695,11 +700,11 @@ class JkBmsBle :
   void publish_temperature_(sensor::Sensor *sensor, int16_t raw_value);
   void publish_state_(switch_::Switch *obj, const bool &state);
   void publish_state_(text_sensor::TextSensor *text_sensor, const std::string &state);
+  void publish_state_(text_sensor::TextSensor *text_sensor, const char *state);
   void publish_state_(text::Text *obj, const std::string &state);
   void publish_device_unavailable_();
   void reset_online_status_tracker_();
   void track_online_status_();
-  std::string to_hex_string_(uint32_t mask);
   std::string error_bits_to_string_(uint32_t bitmask, const LookupTable &errors, uint8_t bits);
   std::string charge_status_id_to_string_(uint8_t status);
   std::string battery_type_id_to_string_(uint8_t code);

@@ -288,6 +288,7 @@ Dry contact bitmask notes for byte 281 (JK02_32S only):
 |          102-117 |     16 | User data | string | - | - | Null-terminated string, set via `0x9F` |
 |          118-133 |     16 | Settings password | string | - | - | Null-terminated string, set via `0xA0` |
 |          134-149 |     16 | User data 2 | string | - | - | Null-terminated string, set via `0xA2`, JK02_32S only |
+|          150-181 |     32 | Supported commands | bitmask | - | - | Bit N (byte 150 + N / 8, bit N % 8) set: the BMS supports command N, see notes below |
 |          182-183 |      2 | Dealer ID | uint16 | - | - | Little-endian. The JK app refuses devices with a dealer ID other than 0 |
 |              184 |      1 | UART1M Protocol number | uint8 | - | - | Protocol version |
 |              185 |      1 | CAN Protocol number | uint8 | - | - | Protocol version |
@@ -309,6 +310,19 @@ Dry contact bitmask notes for byte 281 (JK02_32S only):
 |              268 |      1 | CAN protocol library version | uint8 | - | - | Protocol version |
 |              298 |      1 | Protocol version (`protocolVer`) | uint8 | - | - | See notes below |
 |              299 |      1 | CRC checksum | uint8 | - | - | - |
+
+Notes for bytes 150-181: the JK app hides settings and controls whose command bit is cleared. Captured devices
+clear e.g. the GPS (`0x29`, `0x35`, `0x36`) and special charger (`0x2C`) commands and set the commands of the
+features they have, like heating (`0x27`) and emergency mode (`0x6B`). The bits don't match the commands
+`jk_bms_ble` writes in every case, e.g. no captured device sets `0x6E`/`0x6F` (SOC/SOH calibration). Published via
+`text_sensor.supported_commands_bitmask_hex` as one 256-bit little-endian value, most significant byte first like
+the errors bitmask: bit N of the value is command N. Captured values:
+
+| Software version | Supported commands |
+|------------------|--------------------|
+| 14.20 | `0x0000000000000100001FFEE7D8C0000000001F90000000000201E9AFFFFFFFFE` |
+| 15.38 | `0x0000000000000100003FFEE7D8C0000000001F9000000000021DE98FFFFFFFFE` |
+| 19.27 | `0x000000000000000000EFFEF7D8C0000000001F90000000000F8DE9AFFFFFFFFF` |
 
 Notes for byte 298: the JK app (6.3.01) reads this byte from the first device info frame. `2` selects the
 `JK02_32S` layout. `0` makes the app look up the device model (bytes 6-21) in two allowlists: known new models use

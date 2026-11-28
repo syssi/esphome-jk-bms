@@ -503,6 +503,8 @@ text_sensor:
       name: "manufacturing date"
     serial_number:
       name: "serial number"
+    supported_commands_bitmask_hex:
+      name: "supported commands bitmask hex"
     device_time:
       name: "device time"
     device_name:

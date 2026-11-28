@@ -53,6 +53,15 @@ TEST(JkBmsV10DeviceInfoTest, NoUserData2) {
   EXPECT_FALSE(user_data_2.has_state());
 }
 
+// JK02_24S devices don't report the supported commands
+TEST(JkBmsV10DeviceInfoTest, NoSupportedCommandsBitmask) {
+  TestableJkBmsBle bms;
+  text_sensor::TextSensor supported_commands;
+  bms.set_supported_commands_bitmask_hex_text_sensor(&supported_commands);
+  bms.decode_device_info_(DEVICE_INFO_JK02_24S_V10);
+  EXPECT_FALSE(supported_commands.has_state());
+}
+
 TEST(JkBmsV10CellInfoTest, CellVoltages) {
   TestableJkBmsBle bms;
   sensor::Sensor cells[24];
