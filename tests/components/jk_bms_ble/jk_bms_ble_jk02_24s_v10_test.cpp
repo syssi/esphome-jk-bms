@@ -36,6 +36,23 @@ TEST(JkBmsV10DeviceInfoTest, DeviceName) {
   EXPECT_EQ(device_name.state, "JK-B2A24S20P");
 }
 
+TEST(JkBmsV10DeviceInfoTest, UserData) {
+  TestableJkBmsBle bms;
+  TestText user_data;
+  bms.set_user_data_text(&user_data);
+  bms.decode_device_info_(DEVICE_INFO_JK02_24S_V10);
+  EXPECT_EQ(user_data.state, "Input Userdata");
+}
+
+// JK02_24S devices have no second user data field
+TEST(JkBmsV10DeviceInfoTest, NoUserData2) {
+  TestableJkBmsBle bms;
+  TestText user_data_2;
+  bms.set_user_data_2_text(&user_data_2);
+  bms.decode_device_info_(DEVICE_INFO_JK02_24S_V10);
+  EXPECT_FALSE(user_data_2.has_state());
+}
+
 TEST(JkBmsV10CellInfoTest, CellVoltages) {
   TestableJkBmsBle bms;
   sensor::Sensor cells[24];

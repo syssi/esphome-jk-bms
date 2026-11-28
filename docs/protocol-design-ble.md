@@ -46,7 +46,14 @@ sends them that way.
   longer than 13 characters (e.g. `51210CN43000593`) and can't be restored once changed
 - `0x9C`: Sets the device password (device info bytes 62-77, 1-13 characters, factory default `1234`). The BMS only
   stores it: it is no Bluetooth pairing PIN and protects neither the connection nor writes
+- `0x9F`: Sets the user data (device info bytes 102-117), a free text without any effect on the BMS, 1-13 bytes
 - `0xA0`: Sets the settings password (device info bytes 118-133), see below
+- `0xA2`: Sets the user data 2 (device info bytes 134-149, JK02_32S only), a free text like `0x9F`
+
+Text writes (`0x9B`, `0x9C`, `0x9F`, `0xA0`, `0xA2`) carry the ASCII text in bytes 6-18 and its length in byte 5. The
+BMS stores the text zero-padded to 16 bytes: writing `A` over `JK-BMS-1` reads back as `A` (JK02_32S hw 19), no
+leftovers of the previous text. Factory texts can be longer than 13 bytes (e.g. `Input Userdata`) and can't be
+restored once changed.
 
 ### Example Command Payloads
 
@@ -278,8 +285,9 @@ Dry contact bitmask notes for byte 281 (JK02_32S only):
 |            62-77 |     16 | Device password | string | - | - | Null-terminated string, set via `0x9C` |
 |            78-85 |      8 | Manufacturing date | string | - | - | Null-terminated string |
 |           86-101 |     16 | Serial number | string | - | - | Null-terminated string |
-|          102-117 |     16 | User data | string | - | - | Null-terminated string |
+|          102-117 |     16 | User data | string | - | - | Null-terminated string, set via `0x9F` |
 |          118-133 |     16 | Settings password | string | - | - | Null-terminated string, set via `0xA0` |
+|          134-149 |     16 | User data 2 | string | - | - | Null-terminated string, set via `0xA2`, JK02_32S only |
 |          182-183 |      2 | Dealer ID | uint16 | - | - | Little-endian. The JK app refuses devices with a dealer ID other than 0 |
 |              184 |      1 | UART1M Protocol number | uint8 | - | - | Protocol version |
 |              185 |      1 | CAN Protocol number | uint8 | - | - | Protocol version |

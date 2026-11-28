@@ -18,10 +18,13 @@ CODEOWNERS = ["@syssi"]
 CONF_BLUETOOTH_NAME = "bluetooth_name"
 CONF_DEVICE_PASSWORD = "device_password"
 CONF_SETTINGS_PASSWORD = "settings_password"
+CONF_USER_DATA = "user_data"
+CONF_USER_DATA_2 = "user_data_2"
 
 ICON_BLUETOOTH_NAME = "mdi:bluetooth"
 ICON_DEVICE_PASSWORD = "mdi:key"
 ICON_SETTINGS_PASSWORD = "mdi:form-textbox-password"
+ICON_USER_DATA = "mdi:text-box-outline"
 
 # The payload of a command frame holds 13 bytes
 MAX_PAYLOAD_SIZE = 13
@@ -41,6 +44,11 @@ TEXTS = {
     # The app asks for this password before changing settings; the BMS doesn't check it. While it is the factory
     # default 123456 the BMS raises the "Modify password in time" alarm (red LED).
     CONF_SETTINGS_PASSWORD: [0xA0, 1, 13, VERIFY_DEVICE_INFO],
+    # Free texts without any effect on the BMS, stored at device info bytes 102-117 and 134-149 (JK02_32S only).
+    # Factory defaults are e.g. JK-BMS or "Input Userdata"; the latter has 14 characters and can't be restored once
+    # changed.
+    CONF_USER_DATA: [0x9F, 1, 13, VERIFY_DEVICE_INFO],
+    CONF_USER_DATA_2: [0xA2, 1, 13, VERIFY_DEVICE_INFO],
 }
 check_write_table(TEXTS, ("register", "min_length", "max_length", "verify"))
 for _key, (_, _min_length, _max_length, _) in TEXTS.items():
@@ -71,6 +79,18 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
         cv.Optional(CONF_SETTINGS_PASSWORD): text.text_schema(
             JkText,
             icon=ICON_SETTINGS_PASSWORD,
+            entity_category=ENTITY_CATEGORY_CONFIG,
+            mode="text",
+        ).extend(cv.COMPONENT_SCHEMA),
+        cv.Optional(CONF_USER_DATA): text.text_schema(
+            JkText,
+            icon=ICON_USER_DATA,
+            entity_category=ENTITY_CATEGORY_CONFIG,
+            mode="text",
+        ).extend(cv.COMPONENT_SCHEMA),
+        cv.Optional(CONF_USER_DATA_2): text.text_schema(
+            JkText,
+            icon=ICON_USER_DATA,
             entity_category=ENTITY_CATEGORY_CONFIG,
             mode="text",
         ).extend(cv.COMPONENT_SCHEMA),

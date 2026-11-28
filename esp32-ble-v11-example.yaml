@@ -388,6 +388,12 @@ text:
     # The BMS raises the "Modify password in time" alarm (red LED) while this is the factory default 123456
     settings_password:
       name: "settings password"
+    # Free texts, 1-13 bytes; a longer factory text (e.g. "Input Userdata") can't be restored once changed
+    user_data:
+      name: "user data"
+    # JK02_32S only
+    user_data_2:
+      name: "user data 2"
 
 text_sensor:
   - platform: jk_bms_ble

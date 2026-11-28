@@ -1974,7 +1974,10 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
   ESP_LOGI(TAG, "  Passcode: %s", std::string(data.begin() + 97, data.begin() + 97 + 5).c_str());
 
   // 102  16   0x49 0x6E 0x70 0x75 0x74 0x20 0x55 0x73 0x65 0x72 0x64 0x61 0x74 0x61 0x00 0x00
-  ESP_LOGI(TAG, "  User data: %s", std::string(data.begin() + 102, data.begin() + 102 + 16).c_str());
+  // User data, a free text written via 0x9F (user_data text)
+  const std::string user_data(data.begin() + 102, std::find(data.begin() + 102, data.begin() + 102 + 16, 0));
+  ESP_LOGI(TAG, "  User data: %s", user_data.c_str());
+  this->publish_state_(this->user_data_text_, user_data);
 
   // 118  16   0x31 0x32 0x33 0x34 0x35 0x37 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
   // Settings password: the app asks for it before changing settings, the BMS itself doesn't check it. The firmware
@@ -1986,22 +1989,12 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
   if (this->protocol_version_ != PROTOCOL_VERSION_JK02_32S)
     return;
 
-  // 134  0x49
-  // 135  0x6E
-  // 136  0x70
-  // 137  0x75
-  // 138  0x74
-  // 139  0x20
-  // 140  0x55
-  // 141  0x73
-  // 142  0x65
-  // 143  0x72
-  // 144  0x64
-  // 145  0x61
-  // 146  0x74
-  // 147  0x61
-  // 148  0x00
-  // 149  0x00
+  // 134  16   0x49 0x6E 0x70 0x75 0x74 0x20 0x55 0x73 0x65 0x72 0x64 0x61 0x74 0x61 0x00 0x00
+  // User data 2, a free text written via 0xA2 (user_data_2 text)
+  const std::string user_data_2(data.begin() + 134, std::find(data.begin() + 134, data.begin() + 134 + 16, 0));
+  ESP_LOGI(TAG, "  User data 2: %s", user_data_2.c_str());
+  this->publish_state_(this->user_data_2_text_, user_data_2);
+
   // 150  0xFE
   // 151  0xFF
   // 152  0xFF
