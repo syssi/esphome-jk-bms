@@ -16,7 +16,9 @@ from .. import (
     JK_BMS_BLE_COMPONENT_SCHEMA,
     VERIFY_NONE,
     check_write_table,
+    common_register,
     jk_bms_ble_ns,
+    validate_protocol_support,
 )
 
 DEPENDENCIES = ["jk_bms_ble"]
@@ -39,20 +41,26 @@ ICON_HEATING_TEST = "mdi:heat-wave"
 ICON_SYNC_TIME = "mdi:clock-outline"
 
 BUTTONS = {
-    # register, verify
+    # JK04, JK02_24S, JK02_32S, verify
     # The BMS responds to the 0x96 request with a single settings frame and enables the notification stream
-    CONF_RETRIEVE_SETTINGS: (0x96, VERIFY_NONE),
-    CONF_RETRIEVE_DEVICE_INFO: (0x97, VERIFY_NONE),
-    CONF_RETRIEVE_LOGBOOK: (0xA1, VERIFY_NONE),
-    # JK02_32S: data_len=0 commands. Actions without a setting to read back.
-    # The restart and the factory reset (which restarts the BMS) drop the connection.
-    CONF_SHUTDOWN: (0x65, VERIFY_NONE),
-    CONF_RESTART: (0x66, VERIFY_NONE),
-    CONF_FACTORY_RESET: (0x9D, VERIFY_NONE),
-    # Triggers the heating test (firmware >= V19.36). The BMS switches the heater off after 10 seconds.
-    CONF_HEATING_TEST: (0x6D, VERIFY_NONE),
+    CONF_RETRIEVE_SETTINGS: [0x96, 0x96, 0x96, VERIFY_NONE],
+    CONF_RETRIEVE_DEVICE_INFO: [0x97, 0x97, 0x97, VERIFY_NONE],
+    # JK02 commands: JK04 devices use their own register map (e.g. 0x6C is the balancer switch there)
+    CONF_RETRIEVE_LOGBOOK: [0x00, 0xA1, 0xA1, VERIFY_NONE],
+    # Actions without a setting to read back. The restart and the factory reset (which restarts the BMS) drop the
+    # connection.
+    CONF_SHUTDOWN: [0x00, 0x65, 0x65, VERIFY_NONE],
+    CONF_RESTART: [0x00, 0x66, 0x66, VERIFY_NONE],
+    CONF_FACTORY_RESET: [0x00, 0x9D, 0x9D, VERIFY_NONE],
+    # Triggers the heating test (firmware >= V19.36), needs the heater of JK02_32S devices like the heating switch. The
+    # BMS switches the heater off after 10 seconds.
+    CONF_HEATING_TEST: [0x00, 0x00, 0x6D, VERIFY_NONE],
+    # Sets the BMS clock (JkSyncTimeButton, the hub builds the frame)
+    CONF_SYNC_TIME: [0x00, 0x6C, 0x6C, VERIFY_NONE],
 }
-check_write_table(BUTTONS, ("register", "verify"))
+check_write_table(BUTTONS, ("jk04", "jk02_24s", "jk02_32s", "verify"))
+for _key, _entry in BUTTONS.items():
+    common_register(_key, _entry)
 
 JkButton = jk_bms_ble_ns.class_("JkButton", button.Button)
 JkSyncTimeButton = jk_bms_ble_ns.class_("JkSyncTimeButton", button.Button)
@@ -100,7 +108,11 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
 )
 
 
+BUTTON_PROTOCOL_SUPPORT = validate_protocol_support("button", BUTTONS)
+
+
 def _final_validate(config):
+    BUTTON_PROTOCOL_SUPPORT(config)
     if CONF_SYNC_TIME not in config:
         return config
 
@@ -120,12 +132,13 @@ FINAL_VALIDATE_SCHEMA = _final_validate
 
 async def to_code(config):
     hub = await cg.get_variable(config[CONF_JK_BMS_BLE_ID])
-    for key, (address, verify) in BUTTONS.items():
-        if key in config:
+    for key, entry in BUTTONS.items():
+        if key in config and key != CONF_SYNC_TIME:
+            *_, verify = entry
             conf = config[key]
             var = await button.new_button(conf)
             cg.add(var.set_parent(hub))
-            cg.add(var.set_holding_register(address))
+            cg.add(var.set_holding_register(common_register(key, entry)))
             cg.add(var.set_verify(verify))
 
     if CONF_SYNC_TIME in config:

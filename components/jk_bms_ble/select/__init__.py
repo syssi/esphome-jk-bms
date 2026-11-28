@@ -12,7 +12,9 @@ from .. import (
     VERIFY_DEVICE_INFO,
     VERIFY_SETTINGS,
     check_write_table,
+    common_register,
     jk_bms_ble_ns,
+    validate_protocol_support,
 )
 from ..const import (
     CONF_CAN_PROTOCOL,
@@ -111,7 +113,11 @@ _LCD_ARR = "JK_BMS_BLE_LCD_BUZZER_TRIGGER_OPTS_"
 _MULTIPLEXED_PORT_MODE_ARR = "JK_BMS_BLE_MULTIPLEXED_PORT_MODE_OPTS_"
 
 SELECTS = {
+    # JK04, JK02_24S, JK02_32S, options, table_setter, arr_name, data_len, verify
+    # Stored beyond device info byte 134 or in the JK02_32S settings layout (multiplexed port mode)
     CONF_UART1_PROTOCOL: (
+        0x00,
+        0x00,
         0xA5,
         UART_PROTOCOL_OPTIONS,
         "set_uart_protocol_table",
@@ -120,6 +126,8 @@ SELECTS = {
         VERIFY_DEVICE_INFO,
     ),
     CONF_UART2_PROTOCOL: (
+        0x00,
+        0x00,
         0xA8,
         UART_PROTOCOL_OPTIONS,
         "set_uart_protocol_table",
@@ -128,6 +136,8 @@ SELECTS = {
         VERIFY_DEVICE_INFO,
     ),
     CONF_UART3_PROTOCOL: (
+        0x00,
+        0x00,
         0xB6,
         UART_PROTOCOL_OPTIONS,
         "set_uart_protocol_table",
@@ -136,6 +146,8 @@ SELECTS = {
         VERIFY_DEVICE_INFO,
     ),
     CONF_CAN_PROTOCOL: (
+        0x00,
+        0x00,
         0xA6,
         CAN_PROTOCOL_OPTIONS,
         "set_can_protocol_table",
@@ -144,6 +156,8 @@ SELECTS = {
         VERIFY_DEVICE_INFO,
     ),
     CONF_LCD_BUZZER_TRIGGER: (
+        0x00,
+        0x00,
         0xA9,
         LCD_BUZZER_TRIGGER_OPTIONS,
         "set_lcd_buzzer_trigger_table",
@@ -152,6 +166,8 @@ SELECTS = {
         VERIFY_DEVICE_INFO,
     ),
     CONF_DRY1_TRIGGER: (
+        0x00,
+        0x00,
         0xAA,
         LCD_BUZZER_TRIGGER_OPTIONS,
         "set_lcd_buzzer_trigger_table",
@@ -160,6 +176,8 @@ SELECTS = {
         VERIFY_DEVICE_INFO,
     ),
     CONF_DRY2_TRIGGER: (
+        0x00,
+        0x00,
         0xAB,
         LCD_BUZZER_TRIGGER_OPTIONS,
         "set_lcd_buzzer_trigger_table",
@@ -168,6 +186,8 @@ SELECTS = {
         VERIFY_DEVICE_INFO,
     ),
     CONF_MULTIPLEXED_PORT_MODE: (
+        0x00,
+        0x00,
         0x2A,
         MULTIPLEXED_PORT_MODE_OPTIONS,
         "set_multiplexed_port_mode_table",
@@ -177,16 +197,36 @@ SELECTS = {
     ),
 }
 check_write_table(
-    SELECTS, ("register", "options", "table_setter", "arr_name", "data_len", "verify")
+    SELECTS,
+    (
+        "jk04",
+        "jk02_24s",
+        "jk02_32s",
+        "options",
+        "table_setter",
+        "arr_name",
+        "data_len",
+        "verify",
+    ),
 )
+for _key, _entry in SELECTS.items():
+    common_register(_key, _entry)
 
-# JK02_32S: each chemistry loads via a dedicated register with data_len=0
+# Each chemistry loads via a dedicated register with data_len=0
 LOAD_CONFIG_PRESET_VERIFY = VERIFY_SETTINGS
 LOAD_CONFIG_PRESET_OPTIONS = {
-    "Li-Ion": 0x68,
-    "LiFePO4": 0x69,
-    "LTO": 0x6A,
+    # JK04, JK02_24S, JK02_32S
+    "Li-Ion": (0x00, 0x00, 0x68),
+    "LiFePO4": (0x00, 0x00, 0x69),
+    "LTO": (0x00, 0x00, 0x6A),
 }
+for _option, _registers in LOAD_CONFIG_PRESET_OPTIONS.items():
+    common_register(_option, _registers)
+# The preset select works where every option has a register
+LOAD_CONFIG_PRESET_REGISTERS = tuple(
+    min(registers[i] for registers in LOAD_CONFIG_PRESET_OPTIONS.values())
+    for i in range(3)
+)
 
 
 @dataclass
@@ -240,22 +280,16 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
 async def to_code(config):
     emitted_arrays = _get_select_data().emitted_arrays
     hub = await cg.get_variable(config[CONF_JK_BMS_BLE_ID])
-    for key, (
-        address,
-        options,
-        table_setter,
-        arr_name,
-        data_len,
-        verify,
-    ) in SELECTS.items():
+    for key, entry in SELECTS.items():
         if key not in config:
             continue
+        _, _, _, options, table_setter, arr_name, data_len, verify = entry
         conf = config[key]
         var = await select.new_select(conf, options=options)
         await cg.register_component(var, conf)
         cg.add(getattr(hub, f"set_{key}_select")(var))
         cg.add(var.set_parent(hub))
-        cg.add(var.set_holding_register(address))
+        cg.add(var.set_holding_register(common_register(key, entry)))
         cg.add(var.set_data_len(data_len))
         cg.add(var.set_verify(verify))
 
@@ -282,5 +316,10 @@ async def to_code(config):
         await cg.register_component(var, conf)
         cg.add(var.set_parent(hub))
         cg.add(var.set_verify(LOAD_CONFIG_PRESET_VERIFY))
-        for opt, reg in LOAD_CONFIG_PRESET_OPTIONS.items():
-            cg.add(var.add_option_register(opt, reg))
+        for opt, registers in LOAD_CONFIG_PRESET_OPTIONS.items():
+            cg.add(var.add_option_register(opt, common_register(opt, registers)))
+
+
+FINAL_VALIDATE_SCHEMA = validate_protocol_support(
+    "select", {**SELECTS, CONF_LOAD_CONFIG_PRESET: LOAD_CONFIG_PRESET_REGISTERS}
+)

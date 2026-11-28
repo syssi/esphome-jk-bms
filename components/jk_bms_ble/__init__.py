@@ -4,6 +4,7 @@ import esphome.codegen as cg
 from esphome.components import ble_client, time
 import esphome.config_validation as cv
 from esphome.const import CONF_ID, CONF_THROTTLE, CONF_TIME_ID
+import esphome.final_validate as fv
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -146,6 +147,60 @@ def check_write_table(table, fields):
             raise ValueError(
                 f"jk_bms_ble: entry '{key}' must be [{', '.join(fields)}], got {entry}"
             )
+
+
+# Every write table starts with one register per protocol version, in this order. 0x00: the protocol version doesn't
+# support the entity.
+PROTOCOL_VERSIONS = ("JK04", "JK02_24S", "JK02_32S")
+
+
+def supported_protocol_versions(entry):
+    """The protocol versions of a write table entry: those with a register."""
+    return tuple(
+        version
+        for version, register in zip(PROTOCOL_VERSIONS, entry[:3], strict=True)
+        if register
+    )
+
+
+def common_register(key, entry):
+    """The register of an entry that uses the same one for every protocol version it supports. Platforms that hand a
+    single register to C++ (select, button, text) rely on that."""
+    registers = {register for register in entry[:3] if register}
+    if len(registers) != 1:
+        raise ValueError(
+            f"jk_bms_ble: entry '{key}' needs one register for all its protocol versions, got {entry[:3]}"
+        )
+    return registers.pop()
+
+
+def validate_protocol_support(platform, table):
+    """A final validation rejecting the entities of a write table the protocol version of their hub doesn't
+    support, see supported_protocol_versions()."""
+    supported = {
+        key: supported_protocol_versions(entry) for key, entry in table.items()
+    }
+    for key, versions in supported.items():
+        if not versions:
+            raise ValueError(f"jk_bms_ble: {platform} '{key}' has no register")
+
+    def validator(config):
+        hub_id = config[CONF_JK_BMS_BLE_ID]
+        for hub in fv.full_config.get().get(DOMAIN, []):
+            if hub[CONF_ID] != hub_id:
+                continue
+            protocol_version = str(hub[CONF_PROTOCOL_VERSION])
+            for key, versions in supported.items():
+                if key in config and protocol_version not in versions:
+                    raise cv.Invalid(
+                        f"The {platform} '{key}' isn't supported by protocol_version {protocol_version} of "
+                        f"jk_bms_ble '{hub_id}' (supported: {', '.join(versions)})",
+                        path=[key],
+                    )
+        return config
+
+    validator.supported = supported
+    return validator
 
 
 JK_BMS_BLE_COMPONENT_SCHEMA = cv.Schema(

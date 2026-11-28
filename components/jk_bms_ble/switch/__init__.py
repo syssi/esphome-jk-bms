@@ -10,6 +10,7 @@ from .. import (
     VERIFY_SETTINGS,
     check_write_table,
     jk_bms_ble_ns,
+    validate_protocol_support,
 )
 from ..const import (
     CONF_BALANCER,
@@ -177,3 +178,6 @@ async def to_code(config):
             cg.add(var.set_jk02_holding_register(jk02_24s))
             cg.add(var.set_jk02_32s_holding_register(jk02_32s))
             cg.add(var.set_verify(verify))
+
+
+FINAL_VALIDATE_SCHEMA = validate_protocol_support("switch", SWITCHES)

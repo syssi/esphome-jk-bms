@@ -8,7 +8,9 @@ from .. import (
     JK_BMS_BLE_COMPONENT_SCHEMA,
     VERIFY_DEVICE_INFO,
     check_write_table,
+    common_register,
     jk_bms_ble_ns,
+    validate_protocol_support,
 )
 
 DEPENDENCIES = ["jk_bms_ble"]
@@ -33,25 +35,29 @@ MAX_PAYLOAD_SIZE = 13
 STATE_MAX_LENGTH = 16
 
 TEXTS = {
-    # register, min_length, max_length, verify
+    # JK04, JK02_24S, JK02_32S, min_length, max_length, verify
     # The device name at device info bytes 46-61, which the BMS also advertises via Bluetooth. After a write the BMS
     # restarts its Bluetooth module, so the connection drops and the readback happens after the reconnect. Factory
     # names can be longer than 13 characters and can't be restored once changed.
-    CONF_BLUETOOTH_NAME: [0x9B, 1, 13, VERIFY_DEVICE_INFO],
+    CONF_BLUETOOTH_NAME: [0x00, 0x9B, 0x9B, 1, 13, VERIFY_DEVICE_INFO],
     # Stored at device info bytes 62-77, factory default 1234. The BMS only stores it: it is no Bluetooth pairing PIN and
     # doesn't protect the connection or writes.
-    CONF_DEVICE_PASSWORD: [0x9C, 1, 13, VERIFY_DEVICE_INFO],
+    CONF_DEVICE_PASSWORD: [0x00, 0x9C, 0x9C, 1, 13, VERIFY_DEVICE_INFO],
     # The app asks for this password before changing settings; the BMS doesn't check it. While it is the factory
     # default 123456 the BMS raises the "Modify password in time" alarm (red LED).
-    CONF_SETTINGS_PASSWORD: [0xA0, 1, 13, VERIFY_DEVICE_INFO],
+    CONF_SETTINGS_PASSWORD: [0x00, 0xA0, 0xA0, 1, 13, VERIFY_DEVICE_INFO],
     # Free texts without any effect on the BMS, stored at device info bytes 102-117 and 134-149 (JK02_32S only).
     # Factory defaults are e.g. JK-BMS or "Input Userdata"; the latter has 14 characters and can't be restored once
     # changed.
-    CONF_USER_DATA: [0x9F, 1, 13, VERIFY_DEVICE_INFO],
-    CONF_USER_DATA_2: [0xA2, 1, 13, VERIFY_DEVICE_INFO],
+    CONF_USER_DATA: [0x00, 0x9F, 0x9F, 1, 13, VERIFY_DEVICE_INFO],
+    CONF_USER_DATA_2: [0x00, 0x00, 0xA2, 1, 13, VERIFY_DEVICE_INFO],
 }
-check_write_table(TEXTS, ("register", "min_length", "max_length", "verify"))
-for _key, (_, _min_length, _max_length, _) in TEXTS.items():
+check_write_table(
+    TEXTS, ("jk04", "jk02_24s", "jk02_32s", "min_length", "max_length", "verify")
+)
+for _key, _entry in TEXTS.items():
+    common_register(_key, _entry)
+for _key, (*_, _min_length, _max_length, _) in TEXTS.items():
     if not 0 <= _min_length <= _max_length <= MAX_PAYLOAD_SIZE:
         raise ValueError(
             f"jk_bms_ble: text '{_key}' needs 0 <= min_length <= max_length <= {MAX_PAYLOAD_SIZE}"
@@ -100,17 +106,21 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
 
 async def to_code(config):
     hub = await cg.get_variable(config[CONF_JK_BMS_BLE_ID])
-    for key, (address, min_length, max_length, verify) in TEXTS.items():
+    for key, entry in TEXTS.items():
         if key not in config:
             continue
+        *_, min_length, max_length, verify = entry
         conf = config[key]
         var = await text.new_text(conf, min_length=0, max_length=STATE_MAX_LENGTH)
         await cg.register_component(var, conf)
         cg.add(getattr(hub, f"set_{key}_text")(var))
         cg.add(var.set_parent(hub))
-        cg.add(var.set_holding_register(address))
+        cg.add(var.set_holding_register(common_register(key, entry)))
         cg.add(var.set_verify(verify))
         cg.add(var.set_min_write_length(min_length))
         cg.add(var.set_max_write_length(max_length))
         if key in NAME_CHARSET_TEXTS:
             cg.add(var.set_name_charset(True))
+
+
+FINAL_VALIDATE_SCHEMA = validate_protocol_support("text", TEXTS)

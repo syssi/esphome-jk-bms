@@ -30,6 +30,7 @@ from .. import (
     check_write_table,
     deprecated_renames,
     jk_bms_ble_ns,
+    validate_protocol_support,
 )
 
 DEPENDENCIES = ["jk_bms_ble"]
@@ -787,3 +788,6 @@ async def to_code(config):
             cg.add(var.set_length(length))
             cg.add(var.set_jk04_length(jk04_length))
             cg.add(var.set_verify(verify))
+
+
+FINAL_VALIDATE_SCHEMA = validate_protocol_support("number", NUMBERS)
