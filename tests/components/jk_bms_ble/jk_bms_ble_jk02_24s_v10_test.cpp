@@ -168,4 +168,13 @@ TEST(JkBmsV10CellInfoTest, ProtectionRecoveryCountdownsNotPublished) {
   EXPECT_FALSE(cell_ovp.has_state());
 }
 
+// Wire resistance warnings are only published for JK02_32S
+TEST(JkBmsV10CellInfoTest, WireResistanceWarningsNotPublished) {
+  TestableJkBmsBle bms;
+  text_sensor::TextSensor wire_warnings;
+  bms.set_wire_resistance_warning_bitmask_hex_text_sensor(&wire_warnings);
+  bms.decode_jk02_cell_info_(CELL_INFO_JK02_24S_V10);
+  EXPECT_FALSE(wire_warnings.has_state());
+}
+
 }  // namespace esphome::jk_bms_ble::testing

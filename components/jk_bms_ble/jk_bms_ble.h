@@ -393,6 +393,10 @@ class JkBmsBle :
   void set_serial_number_text_sensor(text_sensor::TextSensor *serial_number_text_sensor) {
     serial_number_text_sensor_ = serial_number_text_sensor;
   }
+  void set_wire_resistance_warning_bitmask_hex_text_sensor(
+      text_sensor::TextSensor *wire_resistance_warning_bitmask_hex_text_sensor) {
+    wire_resistance_warning_bitmask_hex_text_sensor_ = wire_resistance_warning_bitmask_hex_text_sensor;
+  }
   void set_supported_commands_bitmask_hex_text_sensor(
       text_sensor::TextSensor *supported_commands_bitmask_hex_text_sensor) {
     supported_commands_bitmask_hex_text_sensor_ = supported_commands_bitmask_hex_text_sensor;
@@ -660,6 +664,7 @@ class JkBmsBle :
   text_sensor::TextSensor *device_time_text_sensor_{nullptr};
   text_sensor::TextSensor *serial_number_text_sensor_{nullptr};
   text_sensor::TextSensor *supported_commands_bitmask_hex_text_sensor_{nullptr};
+  text_sensor::TextSensor *wire_resistance_warning_bitmask_hex_text_sensor_{nullptr};
 
 #ifdef USE_TIME
   time::RealTimeClock *time_id_{nullptr};

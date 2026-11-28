@@ -428,6 +428,8 @@ text_sensor:
       name: "errors"
     errors_bitmask_hex:
       name: "errors bitmask hex"
+    wire_resistance_warning_bitmask_hex:
+      name: "wire resistance warning bitmask hex"
     balancer_status:
       name: "balancer status"
     total_runtime_formatted:

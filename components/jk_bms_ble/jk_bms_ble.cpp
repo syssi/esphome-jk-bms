@@ -583,6 +583,7 @@ void JkBmsBle::dump_config() {  // NOLINT(google-readability-function-size,reada
   LOG_TEXT_SENSOR("", "Device Time", this->device_time_text_sensor_);
   LOG_TEXT_SENSOR("", "Serial Number", this->serial_number_text_sensor_);
   LOG_TEXT_SENSOR("", "Supported Commands Bitmask Hex", this->supported_commands_bitmask_hex_text_sensor_);
+  LOG_TEXT_SENSOR("", "Wire Resistance Warning Bitmask Hex", this->wire_resistance_warning_bitmask_hex_text_sensor_);
 
   LOG_SWITCH("", "Charging", this->charging_switch_);
   LOG_SWITCH("", "Discharging", this->discharging_switch_);
@@ -1149,8 +1150,11 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   }
 
   // 114   4   0x00 0x00 0x00 0x00    Wire resistance warning bitmask (each bit indicates a warning per cell / wire)
-  ESP_LOGD(TAG, "Wire resistance warning bitmask: 0x%02X 0x%02X 0x%02X 0x%02X", data[114 + offset], data[115 + offset],
-           data[116 + offset], data[117 + offset]);
+  if (frame_version == FRAME_VERSION_JK02_32S) {
+    char wire_hex[bitmask_hex_size(4)];
+    this->publish_state_(this->wire_resistance_warning_bitmask_hex_text_sensor_,
+                         format_bitmask_hex<4>(wire_hex, data.data() + 114 + offset));
+  }
 
   // 118   4   0x03 0xD0 0x00 0x00    Battery voltage       0.001        V
   float total_voltage = (float) jk_get_32bit(118 + offset) * 0.001f;
@@ -2270,6 +2274,7 @@ void JkBmsBle::publish_device_unavailable_() {
   this->publish_state_(this->online_status_binary_sensor_, false);
   this->publish_state_(this->errors_text_sensor_, "Offline");
   this->publish_state_(this->errors_bitmask_hex_text_sensor_, "Offline");
+  this->publish_state_(this->wire_resistance_warning_bitmask_hex_text_sensor_, "Offline");
   this->publish_state_(this->charge_status_text_sensor_, "Offline");
   this->publish_state_(this->balancer_status_text_sensor_, "Offline");
   this->publish_state_(this->total_runtime_formatted_text_sensor_, "Offline");

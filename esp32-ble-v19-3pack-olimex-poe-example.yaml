@@ -1844,6 +1844,9 @@ text_sensor:
     errors_bitmask_hex:
       name: "errors bitmask hex"
       device_id: device0
+    wire_resistance_warning_bitmask_hex:
+      name: "wire resistance warning bitmask hex"
+      device_id: device0
     total_runtime_formatted:
       name: "total runtime formatted"
       device_id: device0
@@ -1886,6 +1889,9 @@ text_sensor:
     errors_bitmask_hex:
       name: "errors bitmask hex"
       device_id: device1
+    wire_resistance_warning_bitmask_hex:
+      name: "wire resistance warning bitmask hex"
+      device_id: device1
     total_runtime_formatted:
       name: "total runtime formatted"
       device_id: device1
@@ -1927,6 +1933,9 @@ text_sensor:
       device_id: device2
     errors_bitmask_hex:
       name: "errors bitmask hex"
+      device_id: device2
+    wire_resistance_warning_bitmask_hex:
+      name: "wire resistance warning bitmask hex"
       device_id: device2
     total_runtime_formatted:
       name: "total runtime formatted"
