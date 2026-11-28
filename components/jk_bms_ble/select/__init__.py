@@ -8,11 +8,13 @@ from esphome.core import CORE
 from .. import (
     CONF_JK_BMS_BLE_ID,
     DOMAIN,
+    JK02_32S_ONLY,
     JK_BMS_BLE_COMPONENT_SCHEMA,
     VERIFY_DEVICE_INFO,
     VERIFY_SETTINGS,
     check_write_table,
     jk_bms_ble_ns,
+    validate_protocol_support,
 )
 from ..const import (
     CONF_CAN_PROTOCOL,
@@ -284,3 +286,14 @@ async def to_code(config):
         cg.add(var.set_verify(LOAD_CONFIG_PRESET_VERIFY))
         for opt, reg in LOAD_CONFIG_PRESET_OPTIONS.items():
             cg.add(var.add_option_register(opt, reg))
+
+
+# All selects are stored in the device info frame beyond byte 134 or in the JK02_32S settings layout (multiplexed port
+# mode), the presets use JK02_32S commands
+FINAL_VALIDATE_SCHEMA = validate_protocol_support(
+    "select",
+    {
+        **dict.fromkeys(SELECTS, JK02_32S_ONLY),
+        CONF_LOAD_CONFIG_PRESET: JK02_32S_ONLY,
+    },
+)

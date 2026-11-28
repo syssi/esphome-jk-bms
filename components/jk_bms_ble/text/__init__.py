@@ -5,10 +5,12 @@ from esphome.const import ENTITY_CATEGORY_CONFIG
 
 from .. import (
     CONF_JK_BMS_BLE_ID,
+    JK02_PROTOCOL_VERSIONS,
     JK_BMS_BLE_COMPONENT_SCHEMA,
     VERIFY_DEVICE_INFO,
     check_write_table,
     jk_bms_ble_ns,
+    validate_protocol_support,
 )
 
 DEPENDENCIES = ["jk_bms_ble"]
@@ -114,3 +116,9 @@ async def to_code(config):
         cg.add(var.set_max_write_length(max_length))
         if key in NAME_CHARSET_TEXTS:
             cg.add(var.set_name_charset(True))
+
+
+# JK04 devices have no text registers
+FINAL_VALIDATE_SCHEMA = validate_protocol_support(
+    "text", dict.fromkeys(TEXTS, JK02_PROTOCOL_VERSIONS)
+)

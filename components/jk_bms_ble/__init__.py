@@ -4,6 +4,7 @@ import esphome.codegen as cg
 from esphome.components import ble_client, time
 import esphome.config_validation as cv
 from esphome.const import CONF_ID, CONF_THROTTLE, CONF_TIME_ID
+import esphome.final_validate as fv
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -146,6 +147,54 @@ def check_write_table(table, fields):
             raise ValueError(
                 f"jk_bms_ble: entry '{key}' must be [{', '.join(fields)}], got {entry}"
             )
+
+
+# The protocol versions in the order the write tables of switch and number list their registers
+PROTOCOL_VERSIONS = ("JK04", "JK02_24S", "JK02_32S")
+JK02_PROTOCOL_VERSIONS = ("JK02_24S", "JK02_32S")
+JK02_32S_ONLY = ("JK02_32S",)
+
+
+def protocol_versions_from_registers(table):
+    """The protocol versions of each entry of a write table whose first three fields are the JK04, JK02_24S and
+    JK02_32S registers (0x00: the protocol version has none)."""
+    return {
+        key: tuple(
+            version
+            for version, register in zip(PROTOCOL_VERSIONS, entry[:3], strict=True)
+            if register
+        )
+        for key, entry in table.items()
+    }
+
+
+def validate_protocol_support(platform, supported):
+    """A final validation rejecting entities the protocol version of their hub doesn't support. `supported` maps each
+    configuration key to the protocol versions it works with."""
+    for key, versions in supported.items():
+        unknown = set(versions) - set(PROTOCOL_VERSIONS)
+        if not versions or unknown:
+            raise ValueError(
+                f"jk_bms_ble: {platform} '{key}' needs at least one of {PROTOCOL_VERSIONS}, got {versions}"
+            )
+
+    def validator(config):
+        hub_id = config[CONF_JK_BMS_BLE_ID]
+        for hub in fv.full_config.get().get(DOMAIN, []):
+            if hub[CONF_ID] != hub_id:
+                continue
+            protocol_version = str(hub[CONF_PROTOCOL_VERSION])
+            for key, versions in supported.items():
+                if key in config and protocol_version not in versions:
+                    raise cv.Invalid(
+                        f"The {platform} '{key}' isn't supported by protocol_version {protocol_version} of "
+                        f"jk_bms_ble '{hub_id}' (supported: {', '.join(versions)})",
+                        path=[key],
+                    )
+        return config
+
+    validator.supported = supported
+    return validator
 
 
 JK_BMS_BLE_COMPONENT_SCHEMA = cv.Schema(

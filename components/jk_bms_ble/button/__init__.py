@@ -13,10 +13,14 @@ import esphome.final_validate as fv
 
 from .. import (
     CONF_JK_BMS_BLE_ID,
+    JK02_32S_ONLY,
+    JK02_PROTOCOL_VERSIONS,
     JK_BMS_BLE_COMPONENT_SCHEMA,
+    PROTOCOL_VERSIONS,
     VERIFY_NONE,
     check_write_table,
     jk_bms_ble_ns,
+    validate_protocol_support,
 )
 
 DEPENDENCIES = ["jk_bms_ble"]
@@ -100,7 +104,26 @@ CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
 )
 
 
+# The requests work with every protocol version. The other commands are JK02 commands: JK04 devices use their own
+# register map (e.g. 0x6C is the balancer switch there). The heating test needs the heater of JK02_32S devices, see the
+# heating switch.
+BUTTON_PROTOCOL_VERSIONS = {
+    CONF_RETRIEVE_SETTINGS: PROTOCOL_VERSIONS,
+    CONF_RETRIEVE_DEVICE_INFO: PROTOCOL_VERSIONS,
+    CONF_RETRIEVE_LOGBOOK: JK02_PROTOCOL_VERSIONS,
+    CONF_SHUTDOWN: JK02_PROTOCOL_VERSIONS,
+    CONF_RESTART: JK02_PROTOCOL_VERSIONS,
+    CONF_FACTORY_RESET: JK02_PROTOCOL_VERSIONS,
+    CONF_HEATING_TEST: JK02_32S_ONLY,
+    CONF_SYNC_TIME: JK02_PROTOCOL_VERSIONS,
+}
+_validate_protocol_support = validate_protocol_support(
+    "button", BUTTON_PROTOCOL_VERSIONS
+)
+
+
 def _final_validate(config):
+    _validate_protocol_support(config)
     if CONF_SYNC_TIME not in config:
         return config
 
