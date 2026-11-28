@@ -1,5 +1,6 @@
 #include <cmath>
 #include <gtest/gtest.h>
+#include <iterator>
 #include "common.h"
 #include "frames_jk02_32s_b1a8s10p.h"
 
@@ -67,6 +68,58 @@ TEST(JkBmsB1A8S10PCellInfoTest, CellVoltages) {
   bms.decode_jk02_cell_info_(CELL_INFO_JK02_32S_B1A8S10P);
   EXPECT_FLOAT_EQ(cell1.state, 3.324f);
   EXPECT_FLOAT_EQ(cell4.state, 3.324f);
+}
+
+// The labels of DEFAULT_ERRORS_JK02 up to bit 9, as the codegen hands them to the hub
+static constexpr const char *const ERRORS_UP_TO_BIT_9[] = {
+    "Wire resistance",                      // bit 0
+    "MOSFET overtemperature",               // bit 1
+    "Cell count is not equal to settings",  // bit 2
+    "",                                     // bit 3
+    "Battery is fully charged",             // bit 4
+    "Battery pack overvoltage",             // bit 5
+    "Charge overcurrent",                   // bit 6
+    "Charge short circuit",                 // bit 7
+    "Charge overtemperature",               // bit 8
+    "Charge undertemperature",              // bit 9
+};
+
+TEST(JkBmsB1A8S10PCellInfoTest, ChargeUndertemperatureProtection) {
+  TestableJkBmsBle bms;
+  bms.set_protocol_version(PROTOCOL_VERSION_JK02_32S);
+  bms.set_errors_jk02_table(ERRORS_UP_TO_BIT_9, std::size(ERRORS_UP_TO_BIT_9));
+  text_sensor::TextSensor errors, errors_hex;
+  binary_sensor::BinarySensor charging, discharging;
+  sensor::Sensor t1, t2;
+  bms.set_errors_text_sensor(&errors);
+  bms.set_errors_bitmask_hex_text_sensor(&errors_hex);
+  bms.set_charging_binary_sensor(&charging);
+  bms.set_discharging_binary_sensor(&discharging);
+  bms.set_temperature_sensor(0, &t1);
+  bms.set_temperature_sensor(1, &t2);
+  bms.decode_jk02_cell_info_(CELL_INFO_JK02_32S_B1A8S10P_CHARGE_UNDERTEMPERATURE);
+  EXPECT_EQ(errors.state, "Charge undertemperature");
+  EXPECT_EQ(errors_hex.state, "0x00000200");
+  EXPECT_FALSE(charging.state);
+  EXPECT_TRUE(discharging.state);
+  EXPECT_FLOAT_EQ(t1.state, 2.6f);
+  EXPECT_FLOAT_EQ(t2.state, 20.5f);
+}
+
+// T1 already in ice water, but the charge undertemperature protection still at -10 °C
+TEST(JkBmsB1A8S10PCellInfoTest, NoErrorsBeforeTheProtectionTriggers) {
+  TestableJkBmsBle bms;
+  bms.set_protocol_version(PROTOCOL_VERSION_JK02_32S);
+  bms.set_errors_jk02_table(ERRORS_UP_TO_BIT_9, std::size(ERRORS_UP_TO_BIT_9));
+  text_sensor::TextSensor errors, errors_hex;
+  binary_sensor::BinarySensor charging;
+  bms.set_errors_text_sensor(&errors);
+  bms.set_errors_bitmask_hex_text_sensor(&errors_hex);
+  bms.set_charging_binary_sensor(&charging);
+  bms.decode_jk02_cell_info_(CELL_INFO_JK02_32S_B1A8S10P_ICE_WATER);
+  EXPECT_EQ(errors.state, "");
+  EXPECT_EQ(errors_hex.state, "0x00000000");
+  EXPECT_TRUE(charging.state);
 }
 
 }  // namespace esphome::jk_bms_ble::testing
