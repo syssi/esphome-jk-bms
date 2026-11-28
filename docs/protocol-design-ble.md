@@ -120,6 +120,11 @@ Besides the response frames the notifications carry:
   (hw 7.x, 8.x) with the settings frame only, followed directly by the acknowledgement. A command the BMS dropped is
   not acknowledged. The acknowledgement only means the command was processed: a write to a register the model doesn't
   support (e.g. `0xB7` on a JK-B2A8S20P) is acknowledged too.
+- A negative acknowledgement when the BMS rejects a command it received:
+  `AA 55 90 EB C8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 43`. Seen on a JK02_32S (hw 19) about 40 ms after a
+  `0x9B` write with length byte 15 (at most 13 fit into the frame); the stored value stays unchanged. ESPHome logs
+  a warning and sends the next command right away. A frame that is neither 20 nor 300 bytes long (e.g. a 22 byte
+  `0x9B` frame) gets no answer at all.
 
 The BLE module packs whatever it has buffered into one notification, so these bytes may share a notification with
 each other or with a frame: the JK app btsnoop logs contain `AT\r\n` + acknowledgement + `AT\r\n` and `AT\r\n`

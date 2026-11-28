@@ -470,6 +470,8 @@ class JkBmsBle :
   static std::array<uint8_t, 20> build_frame(const CommandQueue::Command &command);
   // True if the notification carries the frame the BMS sends after processing a command
   static bool contains_acknowledgement(const uint8_t *data, uint16_t length);
+  // True if the notification carries the frame the BMS sends after rejecting a command
+  static bool contains_negative_acknowledgement(const uint8_t *data, uint16_t length);
   static uint32_t encode_jk04_payload(float value, uint8_t len, float factor);
   // Converts between a unix timestamp and the BMS clock format (seconds since 2020-01-01 00:00:00 UTC+8)
   static uint32_t encode_time(time_t utc);

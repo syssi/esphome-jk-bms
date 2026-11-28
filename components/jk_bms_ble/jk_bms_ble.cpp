@@ -47,6 +47,9 @@ static const int64_t JK_TIME_EPOCH = 1577808000LL;
 // Sent by the BMS after every processed command, see CommandQueue
 static const uint8_t ACKNOWLEDGEMENT_FRAME[20] = {0xAA, 0x55, 0x90, 0xEB, 0xC8, 0x01, 0x01, 0x00, 0x00, 0x00,
                                                   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x44};
+// Sent instead when the BMS rejects a command it processed, e.g. a text whose length byte is too large
+static const uint8_t NEGATIVE_ACKNOWLEDGEMENT_FRAME[20] = {0xAA, 0x55, 0x90, 0xEB, 0xC8, 0x01, 0x00, 0x00, 0x00, 0x00,
+                                                           0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x43};
 
 static const uint16_t MIN_RESPONSE_SIZE = 300;
 
@@ -580,10 +583,18 @@ void JkBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gat
       ESP_LOGVV(TAG, "Notification received: %s",
                 format_hex_pretty_to(hex_buf, param->notify.value, param->notify.value_len, '.'));
 
-      if (contains_acknowledgement(param->notify.value, param->notify.value_len)) {
+      const bool acknowledged = contains_acknowledgement(param->notify.value, param->notify.value_len);
+      // A rejection ends the wait like an acknowledgement. The readback armed by the write stays, so the entity
+      // publishes the value the BMS kept instead of the rejected one.
+      if (acknowledged || contains_negative_acknowledgement(param->notify.value, param->notify.value_len)) {
         if (auto latency = this->command_queue_.on_acknowledgement(millis())) {
-          ESP_LOGD(TAG, "Command 0x%02X acknowledged after %" PRIu32 " ms", this->command_queue_.awaited_command(),
-                   *latency);
+          if (acknowledged) {
+            ESP_LOGD(TAG, "Command 0x%02X acknowledged after %" PRIu32 " ms", this->command_queue_.awaited_command(),
+                     *latency);
+          } else {
+            ESP_LOGW(TAG, "Command 0x%02X rejected by the BMS after %" PRIu32 " ms",
+                     this->command_queue_.awaited_command(), *latency);
+          }
           this->service_command_queue_();
         }
       }
@@ -748,6 +759,11 @@ void JkBmsBle::sync_time_on_connect_() {
 bool JkBmsBle::contains_acknowledgement(const uint8_t *data, uint16_t length) {
   return std::search(data, data + length, std::begin(ACKNOWLEDGEMENT_FRAME), std::end(ACKNOWLEDGEMENT_FRAME)) !=
          data + length;
+}
+
+bool JkBmsBle::contains_negative_acknowledgement(const uint8_t *data, uint16_t length) {
+  return std::search(data, data + length, std::begin(NEGATIVE_ACKNOWLEDGEMENT_FRAME),
+                     std::end(NEGATIVE_ACKNOWLEDGEMENT_FRAME)) != data + length;
 }
 
 std::array<uint8_t, 20> JkBmsBle::build_frame(uint8_t address, uint32_t value, uint8_t length) {

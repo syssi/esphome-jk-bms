@@ -336,4 +336,42 @@ TEST(JkBmsAcknowledgementTest, OtherFramesAreNoAcknowledgement) {
   EXPECT_FALSE(contains_acknowledgement(CELL_INFO_JK02_24S_V10));
 }
 
+// ── Negative acknowledgement ─────────────────────────────────────────────────
+
+// Recorded on a JK02_32S (hw 19) after a 0x9B write with length byte 15, about 40 ms after the write. The BMS kept the
+// stored name.
+static const std::vector<uint8_t> NEGATIVE_ACKNOWLEDGEMENT = {0xAA, 0x55, 0x90, 0xEB, 0xC8, 0x01, 0x00,
+                                                              0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                                              0x00, 0x00, 0x00, 0x00, 0x00, 0x43};
+
+static bool contains_negative_acknowledgement(const std::vector<uint8_t> &data) {
+  return JkBmsBle::contains_negative_acknowledgement(data.data(), data.size());
+}
+
+TEST(JkBmsNegativeAcknowledgementTest, StandaloneNegativeAcknowledgementIsDetected) {
+  EXPECT_TRUE(contains_negative_acknowledgement(NEGATIVE_ACKNOWLEDGEMENT));
+}
+
+TEST(JkBmsNegativeAcknowledgementTest, NegativeAcknowledgementSharingANotificationIsDetected) {
+  EXPECT_TRUE(contains_negative_acknowledgement(concat({AT_LINE, NEGATIVE_ACKNOWLEDGEMENT, AT_LINE})));
+}
+
+// Acknowledgement and rejection differ in byte 6 and the checksum: neither may be taken for the other
+TEST(JkBmsNegativeAcknowledgementTest, AcknowledgementAndRejectionAreDistinct) {
+  EXPECT_FALSE(contains_negative_acknowledgement(ACKNOWLEDGEMENT));
+  EXPECT_FALSE(contains_acknowledgement(NEGATIVE_ACKNOWLEDGEMENT));
+}
+
+TEST(JkBmsNegativeAcknowledgementTest, NegativeAcknowledgementWithWrongChecksumIsRejected) {
+  std::vector<uint8_t> data = NEGATIVE_ACKNOWLEDGEMENT;
+  data[19] = 0x44;
+  EXPECT_FALSE(contains_negative_acknowledgement(data));
+}
+
+TEST(JkBmsNegativeAcknowledgementTest, OtherContentIsNoNegativeAcknowledgement) {
+  EXPECT_FALSE(contains_negative_acknowledgement(AT_LINE));
+  EXPECT_FALSE(contains_negative_acknowledgement({}));
+  EXPECT_FALSE(contains_negative_acknowledgement(CELL_INFO_JK02_24S_V10));
+}
+
 }  // namespace esphome::jk_bms_ble::testing
