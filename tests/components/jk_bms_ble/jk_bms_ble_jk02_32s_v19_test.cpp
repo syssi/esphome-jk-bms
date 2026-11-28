@@ -45,6 +45,38 @@ TEST(JkBmsV19DeviceInfoTest, BluetoothName) {
   EXPECT_EQ(bluetooth_name.state, "506177F49000674");
 }
 
+TEST(JkBmsV19DeviceInfoTest, UserData) {
+  TestableJkBmsBle bms;
+  TestText user_data;
+  bms.set_user_data_text(&user_data);
+  bms.decode_device_info_(DEVICE_INFO_JK02_32S_V19);
+  EXPECT_EQ(user_data.state, "JK-BMS");
+}
+
+TEST(JkBmsV19DeviceInfoTest, UserData2) {
+  TestableJkBmsBle bms;
+  bms.set_protocol_version(PROTOCOL_VERSION_JK02_32S);
+  TestText user_data_2;
+  bms.set_user_data_2_text(&user_data_2);
+  bms.decode_device_info_(DEVICE_INFO_JK02_32S_V19);
+  EXPECT_EQ(user_data_2.state, "JK-BMS");
+}
+
+TEST(JkBmsV19DeviceInfoTest, UserData2WithoutNullTerminator) {
+  // A text using all 16 bytes has no terminating zero: it must not run into the field at offset 150
+  std::vector<uint8_t> data = DEVICE_INFO_JK02_32S_V19;
+  for (size_t i = 0; i < 16; i++) {
+    data[134 + i] = 'a' + i;
+  }
+
+  TestableJkBmsBle bms;
+  bms.set_protocol_version(PROTOCOL_VERSION_JK02_32S);
+  TestText user_data_2;
+  bms.set_user_data_2_text(&user_data_2);
+  bms.decode_device_info_(data);
+  EXPECT_EQ(user_data_2.state, "abcdefghijklmnop");
+}
+
 TEST(JkBmsV19DeviceInfoTest, DevicePassword) {
   TestableJkBmsBle bms;
   TestText device_password;

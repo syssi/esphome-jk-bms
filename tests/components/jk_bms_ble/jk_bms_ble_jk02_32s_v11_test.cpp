@@ -4,6 +4,19 @@
 
 namespace esphome::jk_bms_ble::testing {
 
+// The factory text "Input Userdata" has 14 characters: shown in full, although a write takes at most 13 bytes
+TEST(JkBmsV11DeviceInfoTest, UserData) {
+  TestableJkBmsBle bms;
+  bms.set_protocol_version(PROTOCOL_VERSION_JK02_32S);
+  TestText user_data;
+  TestText user_data_2;
+  bms.set_user_data_text(&user_data);
+  bms.set_user_data_2_text(&user_data_2);
+  bms.decode_device_info_(DEVICE_INFO_JK02_32S_V11);
+  EXPECT_EQ(user_data.state, "Input Userdata");
+  EXPECT_EQ(user_data_2.state, "Input Userdata");
+}
+
 TEST(JkBmsV11DeviceInfoTest, HardwareVersion) {
   TestableJkBmsBle bms;
   text_sensor::TextSensor hw;

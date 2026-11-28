@@ -518,6 +518,47 @@ TEST(JkBmsWriteCommandTest, BluetoothNameFrameWith13Characters) {
   EXPECT_EQ(JkBmsBle::build_frame(*command), expected);
 }
 
+// Recorded on a JK02_32S (hw 19): acknowledged after 91 ms, read back as JK-BMS-1, user data 2 unchanged
+TEST(JkBmsWriteCommandTest, UserDataFrame) {
+  const std::string text = "JK-BMS-1";
+  auto command = CommandQueue::Command::with_payload(0x9F, reinterpret_cast<const uint8_t *>(text.data()), text.size(),
+                                                     VERIFY_DEVICE_INFO);
+  ASSERT_TRUE(command.has_value());
+
+  const std::array<uint8_t, 20> expected = {0xAA, 0x55, 0x90, 0xEB, 0x9F, 0x08, 0x4A, 0x4B, 0x2D, 0x42,
+                                            0x4D, 0x53, 0x2D, 0x31, 0x00, 0x00, 0x00, 0x00, 0x00, 0x23};
+  EXPECT_EQ(JkBmsBle::build_frame(*command), expected);
+}
+
+// Recorded on the same device: acknowledged after 71 ms, read back at device info bytes 134-149
+TEST(JkBmsWriteCommandTest, UserData2Frame) {
+  const std::string text = "JK-BMS-2";
+  auto command = CommandQueue::Command::with_payload(0xA2, reinterpret_cast<const uint8_t *>(text.data()), text.size(),
+                                                     VERIFY_DEVICE_INFO);
+  ASSERT_TRUE(command.has_value());
+
+  const std::array<uint8_t, 20> expected = {0xAA, 0x55, 0x90, 0xEB, 0xA2, 0x08, 0x4A, 0x4B, 0x2D, 0x42,
+                                            0x4D, 0x53, 0x2D, 0x32, 0x00, 0x00, 0x00, 0x00, 0x00, 0x27};
+  EXPECT_EQ(JkBmsBle::build_frame(*command), expected);
+}
+
+// The factory text can be shown, but not written back
+TEST(JkBmsWriteCommandTest, UserDataRejectsTheFactoryText) {
+  EXPECT_NE(text_reject_reason("Input Userdata", 1, 13, false), nullptr);
+}
+
+// The limit counts bytes: a character outside of ASCII takes two or more in UTF-8
+TEST(JkBmsWriteCommandTest, TextLimitCountsBytes) {
+  EXPECT_EQ(text_reject_reason("Gr\xc3\xbc\xc3\x9f"
+                               "e 1234",
+                               1, 13, false),
+            nullptr);  // 12 bytes
+  EXPECT_NE(text_reject_reason("Gr\xc3\xbc\xc3\x9f"
+                               "e 123456",
+                               1, 13, false),
+            nullptr);  // 14 bytes
+}
+
 TEST(JkBmsWriteCommandTest, TextRejectsAnEmptyText) {
   EXPECT_NE(text_reject_reason("", 1, 13, false), nullptr);
   EXPECT_EQ(text_reject_reason("a", 1, 13, false), nullptr);

@@ -450,6 +450,8 @@ class JkBmsBle :
   void set_dry2_trigger_select(select::Select *dry2_trigger_select) { dry2_trigger_select_ = dry2_trigger_select; }
   void set_bluetooth_name_text(text::Text *bluetooth_name_text) { bluetooth_name_text_ = bluetooth_name_text; }
   void set_device_password_text(text::Text *device_password_text) { device_password_text_ = device_password_text; }
+  void set_user_data_text(text::Text *user_data_text) { user_data_text_ = user_data_text; }
+  void set_user_data_2_text(text::Text *user_data_2_text) { user_data_2_text_ = user_data_2_text; }
   void set_settings_password_text(text::Text *settings_password_text) {
     settings_password_text_ = settings_password_text;
   }
@@ -631,6 +633,8 @@ class JkBmsBle :
   text::Text *bluetooth_name_text_{nullptr};
   text::Text *device_password_text_{nullptr};
   text::Text *settings_password_text_{nullptr};
+  text::Text *user_data_text_{nullptr};
+  text::Text *user_data_2_text_{nullptr};
 
   LookupTable uart_protocol_table_;
   LookupTable can_protocol_table_;
