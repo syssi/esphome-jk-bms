@@ -448,7 +448,11 @@ class TestJkBleTextSensorConstants:
             ble_text_sensor.CONF_SUPPORTED_COMMANDS_BITMASK_HEX
             in ble_text_sensor.TEXT_SENSORS
         )
-        assert len(ble_text_sensor.TEXT_SENSORS) == 14
+        assert (
+            ble_text_sensor.CONF_WIRE_RESISTANCE_WARNING_BITMASK_HEX
+            in ble_text_sensor.TEXT_SENSORS
+        )
+        assert len(ble_text_sensor.TEXT_SENSORS) == 15
 
 
 class TestJkBmsDisplaySensorLists:

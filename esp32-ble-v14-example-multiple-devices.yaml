@@ -1005,6 +1005,9 @@ text_sensor:
     errors_bitmask_hex:
       name: "errors bitmask hex"
       device_id: device0
+    wire_resistance_warning_bitmask_hex:
+      name: "wire resistance warning bitmask hex"
+      device_id: device0
     balancer_status:
       name: "balancer status"
       device_id: device0
@@ -1040,6 +1043,9 @@ text_sensor:
       device_id: device1
     errors_bitmask_hex:
       name: "errors bitmask hex"
+      device_id: device1
+    wire_resistance_warning_bitmask_hex:
+      name: "wire resistance warning bitmask hex"
       device_id: device1
     balancer_status:
       name: "balancer status"

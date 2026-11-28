@@ -182,7 +182,7 @@ uint8_t crc(const uint8_t data[], const uint16_t len) {
 |               79 |      1 | Min voltage cell number | uint8 | 1 | - | Present in frame; ESPHome computes locally |
 |           80-143 |     64 | Cell resistances 1-32 | uint16 | 0.001 | Ohm | 2 bytes per cell |
 |          144-145 |      2 | Power tube temperature | int16 | 0.1 | °C | -2000 is published as unknown |
-|          146-149 |      4 | Wire resistance warning bitmask | Raw | - | - | 32-bit LE; bit0=cell1 … bit31=cell32 |
+|          146-149 |      4 | Wire resistance warning bitmask | Raw | - | - | 32-bit LE; bit0=cell1 … bit31=cell32. Published via `text_sensor.wire_resistance_warning_bitmask_hex` |
 |          150-153 |      4 | Battery voltage | uint32 | 0.001 | V | - |
 |          154-157 |      4 | Battery power | uint32 | 0.001 | W | Raw field; ESPHome computes signed power from voltage × current instead |
 |          158-161 |      4 | Charge current | int32 | 0.001 | A | - |

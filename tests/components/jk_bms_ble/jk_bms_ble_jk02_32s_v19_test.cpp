@@ -458,4 +458,27 @@ TEST(JkBmsV19SettingsTest, DischargePrechargeTimeAbove255Seconds) {
   EXPECT_EQ(precharge_time.state, 300.0f);
 }
 
+TEST(JkBmsV19CellInfoTest, NoWireResistanceWarnings) {
+  TestableJkBmsBle bms;
+  bms.set_protocol_version(PROTOCOL_VERSION_JK02_32S);
+  text_sensor::TextSensor wire_warnings;
+  bms.set_wire_resistance_warning_bitmask_hex_text_sensor(&wire_warnings);
+  bms.decode_jk02_cell_info_(CELL_INFO_JK02_32S_V19);
+  EXPECT_EQ(wire_warnings.state, "0x00000000");
+}
+
+TEST(JkBmsV19CellInfoTest, WireResistanceWarnings) {
+  // Cells 1 and 32 at bytes 146-149
+  std::vector<uint8_t> data = CELL_INFO_JK02_32S_V19;
+  data[146] = 0x01;
+  data[149] = 0x80;
+
+  TestableJkBmsBle bms;
+  bms.set_protocol_version(PROTOCOL_VERSION_JK02_32S);
+  text_sensor::TextSensor wire_warnings;
+  bms.set_wire_resistance_warning_bitmask_hex_text_sensor(&wire_warnings);
+  bms.decode_jk02_cell_info_(data);
+  EXPECT_EQ(wire_warnings.state, "0x80000001");
+}
+
 }  // namespace esphome::jk_bms_ble::testing

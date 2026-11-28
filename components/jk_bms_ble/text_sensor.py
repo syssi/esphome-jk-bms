@@ -31,6 +31,7 @@ CONF_DEVICE_NAME = "device_name"
 CONF_MANUFACTURING_DATE = "manufacturing_date"
 CONF_DEVICE_TIME = "device_time"
 CONF_SUPPORTED_COMMANDS_BITMASK_HEX = "supported_commands_bitmask_hex"
+CONF_WIRE_RESISTANCE_WARNING_BITMASK_HEX = "wire_resistance_warning_bitmask_hex"
 
 ICON_ERRORS = "mdi:alert-circle-outline"
 ICON_BALANCER_STATUS = "mdi:heart-pulse"
@@ -42,6 +43,7 @@ ICON_MANUFACTURING_DATE = "mdi:calendar"
 ICON_SERIAL_NUMBER = "mdi:identifier"
 ICON_DEVICE_TIME = "mdi:clock-outline"
 ICON_SUPPORTED_COMMANDS = "mdi:format-list-checks"
+ICON_WIRE_RESISTANCE_WARNING = "mdi:cable-data"
 
 TEXT_SENSORS = [
     CONF_ERRORS,
@@ -58,6 +60,7 @@ TEXT_SENSORS = [
     CONF_SERIAL_NUMBER,
     CONF_DEVICE_TIME,
     CONF_SUPPORTED_COMMANDS_BITMASK_HEX,
+    CONF_WIRE_RESISTANCE_WARNING_BITMASK_HEX,
 ]
 
 _RENAMED_TEXT_SENSORS = {
@@ -123,6 +126,10 @@ CONFIG_SCHEMA = cv.All(
                 icon=ICON_SUPPORTED_COMMANDS,
                 entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
             ),
+            # JK02_32S only: bit N is set if the balance wire of cell N + 1 has a warning
+            cv.Optional(
+                CONF_WIRE_RESISTANCE_WARNING_BITMASK_HEX
+            ): text_sensor.text_sensor_schema(icon=ICON_WIRE_RESISTANCE_WARNING),
         }
     ),
 )
