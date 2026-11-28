@@ -30,6 +30,7 @@ CONF_DEVICE_MODEL = "device_model"
 CONF_DEVICE_NAME = "device_name"
 CONF_MANUFACTURING_DATE = "manufacturing_date"
 CONF_DEVICE_TIME = "device_time"
+CONF_SUPPORTED_COMMANDS_BITMASK_HEX = "supported_commands_bitmask_hex"
 
 ICON_ERRORS = "mdi:alert-circle-outline"
 ICON_BALANCER_STATUS = "mdi:heart-pulse"
@@ -40,6 +41,7 @@ ICON_DEVICE_ID = "mdi:identifier"
 ICON_MANUFACTURING_DATE = "mdi:calendar"
 ICON_SERIAL_NUMBER = "mdi:identifier"
 ICON_DEVICE_TIME = "mdi:clock-outline"
+ICON_SUPPORTED_COMMANDS = "mdi:format-list-checks"
 
 TEXT_SENSORS = [
     CONF_ERRORS,
@@ -55,6 +57,7 @@ TEXT_SENSORS = [
     CONF_MANUFACTURING_DATE,
     CONF_SERIAL_NUMBER,
     CONF_DEVICE_TIME,
+    CONF_SUPPORTED_COMMANDS_BITMASK_HEX,
 ]
 
 _RENAMED_TEXT_SENSORS = {
@@ -111,6 +114,13 @@ CONFIG_SCHEMA = cv.All(
             ),
             cv.Optional(CONF_DEVICE_TIME): text_sensor.text_sensor_schema(
                 icon=ICON_DEVICE_TIME,
+                entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
+            ),
+            # JK02_32S only: bit N of the 256-bit value is set if the BMS supports command N
+            cv.Optional(
+                CONF_SUPPORTED_COMMANDS_BITMASK_HEX
+            ): text_sensor.text_sensor_schema(
+                icon=ICON_SUPPORTED_COMMANDS,
                 entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
             ),
         }

@@ -1862,6 +1862,9 @@ text_sensor:
     serial_number:
       name: "serial number"
       device_id: device0
+    supported_commands_bitmask_hex:
+      name: "supported commands bitmask hex"
+      device_id: device0
     device_name:
       name: "device name"
       device_id: device0
@@ -1901,6 +1904,9 @@ text_sensor:
     serial_number:
       name: "serial number"
       device_id: device1
+    supported_commands_bitmask_hex:
+      name: "supported commands bitmask hex"
+      device_id: device1
     device_name:
       name: "device name"
       device_id: device1
@@ -1939,6 +1945,9 @@ text_sensor:
       device_id: device2
     serial_number:
       name: "serial number"
+      device_id: device2
+    supported_commands_bitmask_hex:
+      name: "supported commands bitmask hex"
       device_id: device2
     device_name:
       name: "device name"

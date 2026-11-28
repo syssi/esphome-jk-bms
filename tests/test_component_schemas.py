@@ -444,7 +444,11 @@ class TestJkBleTextSensorConstants:
         assert ble_text_sensor.CONF_MANUFACTURING_DATE in ble_text_sensor.TEXT_SENSORS
         assert ble_text_sensor.CONF_SERIAL_NUMBER in ble_text_sensor.TEXT_SENSORS
         assert ble_text_sensor.CONF_DEVICE_TIME in ble_text_sensor.TEXT_SENSORS
-        assert len(ble_text_sensor.TEXT_SENSORS) == 13
+        assert (
+            ble_text_sensor.CONF_SUPPORTED_COMMANDS_BITMASK_HEX
+            in ble_text_sensor.TEXT_SENSORS
+        )
+        assert len(ble_text_sensor.TEXT_SENSORS) == 14
 
 
 class TestJkBmsDisplaySensorLists:

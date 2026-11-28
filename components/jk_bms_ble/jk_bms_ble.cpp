@@ -52,6 +52,32 @@ static const uint8_t ACKNOWLEDGEMENT_REGISTER = 0xC8;
 
 static const uint16_t MIN_RESPONSE_SIZE = 300;
 
+// Device info frame bytes 150-181 (JK02_32S): one bit per command, see decode_device_info_()
+static constexpr size_t SUPPORTED_COMMANDS_BITMASK_SIZE = 32;
+
+// Buffer size of a bitmask formatted by format_bitmask_hex(): "0x", two digits per byte and the terminator
+static constexpr size_t bitmask_hex_size(size_t bytes) { return 2 + bytes * 2 + 1; }
+
+// Formats a little-endian bitmask as "0x" followed by uppercase digits, most significant byte first. Writes into the
+// caller's buffer instead of allocating a string.
+template<size_t SIZE>
+static const char *format_bitmask_hex(char (&buffer)[bitmask_hex_size(SIZE)], const uint8_t *data) {
+  buffer[0] = '0';
+  buffer[1] = 'x';
+  for (size_t i = 0; i < SIZE; i++) {
+    const uint8_t value = data[SIZE - 1 - i];
+    buffer[2 + i * 2] = format_hex_pretty_char(value >> 4);
+    buffer[3 + i * 2] = format_hex_pretty_char(value & 0x0F);
+  }
+  buffer[2 + SIZE * 2] = '\0';
+  return buffer;
+}
+
+static const char *format_bitmask_hex(char (&buffer)[bitmask_hex_size(4)], const uint32_t mask) {
+  const uint8_t data[4] = {(uint8_t) mask, (uint8_t) (mask >> 8), (uint8_t) (mask >> 16), (uint8_t) (mask >> 24)};
+  return format_bitmask_hex<4>(buffer, data);
+}
+
 static constexpr const char *const LOGBOOK_CODES[] = {
     "",                                                    // 0x00
     "Boot",                                                // 0x01
@@ -311,6 +337,111 @@ static constexpr const char *const LOGBOOK_CODES[] = {
     "",                                                    // 0xFF
 };
 
+#if ESPHOME_LOG_LEVEL >= ESPHOME_LOG_LEVEL_VERBOSE
+struct CommandName {
+  uint8_t command;
+  const char *name;
+};
+
+// Names of the commands in the supported commands bitmask of the device info frame (JK02_32S)
+static constexpr CommandName COMMAND_NAMES[] = {
+    {0x01, "Smart sleep voltage"},
+    {0x02, "Cell UVP"},
+    {0x03, "Cell UVP recovery"},
+    {0x04, "Cell OVP"},
+    {0x05, "Cell OVP recovery"},
+    {0x06, "Balance trigger voltage"},
+    {0x07, "SOC 100% voltage"},
+    {0x08, "SOC 0% voltage"},
+    {0x09, "Cell request charge voltage"},
+    {0x0A, "Cell request float voltage"},
+    {0x0B, "Power off voltage"},
+    {0x0C, "Max. charge current"},
+    {0x0D, "Charge OCP delay"},
+    {0x0E, "Charge OCP recovery time"},
+    {0x0F, "Max. discharge current"},
+    {0x10, "Discharge OCP delay"},
+    {0x11, "Discharge OCP recovery time"},
+    {0x12, "SCP recovery time"},
+    {0x13, "Max. balance current"},
+    {0x14, "Charge OTP"},
+    {0x15, "Charge OTP recovery"},
+    {0x16, "Discharge OTP"},
+    {0x17, "Discharge OTP recovery"},
+    {0x18, "Charge UTP"},
+    {0x19, "Charge UTP recovery"},
+    {0x1A, "MOSFET OTP"},
+    {0x1B, "MOSFET OTP recovery"},
+    {0x1C, "Cell count"},
+    {0x1D, "Charging switch"},
+    {0x1E, "Discharging switch"},
+    {0x1F, "Balancer switch"},
+    {0x20, "Total battery capacity"},
+    {0x21, "SCP delay"},
+    {0x22, "Balancing start voltage"},
+    {0x25, "Discharge precharge time"},
+    {0x27, "Heating"},
+    {0x28, "Disable temperature sensors"},
+    {0x29, "GPS heartbeat"},
+    {0x2A, "Multiplexed port mode"},
+    {0x2B, "Display always on"},
+    {0x2C, "Special charger"},
+    {0x2D, "Smart sleep"},
+    {0x2E, "Disable PCL module"},
+    {0x2F, "Timed stored data"},
+    {0x30, "Charging float mode"},
+    {0x31, "Emergency button trigger"},
+    {0x32, "DRY contact alarm intermittent"},
+    {0x33, "Discharge OCP II"},
+    {0x34, "Discharge OCP III"},
+    {0x35, "GPS locked charging"},
+    {0x36, "GPS locked discharging"},
+    {0x37, "Heating start temperature"},
+    {0x38, "Heating stop temperature"},
+    {0x39, "Smart sleep delay"},
+    {0x3A, "Discharge UTP"},
+    {0x3B, "Discharge UTP recovery"},
+    {0x64, "Voltage calibration"},
+    {0x67, "Current calibration"},
+    {0x6B, "Emergency"},
+    {0x6C, "Time sync"},
+    {0x6E, "SOC calibration"},
+    {0x6F, "SOH calibration"},
+    {0x96, "Retrieve settings"},
+    {0x97, "Retrieve device info"},
+    {0x9B, "Bluetooth name"},
+    {0x9C, "Device password"},
+    {0x9D, "Factory reset"},
+    {0x9E, "Manufacturing date"},
+    {0x9F, "User data"},
+    {0xA0, "Settings password"},
+    {0xA1, "Retrieve logbook"},
+    {0xA2, "User data 2"},
+    {0xA3, "Erase all data"},
+    {0xA4, "Dealer ID"},
+    {0xA5, "UART1 protocol"},
+    {0xA6, "CAN protocol"},
+    {0xA7, "Retrieve fault records"},
+    {0xA8, "UART2 protocol"},
+    {0xA9, "LCD buzzer trigger"},
+    {0xAA, "DRY1 trigger"},
+    {0xAB, "DRY2 trigger"},
+    {0xB3, "Cell request charge voltage time"},
+    {0xB4, "Cell request float voltage time"},
+    {0xB5, "Emergency duration"},
+    {0xB6, "UART3 protocol"},
+    {0xB7, "Re-Bulk SOC"},
+};
+
+static const char *command_name(const uint8_t command) {
+  for (const auto &entry : COMMAND_NAMES) {
+    if (entry.command == command)
+      return entry.name;
+  }
+  return "Unknown";
+}
+#endif
+
 uint8_t crc(const uint8_t data[], const uint16_t len) {
   uint8_t crc = 0;
   for (uint16_t i = 0; i < len; i++) {
@@ -451,6 +582,7 @@ void JkBmsBle::dump_config() {  // NOLINT(google-readability-function-size,reada
   LOG_TEXT_SENSOR("", "Manufacturing Date", this->manufacturing_date_text_sensor_);
   LOG_TEXT_SENSOR("", "Device Time", this->device_time_text_sensor_);
   LOG_TEXT_SENSOR("", "Serial Number", this->serial_number_text_sensor_);
+  LOG_TEXT_SENSOR("", "Supported Commands Bitmask Hex", this->supported_commands_bitmask_hex_text_sensor_);
 
   LOG_SWITCH("", "Charging", this->charging_switch_);
   LOG_SWITCH("", "Discharging", this->discharging_switch_);
@@ -1046,7 +1178,8 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   if (frame_version == FRAME_VERSION_JK02_32S) {
     // 166-169: errors bitmask, little-endian 32-bit
     uint32_t raw_errors_bitmask = jk_get_32bit(134 + offset);
-    this->publish_state_(this->errors_bitmask_hex_text_sensor_, this->to_hex_string_(raw_errors_bitmask));
+    char errors_hex[bitmask_hex_size(4)];
+    this->publish_state_(this->errors_bitmask_hex_text_sensor_, format_bitmask_hex(errors_hex, raw_errors_bitmask));
     this->publish_state_(this->errors_text_sensor_,
                          this->error_bits_to_string_(raw_errors_bitmask, this->errors_jk02_table_, 32));
   } else {
@@ -1057,7 +1190,8 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // JK02_32S extends this to 32 bits at offset 134; the upper 16 bits are not available here.
   if (frame_version != FRAME_VERSION_JK02_32S) {
     uint32_t raw_errors_bitmask = jk_get_16bit(136 + offset);
-    this->publish_state_(this->errors_bitmask_hex_text_sensor_, this->to_hex_string_(raw_errors_bitmask));
+    char errors_hex[bitmask_hex_size(4)];
+    this->publish_state_(this->errors_bitmask_hex_text_sensor_, format_bitmask_hex(errors_hex, raw_errors_bitmask));
     this->publish_state_(this->errors_text_sensor_,
                          this->error_bits_to_string_(raw_errors_bitmask, this->errors_jk02_table_, 16));
   }
@@ -1995,38 +2129,22 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
   ESP_LOGI(TAG, "  User data 2: %s", user_data_2.c_str());
   this->publish_state_(this->user_data_2_text_, user_data_2);
 
-  // 150  0xFE
-  // 151  0xFF
-  // 152  0xFF
-  // 153  0xFF
-  // 154  0xAF
-  // 155  0xE9
-  // 156  0x01
-  // 157  0x02
-  // 158  0x00
-  // 159  0x00
-  // 160  0x00
-  // 161  0x00
-  // 162  0x90
-  // 163  0x1F
-  // 164  0x00
-  // 165  0x00
-  // 166  0x00
-  // 167  0x00
-  // 168  0xC0
-  // 169  0xD8
-  // 170  0xE7
-  // 171  0xFE
-  // 172  0x1F
-  // 173  0x00
-  // 174  0x00
-  // 175  0x01
-  // 176  0x00
-  // 177  0x00
-  // 178  0x00
-  // 179  0x00
-  // 180  0x00
-  // 181  0x00
+  // 150  32   0xFE 0xFF 0xFF 0xFF 0xAF 0xE9 0x01 0x02 0x00 0x00 0x00 0x00 0x90 0x1F 0x00 0x00
+  //           0x00 0x00 0xC0 0xD8 0xE7 0xFE 0x1F 0x00 0x00 0x01 0x00 0x00 0x00 0x00 0x00 0x00
+  // Supported commands: bit N (byte N / 8, bit N % 8) is set if the BMS supports command N
+  char supported_commands[bitmask_hex_size(SUPPORTED_COMMANDS_BITMASK_SIZE)];
+  format_bitmask_hex<SUPPORTED_COMMANDS_BITMASK_SIZE>(supported_commands, data.data() + 150);
+  ESP_LOGI(TAG, "  Supported commands bitmask: %s", supported_commands);
+  this->publish_state_(this->supported_commands_bitmask_hex_text_sensor_, supported_commands);
+#if ESPHOME_LOG_LEVEL >= ESPHOME_LOG_LEVEL_VERBOSE
+  ESP_LOGV(TAG, "  Supported commands:");
+  for (size_t command = 0; command < SUPPORTED_COMMANDS_BITMASK_SIZE * 8; command++) {
+    if (check_bit_(data[150 + command / 8], 1 << (command % 8))) {
+      ESP_LOGV(TAG, "   - 0x%02X: %s", (unsigned) command, command_name(command));
+    }
+  }
+#endif
+
   // 182  2    0x00 0x00         Dealer ID
   // ESP_LOGD(TAG, "  Dealer ID: %u", jk_get_16bit(182));
   // 184  0x01                  UART1M Protocol number
@@ -2279,10 +2397,11 @@ void JkBmsBle::publish_state_(text_sensor::TextSensor *text_sensor, const std::s
   text_sensor->publish_state(state);
 }
 
-std::string JkBmsBle::to_hex_string_(const uint32_t mask) {
-  char buf[11];
-  snprintf(buf, sizeof(buf), "0x%08" PRIX32, mask);
-  return std::string(buf);
+void JkBmsBle::publish_state_(text_sensor::TextSensor *text_sensor, const char *state) {
+  if (text_sensor == nullptr)
+    return;
+
+  text_sensor->publish_state(state);
 }
 
 std::string JkBmsBle::error_bits_to_string_(const uint32_t mask, const LookupTable &errors, const uint8_t bits) {

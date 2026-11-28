@@ -4,6 +4,15 @@
 
 namespace esphome::jk_bms_ble::testing {
 
+TEST(JkBmsV15DeviceInfoTest, SupportedCommandsBitmask) {
+  TestableJkBmsBle bms;
+  bms.set_protocol_version(PROTOCOL_VERSION_JK02_32S);
+  text_sensor::TextSensor supported_commands;
+  bms.set_supported_commands_bitmask_hex_text_sensor(&supported_commands);
+  bms.decode_device_info_(DEVICE_INFO_JK02_32S_V15);
+  EXPECT_EQ(supported_commands.state, "0x0000000000000100003FFEE7D8C0000000001F9000000000021DE98FFFFFFFFE");
+}
+
 TEST(JkBmsV15DeviceInfoTest, HardwareVersion) {
   TestableJkBmsBle bms;
   text_sensor::TextSensor hw;

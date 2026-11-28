@@ -553,7 +553,7 @@ TEST(JkBmsBlePublishDeviceUnavailableTest, MarksLiveTextSensorsOfflineAndKeepsSt
       ENTITY_SETTER(set_software_version_text_sensor), ENTITY_SETTER(set_hardware_version_text_sensor),
       ENTITY_SETTER(set_battery_type_text_sensor),     ENTITY_SETTER(set_device_model_text_sensor),
       ENTITY_SETTER(set_device_name_text_sensor),      ENTITY_SETTER(set_manufacturing_date_text_sensor),
-      ENTITY_SETTER(set_serial_number_text_sensor),
+      ENTITY_SETTER(set_serial_number_text_sensor),    ENTITY_SETTER(set_supported_commands_bitmask_hex_text_sensor),
   };
   TestableJkBmsBle bms;
   auto offline = attach_entities<text_sensor::TextSensor>(bms, offline_setters);
