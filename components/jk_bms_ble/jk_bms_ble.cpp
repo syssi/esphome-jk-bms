@@ -319,7 +319,6 @@ uint8_t crc(const uint8_t data[], const uint16_t len) {
   return crc;
 }
 
-// Command and response frames end with the sum of all bytes in front
 static bool has_valid_checksum(const uint8_t *frame, uint16_t size) { return crc(frame, size - 1) == frame[size - 1]; }
 
 void JkBmsBle::dump_config() {  // NOLINT(google-readability-function-size,readability-function-size)
