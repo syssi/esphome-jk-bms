@@ -40,6 +40,10 @@ enum ProtocolVersion {
   PROTOCOL_VERSION_JK02_32S,
 };
 
+// Payload of the acknowledgement frame (AA 55 90 EB C8 01 <status> 00 ... <checksum>)
+static const uint8_t ACKNOWLEDGEMENT_STATUS_REJECTED = 0x00;
+static const uint8_t ACKNOWLEDGEMENT_STATUS_OK = 0x01;
+
 class JkBmsBle :
 #ifdef USE_ESP32
     public esphome::ble_client::BLEClientNode,
@@ -468,10 +472,9 @@ class JkBmsBle :
   bool has_clock() const { return has_clock_; }
   static std::array<uint8_t, 20> build_frame(uint8_t address, uint32_t value, uint8_t length);
   static std::array<uint8_t, 20> build_frame(const CommandQueue::Command &command);
-  // True if the notification carries the frame the BMS sends after processing a command
-  static bool contains_acknowledgement(const uint8_t *data, uint16_t length);
-  // True if the notification carries the frame the BMS sends after rejecting a command
-  static bool contains_negative_acknowledgement(const uint8_t *data, uint16_t length);
+  // The status of the acknowledgement the BMS sends after processing a command, if the notification carries one
+  // (ACKNOWLEDGEMENT_STATUS_OK, ACKNOWLEDGEMENT_STATUS_REJECTED or another value)
+  static optional<uint8_t> find_acknowledgement(const uint8_t *data, uint16_t length);
   static uint32_t encode_jk04_payload(float value, uint8_t len, float factor);
   // Converts between a unix timestamp and the BMS clock format (seconds since 2020-01-01 00:00:00 UTC+8)
   static uint32_t encode_time(time_t utc);

@@ -112,7 +112,8 @@ Besides the response frames the notifications carry:
 - `41 54 0D 0A` (`AT\r\n`), several times per second, whether a command was sent or not (JK02_32S hw 19; not seen on
   JK02_24S hw 7.x, 8.x). It isn't answered (the JK app doesn't either). Answering `OK\r\n` doesn't stop it and keeps
   the BMS from starting the cell info stream.
-- A 20 byte acknowledgement after every processed command:
+- A 20 byte acknowledgement after every processed command. It has the structure of a command frame (preamble
+  `AA 55 90 EB`, sum checksum in byte 19) with register `0xC8`, length `0x01` and a status as payload:
   `AA 55 90 EB C8 01 01 00 00 00 00 00 00 00 00 00 00 00 00 44`. It is sent 64-250 ms after a write and up to 488 ms
   after a request, once the response frames were sent. On a JK02_32S (hw 19) `0x96` is acknowledged after 364-488 ms
   (median 415 ms) and `0x97` after 166-335 ms (median 230 ms), whether the BMS is idle, balancing or discharging at
@@ -120,11 +121,11 @@ Besides the response frames the notifications carry:
   (hw 7.x, 8.x) with the settings frame only, followed directly by the acknowledgement. A command the BMS dropped is
   not acknowledged. The acknowledgement only means the command was processed: a write to a register the model doesn't
   support (e.g. `0xB7` on a JK-B2A8S20P) is acknowledged too.
-- A negative acknowledgement when the BMS rejects a command it received:
+- Status `0x00` instead of `0x01` when the BMS rejects a command it received:
   `AA 55 90 EB C8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 43`. Seen on a JK02_32S (hw 19) about 40 ms after a
-  `0x9B` write with length byte 15 (at most 13 fit into the frame); the stored value stays unchanged. ESPHome logs
-  a warning and sends the next command right away. A frame that is neither 20 nor 300 bytes long (e.g. a 22 byte
-  `0x9B` frame) gets no answer at all.
+  `0x9B` write with length byte 15 (at most 13 fit into the frame); the stored value stays unchanged. ESPHome logs a
+  warning, also for any other status, and sends the next command right away. A frame that is neither 20 nor 300 bytes
+  long (e.g. a 22 byte `0x9B` frame) gets no answer at all.
 
 The BLE module packs whatever it has buffered into one notification, so these bytes may share a notification with
 each other or with a frame: the JK app btsnoop logs contain `AT\r\n` + acknowledgement + `AT\r\n` and `AT\r\n`
