@@ -548,6 +548,8 @@ TEST(JkBmsBlePublishDeviceUnavailableTest, MarksLiveTextSensorsOfflineAndKeepsSt
       ENTITY_SETTER(set_charge_status_text_sensor),
       ENTITY_SETTER(set_errors_bitmask_hex_text_sensor),
       ENTITY_SETTER(set_device_time_text_sensor),
+      ENTITY_SETTER(set_user_alarms_text_sensor),
+      ENTITY_SETTER(set_user_alarms_bitmask_hex_text_sensor),
   };
   const std::vector<NamedSetter<text_sensor::TextSensor>> retained_setters = {
       ENTITY_SETTER(set_software_version_text_sensor), ENTITY_SETTER(set_hardware_version_text_sensor),

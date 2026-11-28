@@ -168,4 +168,15 @@ TEST(JkBmsV10CellInfoTest, ProtectionRecoveryCountdownsNotPublished) {
   EXPECT_FALSE(cell_ovp.has_state());
 }
 
+// The JK02_24S layout has no user alarm 2 bitmask (bytes 168-169 hold e.g. 0x0685)
+TEST(JkBmsV10CellInfoTest, UserAlarmsNotPublished) {
+  TestableJkBmsBle bms;
+  text_sensor::TextSensor user_alarms, user_alarms_hex;
+  bms.set_user_alarms_text_sensor(&user_alarms);
+  bms.set_user_alarms_bitmask_hex_text_sensor(&user_alarms_hex);
+  bms.decode_jk02_cell_info_(CELL_INFO_JK02_24S_V10);
+  EXPECT_FALSE(user_alarms.has_state());
+  EXPECT_FALSE(user_alarms_hex.has_state());
+}
+
 }  // namespace esphome::jk_bms_ble::testing

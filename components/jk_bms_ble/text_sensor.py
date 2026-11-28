@@ -31,6 +31,8 @@ CONF_DEVICE_NAME = "device_name"
 CONF_MANUFACTURING_DATE = "manufacturing_date"
 CONF_DEVICE_TIME = "device_time"
 CONF_SUPPORTED_COMMANDS_BITMASK_HEX = "supported_commands_bitmask_hex"
+CONF_USER_ALARMS = "user_alarms"
+CONF_USER_ALARMS_BITMASK_HEX = "user_alarms_bitmask_hex"
 
 ICON_ERRORS = "mdi:alert-circle-outline"
 ICON_BALANCER_STATUS = "mdi:heart-pulse"
@@ -58,6 +60,8 @@ TEXT_SENSORS = [
     CONF_SERIAL_NUMBER,
     CONF_DEVICE_TIME,
     CONF_SUPPORTED_COMMANDS_BITMASK_HEX,
+    CONF_USER_ALARMS,
+    CONF_USER_ALARMS_BITMASK_HEX,
 ]
 
 _RENAMED_TEXT_SENSORS = {
@@ -122,6 +126,14 @@ CONFIG_SCHEMA = cv.All(
             ): text_sensor.text_sensor_schema(
                 icon=ICON_SUPPORTED_COMMANDS,
                 entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
+            ),
+            # JK02_32S only: the alarms of the user alarm 2 bitmask, separated by ";" like the errors
+            cv.Optional(CONF_USER_ALARMS): text_sensor.text_sensor_schema(
+                icon=ICON_ERRORS,
+                entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
+            ),
+            cv.Optional(CONF_USER_ALARMS_BITMASK_HEX): text_sensor.text_sensor_schema(
+                icon=ICON_ERRORS
             ),
         }
     ),

@@ -401,6 +401,10 @@ text_sensor:
       name: "errors"
     errors_bitmask_hex:
       name: "errors bitmask hex"
+    user_alarms:
+      name: "user alarms"
+    user_alarms_bitmask_hex:
+      name: "user alarms bitmask hex"
     balancer_status:
       name: "balancer status"
     total_runtime_formatted:

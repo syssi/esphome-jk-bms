@@ -202,7 +202,7 @@ uint8_t crc(const uint8_t data[], const uint16_t len) {
 |          194-197 |      4 | Total runtime | uint32 | 1 | s | - |
 |              198 |      1 | Charging MOSFET status | Raw | - | - | 0=Off, 1=On |
 |              199 |      1 | Discharging MOSFET status | Raw | - | - | 0=Off, 1=On |
-|          200-201 |      2 | User alarm 2 | uint16 | - | - | Logged only |
+|          200-201 |      2 | User alarm 2 | uint16 | - | - | 16-bit LE, see user alarm 2 notes below |
 |          202-203 |      2 | Discharge overcurrent protection release timer | uint16 | 1 | s | JK02_32S only |
 |          204-205 |      2 | Discharge short circuit protection release timer | uint16 | 1 | s | JK02_32S only |
 |          206-207 |      2 | Charge overcurrent protection release timer | uint16 | 1 | s | JK02_32S only |
@@ -264,6 +264,31 @@ Both variants share the same bit layout. Published as a zero-padded hex string v
 | 29 | *(unused)* | JK02_32S only |
 | 30 | *(unused)* | JK02_32S only |
 | 31 | *(unused)* | JK02_32S only |
+
+User alarm 2 notes for bytes 200-201 (JK02_32S only): published via `text_sensor.user_alarms` (the labels of the set
+bits, separated by `;` like the errors) and `text_sensor.user_alarms_bitmask_hex` (e.g. `0x0000`). The matching bytes
+of the JK02_24S layout (168-169) hold changing values like `0x0685` instead of an alarm bitmask and aren't published.
+All captured frames report `0x0000`; the labels aren't confirmed with an active alarm yet. A charge undertemperature
+protection sets `errors` bit 9 but neither this bitmask nor the user alarm word at bytes 192-193. **Open question:** some
+JK app versions read these bit labels from bytes 192-193 ("User alarm") instead, and name bit 9 "BMS lost CAN
+communication". A frame with an active user alarm will tell which word is right.
+
+| Bit | Label |
+|----:|-------|
+|  0 | Temperature too high |
+|  1 | Temperature too low |
+|  2 | Temperature difference too large |
+|  3 | Cell voltage too high |
+|  4 | Cell voltage too low |
+|  5 | Discharge overcurrent |
+|  6 | Charge overcurrent |
+|  7 | Temperature sensor failure |
+|  8 | Charger communication failure |
+|  9 | *(unused)* |
+| 10 | Heating relay failure |
+| 11 | Charger failure |
+| 12 | Low temperature heating failure |
+| 13 | Heater failure |
 
 Dry contact bitmask notes for byte 281 (JK02_32S only):
 - bit1 (0x02): DRY1 active
