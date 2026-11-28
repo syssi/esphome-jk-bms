@@ -481,6 +481,17 @@ TEST(JkBmsWriteCommandTest, SettingsPasswordFrame) {
   EXPECT_EQ(JkBmsBle::build_frame(*command), expected);
 }
 
+TEST(JkBmsWriteCommandTest, DevicePasswordFrame) {
+  const std::string password = "1234";
+  auto command = CommandQueue::Command::with_payload(0x9C, reinterpret_cast<const uint8_t *>(password.data()),
+                                                     password.size(), VERIFY_DEVICE_INFO);
+  ASSERT_TRUE(command.has_value());
+
+  const std::array<uint8_t, 20> expected = {0xAA, 0x55, 0x90, 0xEB, 0x9C, 0x04, 0x31, 0x32, 0x33, 0x34,
+                                            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xE4};
+  EXPECT_EQ(JkBmsBle::build_frame(*command), expected);
+}
+
 TEST(JkBmsWriteCommandTest, TextUsesTheWholePayload) {
   const std::string text = "ABCDEFGHIJKLM";
   auto command = CommandQueue::Command::with_payload(0xA0, reinterpret_cast<const uint8_t *>(text.data()), text.size(),
