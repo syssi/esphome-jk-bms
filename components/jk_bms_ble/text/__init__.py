@@ -5,6 +5,7 @@ from esphome.const import ENTITY_CATEGORY_CONFIG
 
 from .. import (
     CONF_JK_BMS_BLE_ID,
+    JK02_32S_ONLY,
     JK02_PROTOCOL_VERSIONS,
     JK_BMS_BLE_COMPONENT_SCHEMA,
     VERIFY_DEVICE_INFO,
@@ -118,7 +119,11 @@ async def to_code(config):
             cg.add(var.set_name_charset(True))
 
 
-# JK04 devices have no text registers
+# JK04 devices have no text registers. User data 2 is stored in device info bytes only JK02_32S devices have.
 FINAL_VALIDATE_SCHEMA = validate_protocol_support(
-    "text", dict.fromkeys(TEXTS, JK02_PROTOCOL_VERSIONS)
+    "text",
+    {
+        **dict.fromkeys(TEXTS, JK02_PROTOCOL_VERSIONS),
+        CONF_USER_DATA_2: JK02_32S_ONLY,
+    },
 )

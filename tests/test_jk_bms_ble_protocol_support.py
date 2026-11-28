@@ -120,6 +120,27 @@ def test_texts_are_rejected_on_jk04():
     )
 
 
+def test_user_data_works_with_jk02():
+    for protocol_version in ("JK02_24S", "JK02_32S"):
+        _final_validate(
+            text.FINAL_VALIDATE_SCHEMA, protocol_version, {text.CONF_USER_DATA: {}}
+        )
+    with pytest.raises(cv.Invalid, match="text 'user_data'"):
+        _final_validate(text.FINAL_VALIDATE_SCHEMA, "JK04", {text.CONF_USER_DATA: {}})
+
+
+@pytest.mark.parametrize("protocol_version", ["JK04", "JK02_24S"])
+def test_user_data_2_is_jk02_32s_only(protocol_version):
+    with pytest.raises(cv.Invalid, match="text 'user_data_2'.*supported: JK02_32S"):
+        _final_validate(
+            text.FINAL_VALIDATE_SCHEMA, protocol_version, {text.CONF_USER_DATA_2: {}}
+        )
+
+
+def test_user_data_2_on_jk02_32s_is_accepted():
+    _final_validate(text.FINAL_VALIDATE_SCHEMA, "JK02_32S", {text.CONF_USER_DATA_2: {}})
+
+
 def test_requests_work_with_every_protocol_version():
     for protocol_version in PROTOCOL_VERSIONS:
         _final_validate(
