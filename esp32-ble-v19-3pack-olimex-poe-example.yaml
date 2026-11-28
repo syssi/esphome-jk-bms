@@ -1844,6 +1844,12 @@ text_sensor:
     errors_bitmask_hex:
       name: "errors bitmask hex"
       device_id: device0
+    user_alarms:
+      name: "user alarms"
+      device_id: device0
+    user_alarms_bitmask_hex:
+      name: "user alarms bitmask hex"
+      device_id: device0
     total_runtime_formatted:
       name: "total runtime formatted"
       device_id: device0
@@ -1886,6 +1892,12 @@ text_sensor:
     errors_bitmask_hex:
       name: "errors bitmask hex"
       device_id: device1
+    user_alarms:
+      name: "user alarms"
+      device_id: device1
+    user_alarms_bitmask_hex:
+      name: "user alarms bitmask hex"
+      device_id: device1
     total_runtime_formatted:
       name: "total runtime formatted"
       device_id: device1
@@ -1927,6 +1939,12 @@ text_sensor:
       device_id: device2
     errors_bitmask_hex:
       name: "errors bitmask hex"
+      device_id: device2
+    user_alarms:
+      name: "user alarms"
+      device_id: device2
+    user_alarms_bitmask_hex:
+      name: "user alarms bitmask hex"
       device_id: device2
     total_runtime_formatted:
       name: "total runtime formatted"

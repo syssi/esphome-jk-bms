@@ -458,4 +458,31 @@ TEST(JkBmsV19SettingsTest, DischargePrechargeTimeAbove255Seconds) {
   EXPECT_EQ(precharge_time.state, 300.0f);
 }
 
+TEST(JkBmsV19CellInfoTest, NoUserAlarms) {
+  TestableJkBmsBle bms;
+  bms.set_protocol_version(PROTOCOL_VERSION_JK02_32S);
+  text_sensor::TextSensor user_alarms, user_alarms_hex;
+  bms.set_user_alarms_text_sensor(&user_alarms);
+  bms.set_user_alarms_bitmask_hex_text_sensor(&user_alarms_hex);
+  bms.decode_jk02_cell_info_(CELL_INFO_JK02_32S_V19);
+  EXPECT_EQ(user_alarms.state, "");
+  EXPECT_EQ(user_alarms_hex.state, "0x0000");
+}
+
+TEST(JkBmsV19CellInfoTest, UserAlarms) {
+  // Bits 0, 9 (unused, so only part of the bitmask) and 13 at bytes 200-201
+  std::vector<uint8_t> data = CELL_INFO_JK02_32S_V19;
+  data[200] = 0x01;
+  data[201] = 0x22;
+
+  TestableJkBmsBle bms;
+  bms.set_protocol_version(PROTOCOL_VERSION_JK02_32S);
+  text_sensor::TextSensor user_alarms, user_alarms_hex;
+  bms.set_user_alarms_text_sensor(&user_alarms);
+  bms.set_user_alarms_bitmask_hex_text_sensor(&user_alarms_hex);
+  bms.decode_jk02_cell_info_(data);
+  EXPECT_EQ(user_alarms.state, "Temperature too high;Heater failure");
+  EXPECT_EQ(user_alarms_hex.state, "0x2201");
+}
+
 }  // namespace esphome::jk_bms_ble::testing

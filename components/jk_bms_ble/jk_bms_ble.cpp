@@ -78,6 +78,25 @@ static const char *format_bitmask_hex(char (&buffer)[bitmask_hex_size(4)], const
   return format_bitmask_hex<4>(buffer, data);
 }
 
+// Labels of the user alarm 2 bitmask of the cell info frame (JK02_32S), bit 9 is unused
+static constexpr const char *const USER_ALARMS[] = {
+    "Temperature too high",              // bit 0
+    "Temperature too low",               // bit 1
+    "Temperature difference too large",  // bit 2
+    "Cell voltage too high",             // bit 3
+    "Cell voltage too low",              // bit 4
+    "Discharge overcurrent",             // bit 5
+    "Charge overcurrent",                // bit 6
+    "Temperature sensor failure",        // bit 7
+    "Charger communication failure",     // bit 8
+    "",                                  // bit 9
+    "Heating relay failure",             // bit 10
+    "Charger failure",                   // bit 11
+    "Low temperature heating failure",   // bit 12
+    "Heater failure",                    // bit 13
+};
+static constexpr LookupTable USER_ALARMS_TABLE{USER_ALARMS, sizeof(USER_ALARMS) / sizeof(USER_ALARMS[0])};
+
 static constexpr const char *const LOGBOOK_CODES[] = {
     "",                                                    // 0x00
     "Boot",                                                // 0x01
@@ -583,6 +602,8 @@ void JkBmsBle::dump_config() {  // NOLINT(google-readability-function-size,reada
   LOG_TEXT_SENSOR("", "Device Time", this->device_time_text_sensor_);
   LOG_TEXT_SENSOR("", "Serial Number", this->serial_number_text_sensor_);
   LOG_TEXT_SENSOR("", "Supported Commands Bitmask Hex", this->supported_commands_bitmask_hex_text_sensor_);
+  LOG_TEXT_SENSOR("", "User Alarms", this->user_alarms_text_sensor_);
+  LOG_TEXT_SENSOR("", "User Alarms Bitmask Hex", this->user_alarms_bitmask_hex_text_sensor_);
 
   LOG_SWITCH("", "Charging", this->charging_switch_);
   LOG_SWITCH("", "Discharging", this->discharging_switch_);
@@ -1241,8 +1262,14 @@ void JkBmsBle::decode_jk02_cell_info_(const std::vector<uint8_t> &data) {
   // 167   1   0x01                   Discharging mosfet enabled                   0x00: off, 0x01: on
   this->publish_state_(this->discharging_binary_sensor_, (bool) data[167 + offset]);
 
-  // 168   2   0x00 0x00              User alarm 2
-  ESP_LOGD(TAG, "User alarm 2: 0x%04X", jk_get_16bit(168 + offset));
+  // 168   2   0x00 0x00              User alarm 2 (JK02_32S, the JK02_24S bytes don't hold an alarm bitmask)
+  if (frame_version == FRAME_VERSION_JK02_32S) {
+    char user_alarms_hex[bitmask_hex_size(2)];
+    this->publish_state_(this->user_alarms_bitmask_hex_text_sensor_,
+                         format_bitmask_hex<2>(user_alarms_hex, data.data() + 168 + offset));
+    this->publish_state_(this->user_alarms_text_sensor_,
+                         this->error_bits_to_string_(jk_get_16bit(168 + offset), USER_ALARMS_TABLE, 16));
+  }
 
   ESP_LOGD(TAG, "Discharge overcurrent protection release timer: %d", jk_get_16bit(170 + offset));
   ESP_LOGD(TAG, "Discharge short circuit protection release timer: %d", jk_get_16bit(172 + offset));
@@ -2270,6 +2297,8 @@ void JkBmsBle::publish_device_unavailable_() {
   this->publish_state_(this->online_status_binary_sensor_, false);
   this->publish_state_(this->errors_text_sensor_, "Offline");
   this->publish_state_(this->errors_bitmask_hex_text_sensor_, "Offline");
+  this->publish_state_(this->user_alarms_text_sensor_, "Offline");
+  this->publish_state_(this->user_alarms_bitmask_hex_text_sensor_, "Offline");
   this->publish_state_(this->charge_status_text_sensor_, "Offline");
   this->publish_state_(this->balancer_status_text_sensor_, "Offline");
   this->publish_state_(this->total_runtime_formatted_text_sensor_, "Offline");
