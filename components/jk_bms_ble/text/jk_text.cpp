@@ -18,6 +18,17 @@ void JkText::control(const std::string &value) {
     return;
   }
 
+  const char *rejected =
+      text_reject_reason(value, this->min_write_length_, this->max_write_length_, this->name_charset_);
+  if (rejected != nullptr) {
+    ESP_LOGW(TAG, "'%s': rejected '%s' (%s, %u-%u characters)", this->get_name().c_str(), value.c_str(), rejected,
+             this->min_write_length_, this->max_write_length_);
+    // Republish the stored text, so the frontend doesn't keep showing the rejected one
+    if (this->has_state())
+      this->publish_state(this->state);
+    return;
+  }
+
   if (this->parent_->write_register_bytes(this->holding_register_, reinterpret_cast<const uint8_t *>(value.data()),
                                           value.size(), this->verify_)) {
     this->publish_state(value);

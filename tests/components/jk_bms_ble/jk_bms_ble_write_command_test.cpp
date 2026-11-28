@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include "common.h"
+#include "esphome/components/jk_bms_ble/text_validation.h"
 
 namespace esphome::jk_bms_ble::testing {
 
@@ -490,6 +491,52 @@ TEST(JkBmsWriteCommandTest, DevicePasswordFrame) {
   const std::array<uint8_t, 20> expected = {0xAA, 0x55, 0x90, 0xEB, 0x9C, 0x04, 0x31, 0x32, 0x33, 0x34,
                                             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xE4};
   EXPECT_EQ(JkBmsBle::build_frame(*command), expected);
+}
+
+// Recorded on a JK02_32S (hw 19): acknowledged after 81 ms, the BMS then restarted its Bluetooth module (the connection
+// dropped about 5.6 s later) and advertised itself as "test"
+TEST(JkBmsWriteCommandTest, BluetoothNameFrame) {
+  const std::string name = "test";
+  auto command = CommandQueue::Command::with_payload(0x9B, reinterpret_cast<const uint8_t *>(name.data()), name.size(),
+                                                     VERIFY_DEVICE_INFO);
+  ASSERT_TRUE(command.has_value());
+
+  const std::array<uint8_t, 20> expected = {0xAA, 0x55, 0x90, 0xEB, 0x9B, 0x04, 0x74, 0x65, 0x73, 0x74,
+                                            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xD9};
+  EXPECT_EQ(JkBmsBle::build_frame(*command), expected);
+}
+
+// Recorded on the same device: the longest name a write can set
+TEST(JkBmsWriteCommandTest, BluetoothNameFrameWith13Characters) {
+  const std::string name = "51210CN430005";
+  auto command = CommandQueue::Command::with_payload(0x9B, reinterpret_cast<const uint8_t *>(name.data()), name.size(),
+                                                     VERIFY_DEVICE_INFO);
+  ASSERT_TRUE(command.has_value());
+
+  const std::array<uint8_t, 20> expected = {0xAA, 0x55, 0x90, 0xEB, 0x9B, 0x0D, 0x35, 0x31, 0x32, 0x31,
+                                            0x30, 0x43, 0x4E, 0x34, 0x33, 0x30, 0x30, 0x30, 0x35, 0xD8};
+  EXPECT_EQ(JkBmsBle::build_frame(*command), expected);
+}
+
+TEST(JkBmsWriteCommandTest, TextRejectsAnEmptyText) {
+  EXPECT_NE(text_reject_reason("", 1, 13, false), nullptr);
+  EXPECT_EQ(text_reject_reason("a", 1, 13, false), nullptr);
+}
+
+TEST(JkBmsWriteCommandTest, TextRejectsMoreThanTheWriteLength) {
+  EXPECT_EQ(text_reject_reason("ABCDEFGHIJKLM", 1, 13, false), nullptr);
+  EXPECT_NE(text_reject_reason("ABCDEFGHIJKLMN", 1, 13, false), nullptr);
+  // A factory name of 15 characters can be shown, but not written back
+  EXPECT_NE(text_reject_reason("51210CN43000593", 1, 13, true), nullptr);
+}
+
+TEST(JkBmsWriteCommandTest, BluetoothNameRejectsCharactersOutsideTheNameCharset) {
+  EXPECT_EQ(text_reject_reason("JK_PB2A16S-15P", 1, 14, true), nullptr);
+  EXPECT_NE(text_reject_reason("te st", 1, 13, true), nullptr);
+  EXPECT_NE(text_reject_reason("t\xc3\xa4st", 1, 13, true), nullptr);
+  EXPECT_NE(text_reject_reason("test!", 1, 13, true), nullptr);
+  // Passwords take any character
+  EXPECT_EQ(text_reject_reason("te st!", 1, 13, false), nullptr);
 }
 
 TEST(JkBmsWriteCommandTest, TextUsesTheWholePayload) {

@@ -444,6 +444,7 @@ class JkBmsBle :
   }
   void set_dry1_trigger_select(select::Select *dry1_trigger_select) { dry1_trigger_select_ = dry1_trigger_select; }
   void set_dry2_trigger_select(select::Select *dry2_trigger_select) { dry2_trigger_select_ = dry2_trigger_select; }
+  void set_bluetooth_name_text(text::Text *bluetooth_name_text) { bluetooth_name_text_ = bluetooth_name_text; }
   void set_device_password_text(text::Text *device_password_text) { device_password_text_ = device_password_text; }
   void set_settings_password_text(text::Text *settings_password_text) {
     settings_password_text_ = settings_password_text;
@@ -622,6 +623,7 @@ class JkBmsBle :
   select::Select *dry1_trigger_select_{nullptr};
   select::Select *dry2_trigger_select_{nullptr};
   select::Select *multiplexed_port_mode_select_{nullptr};
+  text::Text *bluetooth_name_text_{nullptr};
   text::Text *device_password_text_{nullptr};
   text::Text *settings_password_text_{nullptr};
 
