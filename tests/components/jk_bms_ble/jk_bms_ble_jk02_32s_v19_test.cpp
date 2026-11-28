@@ -36,6 +36,15 @@ TEST(JkBmsV19DeviceInfoTest, DeviceName) {
   EXPECT_EQ(device_name.state, "506177F49000674");
 }
 
+TEST(JkBmsV19DeviceInfoTest, BluetoothName) {
+  // 15 characters: longer than a 0x9B write can set, but the text shows the whole stored name
+  TestableJkBmsBle bms;
+  TestText bluetooth_name;
+  bms.set_bluetooth_name_text(&bluetooth_name);
+  bms.decode_device_info_(DEVICE_INFO_JK02_32S_V19);
+  EXPECT_EQ(bluetooth_name.state, "506177F49000674");
+}
+
 TEST(JkBmsV19DeviceInfoTest, DevicePassword) {
   TestableJkBmsBle bms;
   TestText device_password;

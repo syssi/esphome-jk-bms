@@ -40,6 +40,10 @@ sends them that way.
 
 - `0x97`: Device info request → triggers Frame 0x03 (device info)
 - `0x96`: Settings request → triggers Frame 0x01 (settings); Frame 0x02 (cell data) auto-streams once both `0x96` and `0x97` have been sent
+- `0x9B`: Sets the device name (device info bytes 46-61, 1-13 characters `A-Z a-z 0-9 _ -`), which is also the name
+  the BMS advertises. The BMS acknowledges the write, then restarts its Bluetooth module: measured on a JK02_32S
+  (hw 19) the connection dropped about 5.6 s after the write and the BMS advertised the new name. Factory names can be
+  longer than 13 characters (e.g. `51210CN43000593`) and can't be restored once changed
 - `0x9C`: Sets the device password (device info bytes 62-77, 1-13 characters, factory default `1234`). The BMS only
   stores it: it is no Bluetooth pairing PIN and protects neither the connection nor writes
 - `0xA0`: Sets the settings password (device info bytes 118-133), see below
@@ -264,7 +268,7 @@ Dry contact bitmask notes for byte 281 (JK02_32S only):
 |            30-37 |      8 | Software version | string | - | - | Null-terminated string |
 |            38-41 |      4 | Device uptime | uint32 | 1 | seconds | Little-endian |
 |            42-45 |      4 | Power on count | uint32 | 1 | count | Little-endian |
-|            46-61 |     16 | Device name | string | - | - | Null-terminated string |
+|            46-61 |     16 | Device name | string | - | - | Null-terminated string, advertised name, set via `0x9B` |
 |            62-77 |     16 | Device password | string | - | - | Null-terminated string, set via `0x9C` |
 |            78-85 |      8 | Manufacturing date | string | - | - | Null-terminated string |
 |           86-101 |     16 | Serial number | string | - | - | Null-terminated string |

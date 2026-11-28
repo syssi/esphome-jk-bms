@@ -1933,9 +1933,10 @@ void JkBmsBle::decode_device_info_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->power_on_count_sensor_, (float) jk_get_32bit(42));
 
   // 46   16   0x4A 0x4B 0x5F 0x50 0x42 0x32 0x41 0x31 0x36 0x53 0x31 0x35 0x50 0x00 0x00 0x00
-  auto device_name_begin = data.begin() + 46;
-  this->publish_state_(this->device_name_text_sensor_,
-                       std::string(device_name_begin, std::find(device_name_begin, device_name_begin + 16, '\0')));
+  // Device name, also advertised via Bluetooth. Written via 0x9B (bluetooth_name text).
+  const std::string device_name(data.begin() + 46, std::find(data.begin() + 46, data.begin() + 46 + 16, 0));
+  this->publish_state_(this->device_name_text_sensor_, device_name);
+  this->publish_state_(this->bluetooth_name_text_, device_name);
 
   // 62   16   0x31 0x32 0x33 0x34 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
   // Device password, written via 0x9C. The BMS only stores it (no Bluetooth pairing PIN).

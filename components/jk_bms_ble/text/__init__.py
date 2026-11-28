@@ -15,17 +15,26 @@ DEPENDENCIES = ["jk_bms_ble"]
 
 CODEOWNERS = ["@syssi"]
 
+CONF_BLUETOOTH_NAME = "bluetooth_name"
 CONF_DEVICE_PASSWORD = "device_password"
 CONF_SETTINGS_PASSWORD = "settings_password"
 
+ICON_BLUETOOTH_NAME = "mdi:bluetooth"
 ICON_DEVICE_PASSWORD = "mdi:key"
 ICON_SETTINGS_PASSWORD = "mdi:form-textbox-password"
 
 # The payload of a command frame holds 13 bytes
 MAX_PAYLOAD_SIZE = 13
+# The device info frame stores each text in 16 bytes, possibly empty. The entity traits allow that range, because Home
+# Assistant rejects a state outside of them; writes are still limited to min_length and max_length.
+STATE_MAX_LENGTH = 16
 
 TEXTS = {
     # register, min_length, max_length, verify
+    # The device name at device info bytes 46-61, which the BMS also advertises via Bluetooth. After a write the BMS
+    # restarts its Bluetooth module, so the connection drops and the readback happens after the reconnect. Factory
+    # names can be longer than 13 characters and can't be restored once changed.
+    CONF_BLUETOOTH_NAME: [0x9B, 1, 13, VERIFY_DEVICE_INFO],
     # Stored at device info bytes 62-77, factory default 1234. The BMS only stores it: it is no Bluetooth pairing PIN and
     # doesn't protect the connection or writes.
     CONF_DEVICE_PASSWORD: [0x9C, 1, 13, VERIFY_DEVICE_INFO],
@@ -42,8 +51,17 @@ for _key, (_, _min_length, _max_length, _) in TEXTS.items():
 
 JkText = jk_bms_ble_ns.class_("JkText", text.Text, cg.Component)
 
+# Texts restricted to the characters the BMS passes on to its Bluetooth module
+NAME_CHARSET_TEXTS = (CONF_BLUETOOTH_NAME,)
+
 CONFIG_SCHEMA = JK_BMS_BLE_COMPONENT_SCHEMA.extend(
     {
+        cv.Optional(CONF_BLUETOOTH_NAME): text.text_schema(
+            JkText,
+            icon=ICON_BLUETOOTH_NAME,
+            entity_category=ENTITY_CATEGORY_CONFIG,
+            mode="text",
+        ).extend(cv.COMPONENT_SCHEMA),
         cv.Optional(CONF_DEVICE_PASSWORD): text.text_schema(
             JkText,
             icon=ICON_DEVICE_PASSWORD,
@@ -66,9 +84,13 @@ async def to_code(config):
         if key not in config:
             continue
         conf = config[key]
-        var = await text.new_text(conf, min_length=min_length, max_length=max_length)
+        var = await text.new_text(conf, min_length=0, max_length=STATE_MAX_LENGTH)
         await cg.register_component(var, conf)
         cg.add(getattr(hub, f"set_{key}_text")(var))
         cg.add(var.set_parent(hub))
         cg.add(var.set_holding_register(address))
         cg.add(var.set_verify(verify))
+        cg.add(var.set_min_write_length(min_length))
+        cg.add(var.set_max_write_length(max_length))
+        if key in NAME_CHARSET_TEXTS:
+            cg.add(var.set_name_charset(True))

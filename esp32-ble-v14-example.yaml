@@ -396,6 +396,10 @@ select:
 
 text:
   - platform: jk_bms_ble
+    # Renames the BMS: it advertises this name and restarts its Bluetooth module, so the connection drops briefly.
+    # 1-13 characters (A-Z, a-z, 0-9, _ and -); a longer factory name can't be restored once changed.
+    bluetooth_name:
+      name: "bluetooth name"
     device_password:
       name: "device password"
     # The BMS raises the "Modify password in time" alarm (red LED) while this is the factory default 123456
