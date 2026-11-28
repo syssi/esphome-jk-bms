@@ -286,7 +286,7 @@ static const std::vector<uint8_t> ACKNOWLEDGEMENT = {0xAA, 0x55, 0x90, 0xEB, 0xC
 static const std::vector<uint8_t> AT_LINE = {0x41, 0x54, 0x0D, 0x0A};
 
 static bool contains_acknowledgement(const std::vector<uint8_t> &data) {
-  return JkBmsBle::contains_acknowledgement(data.data(), data.size());
+  return JkBmsBle::find_acknowledgement(data.data(), data.size()) == ACKNOWLEDGEMENT_STATUS_OK;
 }
 
 TEST(JkBmsAcknowledgementTest, StandaloneAcknowledgementIsDetected) {
@@ -332,8 +332,63 @@ TEST(JkBmsAcknowledgementTest, AcknowledgementWithWrongChecksumIsRejected) {
 // A command echo or a response frame must not release the queue
 TEST(JkBmsAcknowledgementTest, OtherFramesAreNoAcknowledgement) {
   auto request = JkBmsBle::build_frame(0x96, 0x00000000, 0x00);
-  EXPECT_FALSE(JkBmsBle::contains_acknowledgement(request.data(), request.size()));
+  EXPECT_FALSE(JkBmsBle::find_acknowledgement(request.data(), request.size()).has_value());
   EXPECT_FALSE(contains_acknowledgement(CELL_INFO_JK02_24S_V10));
+}
+
+// ── Acknowledgement status ───────────────────────────────────────────────────
+
+// Recorded on a JK02_32S (hw 19) after a 0x9B write with length byte 15, about 40 ms after the write. The BMS kept the
+// stored name.
+static const std::vector<uint8_t> NEGATIVE_ACKNOWLEDGEMENT = {0xAA, 0x55, 0x90, 0xEB, 0xC8, 0x01, 0x00,
+                                                              0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                                              0x00, 0x00, 0x00, 0x00, 0x00, 0x43};
+
+static optional<uint8_t> find_acknowledgement(const std::vector<uint8_t> &data) {
+  return JkBmsBle::find_acknowledgement(data.data(), data.size());
+}
+
+TEST(JkBmsAcknowledgementStatusTest, AcknowledgementIsOk) {
+  EXPECT_EQ(find_acknowledgement(ACKNOWLEDGEMENT), ACKNOWLEDGEMENT_STATUS_OK);
+}
+
+TEST(JkBmsAcknowledgementStatusTest, NegativeAcknowledgementIsRejected) {
+  EXPECT_EQ(find_acknowledgement(NEGATIVE_ACKNOWLEDGEMENT), ACKNOWLEDGEMENT_STATUS_REJECTED);
+  EXPECT_EQ(find_acknowledgement(concat({AT_LINE, NEGATIVE_ACKNOWLEDGEMENT, AT_LINE})),
+            ACKNOWLEDGEMENT_STATUS_REJECTED);
+}
+
+// Any status with a valid checksum ends the wait, also one never seen so far
+TEST(JkBmsAcknowledgementStatusTest, UnknownStatusIsReturned) {
+  std::vector<uint8_t> data = ACKNOWLEDGEMENT;
+  data[6] = 0x02;
+  data[19] = 0x45;
+  EXPECT_EQ(find_acknowledgement(data), 0x02);
+}
+
+TEST(JkBmsAcknowledgementStatusTest, NegativeAcknowledgementWithWrongChecksumIsIgnored) {
+  std::vector<uint8_t> data = NEGATIVE_ACKNOWLEDGEMENT;
+  data[19] = 0x44;
+  EXPECT_FALSE(find_acknowledgement(data).has_value());
+}
+
+// The acknowledgement is found behind an earlier command frame in the same notification
+TEST(JkBmsAcknowledgementStatusTest, AcknowledgementBehindACommandFrameIsFound) {
+  auto request = JkBmsBle::build_frame(0x96, 0x00000000, 0x00);
+  std::vector<uint8_t> data(request.begin(), request.end());
+  EXPECT_EQ(find_acknowledgement(concat({data, NEGATIVE_ACKNOWLEDGEMENT})), ACKNOWLEDGEMENT_STATUS_REJECTED);
+}
+
+// A preamble inside a truncated frame must not hide the acknowledgement behind it
+TEST(JkBmsAcknowledgementStatusTest, AcknowledgementBehindAStrayPreambleIsFound) {
+  const std::vector<uint8_t> stray = {0xAA, 0x55, 0x90, 0xEB, 0xC8};
+  EXPECT_EQ(find_acknowledgement(concat({stray, ACKNOWLEDGEMENT})), ACKNOWLEDGEMENT_STATUS_OK);
+}
+
+TEST(JkBmsAcknowledgementStatusTest, OtherContentHasNoStatus) {
+  EXPECT_FALSE(find_acknowledgement(AT_LINE).has_value());
+  EXPECT_FALSE(find_acknowledgement({}).has_value());
+  EXPECT_FALSE(find_acknowledgement(CELL_INFO_JK02_24S_V10).has_value());
 }
 
 }  // namespace esphome::jk_bms_ble::testing

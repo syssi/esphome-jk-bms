@@ -44,9 +44,11 @@ static const uint8_t REGISTER_TIME = 0x6C;
 // independently of the local time zone.
 static const int64_t JK_TIME_EPOCH = 1577808000LL;
 
-// Sent by the BMS after every processed command, see CommandQueue
-static const uint8_t ACKNOWLEDGEMENT_FRAME[20] = {0xAA, 0x55, 0x90, 0xEB, 0xC8, 0x01, 0x01, 0x00, 0x00, 0x00,
-                                                  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x44};
+// Start sequence of the 20 byte command frames. The BMS answers each processed command with a frame of the same
+// structure: register 0xC8, length 1 and the status as payload, see find_acknowledgement().
+static const uint8_t COMMAND_PREAMBLE[4] = {0xAA, 0x55, 0x90, 0xEB};
+static const uint8_t COMMAND_FRAME_SIZE = 20;
+static const uint8_t ACKNOWLEDGEMENT_REGISTER = 0xC8;
 
 static const uint16_t MIN_RESPONSE_SIZE = 300;
 
@@ -317,6 +319,8 @@ uint8_t crc(const uint8_t data[], const uint16_t len) {
   return crc;
 }
 
+static bool has_valid_checksum(const uint8_t *frame, uint16_t size) { return crc(frame, size - 1) == frame[size - 1]; }
+
 void JkBmsBle::dump_config() {  // NOLINT(google-readability-function-size,readability-function-size)
   ESP_LOGCONFIG(TAG, "JkBmsBle");
 
@@ -580,10 +584,19 @@ void JkBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gat
       ESP_LOGVV(TAG, "Notification received: %s",
                 format_hex_pretty_to(hex_buf, param->notify.value, param->notify.value_len, '.'));
 
-      if (contains_acknowledgement(param->notify.value, param->notify.value_len)) {
+      // Every status ends the wait, a rejection too. The readback armed by the write stays, so the entity publishes the
+      // value the BMS kept instead of the rejected one.
+      if (auto status = find_acknowledgement(param->notify.value, param->notify.value_len)) {
         if (auto latency = this->command_queue_.on_acknowledgement(millis())) {
-          ESP_LOGD(TAG, "Command 0x%02X acknowledged after %" PRIu32 " ms", this->command_queue_.awaited_command(),
-                   *latency);
+          const uint8_t command = this->command_queue_.awaited_command();
+          if (*status == ACKNOWLEDGEMENT_STATUS_OK) {
+            ESP_LOGD(TAG, "Command 0x%02X acknowledged after %" PRIu32 " ms", command, *latency);
+          } else if (*status == ACKNOWLEDGEMENT_STATUS_REJECTED) {
+            ESP_LOGW(TAG, "Command 0x%02X rejected by the BMS after %" PRIu32 " ms", command, *latency);
+          } else {
+            ESP_LOGW(TAG, "Command 0x%02X answered with unknown status 0x%02X after %" PRIu32 " ms", command, *status,
+                     *latency);
+          }
           this->service_command_queue_();
         }
       }
@@ -744,10 +757,17 @@ void JkBmsBle::sync_time_on_connect_() {
 #endif
 }
 
-// Like a frame's preamble the acknowledgement may share a notification with other bytes, see assemble()
-bool JkBmsBle::contains_acknowledgement(const uint8_t *data, uint16_t length) {
-  return std::search(data, data + length, std::begin(ACKNOWLEDGEMENT_FRAME), std::end(ACKNOWLEDGEMENT_FRAME)) !=
-         data + length;
+// Like a frame's preamble the acknowledgement may share a notification with other bytes, see assemble(). Other command
+// frames (e.g. an echo of a request) are skipped.
+optional<uint8_t> JkBmsBle::find_acknowledgement(const uint8_t *data, uint16_t length) {
+  const uint8_t *end = data + length;
+  for (const uint8_t *frame = std::search(data, end, std::begin(COMMAND_PREAMBLE), std::end(COMMAND_PREAMBLE));
+       end - frame >= COMMAND_FRAME_SIZE;
+       frame = std::search(frame + 1, end, std::begin(COMMAND_PREAMBLE), std::end(COMMAND_PREAMBLE))) {
+    if (frame[4] == ACKNOWLEDGEMENT_REGISTER && frame[5] == 1 && has_valid_checksum(frame, COMMAND_FRAME_SIZE))
+      return frame[6];
+  }
+  return {};
 }
 
 std::array<uint8_t, 20> JkBmsBle::build_frame(uint8_t address, uint32_t value, uint8_t length) {
@@ -755,11 +775,8 @@ std::array<uint8_t, 20> JkBmsBle::build_frame(uint8_t address, uint32_t value, u
 }
 
 std::array<uint8_t, 20> JkBmsBle::build_frame(const CommandQueue::Command &command) {
-  std::array<uint8_t, 20> frame{};
-  frame[0] = 0xAA;             // start sequence
-  frame[1] = 0x55;             // start sequence
-  frame[2] = 0x90;             // start sequence
-  frame[3] = 0xEB;             // start sequence
+  std::array<uint8_t, COMMAND_FRAME_SIZE> frame{};
+  std::copy(std::begin(COMMAND_PREAMBLE), std::end(COMMAND_PREAMBLE), frame.begin());
   frame[4] = command.address;  // holding register
   frame[5] = command.length;   // size of the value in byte
   std::copy(command.payload.begin(), command.payload.end(), frame.begin() + 6);
@@ -827,10 +844,8 @@ void JkBmsBle::decode_frame_buffer_() {
   // Even if the frame is 320 bytes long the CRC is at position 300 in front of 0xAA 0x55 0x90 0xEB
   const uint16_t frame_size = 300;  // this->frame_buffer_.size();
 
-  uint8_t computed_crc = crc(raw, frame_size - 1);
-  uint8_t remote_crc = raw[frame_size - 1];
-  if (computed_crc != remote_crc) {
-    ESP_LOGW(TAG, "CRC check failed! 0x%02X != 0x%02X", computed_crc, remote_crc);
+  if (!has_valid_checksum(raw, frame_size)) {
+    ESP_LOGW(TAG, "CRC check failed! 0x%02X != 0x%02X", crc(raw, frame_size - 1), raw[frame_size - 1]);
     this->frame_buffer_.clear();
     return;
   }
